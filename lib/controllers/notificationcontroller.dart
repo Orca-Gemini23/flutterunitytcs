@@ -3,7 +3,8 @@ import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:walk/constants.dart';
+import 'package:walk/constants/constants.dart';
+import 'package:walk/constants/bluetoothconstants.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id

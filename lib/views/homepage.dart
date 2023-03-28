@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:walk/constants.dart';
+import 'package:walk/constants/constants.dart';
 import 'package:walk/controllers/devicecontroller.dart';
 import 'package:walk/widgets/navigationdrawer.dart';
 import '../widgets/scanneditemtile.dart';

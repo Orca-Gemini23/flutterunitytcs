@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-
+import 'package:walk/constants/bluetoothconstants.dart';
 import 'package:provider/provider.dart';
-import 'package:walk/constants.dart';
+import 'package:walk/constants/constants.dart';
 import 'package:walk/controllers/devicecontroller.dart';
 import 'package:walk/controllers/sharedpreferences.dart';
 import 'package:walk/controllers/wificontroller.dart';

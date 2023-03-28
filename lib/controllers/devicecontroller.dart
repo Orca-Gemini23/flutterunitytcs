@@ -9,9 +9,10 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:permission_handler/permission_handler.dart';
-import 'package:walk/constants.dart';
+import 'package:walk/constants/bluetoothconstants.dart';
 
 class DeviceController extends ChangeNotifier {
+  //Controls the bluetooth device information and manages connection and data flow between the device and application.;
   List<BluetoothDevice> _scannedDevices = [];
   List<BluetoothDevice> _connectedDevices = [];
   List<BluetoothCharacteristic> _characteristics = [];
@@ -25,7 +26,8 @@ class DeviceController extends ChangeNotifier {
 
   int get batteryRemaining => _batteryRemaining;
 
-  Set<String> get info => _info;
+  Set<String> get info =>
+      _info; //outputs the set<String> which contains the information obtained from the device after sending the "info" command to the device;
   void clearInfo() {
     _info.clear();
     notifyListeners();
@@ -55,6 +57,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   Future askForPermission() async {
+    //Handles the permission for both , device below and above android version 12;
     if (await Permission.location.isDenied) {
       await Permission.location.request();
       await Permission.bluetooth.request();
@@ -67,6 +70,9 @@ class DeviceController extends ChangeNotifier {
   }
 
   void startDiscovery() async {
+    // Used to scan the devices and update the scannedDevices list;
+
+    //TODO:Check whether bluetooth is turned on or not
     try {
       await askForPermission();
       _scannedDevices.clear();
@@ -79,9 +85,8 @@ class DeviceController extends ChangeNotifier {
       )
           .listen(
         (scanResult) {
-          print("Scanned device");
           if (scanResult.device.name != "") {
-            // convert it to scanResult.device.name.contains("walk")
+            //TODO:Convert it to scanResult.device.name.contains("walk")
             _scannedDevices.add(scanResult.device);
             notifyListeners();
           }
@@ -93,6 +98,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   Future checkPrevConnection() async {
+    //Used to check if the app is still connected to some device
     log("check prev called ");
     _connectedDevices = await FlutterBlue.instance.connectedDevices;
     if (_connectedDevices.isNotEmpty) {
@@ -102,6 +108,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   Future connectToDevice(BluetoothDevice device) async {
+    //Used to connect to a device and update connectedDevices list
     try {
       log("coming here");
       Fluttertoast.showToast(msg: "Connecting to ${device.name}");
@@ -123,6 +130,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   Future disconnectDevice(BluetoothDevice device) async {
+    //Handles the disconnection procedure
     try {
       Fluttertoast.showToast(msg: "Disconnecting ");
       await device.disconnect();
@@ -139,6 +147,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   Future discoverServices(BluetoothDevice device) async {
+    //Used to discover the services and characteristics;
     try {
       _services = await device.discoverServices();
       _characteristics = _services
@@ -153,6 +162,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   Future sendToDevice(String command, Guid characteristic) async {
+    //Used to send any message to the device basically command , it is sent in ASCII format
     try {
       if (await FlutterBlue.instance.isOn) {
         BluetoothCharacteristic charToTarget = _characteristics
@@ -171,6 +181,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   Future notifyRead(Guid characteristic, BuildContext context) async {
+    //Used to listen to a stream of messages when the user sends INFO commands
     try {
       if (await FlutterBlue.instance.isOn) {
         BluetoothCharacteristic charToTarget = _characteristics
@@ -205,6 +216,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   void updateBattValues(String value) {
+    //Updates battery values
     if (value.contains("s")) {
       _batteryS = value.substring(6, 11);
       log("batteryS is ${_batteryS}");
@@ -221,6 +233,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   void updateWifiVerificationStatus() {
+    //Updates wifi provisioned status (The ble device tells us whether it has user's wifi SSID and Password , if it has then wifi is provisioned else it is not );
     if (_info.contains("provisioned s 1;") &&
         _info.contains("provisioned c 1;")) {
       _wifiProvisioned = true;

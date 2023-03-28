@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:walk/constants.dart';
+import 'package:walk/constants/constants.dart';
 
 Drawer navigationDrawer() {
   return Drawer(
     backgroundColor: Color(DRAWERCOLOR),
     semanticLabel: "drawer",
     shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20), bottomRight: Radius.circular(20))),
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(20),
+        bottomRight: Radius.circular(20),
+      ),
+    ),
     elevation: 30,
     child: ListView.separated(
         itemBuilder: (context, index) {
