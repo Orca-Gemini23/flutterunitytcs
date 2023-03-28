@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "205623995747",
+    "project_id": "walk-90dbf",
+    "storage_bucket": "walk-90dbf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205623995747:android:5360479e17b33abfbeb756",
+        "android_client_info": {
+          "package_name": "com.lifesparktech.walk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "205623995747-1ogj5dvnqsuj0tm5kfem0hpbulq78r3m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYqTEo8sY4eEUJdOzl-zl3hDZNN01FXaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "205623995747-1ogj5dvnqsuj0tm5kfem0hpbulq78r3m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
