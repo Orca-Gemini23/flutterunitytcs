@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/controllers/devicecontroller.dart';
-import 'package:walk/controllers/sharedpreferences.dart';
+
 import 'package:walk/views/showcase/showcaseview.dart';
 
+///Button to connect to a device , usually this button is used inside the scanned item tile or showcase scanned item tile
 class ConnectButton extends StatefulWidget {
   const ConnectButton({
     super.key,
@@ -53,6 +53,7 @@ class _ConnectButtonState extends State<ConnectButton> {
   }
 }
 
+///This button does the same as the above one , but this one will be included in a showcase ,the above button will not
 Widget showCaseConnectButton(GlobalKey key, DeviceController controller) {
   return SizedBox(
     child: ShowCaseView(

@@ -23,6 +23,8 @@ class _CommandPageState extends State<CommandPage> {
   double freqValue = 0.4;
   double magValue = 0;
   double modeValue = -1;
+
+  ///Once the user reaches this page we assume that he already had used the connect button and also has clicked the tile. Therefore now we mark the status of isShowCaseDone as true, so that from next time user does not get the showcase
   setShowCaseStatus() async {
     await PreferenceController.saveboolData(showCaseKey, true);
   }
@@ -60,6 +62,9 @@ class _CommandPageState extends State<CommandPage> {
                   );
                 },
                 icon: (wifiController.wifiVerificationStatus ||
+
+                        ///This is done as two different controllers handle the wifi provisioned status , wificontroller and
+                        ///devicecontroller so which ever says wifi provisioned is true we accept that
                         deviceController.wifiProvisionStatus)
                     ? const Icon(
                         Icons.verified,

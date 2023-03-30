@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 class ShowCaseView extends StatelessWidget {
+  ///Provides Showcase to widgets ie: When the user first time opens the application he/she is guided as to what the different buttons do where will the scanned items be shown.A bit like a tutorial of the application.
   const ShowCaseView({
     super.key,
     required this.globalKey,

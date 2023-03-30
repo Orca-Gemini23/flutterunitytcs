@@ -16,17 +16,6 @@ loadingDialog(
         height: 400,
         child: Center(
           child: Image.asset("assets/images/bleloading.gif"),
-
-          // child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: const [
-          //       CircularProgressIndicator(),
-          //       SizedBox(
-          //         height: 20,
-          //       ),
-          //       Text("Please wait , fetching your info !!!!!"),
-          //     ],),
         ),
       ),
     ),

@@ -12,10 +12,10 @@ import 'package:walk/views/commandpage.dart';
 import 'package:walk/views/showcase/showcaseview.dart';
 import 'package:walk/views/wifipage.dart';
 import 'package:walk/widgets/buttons.dart';
-import 'package:walk/widgets/dialog.dart';
 import 'package:walk/widgets/loadingdialog.dart';
 
 class ScannedDevicesList extends StatefulWidget {
+  ///Represents the devices that have been scanned
   const ScannedDevicesList(
       {super.key,
       required this.controller,
@@ -42,6 +42,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
     );
   }
 
+  ///This widget is only used for showcase. And it is going to be the first tile to appear on the scanned devices page.
   Widget showCaseItem(GlobalKey key1, GlobalKey key2) {
     return Consumer2<DeviceController, WifiController>(
       builder: (context, deviceController, wifiController, child) {
@@ -129,6 +130,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
   }
 }
 
+///This is a normal scanned item tile which will not be highlighted in the showcase . It has the same functionality as the above one but this one will not be included a showcase
 Widget scannedItem(
   int index,
 ) {
@@ -136,8 +138,8 @@ Widget scannedItem(
     builder: (context, controller, wifiController, child) {
       return InkWell(
         onTap: () async {
-          //check if the _info is already filled if it is then directly proceed else notify
-          //but if _info has to update then what but its older details is already filled ???
+          ///check if the _info is already filled if it is then directly proceed else notify
+          ///but if _info has to update then what but its older details is already filled ???
           loadingDialog(
             context,
           );

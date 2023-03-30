@@ -30,15 +30,14 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
   Future<void> _startService() async {
     try {
       serviceStarted
-          ? _startService()
+          ? _stopService()
           : Timer(
               const Duration(seconds: 2),
               (() async {
                 final result =
                     await platform.invokeMethod('startExampleService');
-                var controller = DeviceController(performScan: true);
-                var deviceToConnect = controller.getScannedDevices.elementAt(0);
-                await controller.connectToDevice(deviceToConnect);
+
+                ///TODO : Start Scan and try connecting to the device
               }),
             );
       setState(() {
@@ -136,6 +135,8 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
         ),
       ),
       floatingActionButton:
+
+          ///TODO:Add refresh button
           Consumer<DeviceController>(builder: (context, controller, snapshot) {
         return FloatingActionButton(
           onPressed: () async {
@@ -143,7 +144,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
             // controller.info.forEach((element) {
             //   print(element);
             // });
-            //loadingDialog(context);
+            // loadingDialog(context);
 
             // showDialog(
             //   context: (context),
@@ -260,7 +261,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
             //       ),
             //     );
             // },
-            //);
+            // );
           },
         );
       }),

@@ -14,6 +14,7 @@ class WifiPage extends StatefulWidget {
 }
 
 class _WifiPageState extends State<WifiPage> {
+  ///This page is used to obtain user's wifi ID and Password then connect to the wifi and send these wifi id and password to the device , wifi provisioning.
   final TextEditingController ssidController = TextEditingController();
   final TextEditingController passwdController = TextEditingController();
   @override
@@ -72,12 +73,17 @@ class _WifiPageState extends State<WifiPage> {
             return ElevatedButton(
               onPressed: () async {
                 bool result = await wifiController.connectToWifi(
-                    ssidController.text, passwdController.text);
+
+                    ///Connecting to the wifi
+                    ssidController.text,
+                    passwdController.text);
                 if (result) {
+                  ///if wifi has been connected successfully then send the wifi SSID and password to the device
                   deviceController.sendToDevice(
                       "${ssidController.text}/${passwdController.text}",
                       WRITECHARACTERISTICS);
-                  // ignore: use_build_context_synchronously
+
+                  /// ignore: use_build_context_synchronously
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 String wifiKey = "isWifiCredsSaved";
 String showCaseKey = "isShowCaseDone";
 
+///This class is used to store different data in the local storage . Different methods are used to store/retrieve different data type.
 class PreferenceController {
   static late SharedPreferences _prefs;
 
