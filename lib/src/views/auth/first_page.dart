@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:walk/src/views/signuppage.dart';
+import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/signuppage.dart';
 
 class LoginRegister extends StatelessWidget {
   const LoginRegister({super.key});
@@ -7,19 +8,23 @@ class LoginRegister extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              top: -140,
-              left: -140,
-              child: Image.asset("assets/images/dottedbackground.png"),
-            ),
-            Positioned(
-              top: 300,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: -140,
+            left: -140,
+            child: Image.asset("assets/images/dottedbackground.png"),
+          ),
+          SizedBox(
+            height: Screen.height(context: context),
+            width: Screen.width(context: context),
+            child: SingleChildScrollView(
               child: Column(
                 children: [
+                  SizedBox(
+                    height: Screen.height(context: context) * 0.3,
+                  ),
                   const SizedBox(
                     width: 100,
                     child: Divider(
@@ -141,15 +146,42 @@ class LoginRegister extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 30),
+                      backgroundColor: const Color(0xffEA4335),
+                      elevation: 7,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(22),
+                      ),
+                    ),
+                    child: const Text(
+                      "Sign in with Google",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   const CircleAvatar(
                     radius: 22,
                     foregroundImage: AssetImage("assets/images/googleicon.png"),
-                  )
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                 ],
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }

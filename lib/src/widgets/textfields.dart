@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Widget getTextfield(
     String labelText, TextEditingController controller, IconData icon) {
-  return Expanded(
+  return Flexible(
     child: TextField(
       controller: controller,
       cursorColor: const Color(0xff005749),

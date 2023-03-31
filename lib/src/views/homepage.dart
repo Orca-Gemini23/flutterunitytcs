@@ -6,6 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:walk/src/constants/constants.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/views/auth/login_page.dart';
+import 'package:walk/src/views/auth/otp_page.dart';
+import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/widgets/navigationdrawer.dart';
 import '../widgets/scanneditemtile.dart';
 
@@ -140,6 +144,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
           Consumer<DeviceController>(builder: (context, controller, snapshot) {
         return FloatingActionButton(
           onPressed: () async {
+            Go.to(context: context, push: OTPPage());
             // print("LEngth is " + controller.info.length.toString());
             // controller.info.forEach((element) {
             //   print(element);
