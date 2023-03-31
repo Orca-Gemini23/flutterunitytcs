@@ -1,18 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:walk/constants/bluetoothconstants.dart';
-import 'package:walk/controllers/devicecontroller.dart';
-import 'package:walk/controllers/wificontroller.dart';
-import 'package:walk/views/commandpage.dart';
+import 'package:walk/src/constants/bluetoothconstants.dart';
+import 'package:walk/src/controllers/devicecontroller.dart';
+import 'package:walk/src/controllers/wificontroller.dart';
+import 'package:walk/src/views/commandpage.dart';
 
-import 'package:walk/views/showcase/showcaseview.dart';
-import 'package:walk/views/wifipage.dart';
-import 'package:walk/widgets/buttons.dart';
-import 'package:walk/widgets/loadingdialog.dart';
+import 'package:walk/src/views/showcase/showcaseview.dart';
+import 'package:walk/src/views/wifipage.dart';
+import 'package:walk/src/widgets/buttons.dart';
+import 'package:walk/src/widgets/loadingdialog.dart';
 
 class ScannedDevicesList extends StatefulWidget {
   ///Represents the devices that have been scanned

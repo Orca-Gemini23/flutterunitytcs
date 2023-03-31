@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:walk/controllers/devicecontroller.dart';
+import 'package:walk/src/controllers/devicecontroller.dart';
 
-import 'package:walk/views/showcase/showcaseview.dart';
+import 'package:walk/src/views/showcase/showcaseview.dart';
 
 ///Button to connect to a device , usually this button is used inside the scanned item tile or showcase scanned item tile
 class ConnectButton extends StatefulWidget {

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:walk/constants/constants.dart';
-import 'package:walk/controllers/devicecontroller.dart';
-import 'package:walk/widgets/navigationdrawer.dart';
+import 'package:walk/src/constants/constants.dart';
+import 'package:walk/src/controllers/devicecontroller.dart';
+import 'package:walk/src/widgets/navigationdrawer.dart';
 import '../widgets/scanneditemtile.dart';
 
 class Homepage extends StatefulWidget {
@@ -25,7 +25,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
 
   bool _isInForeground = true;
   bool serviceStarted = false;
-  static const platform = const MethodChannel("example_service");
+  static const platform = MethodChannel("example_service");
   String _serverState = "Did you not make the call yet ";
   Future<void> _startService() async {
     try {
@@ -44,7 +44,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
         serviceStarted = true;
       });
     } on PlatformException catch (e) {
-      print("Failed to invoke method: '${e.message}'.");
+      log("Failed to invoke method: '${e.message}'.");
     }
   }
 
@@ -56,7 +56,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
         serviceStarted = false;
       });
     } on PlatformException catch (e) {
-      print("Failed to invoke method: '${e.message}'.");
+      log("Failed to invoke method: '${e.message}'.");
     }
   }
 

@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter_blue/flutter_blue.dart';
 
 Guid WRITECHARACTERISTICS = Guid("0000abf1-0000-1000-8000-00805f9b34fb");

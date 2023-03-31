@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:walk/constants/bluetoothconstants.dart';
+import 'package:walk/src/constants/bluetoothconstants.dart';
 import 'package:provider/provider.dart';
-import 'package:walk/constants/constants.dart';
-import 'package:walk/controllers/devicecontroller.dart';
-import 'package:walk/controllers/sharedpreferences.dart';
-import 'package:walk/controllers/wificontroller.dart';
+import 'package:walk/src/constants/constants.dart';
+import 'package:walk/src/controllers/devicecontroller.dart';
+import 'package:walk/src/controllers/sharedpreferences.dart';
+import 'package:walk/src/controllers/wificontroller.dart';
 
-import 'package:walk/views/wifipage.dart';
-import 'package:walk/widgets/circlebattstatus.dart';
+import 'package:walk/src/views/wifipage.dart';
+import 'package:walk/src/widgets/circlebattstatus.dart';
 
 class CommandPage extends StatefulWidget {
   const CommandPage({super.key});

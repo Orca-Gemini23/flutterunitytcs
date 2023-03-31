@@ -9,7 +9,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:permission_handler/permission_handler.dart';
-import 'package:walk/constants/bluetoothconstants.dart';
+import 'package:walk/src/constants/bluetoothconstants.dart';
 
 ///Controls the bluetooth device information and manages connection and data flow between the device and application.;
 class DeviceController extends ChangeNotifier {
@@ -243,12 +243,12 @@ class DeviceController extends ChangeNotifier {
   void updateBattValues(String value) {
     if (value.contains("s")) {
       _batteryS = value.substring(6, 11);
-      log("batteryS is ${_batteryS}");
+      log("batteryS is $_batteryS");
       _batteryInfoStatus = true;
       notifyListeners();
     } else {
       _batteryC = value.substring(6, 11);
-      log("batteryC is ${_batteryC}");
+      log("batteryC is $_batteryC");
       _batteryInfoStatus = true;
       notifyListeners();
     }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:walk/constants/constants.dart';
+import 'package:walk/src/constants/constants.dart';
 
 Drawer navigationDrawer() {
   return Drawer(

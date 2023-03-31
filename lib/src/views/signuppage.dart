@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:walk/widgets/textfields.dart';
+import 'package:walk/src/widgets/textfields.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -53,7 +53,7 @@ class _SignupPageState extends State<SignupPage> {
             getTextfield("Last Name", _lastnameController, Icons.person),
             getTextfield("Email", _emailController, Icons.mail),
             Container(
-              padding: EdgeInsets.only(right: 20),
+              padding: const EdgeInsets.only(right: 20),
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -71,7 +71,7 @@ class _SignupPageState extends State<SignupPage> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Radio(
                     value: "Male",
                     groupValue: _selectedGender,

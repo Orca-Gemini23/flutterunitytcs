@@ -3,9 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:walk/controllers/sharedpreferences.dart';
-import 'package:walk/views/homepage.dart';
-import 'package:walk/views/loginandregisterpage.dart';
+import 'package:walk/src/controllers/sharedpreferences.dart';
+import 'package:walk/src/views/homepage.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -70,41 +69,39 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              top: -140,
-              left: -140,
-              child: Image.asset(
-                "assets/images/dottedbackground.png",
-              ),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: -140,
+            left: -140,
+            child: Image.asset(
+              "assets/images/dottedbackground.png",
             ),
-            const Center(
-              child: Text(
-                "LT",
-                style: TextStyle(
-                  fontSize: 80,
-                  letterSpacing: 8,
-                  color: Color(
-                    0xff005749,
-                  ),
+          ),
+          const Center(
+            child: Text(
+              "LT",
+              style: TextStyle(
+                fontSize: 80,
+                letterSpacing: 8,
+                color: Color(
+                  0xff005749,
                 ),
               ),
             ),
-            const Positioned(
-              bottom: 80,
-              child: Text(
-                "Lifespark Technologies",
-                style: TextStyle(
-                    color: Color(0xff005749),
-                    fontSize: 30,
-                    fontWeight: FontWeight.w300),
-              ),
-            )
-          ],
-        ),
+          ),
+          const Positioned(
+            bottom: 80,
+            child: Text(
+              "Lifespark Technologies",
+              style: TextStyle(
+                  color: Color(0xff005749),
+                  fontSize: 30,
+                  fontWeight: FontWeight.w300),
+            ),
+          )
+        ],
       ),
     );
   }

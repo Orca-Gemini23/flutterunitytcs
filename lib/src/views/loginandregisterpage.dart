@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:walk/views/signuppage.dart';
+import 'package:walk/src/views/signuppage.dart';
 
 class LoginRegister extends StatelessWidget {
   const LoginRegister({super.key});
@@ -7,7 +7,7 @@ class LoginRegister extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -82,7 +82,7 @@ class LoginRegister extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SignupPage(),
+                          builder: (context) => const SignupPage(),
                         ),
                       );
                     },
@@ -90,7 +90,7 @@ class LoginRegister extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 30),
                       minimumSize: const Size(180, 50),
-                      backgroundColor: Color(0xff005749),
+                      backgroundColor: const Color(0xff005749),
                       elevation: 7,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(22),
@@ -124,7 +124,7 @@ class LoginRegister extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 30),
-                      backgroundColor: Color(0xffEA4335),
+                      backgroundColor: const Color(0xffEA4335),
                       elevation: 7,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(22),
