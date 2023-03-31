@@ -38,7 +38,7 @@ dependencies:
   permission_handler: ^10.2.0
   font_awesome_flutter: ^10.4.0
   flutter_blue: ^0.8.0
-  fluttertoast: 8.0.7
+  fluttertoast: ^8.0.7
   provider: ^6.0.5
   sleek_circular_slider: ^2.0.1
   wifi_iot: ^0.3.18
@@ -46,9 +46,7 @@ dependencies:
   firebase_messaging: ^14.2.5
   firebase_analytics: ^10.1.4
   flutter_local_notifications: ^13.0.0
-  android_alarm_manager_plus: ^2.1.1
   soundpool: ^2.3.0
-  workmanager: ^0.5.1
   showcaseview: ^1.1.8
   shared_preferences: ^2.0.18
   
