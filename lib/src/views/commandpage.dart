@@ -6,6 +6,7 @@ import 'package:walk/src/constants/constants.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/controllers/sharedpreferences.dart';
 import 'package:walk/src/controllers/wificontroller.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 
 import 'package:walk/src/views/wifipage.dart';
 import 'package:walk/src/widgets/circlebattstatus.dart';
@@ -51,14 +52,15 @@ class _CommandPageState extends State<CommandPage> {
             builder: (context, deviceController, wifiController, child) {
               return IconButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const WifiPage();
-                      },
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) {
+                  //       return const WifiPage();
+                  //     },
+                  //   ),
+                  // );
+                  Go.to(context: context, push: const WifiPage());
                 },
                 icon: (wifiController.wifiVerificationStatus ||
 
@@ -312,95 +314,104 @@ class _CommandPageState extends State<CommandPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.purple,
-                          padding: const EdgeInsets.all(20),
-                          elevation: 6,
-                        ),
-                        onPressed: () async {
-                          await controller.sendToDevice(
-                              SOS, WRITECHARACTERISTICS);
+                      ...List.generate(
+                        controller.buttonNames.length,
+                        (index) {
+                          List<Future> buttonFunction = [
+                            controller.sendToDevice(SOS, WRITECHARACTERISTICS),
+                            controller.sendToDevice(
+                                RESTART, WRITECHARACTERISTICS),
+                            controller.sendToDevice(RSTF, WRITECHARACTERISTICS),
+                            controller.sendToDevice(
+                                RPROV, WRITECHARACTERISTICS),
+                          ];
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              backgroundColor: Colors.purple,
+                              padding: const EdgeInsets.all(20),
+                              elevation: 6,
+                            ),
+                            onPressed: () async {
+                              await buttonFunction[index];
+                            },
+                            child: Text(
+                              controller.buttonNames[index],
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          );
                         },
-                        child: const Text(
-                          "SOS",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
                       ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.purple,
-                          padding: const EdgeInsets.all(20),
-                          elevation: 6,
-                        ),
-                        onPressed: () async {
-                          // SEND RESTART COMMAND
-                          await controller.sendToDevice(
-                              RESTART, WRITECHARACTERISTICS);
-                        },
-                        child: const Text(
-                          "RES",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.purple,
-                          padding: const EdgeInsets.all(20),
-                          elevation: 6,
-                        ),
-                        onPressed: () async {
-                          //SEND RESET TO FACTORY COMMAND
-                          await controller.sendToDevice(
-                              RSTF, WRITECHARACTERISTICS);
-                        },
-                        child: const Text(
-                          "RSTF",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.purple,
-                          padding: const EdgeInsets.all(20),
-                          elevation: 6,
-                        ),
-                        onPressed: () async {
-                          //SEND REMOVE ALL WIFI CREDENTIALS COMMAND
+                      // ElevatedButton(
+                      //   style: ElevatedButton.styleFrom(
+                      //     shape: const CircleBorder(),
+                      //     backgroundColor: Colors.purple,
+                      //     padding: const EdgeInsets.all(20),
+                      //     elevation: 6,
+                      //   ),
+                      //   onPressed: () async {
+                      //     // SEND RESTART COMMAND
+                      //     await controller.sendToDevice(
+                      //         RESTART, WRITECHARACTERISTICS);
+                      //   },
+                      //   child: const Text(
+                      //     "RES",
+                      //     style: TextStyle(
+                      //       fontSize: 16,
+                      //       fontWeight: FontWeight.w400,
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(
+                      //   width: 5,
+                      // ),
+                      // ElevatedButton(
+                      //   style: ElevatedButton.styleFrom(
+                      //     shape: const CircleBorder(),
+                      //     backgroundColor: Colors.purple,
+                      //     padding: const EdgeInsets.all(20),
+                      //     elevation: 6,
+                      //   ),
+                      //   onPressed: () async {
+                      //     //SEND RESET TO FACTORY COMMAND
+                      //     await controller.sendToDevice(
+                      //         RSTF, WRITECHARACTERISTICS);
+                      //   },
+                      //   child: const Text(
+                      //     "RSTF",
+                      //     style: TextStyle(
+                      //       fontSize: 16,
+                      //       fontWeight: FontWeight.w400,
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(
+                      //   width: 5,
+                      // ),
+                      // ElevatedButton(
+                      //   style: ElevatedButton.styleFrom(
+                      //     shape: const CircleBorder(),
+                      //     backgroundColor: Colors.purple,
+                      //     padding: const EdgeInsets.all(20),
+                      //     elevation: 6,
+                      //   ),
+                      //   onPressed: () async {
+                      //     //SEND REMOVE ALL WIFI CREDENTIALS COMMAND
 
-                          await controller.sendToDevice(
-                              RPROV, WRITECHARACTERISTICS);
-                        },
-                        child: const Text(
-                          "RPRV",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      )
+                      //     await controller.sendToDevice(
+                      //         RPROV, WRITECHARACTERISTICS);
+                      //   },
+                      //   child: const Text(
+                      //     "RPRV",
+                      //     style: TextStyle(
+                      //       fontSize: 16,
+                      //       fontWeight: FontWeight.w400,
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 );

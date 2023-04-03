@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/widgets/textfields.dart';
 
 class LoginPage extends StatefulWidget {
@@ -44,7 +46,9 @@ class _LoginPageState extends State<LoginPage> {
                       height: Screen.height(context: context) * 0.1,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Go.to(context: context, push: PhoneAuthPage());
+                      },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 30),

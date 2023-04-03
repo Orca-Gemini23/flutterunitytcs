@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/otp_page.dart';
 import 'package:walk/src/widgets/textfields.dart';
 
 class PhoneAuthPage extends StatefulWidget {
@@ -55,6 +57,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                     ElevatedButton(
                       onPressed: () {
                         //add checks and submit details
+                        Go.to(context: context, push: OTPPage());
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(

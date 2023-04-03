@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/constants.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/controllers/wificontroller.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/commandpage.dart';
 import 'package:walk/src/constants/bluetoothconstants.dart';
 
@@ -84,12 +85,14 @@ class _WifiPageState extends State<WifiPage> {
                       WRITECHARACTERISTICS);
 
                   /// ignore: use_build_context_synchronously
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CommandPage(),
-                    ),
-                  );
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const CommandPage(),
+                  //   ),
+                  // );
+                  Go.pushReplacement(
+                      context: context, pushReplacement: const CommandPage());
                 }
               },
               style: ElevatedButton.styleFrom(

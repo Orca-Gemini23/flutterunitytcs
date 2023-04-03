@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +29,8 @@ class DeviceController extends ChangeNotifier {
 
   ///outputs the set<String> which contains the information obtained from the device after sending the "info" command to the device;
   Set<String> get info => _info;
+
+  List<String> buttonNames = ['SOS', 'RES', 'RSTF', 'RPRV'];
 
   void clearInfo() {
     /// Clears the _info set so that new information can be stored , without older one being present creating ambiguity
@@ -72,6 +75,36 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
+  /// Turning on Bluetooth fro within the app
+  Future<void> turnBluetoothOn(BuildContext context) async {
+    try {
+      String dialogTitle = "Hey! Please give me permission to use Bluetooth!";
+      bool displayDialogContent = true;
+      String dialogContent =
+          "This app requires Bluetooth to connect to device.";
+      String cancelBtnText = "Nope";
+      String acceptBtnText = "Sure";
+      double dialogRadius = 10.0;
+      bool barrierDismissible = true; //
+
+      /// Custom Dialog box for turning On Bluetooth
+      await BluetoothEnable.customBluetoothRequest(
+              context,
+              dialogTitle,
+              displayDialogContent,
+              dialogContent,
+              cancelBtnText,
+              acceptBtnText,
+              dialogRadius,
+              barrierDismissible)
+          .then((value) {
+        log('customBT request: $value');
+      });
+    } catch (e) {
+      log(' error: $e');
+    }
+  }
+
   /// Used to scan the devices and add the scanned devices to the scannedDevices list;
   void startDiscovery() async {
     ///TODO:Check whether bluetooth is turned on or not
@@ -96,7 +129,9 @@ class DeviceController extends ChangeNotifier {
             notifyListeners();
           }
         },
-      );
+      ).onError((error) {
+        log('startDiscover() error: $error');
+      });
     } catch (e) {
       log(e.toString());
     }

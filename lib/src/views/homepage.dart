@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -7,9 +8,11 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:walk/src/constants/constants.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/auth/login_page.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
+import 'package:walk/src/views/commandpage.dart';
 import 'package:walk/src/widgets/navigationdrawer.dart';
 import '../widgets/scanneditemtile.dart';
 
@@ -110,7 +113,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: navigationDrawer(),
+      drawer: navigationDrawer(context),
       appBar: AppBar(
         title: const Text(
           "Welcome to Walk",
@@ -120,6 +123,14 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
           ),
         ),
         backgroundColor: Color(APPBARCOLOR),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () async {
+              context.read<DeviceController>().turnBluetoothOn(context);
+            },
+            icon: const Icon(Icons.bluetooth),
+          ),
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -144,7 +155,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
           Consumer<DeviceController>(builder: (context, controller, snapshot) {
         return FloatingActionButton(
           onPressed: () async {
-            Go.to(context: context, push: OTPPage());
+            Go.to(context: context, push: CommandPage());
             // print("LEngth is " + controller.info.length.toString());
             // controller.info.forEach((element) {
             //   print(element);
