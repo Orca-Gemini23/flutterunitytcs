@@ -5,14 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:walk/src/constants/constants.dart';
+import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/auth/first_page.dart';
-import 'package:walk/src/views/auth/login_page.dart';
-import 'package:walk/src/views/auth/otp_page.dart';
-import 'package:walk/src/views/auth/phone_auth.dart';
-import 'package:walk/src/views/commandpage.dart';
+import 'package:walk/src/views/org_info/contact_us.dart';
 import 'package:walk/src/widgets/navigationdrawer.dart';
 import '../widgets/scanneditemtile.dart';
 
@@ -116,13 +113,13 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
       drawer: navigationDrawer(context),
       appBar: AppBar(
         title: const Text(
-          "Welcome to Walk",
+          AppString.homeTitle,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
-        backgroundColor: Color(APPBARCOLOR),
+        backgroundColor: AppColor.appBarColor,
         actions: <Widget>[
           IconButton(
             onPressed: () async {
@@ -136,8 +133,8 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
         padding: const EdgeInsets.all(10),
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          color: Color(BGCOLOR),
+        decoration: const BoxDecoration(
+          color: AppColor.bgColor,
         ),
         child: Consumer<DeviceController>(
           builder: (context, controller, child) {
@@ -155,7 +152,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
           Consumer<DeviceController>(builder: (context, controller, snapshot) {
         return FloatingActionButton(
           onPressed: () async {
-            Go.to(context: context, push: CommandPage());
+            Go.to(context: context, push: ContactUsPage());
             // print("LEngth is " + controller.info.length.toString());
             // controller.info.forEach((element) {
             //   print(element);
@@ -171,7 +168,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
             //           borderRadius: BorderRadius.all(Radius.circular(20))),
             //       child: Container(
             //         decoration: BoxDecoration(
-            //             color: Color(0xff005749),
+            //             color:AppColor.greenDarkColor,
             //             borderRadius: BorderRadius.circular(20)),
             //         height: 400,
             //         child: PageView(
@@ -194,15 +191,15 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
             //               child: Stack(children: [
             //                 const Positioned(
             //                     child: Text(
-            //                   "Please take out the bands from the box , and put them on a table.",
+            //                   AppString.takeOutBands,
             //                   style: TextStyle(
-            //                     color: Colors.white,
+            //                     color: AppColor.whiteColor,
             //                     fontSize: 20,
             //                   ),
             //                 )),
             //                 Center(
             //                   child: Image.asset(
-            //                     "assets/images/product.png",
+            //                    AppAssets.productImage,
             //                     fit: BoxFit.fill,
             //                   ),
             //                 ),
@@ -217,15 +214,15 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
             //                 children: [
             //                   const Positioned(
             //                       child: Text(
-            //                     "Now , locate the red switch on the device and push it to turn on the device.",
+            //                     AppString.turnOnSwitch,
             //                     style: TextStyle(
-            //                       color: Colors.white,
+            //                       color: AppColor.whiteColor,
             //                       fontSize: 20,
             //                     ),
             //                   )),
             //                   Center(
             //                     child: Image.asset(
-            //                       "assets/images/buttonanimation.gif",
+            //                      AppAssets.buttonAnimation,
             //                       fit: BoxFit.fill,
             //                     ),
             //                   ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/constants/bluetoothconstants.dart';
 import 'package:provider/provider.dart';
-import 'package:walk/src/constants/constants.dart';
+import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/controllers/sharedpreferences.dart';
 import 'package:walk/src/controllers/wificontroller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 
-import 'package:walk/src/views/wifipage.dart';
+import 'package:walk/src/views/device/wifipage.dart';
 import 'package:walk/src/widgets/circlebattstatus.dart';
 
 class CommandPage extends StatefulWidget {
@@ -40,13 +41,13 @@ class _CommandPageState extends State<CommandPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Personalize WALK",
+          AppString.commandPageTitle,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
-        backgroundColor: Color(APPBARCOLOR),
+        backgroundColor: AppColor.appBarColor,
         actions: [
           Consumer2<DeviceController, WifiController>(
             builder: (context, deviceController, wifiController, child) {
@@ -82,10 +83,11 @@ class _CommandPageState extends State<CommandPage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
-        color: const Color(0xffF5F5F5),
+        color: AppColor.whiteColor,
         width: double.infinity,
         height: double.infinity,
-        child: Column(
+        child: ListView(
+          shrinkWrap: true,
           children: [
             Consumer<DeviceController>(builder: (context, controller, child) {
               isLoaded = controller.batteryInfoStatus;
@@ -107,7 +109,7 @@ class _CommandPageState extends State<CommandPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "Battery Status",
+                      AppString.batteryStatus,
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -149,11 +151,11 @@ class _CommandPageState extends State<CommandPage> {
               builder: (context, controller, child) => Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xfffafafa),
+                  color: AppColor.whiteColor,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: const [
                     BoxShadow(
-                      color: Colors.black12,
+                      color: AppColor.black12,
                       spreadRadius: 5,
                       blurRadius: 7,
                     ),
@@ -163,7 +165,7 @@ class _CommandPageState extends State<CommandPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Frequency ",
+                      AppString.frequency,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 22,
@@ -203,11 +205,11 @@ class _CommandPageState extends State<CommandPage> {
                 return Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xfffafafa),
+                    color: AppColor.whiteColor,
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: const [
                       BoxShadow(
-                        color: Colors.black12,
+                        color: AppColor.black12,
                         spreadRadius: 5,
                         blurRadius: 7,
                       ),
@@ -217,9 +219,9 @@ class _CommandPageState extends State<CommandPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Magnitude",
+                        AppString.magnitude,
                         style: TextStyle(
-                            color: Colors.black,
+                            color: AppColor.blackColor,
                             fontSize: 22,
                             letterSpacing: 1),
                       ),
@@ -232,7 +234,7 @@ class _CommandPageState extends State<CommandPage> {
                           max: 4,
                           divisions: 4,
                           label: magValue.toString(),
-                          thumbColor: Colors.purple,
+                          thumbColor: AppColor.purpleColor,
                           onChanged: (value) {
                             HapticFeedback.lightImpact();
                             magValue = value;
@@ -255,11 +257,11 @@ class _CommandPageState extends State<CommandPage> {
                 return Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xfffafafa),
+                    color: AppColor.whiteColor,
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: const [
                       BoxShadow(
-                        color: Colors.black12,
+                        color: AppColor.black12,
                         spreadRadius: 5,
                         blurRadius: 7,
                       ),
@@ -269,9 +271,9 @@ class _CommandPageState extends State<CommandPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Mode",
+                        AppString.mode,
                         style: TextStyle(
-                            color: Colors.black,
+                            color: AppColor.blackColor,
                             fontSize: 22,
                             letterSpacing: 1),
                       ),
@@ -284,7 +286,7 @@ class _CommandPageState extends State<CommandPage> {
                           max: 7,
                           divisions: 8,
                           label: modeValue.toString(),
-                          thumbColor: Colors.purple,
+                          thumbColor: AppColor.purpleColor,
                           onChanged: (value) {
                             HapticFeedback.lightImpact();
                             modeValue = value;
@@ -309,7 +311,7 @@ class _CommandPageState extends State<CommandPage> {
                 return Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      color: Colors.amber,
+                      color: AppColor.amberColor,
                       borderRadius: BorderRadius.circular(15)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -328,7 +330,7 @@ class _CommandPageState extends State<CommandPage> {
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: const CircleBorder(),
-                              backgroundColor: Colors.purple,
+                              backgroundColor: AppColor.purpleColor,
                               padding: const EdgeInsets.all(20),
                               elevation: 6,
                             ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:walk/src/constants/app_assets.dart';
+import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/widgets/textfields.dart';
 
@@ -26,7 +28,7 @@ class _OTPPageState extends State<OTPPage> {
               Positioned(
                 top: -140,
                 left: -140,
-                child: Image.asset("assets/images/dottedbackground.png"),
+                child: Image.asset(AppAssets.backgroundImage),
               ),
               Container(
                 height: Screen.height(context: context),
@@ -41,7 +43,7 @@ class _OTPPageState extends State<OTPPage> {
                         height: Screen.height(context: context) * 0.32,
                       ),
                       const Text(
-                        "OTP Verification",
+                        '${AppString.otpPage}[phoneNumber]',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
@@ -51,7 +53,7 @@ class _OTPPageState extends State<OTPPage> {
                         height: Screen.height(context: context) * 0.05,
                       ),
                       const Text(
-                        "Please enter the OTP\nsent to [phoneNumber]",
+                        AppString.pleaseEnterOtp,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -79,7 +81,7 @@ class _OTPPageState extends State<OTPPage> {
                           ),
                         ),
                         child: const Text(
-                          "VERIFY",
+                          AppString.verifyOtp,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 22,
@@ -95,7 +97,7 @@ class _OTPPageState extends State<OTPPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           const Text(
-                            "OTP not received?",
+                            AppString.otpNotReceived,
                             style: TextStyle(
                                 color: Colors.black45,
                                 fontSize: 18,
@@ -104,7 +106,7 @@ class _OTPPageState extends State<OTPPage> {
                           TextButton(
                             onPressed: () {},
                             child: const Text(
-                              "RESEND",
+                              AppString.resendOtp,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,

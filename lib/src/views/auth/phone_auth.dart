@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:walk/src/constants/app_assets.dart';
+import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
@@ -26,7 +28,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
             Positioned(
               top: -140,
               left: -140,
-              child: Image.asset("assets/images/dottedbackground.png"),
+              child: Image.asset(AppAssets.backgroundImage),
             ),
             Container(
               height: Screen.height(context: context),
@@ -40,7 +42,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                       height: Screen.height(context: context) * 0.45,
                     ),
                     const Text(
-                      "Please enter your phone number\nWe will send you an OTP to verify",
+                      AppString.enterNumber,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
@@ -70,7 +72,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                         ),
                       ),
                       child: const Text(
-                        "SEND OTP",
+                        AppString.sendOtp,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 22,

@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:walk/src/constants/app_assets.dart';
+import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/sharedpreferences.dart';
 import 'package:walk/src/views/homepage.dart';
 
@@ -76,12 +78,12 @@ class _SplashPageState extends State<SplashPage> {
             top: -140,
             left: -140,
             child: Image.asset(
-              "assets/images/dottedbackground.png",
+              AppAssets.backgroundImage,
             ),
           ),
           const Center(
             child: Text(
-              "LT",
+              AppString.org,
               style: TextStyle(
                 fontSize: 80,
                 letterSpacing: 8,
@@ -94,7 +96,7 @@ class _SplashPageState extends State<SplashPage> {
           const Positioned(
             bottom: 80,
             child: Text(
-              "Lifespark Technologies",
+              AppString.orgName,
               style: TextStyle(
                   color: Color(0xff005749),
                   fontSize: 30,

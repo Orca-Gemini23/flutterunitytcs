@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/bluetoothconstants.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/controllers/wificontroller.dart';
-import 'package:walk/src/views/commandpage.dart';
+import 'package:walk/src/views/device/commandpage.dart';
 
 import 'package:walk/src/views/showcase/showcaseview.dart';
-import 'package:walk/src/views/wifipage.dart';
+import 'package:walk/src/views/device/wifipage.dart';
 import 'package:walk/src/widgets/buttons.dart';
 import 'package:walk/src/widgets/loadingdialog.dart';
 

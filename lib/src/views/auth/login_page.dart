@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:walk/src/constants/app_assets.dart';
+import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
@@ -27,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
             Positioned(
               top: -140,
               left: -140,
-              child: Image.asset("assets/images/dottedbackground.png"),
+              child: Image.asset(AppAssets.backgroundImage),
             ),
             Container(
               height: Screen.height(context: context),
@@ -62,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       child: const Text(
-                        "LOG IN",
+                        AppString.logIn,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 22,
@@ -75,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: Screen.height(context: context) * 0.1,
                     ),
                     const Text(
-                      "Forgot Password?",
+                      AppString.forgotPassword,
                       style: TextStyle(
                           color: Colors.black45,
                           fontSize: 18,

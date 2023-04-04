@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:walk/src/constants/constants.dart';
+import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/device/commandpage.dart';
+import 'package:walk/src/views/org_info/about_us.dart';
+import 'package:walk/src/views/org_info/contact_us.dart';
 
 Drawer navigationDrawer(BuildContext context) {
   return Drawer(
@@ -17,7 +21,7 @@ Drawer navigationDrawer(BuildContext context) {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          color: Colors.green,
+          color: AppColor.greenColor,
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
           height: Screen.height(context: context) * 0.25,
           width: double.infinity,
@@ -32,7 +36,7 @@ Drawer navigationDrawer(BuildContext context) {
               Text(
                 "Kira Sardeshpande",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColor.whiteColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -40,14 +44,14 @@ Drawer navigationDrawer(BuildContext context) {
             ],
           ),
         ),
-        drawerItem(),
+        drawerItem(context),
       ],
     ),
   );
 }
 
-Widget drawerItem() {
-  List<IconData> _drawerIcon = [
+Widget drawerItem(BuildContext context) {
+  List<IconData> drawerIcon = [
     Icons.home,
     Icons.person,
     Icons.tune,
@@ -55,7 +59,7 @@ Widget drawerItem() {
     Icons.email,
     Icons.logout_sharp,
   ];
-  List<String> _drawerTileName = [
+  List<String> drawerTileName = [
     'Home',
     'Profile',
     'Device Control',
@@ -63,22 +67,43 @@ Widget drawerItem() {
     'Contact Us',
     'Log Out',
   ];
+  List<Function()?> drawerOnTap = [
+    () {
+      //Home
+    },
+    () {
+      //  Go.to(context: context, push: const Profile());
+    },
+    () {
+      Go.to(context: context, push: const CommandPage());
+    },
+    () {
+      Go.to(context: context, push: const AboutUsPage());
+    },
+    () {
+      Go.to(context: context, push: const ContactUsPage());
+    },
+    () {
+      //LogOut
+    },
+  ];
+
   return ListView.builder(
     shrinkWrap: true,
     itemBuilder: (context, index) {
       return ListTile(
-        leading: Icon(_drawerIcon[index]),
+        leading: Icon(drawerIcon[index]),
         title: Text(
-          _drawerTileName[index],
+          drawerTileName[index],
           style: const TextStyle(
-            color: Colors.black,
+            color: AppColor.blackColor,
             fontSize: 16,
             fontWeight: FontWeight.w300,
           ),
         ),
-        onTap: () {},
+        onTap: drawerOnTap[index],
       );
     },
-    itemCount: _drawerTileName.length,
+    itemCount: drawerTileName.length,
   );
 }

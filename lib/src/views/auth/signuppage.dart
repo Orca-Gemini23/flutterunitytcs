@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/widgets/textfields.dart';
 
 class SignupPage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _SignupPageState extends State<SignupPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
-          "Create Account",
+          AppString.signUpPageTitle,
           style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
@@ -64,7 +65,7 @@ class _SignupPageState extends State<SignupPage> {
               child: Row(
                 children: [
                   const Text(
-                    "Gender",
+                    AppString.gender,
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 18,
@@ -73,7 +74,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   const Spacer(),
                   Radio(
-                    value: "Male",
+                    value: AppString.male,
                     groupValue: _selectedGender,
                     onChanged: (value) {
                       setState(() {});
@@ -81,7 +82,7 @@ class _SignupPageState extends State<SignupPage> {
                     },
                   ),
                   const Text(
-                    "Male",
+                    AppString.male,
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 18,
@@ -89,7 +90,7 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                   Radio(
-                    value: "Female",
+                    value: AppString.female,
                     groupValue: _selectedGender,
                     onChanged: (value) {
                       setState(() {});
@@ -97,7 +98,7 @@ class _SignupPageState extends State<SignupPage> {
                     },
                   ),
                   const Text(
-                    "Female",
+                    AppString.female,
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 18,
@@ -128,7 +129,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               child: const Text(
-                "NEXT",
+                AppString.nextPage,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,

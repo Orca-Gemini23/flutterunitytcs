@@ -1,10 +1,11 @@
 import "package:flutter/material.dart";
 import 'package:provider/provider.dart';
-import 'package:walk/src/constants/constants.dart';
+import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/controllers/wificontroller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/commandpage.dart';
+import 'package:walk/src/views/device/commandpage.dart';
 import 'package:walk/src/constants/bluetoothconstants.dart';
 
 class WifiPage extends StatefulWidget {
@@ -22,8 +23,8 @@ class _WifiPageState extends State<WifiPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Enter Wifi Details"),
-        backgroundColor: Color(APPBARCOLOR),
+        title: const Text(AppString.wifiPageTitle),
+        backgroundColor: AppColor.appBarColor,
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -33,16 +34,16 @@ class _WifiPageState extends State<WifiPage> {
           TextField(
             controller: ssidController,
             decoration: const InputDecoration(
-              labelText: "Wifi Id",
+              labelText: AppString.wifiId,
               labelStyle: TextStyle(
-                  color: Colors.green,
+                  color: AppColor.greenColor,
                   fontSize: 18,
                   fontWeight: FontWeight.w600),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.green),
+                borderSide: BorderSide(color: AppColor.greenColor),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.green),
+                borderSide: BorderSide(color: AppColor.greenColor),
               ),
             ),
           ),
@@ -56,16 +57,16 @@ class _WifiPageState extends State<WifiPage> {
           TextField(
             controller: passwdController,
             decoration: const InputDecoration(
-              labelText: "Password",
+              labelText: AppString.wifiPassword,
               labelStyle: TextStyle(
-                  color: Colors.green,
+                  color: AppColor.greenColor,
                   fontSize: 18,
                   fontWeight: FontWeight.w600),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.green),
+                borderSide: BorderSide(color: AppColor.greenColor),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.green),
+                borderSide: BorderSide(color: AppColor.greenColor),
               ),
             ),
           ),
@@ -96,8 +97,8 @@ class _WifiPageState extends State<WifiPage> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
-                  shadowColor: Colors.black,
+                  backgroundColor: AppColor.purpleColor,
+                  shadowColor: AppColor.blackColor,
                   elevation: 10),
               child: const Text("Submit / Connect "),
             );
