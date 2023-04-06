@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/signuppage.dart';
 import 'package:walk/src/widgets/textfields.dart';
 
 class OTPPage extends StatefulWidget {
@@ -69,6 +71,7 @@ class _OTPPageState extends State<OTPPage> {
                       ElevatedButton(
                         onPressed: () {
                           //add checks and submit details
+                          Go.to(context: context, push: SignupPage());
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(

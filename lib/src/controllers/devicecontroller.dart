@@ -8,28 +8,47 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:location/location.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bluetoothconstants.dart';
 
 ///Controls the bluetooth device information and manages connection and data flow between the device and application.;
 class DeviceController extends ChangeNotifier {
+  /// stores scanned devices
   List<BluetoothDevice> _scannedDevices = [];
+
+  /// stores connected devices
   List<BluetoothDevice> _connectedDevices = [];
+
+  /// stores characterisitcs of devices
   List<BluetoothCharacteristic> _characteristics = [];
+
+  /// stores services of devices
   List<BluetoothService> _services = [];
 
+  /// checks whether wifi credentials are saved on or not
   bool _wifiProvisioned = false;
+
+  /// getting scanned devices
   List<BluetoothDevice> get getScannedDevices => _scannedDevices;
+
+  /// getting connected devices
   List<BluetoothDevice> get getConnectedDevices => _connectedDevices;
+
+  ///
   Set<String> _info = {};
+
+  /// stores remaining battery value
   int _batteryRemaining = 000;
 
+  /// Stores value for remaining battery
   int get batteryRemaining => _batteryRemaining;
 
   ///outputs the set<String> which contains the information obtained from the device after sending the "info" command to the device;
   Set<String> get info => _info;
 
+  /// Names for buttons in device controller page
   List<String> buttonNames = ['SOS', 'RES', 'RSTF', 'RPRV'];
 
   void clearInfo() {
@@ -38,18 +57,39 @@ class DeviceController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Getting wifi provision status
   bool get wifiProvisionStatus => _wifiProvisioned;
+
+  /// Status of battery
   bool _batteryInfoStatus = false;
+
+  ///  Gwtting status of battery
   bool get batteryInfoStatus => _batteryInfoStatus;
+
+  /// Stores server[L] battery value
   String _batteryS = "0.01";
+
+  /// Stores client[R] battery value
   String _batteryC = "0.01";
+
+  /// Stores client[R] remaining battery value
   String _rbattC = "0000";
+
+  /// Stores server[L] remaining battery value
   String _rbattS = "0000";
 
+  ///getting the context for dialog box
+  BuildContext? homeContext;
+
+  ///Intialising Location library
+  Location location = Location();
+
+  /// Battery value for client[R]
   double get battC {
     return double.parse(_batteryC) * 100;
   }
 
+  /// Battery value for server[L]
   double get battS {
     return double.parse(_batteryS) * 100;
   }
@@ -64,7 +104,9 @@ class DeviceController extends ChangeNotifier {
 
   ///Handles the bluetooth and location permission for both devices, below and above android version 12;
   Future askForPermission() async {
-    if (await Permission.location.isDenied) {
+    final ble = FlutterBlue.instance; // initializes the flutter blue package
+    if (await Permission.location.isDenied ||
+        await Permission.bluetooth.isDenied) {
       await Permission.location.request();
       await Permission.bluetooth.request();
       await Permission.nearbyWifiDevices.request();
@@ -72,16 +114,28 @@ class DeviceController extends ChangeNotifier {
       await Permission.bluetoothConnect.request();
       await Permission.bluetoothScan.request();
       log("asking for permission complete");
+      if (await Permission.bluetooth.isGranted &&
+          await Permission.location.isGranted &&
+          homeContext != null) {
+        turnBluetoothOn(homeContext!);
+
+        await location
+            .serviceEnabled(); // check whether the service is enabled or not
+      }
+    } else if (!await ble.isOn ||
+        !await location.serviceEnabled() && homeContext != null) {
+      await location.requestService(); // request to on location service
+      await BluetoothEnable.enableBluetooth; // enables bluetooth
     }
   }
 
-  /// Turning on Bluetooth fro within the app
+  /// Turning on Bluetooth from within the app
   Future<void> turnBluetoothOn(BuildContext context) async {
     try {
-      String dialogTitle = "Hey! Please give me permission to use Bluetooth!";
+      String dialogTitle = "Turn on Bluetooth and location?";
       bool displayDialogContent = true;
       String dialogContent =
-          "This app requires Bluetooth to connect to device.";
+          "This app requires Bluetooth and Location turned on to connect to a device.";
       String cancelBtnText = "Nope";
       String acceptBtnText = "Sure";
       double dialogRadius = 10.0;
@@ -107,7 +161,6 @@ class DeviceController extends ChangeNotifier {
 
   /// Used to scan the devices and add the scanned devices to the scannedDevices list;
   void startDiscovery() async {
-    ///TODO:Check whether bluetooth is turned on or not
     try {
       await askForPermission();
       _scannedDevices.clear();

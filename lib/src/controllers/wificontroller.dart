@@ -19,17 +19,18 @@ class WifiController extends ChangeNotifier {
 
   Future connectToWifi(String ssid, String password) async {
     try {
-      bool result =
-          await WiFiForIoTPlugin.findAndConnect(ssid, password: password);
+      // bool result =
+      //     await WiFiForIoTPlugin.findAndConnect(ssid, password: password);
 
-      if (result) {
-        changeWifiVerificationStatus(true);
-        return true;
-      } else {
-        Fluttertoast.showToast(
-            msg: "Cannot connect to the wifi . Please try again ");
-        return false;
-      }
+      // if (result) {
+
+      //   changeWifiVerificationStatus(true);
+      //   return true;
+      // } else {
+      //   Fluttertoast.showToast(
+      //       msg: "Cannot connect to the wifi . Please try again ");
+      //   return false;
+      // }
     } catch (e) {
       log("Error in connecting to wifi ${e.toString()}");
       Fluttertoast.showToast(

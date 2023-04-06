@@ -31,6 +31,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      //Stream it
       itemCount: widget.controller.getScannedDevices.length,
       itemBuilder: (context, index) {
         return index == 0
@@ -40,6 +41,8 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
     );
   }
 
+//serviceUuids: [0000acf0-0000-1000-8000-00805f9b34fb]}
+//uuid: 0000abf1-0000-1000-8000-00805f9b34f
   ///This widget is only used for showcase. And it is going to be the first tile to appear on the scanned devices page.
   Widget showCaseItem(GlobalKey key1, GlobalKey key2) {
     return Consumer2<DeviceController, WifiController>(

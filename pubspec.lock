@@ -254,6 +254,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  location:
+    dependency: "direct main"
+    description:
+      name: location
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.4.0"
+  location_platform_interface:
+    dependency: transitive
+    description:
+      name: location_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.0"
+  location_web:
+    dependency: transitive
+    description:
+      name: location_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.1"
   matcher:
     dependency: transitive
     description:
@@ -630,6 +651,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.18"
+  wifi_scan:
+    dependency: "direct main"
+    description:
+      name: wifi_scan
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0+1"
   win32:
     dependency: transitive
     description:

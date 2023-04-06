@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/device/commandpage.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
+import 'package:walk/src/views/user/user_profile.dart';
 
 Drawer navigationDrawer(BuildContext context) {
   return Drawer(
@@ -72,10 +76,16 @@ Widget drawerItem(BuildContext context) {
       //Home
     },
     () {
-      //  Go.to(context: context, push: const Profile());
+      Go.to(context: context, push: const ProfilePage());
     },
     () {
-      Go.to(context: context, push: const CommandPage());
+      if (Provider.of<DeviceController>(context, listen: false)
+          .getConnectedDevices
+          .isEmpty) {
+        Fluttertoast.showToast(msg: 'No devices connected!');
+      } else {
+        Go.to(context: context, push: const CommandPage());
+      }
     },
     () {
       Go.to(context: context, push: const AboutUsPage());

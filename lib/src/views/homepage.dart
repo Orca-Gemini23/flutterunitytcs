@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/org_info/contact_us.dart';
+import 'package:walk/src/views/auth/login_page.dart';
+import 'package:walk/src/widgets/loadingdialog.dart';
 import 'package:walk/src/widgets/navigationdrawer.dart';
 import '../widgets/scanneditemtile.dart';
 
@@ -77,6 +78,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
               );
       },
     );
+    context.read<DeviceController>().homeContext = context;
   }
 
   @override
@@ -109,175 +111,173 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: navigationDrawer(context),
-      appBar: AppBar(
-        title: const Text(
-          AppString.homeTitle,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<DeviceController>().startDiscovery();
+      },
+      child: Scaffold(
+        drawer: navigationDrawer(context),
+        appBar: AppBar(
+          title: const Text(
+            AppString.homeTitle,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
+          backgroundColor: AppColor.appBarColor,
         ),
-        backgroundColor: AppColor.appBarColor,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () async {
-              context.read<DeviceController>().turnBluetoothOn(context);
+        body: Container(
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            color: AppColor.bgColor,
+          ),
+          child: Consumer<DeviceController>(
+            builder: (context, controller, child) {
+              return ScannedDevicesList(
+                controller: controller,
+                gkey1: globalKey1,
+                gkey2: globalKey2,
+              );
             },
-            icon: const Icon(Icons.bluetooth),
           ),
-        ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          color: AppColor.bgColor,
         ),
-        child: Consumer<DeviceController>(
-          builder: (context, controller, child) {
-            return ScannedDevicesList(
-              controller: controller,
-              gkey1: globalKey1,
-              gkey2: globalKey2,
-            );
-          },
-        ),
+        floatingActionButton:
+
+            ///TODO:Add refresh button
+            Consumer<DeviceController>(
+                builder: (context, controller, snapshot) {
+          return FloatingActionButton(
+            onPressed: () async {
+              // print("LEngth is " + controller.info.length.toString());
+              // controller.info.forEach((element) {
+              //   print(element);
+              // });
+              // loadingDialog(context);
+
+              // showDialog(
+              //   context: (context),
+              //   builder: (context) {
+              //     return Dialog(
+              //       shape: const RoundedRectangleBorder(
+              //           side: BorderSide.none,
+              //           borderRadius: BorderRadius.all(Radius.circular(20))),
+              //       child: Container(
+              //         decoration: BoxDecoration(
+              //             color: AppColor.greenDarkColor,
+              //             borderRadius: BorderRadius.circular(20)),
+              //         height: 400,
+              //         child: PageView(
+              //           controller: pageController,
+              //           physics: const BouncingScrollPhysics(),
+              //           scrollDirection: Axis.horizontal,
+              //           pageSnapping: true,
+              //           padEnds: true,
+              //           onPageChanged: (value) {
+              //             pageController.initialPage == 4
+              //                 ? pageController.dispose()
+              //                 : null;
+              //           },
+              //           children: [
+              //             Container(
+              //               padding: const EdgeInsets.all(8),
+              //               width: double.maxFinite,
+              //               decoration: BoxDecoration(
+              //                   borderRadius: BorderRadius.circular(20)),
+              //               child: Stack(children: [
+              //                 const Positioned(
+              //                     child: Text(
+              //                   AppString.takeOutBands,
+              //                   style: TextStyle(
+              //                     color: AppColor.whiteColor,
+              //                     fontSize: 20,
+              //                   ),
+              //                 )),
+              //                 Center(
+              //                   child: Image.asset(
+              //                     AppAssets.productImage,
+              //                     fit: BoxFit.fill,
+              //                   ),
+              //                 ),
+              //               ]),
+              //             ),
+              //             Container(
+              //               padding: const EdgeInsets.all(8),
+              //               width: double.maxFinite,
+              //               decoration: BoxDecoration(
+              //                   borderRadius: BorderRadius.circular(20)),
+              //               child: Stack(
+              //                 children: [
+              //                   const Positioned(
+              //                     child: Text(
+              //                       AppString.turnOnSwitch,
+              //                       style: TextStyle(
+              //                         color: AppColor.whiteColor,
+              //                         fontSize: 20,
+              //                       ),
+              //                     ),
+              //                   ),
+              //                   // Center(
+              //                   //   child: Image.asset(
+              //                   //     AppAssets.buttonAnimation,
+              //                   //     fit: BoxFit.fill,
+              //                   //   ),
+              //                   // ),
+              //                 ],
+              //               ),
+              //             ),
+              //             Container(
+              //               width: double.maxFinite,
+              //               color: Colors.blue,
+              //               child: const Center(
+              //                 child: Text("helkloooo"),
+              //               ),
+              //             ),
+              //             Container(
+              //               padding: const EdgeInsets.all(8),
+              //               width: double.maxFinite,
+              //               decoration: BoxDecoration(
+              //                   borderRadius: BorderRadius.circular(20)),
+              //               child: Stack(children: [
+              //                 const Positioned(
+              //                   child: Text(
+              //                     "Please take out the bands from the box , and put them on a table.",
+              //                     style: TextStyle(
+              //                       color: Colors.white,
+              //                       fontSize: 20,
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 Center(
+              //                   child: Image.asset(
+              //                     "assets/images/product.png",
+              //                     fit: BoxFit.fill,
+              //                   ),
+              //                 ),
+              //                 Align(
+              //                   alignment: Alignment.bottomRight,
+              //                   child: ElevatedButton(
+              //                     child: const Text("Close"),
+              //                     onPressed: () {
+              //                       Navigator.of(context, rootNavigator: true)
+              //                           .pop();
+              //                     },
+              //                   ),
+              //                 )
+              //               ]),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     );
+              //   },
+              // );
+            },
+          );
+        }),
       ),
-      floatingActionButton:
-
-          ///TODO:Add refresh button
-          Consumer<DeviceController>(builder: (context, controller, snapshot) {
-        return FloatingActionButton(
-          onPressed: () async {
-            Go.to(context: context, push: ContactUsPage());
-            // print("LEngth is " + controller.info.length.toString());
-            // controller.info.forEach((element) {
-            //   print(element);
-            // });
-            // loadingDialog(context);
-
-            // showDialog(
-            //   context: (context),
-            //   builder: (context) {
-            //     return Dialog(
-            //       shape: const RoundedRectangleBorder(
-            //           side: BorderSide.none,
-            //           borderRadius: BorderRadius.all(Radius.circular(20))),
-            //       child: Container(
-            //         decoration: BoxDecoration(
-            //             color:AppColor.greenDarkColor,
-            //             borderRadius: BorderRadius.circular(20)),
-            //         height: 400,
-            //         child: PageView(
-            //           controller: pageController,
-            //           physics: BouncingScrollPhysics(),
-            //           scrollDirection: Axis.horizontal,
-            //           pageSnapping: true,
-            //           padEnds: true,
-            //           onPageChanged: (value) {
-            //             pageController.initialPage == 4
-            //                 ? pageController.dispose()
-            //                 : null;
-            //           },
-            //           children: [
-            //             Container(
-            //               padding: const EdgeInsets.all(8),
-            //               width: double.maxFinite,
-            //               decoration: BoxDecoration(
-            //                   borderRadius: BorderRadius.circular(20)),
-            //               child: Stack(children: [
-            //                 const Positioned(
-            //                     child: Text(
-            //                   AppString.takeOutBands,
-            //                   style: TextStyle(
-            //                     color: AppColor.whiteColor,
-            //                     fontSize: 20,
-            //                   ),
-            //                 )),
-            //                 Center(
-            //                   child: Image.asset(
-            //                    AppAssets.productImage,
-            //                     fit: BoxFit.fill,
-            //                   ),
-            //                 ),
-            //               ]),
-            //             ),
-            //             Container(
-            //               padding: const EdgeInsets.all(8),
-            //               width: double.maxFinite,
-            //               decoration: BoxDecoration(
-            //                   borderRadius: BorderRadius.circular(20)),
-            //               child: Stack(
-            //                 children: [
-            //                   const Positioned(
-            //                       child: Text(
-            //                     AppString.turnOnSwitch,
-            //                     style: TextStyle(
-            //                       color: AppColor.whiteColor,
-            //                       fontSize: 20,
-            //                     ),
-            //                   )),
-            //                   Center(
-            //                     child: Image.asset(
-            //                      AppAssets.buttonAnimation,
-            //                       fit: BoxFit.fill,
-            //                     ),
-            //                   ),
-            //                 ],
-            //               ),
-            //             ),
-            //             Container(
-            //               width: double.maxFinite,
-            //               color: Colors.blue,
-            //               child: const Center(
-            //                 child: Text("helkloooo"),
-            //               ),
-            //             ),
-            //             Container(
-            //               padding: const EdgeInsets.all(8),
-            //               width: double.maxFinite,
-            //               decoration: BoxDecoration(
-            //                   borderRadius: BorderRadius.circular(20)),
-            //               child: Stack(children: [
-            //                 const Positioned(
-            //                   child: Text(
-            //                     "Please take out the bands from the box , and put them on a table.",
-            //                     style: TextStyle(
-            //                       color: Colors.white,
-            //                       fontSize: 20,
-            //                     ),
-            //                   ),
-            //                 ),
-            //                 Center(
-            //                   child: Image.asset(
-            //                     "assets/images/product.png",
-            //                     fit: BoxFit.fill,
-            //                   ),
-            //                 ),
-            //                 Align(
-            //                   alignment: Alignment.bottomRight,
-            //                   child: ElevatedButton(
-            //                     child: Text("Close"),
-            //                     onPressed: () {
-            //                       Navigator.of(context, rootNavigator: true)
-            //                           .pop();
-            //                     },
-            //                   ),
-            //                 )
-            //               ]),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     );
-            // },
-            // );
-          },
-        );
-      }),
     );
   }
 }
