@@ -10,6 +10,7 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/auth/login_page.dart';
+import 'package:walk/src/views/device/wifipage.dart';
 import 'package:walk/src/widgets/loadingdialog.dart';
 import 'package:walk/src/widgets/navigationdrawer.dart';
 import '../widgets/scanneditemtile.dart';
@@ -151,6 +152,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
                 builder: (context, controller, snapshot) {
           return FloatingActionButton(
             onPressed: () async {
+              Go.to(context: context, push: WifiPage());
               // print("LEngth is " + controller.info.length.toString());
               // controller.info.forEach((element) {
               //   print(element);
