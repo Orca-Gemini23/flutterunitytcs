@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/controllers/auth_controller.dart';
 import 'package:walk/src/widgets/textfields.dart';
 
 class SignupPage extends StatefulWidget {
@@ -114,30 +118,49 @@ class _SignupPageState extends State<SignupPage> {
             getTextfield(
                 "Confirm Password", _confirmpasswordController, Icons.lock),
             const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                //add checks and submit details
-              },
-              style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                minimumSize: const Size(180, 50),
-                backgroundColor: const Color(0xff005749),
-                elevation: 7,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22),
+            Consumer<AuthController>(builder: (context, controller, widget) {
+              return ElevatedButton(
+                onPressed: () {
+                  // print(_firstnameController.text);
+                  // print(_lastnameController.text);
+                  // print(_emailController.text);
+                  // print(_selectedGender[0]);
+                  // print(_cityController.text);
+                  // print(_passwordController.text);
+
+                  // await controller.registerUser(
+                  //   _firstnameController.text,
+                  //   _lastnameController.text,
+                  //   _emailController.text,
+                  //   _phoneController.text,
+                  //   _cityController.text,
+                  //   _selectedGender[0],
+                  //   _passwordController.text,
+                  // );
+
+                  //add checks and submit details
+                },
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                  minimumSize: const Size(180, 50),
+                  backgroundColor: const Color(0xff005749),
+                  elevation: 7,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(22),
+                  ),
                 ),
-              ),
-              child: const Text(
-                AppString.nextPage,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
+                child: const Text(
+                  AppString.nextPage,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ],
         ),
       ),

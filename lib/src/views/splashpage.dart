@@ -6,6 +6,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/sharedpreferences.dart';
+import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/homepage.dart';
 
 class SplashPage extends StatefulWidget {
@@ -29,7 +30,7 @@ class _SplashPageState extends State<SplashPage> {
       transitionDuration: const Duration(milliseconds: 800),
       pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
         builder: Builder(
-          builder: (context) => Homepage(isShowCaseDone: showCaseDone),
+          builder: (context) => Homepage(isShowCaseDone: _isShowCasedone),
         ),
       ),
       transitionsBuilder: ((context, animation, secondaryAnimation, child) {
