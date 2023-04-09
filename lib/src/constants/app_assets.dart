@@ -7,4 +7,5 @@ class AppAssets {
   static const googleIcon = "assets/images/googleicon.png";
   static const productImage = "assets/images/product.png";
   static const buttonAnimation = "assets/images/buttonanimation.gif";
+  static const lifesparklogo = "assets/images/group43.png";
 }

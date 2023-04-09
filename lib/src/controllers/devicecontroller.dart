@@ -344,9 +344,10 @@ class DeviceController extends ChangeNotifier {
 
   ///Updates wifi provisioned status (The ble device tells us whether it has user's wifi SSID and Password , if it has then wifi is provisioned else it is not );
   void updateWifiVerificationStatus() {
-    if (_info.contains("provisioned s 1;") &&
-        _info.contains("provisioned c 1;")) {
+    if (_info.contains("provisioned s 1") &&
+        _info.contains("provisioned c 1")) {
       _wifiProvisioned = true;
+      print(_wifiProvisioned.toString() + "tetsing wifi");
       notifyListeners();
     } else {
       _wifiProvisioned = false;

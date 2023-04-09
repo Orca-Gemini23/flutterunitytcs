@@ -41,4 +41,5 @@ class AppString {
   static const aboutUsTitle = "About Us";
   static const yours = "Thoughtfully Yours";
   static const companyDetails = "Company details";
+  static const hereToHelp = "We are here to help :)";
 }
