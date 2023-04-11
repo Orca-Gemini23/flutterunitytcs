@@ -32,6 +32,9 @@ class WifiController extends ChangeNotifier {
   /// Text editing controller for Wifi password
   final TextEditingController passwdController = TextEditingController();
 
+  ///show Loader when connecting to wifi
+  bool wifiConnectionLoader = false;
+
   bool get wifiVerificationStatus => _isWifiVerified;
   void changeWifiVerificationStatus(bool status) {
     _isWifiVerified = status;
@@ -59,25 +62,30 @@ class WifiController extends ChangeNotifier {
     }
   }
 
-  Future connectToWifi(String ssid, String password) async {
+  Future<bool> connectToWifi(String ssid, String password) async {
     try {
-      // bool result =
-      //     await WiFiForIoTPlugin.findAndConnect(ssid, password: password);
+      wifiConnectionLoader = true;
+      bool result =
+          await WiFiForIoTPlugin.findAndConnect(ssid, password: password);
 
-      // if (result) {
-
-      //   changeWifiVerificationStatus(true);
-      //   return true;
-      // } else {
-      //   Fluttertoast.showToast(
-      //       msg: "Cannot connect to the wifi . Please try again ");
-      //   return false;
-      // }
+      if (result) {
+        changeWifiVerificationStatus(true);
+        return true;
+      } else {
+        wifiConnectionLoader = false;
+        Fluttertoast.showToast(
+            msg: "Cannot connect to the wifi . Please try again ");
+        return false;
+      }
     } catch (e) {
+      wifiConnectionLoader = false;
       log("Error in connecting to wifi ${e.toString()}");
       Fluttertoast.showToast(
           msg: "Error in connecting to wifi ${e.toString()}");
       return false;
+    } finally {
+      wifiConnectionLoader = false;
+      notifyListeners();
     }
   }
 
@@ -105,18 +113,24 @@ class WifiController extends ChangeNotifier {
   /// Dialog Box for wifi credentials
   Future<bool> wifiCredDialog(String ssid, BuildContext context) async {
     try {
+      String errorMsg = '';
       AwesomeDialog(
         context: context,
         dialogType: DialogType.noHeader,
         btnOk: ElevatedButton(
-          onPressed: () {
-            _isWifiVerified = true;
-            Go.back(context: context);
+          onPressed: () async {
+            var connected = await connectToWifi(ssid, passwdController.text);
+            if (connected) {
+              _isWifiVerified = connected;
+              Go.back(context: context);
+            } else {
+              errorMsg = 'Incorrect password!';
+            }
           },
           child: const Text('Ok'),
         ),
         btnCancel: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             _isWifiVerified = false;
             Go.back(context: context);
           },
@@ -124,13 +138,27 @@ class WifiController extends ChangeNotifier {
         ),
         body: Column(
           children: [
-            Text(
-              'Connect to $ssid',
-              style: const TextStyle(
-                  fontSize: 18,
-                  color: AppColor.blackColor,
-                  fontWeight: FontWeight.w600),
-            ),
+            errorMsg.isNotEmpty
+                ? Container(
+                    margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                    child: Text(
+                      errorMsg,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: AppColor.errorColor,
+                      ),
+                    ),
+                  )
+                : const Center(),
+            wifiConnectionLoader
+                ? const CircularProgressIndicator()
+                : Text(
+                    'Connect to $ssid',
+                    style: const TextStyle(
+                        fontSize: 18,
+                        color: AppColor.blackColor,
+                        fontWeight: FontWeight.w600),
+                  ),
             const SizedBox(
               height: 5,
             ),
@@ -160,7 +188,9 @@ class WifiController extends ChangeNotifier {
     } catch (e) {
       log('Wifi Credential Dialog box error: $e');
       return false;
-    } finally {}
+    } finally {
+      notifyListeners();
+    }
   }
 
   @override
