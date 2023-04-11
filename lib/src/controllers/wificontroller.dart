@@ -9,6 +9,7 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/device/commandpage.dart';
 import 'package:walk/src/views/homepage.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
@@ -32,6 +33,13 @@ class WifiController extends ChangeNotifier {
   /// Text editing controller for Wifi password
   final TextEditingController passwdController = TextEditingController();
 
+  ///show Loader when connecting to wifi
+  bool wifiConnectionLoader = false;
+
+  /// show Loader when scanning for wifi
+  bool wifiScanLoader = false;
+
+  /// Wifi credentials are verified and sent to device
   bool get wifiVerificationStatus => _isWifiVerified;
   void changeWifiVerificationStatus(bool status) {
     _isWifiVerified = status;
@@ -59,38 +67,49 @@ class WifiController extends ChangeNotifier {
     }
   }
 
-  Future connectToWifi(String ssid, String password) async {
+  Future<bool> connectToWifi(
+      String ssid, String password, BuildContext context) async {
     try {
-      // bool result =
-      //     await WiFiForIoTPlugin.findAndConnect(ssid, password: password);
+      wifiConnectionLoader = true;
+      bool result =
+          await WiFiForIoTPlugin.findAndConnect(ssid, password: password);
 
-      // if (result) {
+      if (result) {
+        changeWifiVerificationStatus(true);
 
-      //   changeWifiVerificationStatus(true);
-      //   return true;
-      // } else {
-      //   Fluttertoast.showToast(
-      //       msg: "Cannot connect to the wifi . Please try again ");
-      //   return false;
-      // }
+        return true;
+      } else {
+        wifiConnectionLoader = false;
+        Fluttertoast.showToast(
+            msg: "Cannot connect to the wifi . Please try again ");
+        return false;
+      }
     } catch (e) {
+      wifiConnectionLoader = false;
       log("Error in connecting to wifi ${e.toString()}");
       Fluttertoast.showToast(
           msg: "Error in connecting to wifi ${e.toString()}");
       return false;
+    } finally {
+      wifiConnectionLoader = false;
+      notifyListeners();
     }
   }
 
   /// TO scan nearby wifi connections
   Future<void> wifiScanner() async {
     try {
-      scannedResult.clear();
+      wifiScanLoader = true;
+      // scannedResult.clear();
       var canStartScan = await wifiScan.canStartScan(askPermissions: true);
       if (canStartScan == CanStartScan.yes) {
         var scanTriggered = await wifiScan.startScan();
         if (scanTriggered) {
           var wifiAccessPoints = await wifiScan.getScannedResults();
           scannedResult = wifiAccessPoints;
+          for (var element in scannedResult) {
+            debugPrint(element.ssid);
+          }
         }
       }
     } catch (e) {
@@ -98,6 +117,7 @@ class WifiController extends ChangeNotifier {
       Fluttertoast.showToast(
           msg: "Error in scanning nearby to wifi ${e.toString()}");
     } finally {
+      wifiScanLoader = false;
       notifyListeners();
     }
   }
@@ -105,18 +125,25 @@ class WifiController extends ChangeNotifier {
   /// Dialog Box for wifi credentials
   Future<bool> wifiCredDialog(String ssid, BuildContext context) async {
     try {
+      String errorMsg = '';
       AwesomeDialog(
         context: context,
         dialogType: DialogType.noHeader,
         btnOk: ElevatedButton(
-          onPressed: () {
-            _isWifiVerified = true;
-            Go.back(context: context);
+          onPressed: () async {
+            var connected =
+                await connectToWifi(ssid, passwdController.text, context);
+            if (connected) {
+              _isWifiVerified = connected;
+              Go.back(context: context);
+            } else {
+              errorMsg = 'Incorrect password!';
+            }
           },
           child: const Text('Ok'),
         ),
         btnCancel: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             _isWifiVerified = false;
             Go.back(context: context);
           },
@@ -124,13 +151,27 @@ class WifiController extends ChangeNotifier {
         ),
         body: Column(
           children: [
-            Text(
-              'Connect to $ssid',
-              style: const TextStyle(
-                  fontSize: 18,
-                  color: AppColor.blackColor,
-                  fontWeight: FontWeight.w600),
-            ),
+            errorMsg.isNotEmpty
+                ? Container(
+                    margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                    child: Text(
+                      errorMsg,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: AppColor.errorColor,
+                      ),
+                    ),
+                  )
+                : const Center(),
+            wifiConnectionLoader
+                ? const CircularProgressIndicator()
+                : Text(
+                    'Connect to $ssid',
+                    style: const TextStyle(
+                        fontSize: 18,
+                        color: AppColor.blackColor,
+                        fontWeight: FontWeight.w600),
+                  ),
             const SizedBox(
               height: 5,
             ),
@@ -160,7 +201,9 @@ class WifiController extends ChangeNotifier {
     } catch (e) {
       log('Wifi Credential Dialog box error: $e');
       return false;
-    } finally {}
+    } finally {
+      notifyListeners();
+    }
   }
 
   @override

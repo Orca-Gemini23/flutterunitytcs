@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:walk/src/constants/app_strings.dart';
@@ -53,15 +54,50 @@ class _CommandPageState extends State<CommandPage> {
             builder: (context, deviceController, wifiController, child) {
               return IconButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) {
-                  //       return const WifiPage();
-                  //     },
-                  //   ),
-                  // );
-                  Go.to(context: context, push: const WifiPage());
+                  if (wifiController.wifiVerificationStatus) {
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.success,
+                      btnOk: ElevatedButton(
+                        onPressed: () async {
+                          Go.to(context: context, push: const WifiPage());
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColor.errorColor, elevation: 0),
+                        child: const Text('Yes'),
+                      ),
+                      btnCancel: ElevatedButton(
+                        onPressed: () {
+                          Go.back(context: context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColor.greenColor, elevation: 0),
+                        child: const Text('No'),
+                      ),
+                      body: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const <Widget>[
+                          Text(
+                            AppString.wifiVerified,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: AppColor.blackColor,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            AppString.wifiChange,
+                            style: TextStyle(
+                                color: AppColor.errorColor,
+                                fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ).show();
+                  } else {
+                    Go.to(context: context, push: const WifiPage());
+                  }
                 },
                 icon: (wifiController.wifiVerificationStatus ||
 

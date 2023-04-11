@@ -42,4 +42,7 @@ class AppString {
   static const yours = "Thoughtfully Yours";
   static const companyDetails = "Company details";
   static const hereToHelp = "We are here to help :)";
+  static const wifiVerified = "Wifi already connected and verified!";
+  static const wifiChange =
+      "Still do you want to connect the device to different Wifi?";
 }
