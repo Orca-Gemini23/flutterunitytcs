@@ -356,29 +356,14 @@ class DeviceController extends ChangeNotifier {
           _characteristicMap[BATTERY_CLIENT];
       BluetoothCharacteristic? serverTarget =
           _characteristicMap[BATTERY_SERVER];
-      await serverTarget!.setNotifyValue(true);
 
-      serverTarget.value.listen((event) {
-        log(
-          "Battery Values for server are ${String.fromCharCodes(event)}",
-        );
-      });
-
-      await clientTarget!.setNotifyValue(true);
-      clientTarget.value.listen((event) {
-        log(
-          "Battery Values for client are ${String.fromCharCodes(event)}",
-        );
-      });
-
-      // Future.delayed(Duration(milliseconds: 400), () async {
-      //   await clientTarget!.setNotifyValue(true);
-      //   clientTarget.value.listen((event) {
-      //     log("Battery Values for client are ${String.fromCharCodes(event)} ");
-      //   });
-      // });
-
-      //log("Battery Values are " + battery);
+      var clientResponse = await clientTarget!.read();
+      var serverResponse = await serverTarget!.read();
+      _batteryC = String.fromCharCodes(clientResponse);
+      _batteryS = String.fromCharCodes(serverResponse);
+      notifyListeners();
+      log("Client battery values are ${String.fromCharCodes(clientResponse)}");
+      log("Server battery values are ${String.fromCharCodes(serverResponse)}");
     } catch (e) {
       log("Something went wrong while getting batteryValues.");
     }
@@ -391,15 +376,17 @@ class DeviceController extends ChangeNotifier {
           _characteristicMap[PROVISIONED_CLIENT];
       BluetoothCharacteristic? serverTarget =
           _characteristicMap[PROVISIONED_SERVER];
-      await clientTarget!.setNotifyValue(true);
-      await serverTarget!.setNotifyValue(true);
 
-      clientTarget.value.listen((event) {
-        log("Wifi Provisioned Status for client is ${String.fromCharCodes(event)}");
-      });
-      clientTarget.value.listen((event) {
-        log("Wifi Provisioned Status for server is ${String.fromCharCodes(event)}");
-      });
+      var clientResponse = await clientTarget!.read();
+      var serverResponse = await serverTarget!.read();
+      if (String.fromCharCodes(clientResponse) == "1" &&
+          String.fromCharCodes(serverResponse) == "1") {
+        _wifiProvisioned = true;
+        notifyListeners();
+      }
+
+      log("Client provisioned status is ${String.fromCharCodes(clientResponse)}");
+      log("Server provisioned status is ${String.fromCharCodes(serverResponse)}");
     } catch (e) {
       log("Something went wrong while getting wifi provisioned status");
     }
