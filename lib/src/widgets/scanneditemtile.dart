@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:walk/src/constants/bluetoothconstants.dart';
+
 import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/controllers/wificontroller.dart';
 import 'package:walk/src/views/device/commandpage.dart';
@@ -10,7 +12,6 @@ import 'package:walk/src/views/device/commandpage.dart';
 import 'package:walk/src/views/showcase/showcaseview.dart';
 import 'package:walk/src/views/device/wifipage.dart';
 import 'package:walk/src/widgets/buttons.dart';
-import 'package:walk/src/widgets/loadingdialog.dart';
 
 class ScannedDevicesList extends StatefulWidget {
   ///Represents the devices that have been scanned
@@ -49,12 +50,14 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
       builder: (context, deviceController, wifiController, child) {
         return InkWell(
           onTap: () async {
-            loadingDialog(
-              context,
-            );
-            await deviceController.notifyRead(WRITECHARACTERISTICS, context);
-            Navigator.of(context, rootNavigator: true).pop();
-            deviceController.wifiProvisionStatus
+            var wifiStatus = await deviceController.getProvisionedStatus();
+            log(deviceController.wifiProvisionStatus.toString());
+
+            Future.delayed(const Duration(milliseconds: 400), () async {
+              await deviceController.getBatteryVoltageValues();
+            });
+
+            wifiStatus
                 ? Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -139,14 +142,12 @@ Widget scannedItem(
     builder: (context, controller, wifiController, child) {
       return InkWell(
         onTap: () async {
-          ///check if the _info is already filled if it is then directly proceed else notify
-          ///but if _info has to update then what but its older details is already filled ???
-          loadingDialog(
-            context,
-          );
-          await controller.notifyRead(WRITECHARACTERISTICS, context);
-          Navigator.of(context, rootNavigator: true).pop();
-          controller.wifiProvisionStatus
+          var wifiStatus = await controller.getProvisionedStatus();
+
+          Future.delayed(const Duration(milliseconds: 400), () async {
+            await controller.getBatteryVoltageValues();
+          });
+          wifiStatus
               ? Navigator.push(
                   context,
                   MaterialPageRoute(

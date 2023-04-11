@@ -98,12 +98,12 @@ class DeviceController extends ChangeNotifier {
 
   /// Battery value for client[R]
   double get battC {
-    return double.parse(_batteryC) * 100;
+    return double.parse(_batteryC);
   }
 
   /// Battery value for server[L]
   double get battS {
-    return double.parse(_batteryS) * 100;
+    return double.parse(_batteryS);
   }
 
   ///Constructor to start scanning as soon as an object of Device Controller is inititated in the runApp
@@ -289,15 +289,15 @@ class DeviceController extends ChangeNotifier {
     try {
       if (await FlutterBlue.instance.isOn) {
         ///Checking if the bluetooth is on
-        BluetoothCharacteristic charToTarget = _characteristics
+        // BluetoothCharacteristic charToTarget = _characteristics
 
-            ///Searching for the actual characteristic by the GUID of the characteristic known
-            .firstWhere((element) => element.uuid == characteristic);
-        var response = await charToTarget.write(command.codeUnits);
+        //     ///Searching for the actual characteristic by the GUID of the characteristic known
+        //     .firstWhere((element) => element.uuid == characteristic);
+        // var response = await charToTarget.write(command.codeUnits);
 
-        ///Converting the command to ASCII then sending
-        await HapticFeedback.mediumImpact();
-
+        // ///Converting the command to ASCII then sending
+        // await HapticFeedback.mediumImpact();
+        log("Command Sent !!!");
         Fluttertoast.showToast(msg: "Command Sent !! ");
       } else {
         Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
@@ -350,27 +350,31 @@ class DeviceController extends ChangeNotifier {
   }
 
   ///Function used to get battery values
-  void getBatteryValues() async {
+  Future<void> getBatteryVoltageValues() async {
     try {
       BluetoothCharacteristic? clientTarget =
-          _characteristicMap[BATTERY_CLIENT];
+          _characteristicMap[BATTERY_PERCENTAGE_CLIENT];
       BluetoothCharacteristic? serverTarget =
-          _characteristicMap[BATTERY_SERVER];
+          _characteristicMap[BATTERY_PERCENTAGE_SERVER];
 
       var clientResponse = await clientTarget!.read();
+
+      ///divided by 1000
       var serverResponse = await serverTarget!.read();
       _batteryC = String.fromCharCodes(clientResponse);
       _batteryS = String.fromCharCodes(serverResponse);
+      _batteryInfoStatus = true;
       notifyListeners();
-      log("Client battery values are ${String.fromCharCodes(clientResponse)}");
-      log("Server battery values are ${String.fromCharCodes(serverResponse)}");
+      log("CLIENT BATTERY VOLTAGE is ${String.fromCharCodes(clientResponse)}");
+      log("SERVER BATTERY VOLTAGE is ${String.fromCharCodes(serverResponse)}");
     } catch (e) {
+      log(e.toString());
       log("Something went wrong while getting batteryValues.");
     }
   }
 
   ///Function to get the wifiProvisioned Status
-  void getProvisionedStatus() async {
+  Future<bool> getProvisionedStatus() async {
     try {
       BluetoothCharacteristic? clientTarget =
           _characteristicMap[PROVISIONED_CLIENT];
@@ -379,16 +383,24 @@ class DeviceController extends ChangeNotifier {
 
       var clientResponse = await clientTarget!.read();
       var serverResponse = await serverTarget!.read();
+
       if (String.fromCharCodes(clientResponse) == "1" &&
           String.fromCharCodes(serverResponse) == "1") {
         _wifiProvisioned = true;
+        notifyListeners();
+      } else {
+        _wifiProvisioned = false;
         notifyListeners();
       }
 
       log("Client provisioned status is ${String.fromCharCodes(clientResponse)}");
       log("Server provisioned status is ${String.fromCharCodes(serverResponse)}");
+      log("Wifi provisioned ${_wifiProvisioned}");
+      return _wifiProvisioned;
     } catch (e) {
+      log("${e.toString()}");
       log("Something went wrong while getting wifi provisioned status");
+      return _wifiProvisioned;
     }
   }
 
