@@ -33,103 +33,118 @@ class _WifiPageState extends State<WifiPage> {
         child: Consumer2<WifiController, DeviceController>(
             builder: (context, wifiController, deviceController, child) {
           if (wifiController.wifiScanPermission) {
-            return SingleChildScrollView(
-              child: Column(
-                children: List.generate(
-                  wifiController.scannedResult.length,
-                  (index) {
-                    var accessPoint = wifiController.scannedResult[index];
-                    return ListTile(
-                      title: Text(
-                        accessPoint.ssid,
-                        style: const TextStyle(),
+            return RefreshIndicator(
+              onRefresh: () async {
+                await wifiController.wifiScanner();
+              },
+              child: SingleChildScrollView(
+                child: wifiController.wifiScanLoader
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Column(
+                        children: List.generate(
+                          wifiController.scannedResult.length,
+                          (index) {
+                            var accessPoint =
+                                wifiController.scannedResult[index];
+                            return ListTile(
+                              title: Text(
+                                accessPoint.ssid,
+                                style: const TextStyle(),
+                              ),
+                              trailing: wifiSignal(accessPoint.level),
+                              onTap: () async {
+                                bool success = await wifiController
+                                    .wifiCredDialog(accessPoint.ssid, context);
+                                if (success) {
+                                  deviceController.sendToDevice(
+                                      "${accessPoint.ssid}/${wifiController.passwdController.text}",
+                                      WRITECHARACTERISTICS);
+                                  Go.pushReplacement(
+                                      context: context,
+                                      pushReplacement: const CommandPage());
+                                } else {
+                                  debugPrint('Error!!!!: $success');
+                                }
+                              },
+                            );
+                          },
+                        ),
+
+                        // TextField(
+                        //   controller: ssidController,
+                        //   decoration: const InputDecoration(
+                        //     labelText: AppString.wifiId,
+                        //     labelStyle: TextStyle(
+                        //         color: AppColor.greenColor,
+                        //         fontSize: 18,
+                        //         fontWeight: FontWeight.w600),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(color: AppColor.greenColor),
+                        //     ),
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(color: AppColor.greenColor),
+                        //     ),
+                        //   ),
+                        // ),
+                        // const SizedBox(
+                        //   height: 5,
+                        // ),
+                        // const Divider(),
+                        // const SizedBox(
+                        //   height: 5,
+                        // ),
+                        // TextField(
+                        //   controller: passwdController,
+                        //   decoration: const InputDecoration(
+                        //     labelText: AppString.wifiPassword,
+                        //     labelStyle: TextStyle(
+                        //         color: AppColor.greenColor,
+                        //         fontSize: 18,
+                        //         fontWeight: FontWeight.w600),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(color: AppColor.greenColor),
+                        //     ),
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(color: AppColor.greenColor),
+                        //     ),
+                        //   ),
+                        // ),
+                        // Consumer2<WifiController, DeviceController>(
+                        //     builder: (context, wifiController, deviceController, child) {
+                        //   return ElevatedButton(
+                        //     onPressed: () async {
+                        //       bool result = await wifiController.connectToWifi(
+
+                        //           ///Connecting to the wifi
+                        //           ssidController.text,
+                        //           passwdController.text);
+                        //       if (result) {
+                        //         ///if wifi has been connected successfully then send the wifi SSID and password to the device
+                        //         deviceController.sendToDevice(
+                        //             "${ssidController.text}/${passwdController.text}",
+                        //             WRITECHARACTERISTICS);
+
+                        //         /// ignore: use_build_context_synchronously
+                        //         // Navigator.pushReplacement(
+                        //         //   context,
+                        //         //   MaterialPageRoute(
+                        //         //     builder: (context) => const CommandPage(),
+                        //         //   ),
+                        //         // );
+                        //         Go.pushReplacement(
+                        //             context: context, pushReplacement: const CommandPage());
+                        //       }
+                        //     },
+                        //     style: ElevatedButton.styleFrom(
+                        //         backgroundColor: AppColor.purpleColor,
+                        //         shadowColor: AppColor.blackColor,
+                        //         elevation: 10),
+                        //     child: const Text("Submit / Connect "),
+                        //   );
+                        // })
                       ),
-                      trailing: wifiSignal(accessPoint.level),
-                      onTap: () async {
-                        bool success = await wifiController.wifiCredDialog(
-                            accessPoint.ssid, context);
-                        if (success) {
-                          deviceController.sendToDevice(
-                              "${accessPoint.ssid}/${wifiController.passwdController.text}",
-                              WRITECHARACTERISTICS);
-                        } else {}
-                      },
-                    );
-                  },
-                ),
-
-                // TextField(
-                //   controller: ssidController,
-                //   decoration: const InputDecoration(
-                //     labelText: AppString.wifiId,
-                //     labelStyle: TextStyle(
-                //         color: AppColor.greenColor,
-                //         fontSize: 18,
-                //         fontWeight: FontWeight.w600),
-                //     enabledBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: AppColor.greenColor),
-                //     ),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: AppColor.greenColor),
-                //     ),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 5,
-                // ),
-                // const Divider(),
-                // const SizedBox(
-                //   height: 5,
-                // ),
-                // TextField(
-                //   controller: passwdController,
-                //   decoration: const InputDecoration(
-                //     labelText: AppString.wifiPassword,
-                //     labelStyle: TextStyle(
-                //         color: AppColor.greenColor,
-                //         fontSize: 18,
-                //         fontWeight: FontWeight.w600),
-                //     enabledBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: AppColor.greenColor),
-                //     ),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderSide: BorderSide(color: AppColor.greenColor),
-                //     ),
-                //   ),
-                // ),
-                // Consumer2<WifiController, DeviceController>(
-                //     builder: (context, wifiController, deviceController, child) {
-                //   return ElevatedButton(
-                //     onPressed: () async {
-                //       bool result = await wifiController.connectToWifi(
-
-                //           ///Connecting to the wifi
-                //           ssidController.text,
-                //           passwdController.text);
-                //       if (result) {
-                //         ///if wifi has been connected successfully then send the wifi SSID and password to the device
-                //         deviceController.sendToDevice(
-                //             "${ssidController.text}/${passwdController.text}",
-                //             WRITECHARACTERISTICS);
-
-                //         /// ignore: use_build_context_synchronously
-                //         // Navigator.pushReplacement(
-                //         //   context,
-                //         //   MaterialPageRoute(
-                //         //     builder: (context) => const CommandPage(),
-                //         //   ),
-                //         // );
-                //         Go.pushReplacement(
-                //             context: context, pushReplacement: const CommandPage());
-                //       }
-                //     },
-                //     style: ElevatedButton.styleFrom(
-                //         backgroundColor: AppColor.purpleColor,
-                //         shadowColor: AppColor.blackColor,
-                //         elevation: 10),
-                //     child: const Text("Submit / Connect "),
-                //   );
-                // })
               ),
             );
           } else {

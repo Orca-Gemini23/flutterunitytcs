@@ -9,6 +9,7 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/device/commandpage.dart';
 import 'package:walk/src/views/homepage.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
@@ -35,6 +36,10 @@ class WifiController extends ChangeNotifier {
   ///show Loader when connecting to wifi
   bool wifiConnectionLoader = false;
 
+  /// show Loader when scanning for wifi
+  bool wifiScanLoader = false;
+
+  /// Wifi credentials are verified and sent to device
   bool get wifiVerificationStatus => _isWifiVerified;
   void changeWifiVerificationStatus(bool status) {
     _isWifiVerified = status;
@@ -62,7 +67,8 @@ class WifiController extends ChangeNotifier {
     }
   }
 
-  Future<bool> connectToWifi(String ssid, String password) async {
+  Future<bool> connectToWifi(
+      String ssid, String password, BuildContext context) async {
     try {
       wifiConnectionLoader = true;
       bool result =
@@ -70,6 +76,7 @@ class WifiController extends ChangeNotifier {
 
       if (result) {
         changeWifiVerificationStatus(true);
+
         return true;
       } else {
         wifiConnectionLoader = false;
@@ -92,13 +99,17 @@ class WifiController extends ChangeNotifier {
   /// TO scan nearby wifi connections
   Future<void> wifiScanner() async {
     try {
-      scannedResult.clear();
+      wifiScanLoader = true;
+      // scannedResult.clear();
       var canStartScan = await wifiScan.canStartScan(askPermissions: true);
       if (canStartScan == CanStartScan.yes) {
         var scanTriggered = await wifiScan.startScan();
         if (scanTriggered) {
           var wifiAccessPoints = await wifiScan.getScannedResults();
           scannedResult = wifiAccessPoints;
+          for (var element in scannedResult) {
+            debugPrint(element.ssid);
+          }
         }
       }
     } catch (e) {
@@ -106,6 +117,7 @@ class WifiController extends ChangeNotifier {
       Fluttertoast.showToast(
           msg: "Error in scanning nearby to wifi ${e.toString()}");
     } finally {
+      wifiScanLoader = false;
       notifyListeners();
     }
   }
@@ -119,7 +131,8 @@ class WifiController extends ChangeNotifier {
         dialogType: DialogType.noHeader,
         btnOk: ElevatedButton(
           onPressed: () async {
-            var connected = await connectToWifi(ssid, passwdController.text);
+            var connected =
+                await connectToWifi(ssid, passwdController.text, context);
             if (connected) {
               _isWifiVerified = connected;
               Go.back(context: context);
