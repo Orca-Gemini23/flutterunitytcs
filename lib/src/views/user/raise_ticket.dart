@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import "package:flutter/material.dart";
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/widgets/dropdown.dart';
 import 'package:walk/src/widgets/textfields.dart';
 
 class RaiseTicketPage extends StatefulWidget {
@@ -16,10 +19,12 @@ class _RaiseTicketPageState extends State<RaiseTicketPage> {
       TextEditingController();
 
   TextEditingController problem_Title_Controller = TextEditingController();
+  String defaultStringDropdown = "Device is not vibrating .";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           AppString.hereToHelp,
@@ -39,8 +44,9 @@ class _RaiseTicketPageState extends State<RaiseTicketPage> {
       ),
       body: Container(
         width: double.infinity,
-        height: double.infinity,
+        height: double.maxFinite,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(AppAssets.lifesparklogo),
             const SizedBox(
@@ -49,10 +55,11 @@ class _RaiseTicketPageState extends State<RaiseTicketPage> {
             Container(
               width: double.infinity,
               height: 100,
+              padding: const EdgeInsets.symmetric(horizontal: 5),
               color: AppColor.greenDarkColor,
               child: const Center(
                 child: Text(
-                  "Describe us the issue you are facing ",
+                  "Select the issues you are facing from the dropdown ",
                   style: TextStyle(
                     color: AppColor.whiteColor,
                     fontSize: 20,
@@ -63,28 +70,94 @@ class _RaiseTicketPageState extends State<RaiseTicketPage> {
             const SizedBox(
               height: 10,
             ),
-            SingleChildScrollView(
+            Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ///Todo: Elderly can't type so its better that we present them with a single button that will inform us about the issue faced by a customer
-                  getTextfield(
-                    "What is the topic of the issue",
-                    problem_Title_Controller,
-                    Icons.abc,
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  getLargeTextField("Please describe the problem here",
-                      problem_Description_Controller, Icons.note),
-                  const SizedBox(
-                    height: 5,
-                  )
-                ],
+              decoration: const BoxDecoration(
+                color: AppColor.greenDarkColor,
+              ),
+              width: double.infinity,
+              child: const Text(
+                "Device related issues :",
+                style: TextStyle(
+                  color: AppColor.whiteColor,
+                  fontSize: 16,
+                ),
               ),
             ),
+            const Expanded(
+              child: SingleChildScrollView(
+                child: MultiSelect(
+                  items: [
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "other",
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: const BoxDecoration(
+                color: AppColor.greenDarkColor,
+              ),
+              width: double.infinity,
+              child: const Text(
+                "User related issues :",
+                style: TextStyle(
+                  color: AppColor.whiteColor,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            const Expanded(
+              child: SingleChildScrollView(
+                child: MultiSelect(
+                  items: [
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "Helllpoooooo",
+                    "other"
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              height: 60,
+              decoration: BoxDecoration(
+                color: AppColor.greenDarkColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ElevatedButton(
+                style:
+                    ElevatedButton.styleFrom(primary: AppColor.greenDarkColor),
+                onPressed: () {},
+                child: const Text(
+                  "Raise Ticket",
+                  style: TextStyle(
+                    color: AppColor.whiteColor,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

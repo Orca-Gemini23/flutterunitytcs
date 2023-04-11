@@ -36,7 +36,19 @@ class DeviceController extends ChangeNotifier {
   /// getting connected devices
   List<BluetoothDevice> get getConnectedDevices => _connectedDevices;
 
+  ///Created a map of characteristics
+  Map<Guid, BluetoothCharacteristic> _characteristicMap = {};
+
+  ///Getter function to get the characteristic map
+  Map<Guid, BluetoothCharacteristic> get characteristicMap =>
+      _characteristicMap;
+
   ///
+  bool _isListening = false;
+  bool get listenStatus => _isListening;
+
+  ///
+
   Set<String> _info = {};
 
   /// stores remaining battery value
@@ -248,14 +260,24 @@ class DeviceController extends ChangeNotifier {
   }
 
   ///Used to discover the services and characteristics;
+  ///Also flood services and characteristics into a map
   Future discoverServices(BluetoothDevice device) async {
     try {
       _services = await device.discoverServices();
+      _characteristicMap.clear();
       _characteristics = _services
           .where((element) => element.uuid == SERVICE)
           .first
           .characteristics;
-      log(_characteristics.toString());
+
+      _characteristics.forEach((element) {
+        characteristicMap.putIfAbsent(element.uuid, () => element);
+        notifyListeners();
+      });
+
+      //log(characteristicMap[CHARGERCONN].toString());
+
+      //log(_characteristics.toString());
     } catch (e) {
       Fluttertoast.showToast(msg: "Unexpected error in getting the services$e");
       log(e.toString());
@@ -324,6 +346,62 @@ class DeviceController extends ChangeNotifier {
       log("Some error occurred in retrieving info ${e.toString()}");
       Fluttertoast.showToast(
           msg: "Some error occurred in retrieving info ${e.toString()}");
+    }
+  }
+
+  ///Function used to get battery values
+  void getBatteryValues() async {
+    try {
+      BluetoothCharacteristic? clientTarget =
+          _characteristicMap[BATTERY_CLIENT];
+      BluetoothCharacteristic? serverTarget =
+          _characteristicMap[BATTERY_SERVER];
+      await serverTarget!.setNotifyValue(true);
+
+      serverTarget.value.listen((event) {
+        log(
+          "Battery Values for server are ${String.fromCharCodes(event)}",
+        );
+      });
+
+      await clientTarget!.setNotifyValue(true);
+      clientTarget.value.listen((event) {
+        log(
+          "Battery Values for client are ${String.fromCharCodes(event)}",
+        );
+      });
+
+      // Future.delayed(Duration(milliseconds: 400), () async {
+      //   await clientTarget!.setNotifyValue(true);
+      //   clientTarget.value.listen((event) {
+      //     log("Battery Values for client are ${String.fromCharCodes(event)} ");
+      //   });
+      // });
+
+      //log("Battery Values are " + battery);
+    } catch (e) {
+      log("Something went wrong while getting batteryValues.");
+    }
+  }
+
+  ///Function to get the wifiProvisioned Status
+  void getProvisionedStatus() async {
+    try {
+      BluetoothCharacteristic? clientTarget =
+          _characteristicMap[PROVISIONED_CLIENT];
+      BluetoothCharacteristic? serverTarget =
+          _characteristicMap[PROVISIONED_SERVER];
+      await clientTarget!.setNotifyValue(true);
+      await serverTarget!.setNotifyValue(true);
+
+      clientTarget.value.listen((event) {
+        log("Wifi Provisioned Status for client is ${String.fromCharCodes(event)}");
+      });
+      clientTarget.value.listen((event) {
+        log("Wifi Provisioned Status for server is ${String.fromCharCodes(event)}");
+      });
+    } catch (e) {
+      log("Something went wrong while getting wifi provisioned status");
     }
   }
 

@@ -32,9 +32,8 @@ class _SplashPageState extends State<SplashPage> {
       transitionDuration: const Duration(milliseconds: 800),
       pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
         builder: Builder(
-          builder: (context) => Homepage(
-              isShowCaseDone:
-                  _isShowCasedone), //DetailChart() // RaiseTicketPage() //
+          builder: (context) => // RaiseTicketPage(),
+              Homepage(isShowCaseDone: _isShowCasedone), //DetailChart()
         ),
       ),
       transitionsBuilder: ((context, animation, secondaryAnimation, child) {

@@ -152,7 +152,13 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
                 builder: (context, controller, snapshot) {
           return FloatingActionButton(
             onPressed: () async {
-              Go.to(context: context, push: WifiPage());
+              try {
+                controller.getBatteryValues();
+              } catch (e) {
+                log(e.toString());
+              }
+              //controller.getProvisionedStatus();
+              // Go.to(context: context, push: WifiPage());
               // print("LEngth is " + controller.info.length.toString());
               // controller.info.forEach((element) {
               //   print(element);
