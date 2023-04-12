@@ -55,7 +55,17 @@ class DeviceController extends ChangeNotifier {
   int _batteryRemaining = 000;
 
   /// Stores value for remaining battery
-  int get batteryRemaining => _batteryRemaining;
+  int get clientBatteryRemaining {
+    double seconds = double.parse(_rbattC);
+    double minutes = seconds / 60;
+    return minutes.floor();
+  }
+
+  int get serverBatteryRemaining {
+    double seconds = double.parse(_rbattS);
+    double minutes = seconds / 60;
+    return minutes.floor();
+  }
 
   ///outputs the set<String> which contains the information obtained from the device after sending the "info" command to the device;
   Set<String> get info => _info;
@@ -66,6 +76,37 @@ class DeviceController extends ChangeNotifier {
   void clearInfo() {
     /// Clears the _info set so that new information can be stored , without older one being present creating ambiguity
     _info.clear();
+    notifyListeners();
+  }
+
+  double _freqValue = 0.4;
+  double _modeValue = -1;
+  double _magValue = 0;
+
+  double get frequencyValue {
+    return _freqValue;
+  }
+
+  double get modeValue {
+    return _modeValue;
+  }
+
+  double get magValue {
+    return _magValue;
+  }
+
+  void setmodeValue(double value) {
+    _modeValue = value;
+    notifyListeners();
+  }
+
+  void setmagValue(double value) {
+    _magValue = value;
+    notifyListeners();
+  }
+
+  void setfreqValue(double value) {
+    _freqValue = value;
     notifyListeners();
   }
 
@@ -373,6 +414,44 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
+  Future<void> getFrequencyValues() async {
+    try {
+      BluetoothCharacteristic? serverTarget =
+          _characteristicMap[BATTERY_PERCENTAGE_SERVER];
+
+      var serverResponse = await serverTarget!.read();
+
+      _freqValue = double.parse(String.fromCharCodes(serverResponse)) > 2
+          ? 2.0
+          : double.parse(String.fromCharCodes(serverResponse));
+      notifyListeners();
+
+      log("SERVER Frequency Value is ${String.fromCharCodes(serverResponse)}");
+    } catch (e) {
+      log(e.toString());
+      log("Something went wrong while getting frequencyValues.");
+    }
+  }
+
+  Future<void> getMagnitudeValues() async {
+    try {
+      BluetoothCharacteristic? serverTarget =
+          _characteristicMap[MAGNITUDE_SERVER];
+
+      var serverResponse = await serverTarget!.read();
+
+      _magValue = double.parse(String.fromCharCodes(serverResponse)) > 4
+          ? 4.0
+          : double.parse(String.fromCharCodes(serverResponse));
+      notifyListeners();
+
+      log("SERVER Magnitude Value is ${String.fromCharCodes(serverResponse)}");
+    } catch (e) {
+      log(e.toString());
+      log("Something went wrong while getting magnitudeValues.");
+    }
+  }
+
   ///Function to get the wifiProvisioned Status
   Future<bool> getProvisionedStatus() async {
     try {
@@ -395,12 +474,34 @@ class DeviceController extends ChangeNotifier {
 
       log("Client provisioned status is ${String.fromCharCodes(clientResponse)}");
       log("Server provisioned status is ${String.fromCharCodes(serverResponse)}");
-      log("Wifi provisioned ${_wifiProvisioned}");
+      log("Wifi provisioned $_wifiProvisioned");
       return _wifiProvisioned;
     } catch (e) {
-      log("${e.toString()}");
+      log(e.toString());
       log("Something went wrong while getting wifi provisioned status");
       return _wifiProvisioned;
+    }
+  }
+
+  Future<void> getBatteryRemaining() async {
+    try {
+      BluetoothCharacteristic? clientTarget =
+          _characteristicMap[BATTERY_TIME_REMAINING_CLIENT];
+      BluetoothCharacteristic? serverTarget =
+          _characteristicMap[BATTERY_TIME_REMAINING_SERVER];
+
+      var clientResponse = await clientTarget!.read();
+      var serverResponse = await serverTarget!.read();
+
+      _rbattC = String.fromCharCodes(clientResponse);
+      _rbattS = String.fromCharCodes(serverResponse);
+      notifyListeners();
+
+      log("Server battery remaining $_rbattS");
+      log("Client battery reamining $_rbattC");
+    } catch (e) {
+      log(e.toString());
+      log("Something went wrong while getting battery left values ");
     }
   }
 
@@ -424,7 +525,7 @@ class DeviceController extends ChangeNotifier {
     if (_info.contains("provisioned s 1") &&
         _info.contains("provisioned c 1")) {
       _wifiProvisioned = true;
-      print(_wifiProvisioned.toString() + "tetsing wifi");
+      print("${_wifiProvisioned}tetsing wifi");
       notifyListeners();
     } else {
       _wifiProvisioned = false;
