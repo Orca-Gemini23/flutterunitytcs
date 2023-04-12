@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,8 +24,6 @@ class CommandPage extends StatefulWidget {
 
 class _CommandPageState extends State<CommandPage> {
   bool isLoaded = false;
-  double freqValue = 0.4;
-  double magValue = 0;
   double modeValue = -1;
 
   ///Once the user reaches this page we assume that he already had used the connect button and also has clicked the tile. Therefore now we mark the status of isShowCaseDone as true, so that from next time user does not get the showcase
@@ -157,9 +157,9 @@ class _CommandPageState extends State<CommandPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               circularProgressIndicator(controller.battS, "L",
-                                  controller.batteryRemaining),
+                                  controller.serverBatteryRemaining),
                               circularProgressIndicator(controller.battC, "R",
-                                  controller.batteryRemaining),
+                                  controller.clientBatteryRemaining),
                             ],
                           )
                         : const Center(
@@ -180,7 +180,7 @@ class _CommandPageState extends State<CommandPage> {
               height: 5,
             ),
             Consumer<DeviceController>(
-              //Frequency
+              //FREQUENCY WIDGET
               builder: (context, controller, child) => Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -208,22 +208,52 @@ class _CommandPageState extends State<CommandPage> {
                     const SizedBox(
                       width: 5,
                     ),
-                    Slider(
-                      value: freqValue,
-                      min: 0.3,
-                      max: 2,
-                      label: freqValue.toString(),
-                      thumbColor: Colors.purple,
-                      onChanged: (value) {
-                        HapticFeedback.lightImpact();
-                        freqValue = value;
-                        setState(() {});
-                      },
-                      onChangeEnd: (value) async {
-                        String command = "$FREQ c $freqValue;";
-                        await controller.sendToDevice(
-                            command, WRITECHARACTERISTICS);
-                      },
+                    Consumer<DeviceController>(
+                        builder: (context, deviceController, child) {
+                      return Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColor.amberColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            deviceController.frequencyValue.toString().length >
+                                    3
+                                ? deviceController.frequencyValue
+                                    .toString()
+                                    .substring(0, 4)
+                                : deviceController.frequencyValue.toString(),
+                          ),
+                        ),
+                      );
+                    }),
+                    SizedBox(
+                      child: Slider(
+                        value: controller.frequencyValue,
+                        min: 0.3,
+                        max: 2,
+                        label: controller.frequencyValue.toString(),
+                        thumbColor: Colors.purple,
+                        onChanged: (value) {
+                          HapticFeedback.lightImpact();
+                          controller.setfreqValue(value);
+                        },
+                        onChangeEnd: (value) async {
+                          String approxFrequency =
+                              controller.frequencyValue.toString().length > 3
+                                  ? controller.frequencyValue
+                                      .toString()
+                                      .substring(0, 4)
+                                  : controller.frequencyValue.toString();
+
+                          String command = "$FREQ c $approxFrequency;";
+
+                          log(command);
+                          // await controller.sendToDevice(
+                          //     command, WRITECHARACTERISTICS);
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -233,7 +263,7 @@ class _CommandPageState extends State<CommandPage> {
               height: 7,
             ),
             Consumer<DeviceController>(
-              //Magnitude Widget
+              //MAGNITUDE WIDGET
               builder: (context, controller, child) {
                 return Container(
                   padding: const EdgeInsets.all(10),
@@ -261,22 +291,38 @@ class _CommandPageState extends State<CommandPage> {
                       const SizedBox(
                         width: 5,
                       ),
+                      Consumer<DeviceController>(
+                          builder: (context, deviceController, child) {
+                        return Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColor.amberColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              deviceController.magValue.toString(),
+                            ),
+                          ),
+                        );
+                      }),
                       Slider(
-                          value: magValue,
+                          //MAGNITUDE SLIDER
+                          value: controller.magValue,
                           min: 0,
                           max: 4,
                           divisions: 4,
-                          label: magValue.toString(),
+                          label: controller.magValue.toString(),
                           thumbColor: AppColor.purpleColor,
                           onChanged: (value) {
                             HapticFeedback.lightImpact();
-                            magValue = value;
-                            setState(() {});
+                            controller.setmagValue(value);
                           },
                           onChangeEnd: (value) async {
-                            String command = "$MAG c $magValue;";
-                            await controller.sendToDevice(
-                                command, WRITECHARACTERISTICS);
+                            String command = "$MAG c ${controller.magValue};";
+                            log(command);
+                            // await controller.sendToDevice(
+                            //     command, WRITECHARACTERISTICS);
                           }),
                     ],
                   ),
@@ -285,7 +331,7 @@ class _CommandPageState extends State<CommandPage> {
             ),
             const SizedBox(height: 10),
             Consumer<DeviceController>(
-              //Mode Widget
+              //MODE WIDGET
               builder: (context, controller, child) {
                 return Container(
                   padding: const EdgeInsets.all(10),
@@ -314,22 +360,24 @@ class _CommandPageState extends State<CommandPage> {
                         width: 5,
                       ),
                       Slider(
-                          value: modeValue,
-                          min: -1,
-                          max: 7,
-                          divisions: 8,
-                          label: modeValue.toString(),
-                          thumbColor: AppColor.purpleColor,
-                          onChanged: (value) {
-                            HapticFeedback.lightImpact();
-                            modeValue = value;
-                            setState(() {});
-                          },
-                          onChangeEnd: (value) async {
-                            String command = "$MODE $modeValue;";
-                            await controller.sendToDevice(
-                                command, WRITECHARACTERISTICS);
-                          }),
+                        value: modeValue,
+                        min: -1,
+                        max: 7,
+                        divisions: 8,
+                        label: modeValue.toString(),
+                        thumbColor: AppColor.purpleColor,
+                        onChanged: (value) {
+                          HapticFeedback.lightImpact();
+                          modeValue = value;
+                          setState(() {});
+                        },
+                        onChangeEnd: (value) async {
+                          String command = "$MODE $modeValue;";
+                          log(command);
+                          // await controller.sendToDevice(
+                          //     command, WRITECHARACTERISTICS);
+                        },
+                      ),
                     ],
                   ),
                 );
