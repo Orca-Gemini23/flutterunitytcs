@@ -221,8 +221,8 @@ class _CommandPageState extends State<CommandPage> {
                       },
                       onChangeEnd: (value) async {
                         String command = "$FREQ c $freqValue;";
-                        // await controller.sendToDevice(
-                        //     command, WRITECHARACTERISTICS);
+                        await controller.sendToDevice(
+                            command, WRITECHARACTERISTICS);
                       },
                     ),
                   ],
@@ -275,8 +275,8 @@ class _CommandPageState extends State<CommandPage> {
                           },
                           onChangeEnd: (value) async {
                             String command = "$MAG c $magValue;";
-                            // await controller.sendToDevice(
-                            //     command, WRITECHARACTERISTICS);
+                            await controller.sendToDevice(
+                                command, WRITECHARACTERISTICS);
                           }),
                     ],
                   ),
@@ -327,8 +327,8 @@ class _CommandPageState extends State<CommandPage> {
                           },
                           onChangeEnd: (value) async {
                             String command = "$MODE $modeValue;";
-                            // await controller.sendToDevice(
-                            //     command, WRITECHARACTERISTICS);
+                            await controller.sendToDevice(
+                                command, WRITECHARACTERISTICS);
                           }),
                     ],
                   ),

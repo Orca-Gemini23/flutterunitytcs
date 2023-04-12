@@ -289,14 +289,14 @@ class DeviceController extends ChangeNotifier {
     try {
       if (await FlutterBlue.instance.isOn) {
         ///Checking if the bluetooth is on
-        // BluetoothCharacteristic charToTarget = _characteristics
+        BluetoothCharacteristic? writeTarget =
+            _characteristicMap[WRITECHARACTERISTICS];
 
-        //     ///Searching for the actual characteristic by the GUID of the characteristic known
-        //     .firstWhere((element) => element.uuid == characteristic);
-        // var response = await charToTarget.write(command.codeUnits);
+        ///Searching for the actual characteristic by the GUID of the characteristic known
+        var response = await writeTarget!.write(command.codeUnits);
 
-        // ///Converting the command to ASCII then sending
-        // await HapticFeedback.mediumImpact();
+        ///Converting the command to ASCII then sending
+        await HapticFeedback.mediumImpact();
         log("Command Sent !!!");
         Fluttertoast.showToast(msg: "Command Sent !! ");
       } else {
