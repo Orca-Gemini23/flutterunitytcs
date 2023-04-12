@@ -9,7 +9,6 @@ import 'package:walk/src/controllers/sharedpreferences.dart';
 import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/chart_details.dart';
 import 'package:walk/src/views/homepage.dart';
-import 'package:walk/src/views/user/raise_ticket.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
