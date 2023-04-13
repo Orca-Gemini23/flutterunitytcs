@@ -8,6 +8,8 @@ import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/device/commandpage.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
+import 'package:walk/src/views/user/help_section/help.dart';
+import 'package:walk/src/views/user/help_section/raise_ticket.dart';
 import 'package:walk/src/views/user/user_profile.dart';
 
 Drawer navigationDrawer(BuildContext context) {
@@ -61,6 +63,7 @@ Widget drawerItem(BuildContext context) {
     Icons.tune,
     Icons.group,
     Icons.email,
+    Icons.help,
     Icons.logout_sharp,
   ];
   List<String> drawerTileName = [
@@ -69,6 +72,7 @@ Widget drawerItem(BuildContext context) {
     'Device Control',
     'About Us',
     'Contact Us',
+    'Need help',
     'Log Out',
   ];
   List<Function()?> drawerOnTap = [
@@ -79,19 +83,22 @@ Widget drawerItem(BuildContext context) {
       Go.to(context: context, push: const ProfilePage());
     },
     () {
-      if (Provider.of<DeviceController>(context, listen: false)
-          .getConnectedDevices
-          .isEmpty) {
-        Fluttertoast.showToast(msg: 'No devices connected!');
-      } else {
-        Go.to(context: context, push: const CommandPage());
-      }
+      // if (Provider.of<DeviceController>(context, listen: false)
+      //     .getConnectedDevices
+      //     .isEmpty) {
+      //   Fluttertoast.showToast(msg: 'No devices connected!');
+      // } else {
+      Go.to(context: context, push: const RaiseTicketPage());
+      // }
     },
     () {
       Go.to(context: context, push: const AboutUsPage());
     },
     () {
       Go.to(context: context, push: const ContactUsPage());
+    },
+    () {
+      Go.to(context: context, push: const HelpPage());
     },
     () {
       //LogOut
