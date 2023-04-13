@@ -420,11 +420,18 @@ class DeviceController extends ChangeNotifier {
           _characteristicMap[BATTERY_PERCENTAGE_SERVER];
 
       var serverResponse = await serverTarget!.read();
-
-      _freqValue = double.parse(String.fromCharCodes(serverResponse)) > 2
-          ? 2.0
-          : double.parse(String.fromCharCodes(serverResponse));
-      notifyListeners();
+      var tempFreq = double.parse(String.fromCharCodes(serverResponse));
+      if (tempFreq < 0.3) {
+        _freqValue = 0.3;
+        notifyListeners();
+      }
+      if (tempFreq > 2) {
+        _freqValue = 2;
+        notifyListeners();
+      } else {
+        _freqValue = tempFreq;
+        notifyListeners();
+      }
 
       log("SERVER Frequency Value is ${String.fromCharCodes(serverResponse)}");
     } catch (e) {
@@ -439,11 +446,20 @@ class DeviceController extends ChangeNotifier {
           _characteristicMap[MAGNITUDE_SERVER];
 
       var serverResponse = await serverTarget!.read();
-
-      _magValue = double.parse(String.fromCharCodes(serverResponse)) > 4
-          ? 4.0
-          : double.parse(String.fromCharCodes(serverResponse));
-      notifyListeners();
+      var tempMagnitude = double.parse(
+        String.fromCharCodes(serverResponse),
+      );
+      if (tempMagnitude < 0) {
+        _magValue = 0;
+        notifyListeners();
+      }
+      if (tempMagnitude > 4) {
+        _magValue = 4;
+        notifyListeners();
+      } else {
+        _magValue = tempMagnitude;
+        notifyListeners();
+      }
 
       log("SERVER Magnitude Value is ${String.fromCharCodes(serverResponse)}");
     } catch (e) {

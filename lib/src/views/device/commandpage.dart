@@ -141,13 +141,24 @@ class _CommandPageState extends State<CommandPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      AppString.batteryStatus,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          //fontWeight: FontWeight.bold,
-                          letterSpacing: 1),
+                    Row(
+                      children: [
+                        const Text(
+                          AppString.batteryStatus,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              //fontWeight: FontWeight.bold,
+                              letterSpacing: 1),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: () async {
+                              await controller.getBatteryVoltageValues();
+                              await controller.getBatteryRemaining();
+                            },
+                            icon: Icon(Icons.refresh)),
+                      ],
                     ),
                     const SizedBox(
                       height: 10,
