@@ -61,6 +61,8 @@ dependencies:
   http: ^0.13.5
   syncfusion_flutter_charts: ^21.1.38
   fl_chart: ^0.61.0
+  path_provider: ^2.0.14
+  csv: ^5.0.1
   
   
 

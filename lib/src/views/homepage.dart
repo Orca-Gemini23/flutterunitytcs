@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:walk/src/views/auth/login_page.dart';
 import 'package:walk/src/views/device/wifipage.dart';
 import 'package:walk/src/widgets/loadingdialog.dart';
 import 'package:walk/src/widgets/navigationdrawer.dart';
+import 'package:walk/test.dart';
 import '../widgets/scanneditemtile.dart';
 
 class Homepage extends StatefulWidget {
@@ -28,6 +30,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
   final GlobalKey globalKey3 = GlobalKey();
   final GlobalKey globalKey4 = GlobalKey();
   final PageController pageController = PageController();
+  bool _isPeriodicRunning = false;
 
   bool _isInForeground = true;
   bool serviceStarted = false;
@@ -152,6 +155,24 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
                 builder: (context, controller, snapshot) {
           return FloatingActionButton(
             onPressed: () async {
+              String value = await controller.getRawBatteryNewton();
+              List<Map<String, String>> batteryMap = [];
+
+              Timer.periodic(
+                const Duration(seconds: 5),
+                (timer) async {
+                  String value = await controller.getRawBatteryNewton();
+                  if (value != "error occurred") {
+                    batteryMap.clear();
+                    batteryMap.add({
+                      "Time": DateTime.now().toString(),
+                      "BattValue": "$value"
+                    });
+                    Test.exportCSV(batteryMap);
+                  }
+                },
+              );
+
               //controller.getProvisionedStatus();
               // Go.to(context: context, push: WifiPage());
               // print("LEngth is " + controller.info.length.toString());

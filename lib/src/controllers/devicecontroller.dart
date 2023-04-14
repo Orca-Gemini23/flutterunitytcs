@@ -79,7 +79,7 @@ class DeviceController extends ChangeNotifier {
     notifyListeners();
   }
 
-  double _freqValue = 0.4;
+  double _freqValue = 0.3;
   double _modeValue = -1;
   double _magValue = 0;
 
@@ -120,10 +120,10 @@ class DeviceController extends ChangeNotifier {
   bool get batteryInfoStatus => _batteryInfoStatus;
 
   /// Stores server[L] battery value
-  String _batteryS = "0.01";
+  String _batteryS = "1.0";
 
   /// Stores client[R] battery value
-  String _batteryC = "0.01";
+  String _batteryC = "1.0";
 
   /// Stores client[R] remaining battery value
   String _rbattC = "0000";
@@ -391,7 +391,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   ///Function used to get battery values
-  Future<void> getBatteryVoltageValues() async {
+  Future<void> getBatteryPercentageValues() async {
     try {
       BluetoothCharacteristic? clientTarget =
           _characteristicMap[BATTERY_PERCENTAGE_CLIENT];
@@ -402,12 +402,36 @@ class DeviceController extends ChangeNotifier {
 
       ///divided by 1000
       var serverResponse = await serverTarget!.read();
-      _batteryC = String.fromCharCodes(clientResponse);
-      _batteryS = String.fromCharCodes(serverResponse);
+      String tempBattC = String.fromCharCodes(clientResponse);
+      String tempBattS = String.fromCharCodes(serverResponse);
+      if (double.parse(tempBattS) > 100 || double.parse(tempBattS) < 0) {
+        if (double.parse(tempBattS) > 100) {
+          _batteryS = "100";
+          notifyListeners();
+        } else {
+          _batteryS = "0";
+          notifyListeners();
+        }
+      }
+      if (double.parse(tempBattC) > 100 || double.parse(tempBattC) < 0) {
+        if (double.parse(tempBattC) > 100) {
+          _batteryC = "100";
+          notifyListeners();
+        } else {
+          _batteryC = "0";
+          notifyListeners();
+        }
+        _batteryInfoStatus = true;
+      } else {
+        _batteryC = tempBattC;
+        _batteryS = tempBattS;
+        _batteryInfoStatus = true;
+        notifyListeners();
+      }
       _batteryInfoStatus = true;
-      notifyListeners();
-      log("CLIENT BATTERY VOLTAGE is ${String.fromCharCodes(clientResponse)}");
-      log("SERVER BATTERY VOLTAGE is ${String.fromCharCodes(serverResponse)}");
+
+      log("CLIENT BATTERY PERCENTAGE is ${_batteryC}");
+      log("SERVER BATTERY PERCENTAGE is ${_batteryS}");
     } catch (e) {
       log(e.toString());
       log("Something went wrong while getting batteryValues.");
@@ -417,7 +441,7 @@ class DeviceController extends ChangeNotifier {
   Future<void> getFrequencyValues() async {
     try {
       BluetoothCharacteristic? serverTarget =
-          _characteristicMap[BATTERY_PERCENTAGE_SERVER];
+          _characteristicMap[FREQUENCY_SERVER];
 
       var serverResponse = await serverTarget!.read();
       var tempFreq = double.parse(String.fromCharCodes(serverResponse));
@@ -518,6 +542,19 @@ class DeviceController extends ChangeNotifier {
     } catch (e) {
       log(e.toString());
       log("Something went wrong while getting battery left values ");
+    }
+  }
+
+  ///ONLY FOR NEWTON'S TESTING NOT TO BE USED IN ACTUAL APPLICATION
+  Future<String> getRawBatteryNewton() async {
+    try {
+      BluetoothCharacteristic? target =
+          _characteristicMap[RAW_BATTERY_VALUE_SERVER];
+      var response = await target!.read();
+      return String.fromCharCodes(response);
+    } catch (e) {
+      log(e.toString());
+      return "error occurred";
     }
   }
 

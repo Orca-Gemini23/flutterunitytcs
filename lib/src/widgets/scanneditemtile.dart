@@ -56,7 +56,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
             Future.delayed(
               const Duration(milliseconds: 400),
               () async {
-                await deviceController.getBatteryVoltageValues();
+                await deviceController.getBatteryPercentageValues();
                 await deviceController.getFrequencyValues();
                 await deviceController.getMagnitudeValues();
                 await deviceController.getBatteryRemaining();
@@ -151,7 +151,7 @@ Widget scannedItem(
           var wifiStatus = await controller.getProvisionedStatus();
 
           Future.delayed(const Duration(milliseconds: 400), () async {
-            await controller.getBatteryVoltageValues();
+            await controller.getBatteryPercentageValues();
             await controller.getFrequencyValues();
             await controller.getMagnitudeValues();
             await controller.getBatteryRemaining();

@@ -154,7 +154,7 @@ class _CommandPageState extends State<CommandPage> {
                         const Spacer(),
                         IconButton(
                             onPressed: () async {
-                              await controller.getBatteryVoltageValues();
+                              await controller.getBatteryPercentageValues();
                               await controller.getBatteryRemaining();
                             },
                             icon: Icon(Icons.refresh)),
