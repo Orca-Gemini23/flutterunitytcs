@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:walk/src/utils/background_isolate.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
@@ -116,6 +118,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      color: AppColor.greenDarkColor,
       onRefresh: () async {
         context.read<DeviceController>().startDiscovery();
       },
@@ -129,6 +132,34 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
               fontSize: 20,
             ),
           ),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                try {
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    FlutterBackgroundService().startService();
+                  });
+                  Future.delayed(const Duration(milliseconds: 200), () {
+                    FlutterBackgroundService().invoke('setBackgroundService');
+                    // FlutterBackgroundService().invoke('stopService');
+                  });
+                } catch (e) {
+                  log('foreground service ERROR: $e');
+                }
+              },
+              icon: const Icon(
+                Icons.miscellaneous_services,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                FlutterBackgroundService().invoke('stopService');
+              },
+              icon: const Icon(
+                Icons.missed_video_call,
+              ),
+            ),
+          ],
           backgroundColor: AppColor.appBarColor,
         ),
         body: Container(

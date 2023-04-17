@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
@@ -11,16 +12,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
 
 import 'package:permission_handler/permission_handler.dart';
-import 'package:walk/src/constants/bluetoothconstants.dart';
-
-///Controls the bluetooth device information and manages connection and data flow between the device and application.;
-
-enum wifiStatus {
-  NOTPROVISONED,
-
-  PROVISIONED,
-  PROCESSING
-}
+import 'package:walk/src/constants/bt_constants.dart';
+import 'package:walk/src/constants/wifi_enum.dart';
+import 'package:walk/src/controllers/sharedpreferences.dart';
 
 class DeviceController extends ChangeNotifier {
   /// stores scanned devices
@@ -267,6 +261,7 @@ class DeviceController extends ChangeNotifier {
       log("coming here");
       Fluttertoast.showToast(msg: "Connecting to ${device.name}");
       await device.connect();
+
       await HapticFeedback.vibrate();
 
       Fluttertoast.showToast(msg: "Connected to ${device.name}");
@@ -274,6 +269,10 @@ class DeviceController extends ChangeNotifier {
       _connectedDevices.clear;
       _connectedDevices.add(device);
       notifyListeners();
+      var encodedDevice = jsonEncode(device);
+      log(encodedDevice);
+      // PreferenceController.saveDeviceMAC(
+      //     device.id.toString(), device.id.toString());
     } catch (e) {
       log(e.toString());
       Fluttertoast.showToast(msg: "Could not connect :$e");
@@ -513,15 +512,15 @@ class DeviceController extends ChangeNotifier {
 
       if (String.fromCharCodes(clientResponse) == "1" &&
           String.fromCharCodes(serverResponse) == "1") {
-        _wifiProvisioned = wifiStatus.PROVISIONED.index;
+        _wifiProvisioned = WifiStatus.PROVISIONED.index;
         notifyListeners();
       }
       if (String.fromCharCodes(clientResponse) == "-1" ||
           String.fromCharCodes(serverResponse) == "-1") {
-        _wifiProvisioned = wifiStatus.PROCESSING.index;
+        _wifiProvisioned = WifiStatus.PROCESSING.index;
         notifyListeners();
       } else {
-        _wifiProvisioned = wifiStatus.NOTPROVISONED.index;
+        _wifiProvisioned = WifiStatus.NOTPROVISONED.index;
         notifyListeners();
       }
 
@@ -558,7 +557,7 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  ///ONLY FOR NEWTON'S TESTING NOT TO BE USED IN ACTUAL APPLICATION
+  ///!ONLY FOR NEWTON'S TESTING NOT TO BE USED IN ACTUAL APPLICATION
   Future<String> getRawBatteryNewton() async {
     try {
       BluetoothCharacteristic? target =

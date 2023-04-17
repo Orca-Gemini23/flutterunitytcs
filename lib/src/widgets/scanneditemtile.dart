@@ -132,16 +132,17 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        deviceController.getScannedDevices.elementAt(0).name,
-                        style: const TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 20,
-                            color: Colors.white,
-                            letterSpacing: 3,
-                            fontWeight: FontWeight.w700),
+                      Expanded(
+                        child: Text(
+                          deviceController.getScannedDevices.elementAt(0).name,
+                          style: const TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 20,
+                              color: Colors.white,
+                              letterSpacing: 3,
+                              fontWeight: FontWeight.w700),
+                        ),
                       ),
-                      const Spacer(),
                       showCaseConnectButton(key2, deviceController)
                     ],
                   ),
@@ -252,16 +253,17 @@ Widget scannedItem(
             children: [
               Row(
                 children: [
-                  Text(
-                    controller.getScannedDevices.elementAt(index).name,
-                    style: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: 20,
-                        color: Colors.white,
-                        letterSpacing: 3,
-                        fontWeight: FontWeight.w700),
+                  Expanded(
+                    child: Text(
+                      controller.getScannedDevices.elementAt(index).name,
+                      style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 20,
+                          color: Colors.white,
+                          letterSpacing: 3,
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
-                  const Spacer(),
                   ConnectButton(
                     controller: controller,
                     index: index,

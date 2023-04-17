@@ -6,7 +6,7 @@ import 'package:walk/src/controllers/devicecontroller.dart';
 import 'package:walk/src/controllers/wificontroller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/device/commandpage.dart';
-import 'package:walk/src/constants/bluetoothconstants.dart';
+import 'package:walk/src/constants/bt_constants.dart';
 
 class WifiPage extends StatefulWidget {
   const WifiPage({super.key});
