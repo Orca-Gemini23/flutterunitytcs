@@ -14,6 +14,14 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bluetoothconstants.dart';
 
 ///Controls the bluetooth device information and manages connection and data flow between the device and application.;
+
+enum wifiStatus {
+  NOTPROVISONED,
+
+  PROVISIONED,
+  PROCESSING
+}
+
 class DeviceController extends ChangeNotifier {
   /// stores scanned devices
   List<BluetoothDevice> _scannedDevices = [];
@@ -28,7 +36,7 @@ class DeviceController extends ChangeNotifier {
   List<BluetoothService> _services = [];
 
   /// checks whether wifi credentials are saved on or not
-  bool _wifiProvisioned = false;
+  int _wifiProvisioned = 0;
 
   /// getting scanned devices
   List<BluetoothDevice> get getScannedDevices => _scannedDevices;
@@ -46,8 +54,6 @@ class DeviceController extends ChangeNotifier {
   ///
   bool _isListening = false;
   bool get listenStatus => _isListening;
-
-  ///
 
   Set<String> _info = {};
 
@@ -111,7 +117,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   /// Getting wifi provision status
-  bool get wifiProvisionStatus => _wifiProvisioned;
+  int get wifiProvisionStatus => _wifiProvisioned;
 
   /// Status of battery
   bool _batteryInfoStatus = false;
@@ -239,7 +245,7 @@ class DeviceController extends ChangeNotifier {
         log('startDiscover() error: $error');
       });
     } catch (e) {
-      log(e.toString());
+      log("Error in startDiscovery$e");
     }
   }
 
@@ -349,46 +355,46 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  ///Used to listen to a stream of messages when the user sends INFO command
-  Future notifyRead(Guid characteristic, BuildContext context) async {
-    try {
-      if (await FlutterBlue.instance.isOn) {
-        BluetoothCharacteristic charToTarget = _characteristics
-            .firstWhere((element) => element.uuid == characteristic);
-        clearInfo();
+  // ///Used to listen to a stream of messages when the user sends INFO command
+  // Future notifyRead(Guid characteristic, BuildContext context) async {
+  //   try {
+  //     if (await FlutterBlue.instance.isOn) {
+  //       BluetoothCharacteristic charToTarget = _characteristics
+  //           .firstWhere((element) => element.uuid == characteristic);
+  //       clearInfo();
 
-        ///Clear the previous stored info if any
-        int count = 0;
-        await charToTarget.setNotifyValue(true);
-        await charToTarget.write(INFO.codeUnits);
+  //       ///Clear the previous stored info if any
+  //       int count = 0;
+  //       await charToTarget.setNotifyValue(true);
+  //       await charToTarget.write(INFO.codeUnits);
 
-        /// sending the info command
+  //       /// sending the info command
 
-        await for (var value in charToTarget.value) {
-          ///waiting for the stream to complete because we have to show a loading dialog to the user till this is completed
-          log(String.fromCharCodes(value));
+  //       await for (var value in charToTarget.value) {
+  //         ///waiting for the stream to complete because we have to show a loading dialog to the user till this is completed
+  //         log(String.fromCharCodes(value));
 
-          String information = String.fromCharCodes(value);
-          if (information.startsWith("batt")) {
-            updateBattValues(information);
-          }
-          _info.add(information.trim());
-          count++;
-          if (count == 18) {
-            ///We know the length of data we recieve so according to that we end the stream
-            updateWifiVerificationStatus();
-            break;
-          }
-        }
-      } else {
-        Fluttertoast.showToast(msg: "Seems like your Bluetooth is turned off");
-      }
-    } catch (e) {
-      log("Some error occurred in retrieving info ${e.toString()}");
-      Fluttertoast.showToast(
-          msg: "Some error occurred in retrieving info ${e.toString()}");
-    }
-  }
+  //         String information = String.fromCharCodes(value);
+  //         if (information.startsWith("batt")) {
+  //           updateBattValues(information);
+  //         }
+  //         _info.add(information.trim());
+  //         count++;
+  //         if (count == 18) {
+  //           ///We know the length of data we recieve so according to that we end the stream
+  //           updateWifiVerificationStatus();
+  //           break;
+  //         }
+  //       }
+  //     } else {
+  //       Fluttertoast.showToast(msg: "Seems like your Bluetooth is turned off");
+  //     }
+  //   } catch (e) {
+  //     log("Some error occurred in retrieving info ${e.toString()}");
+  //     Fluttertoast.showToast(
+  //         msg: "Some error occurred in retrieving info ${e.toString()}");
+  //   }
+  // }
 
   ///Function used to get battery values
   Future<void> getBatteryPercentageValues() async {
@@ -495,7 +501,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   ///Function to get the wifiProvisioned Status
-  Future<bool> getProvisionedStatus() async {
+  Future<int> getWifiProvisionedStatus() async {
     try {
       BluetoothCharacteristic? clientTarget =
           _characteristicMap[PROVISIONED_CLIENT];
@@ -507,10 +513,15 @@ class DeviceController extends ChangeNotifier {
 
       if (String.fromCharCodes(clientResponse) == "1" &&
           String.fromCharCodes(serverResponse) == "1") {
-        _wifiProvisioned = true;
+        _wifiProvisioned = wifiStatus.PROVISIONED.index;
+        notifyListeners();
+      }
+      if (String.fromCharCodes(clientResponse) == "-1" ||
+          String.fromCharCodes(serverResponse) == "-1") {
+        _wifiProvisioned = wifiStatus.PROCESSING.index;
         notifyListeners();
       } else {
-        _wifiProvisioned = false;
+        _wifiProvisioned = wifiStatus.NOTPROVISONED.index;
         notifyListeners();
       }
 
@@ -557,34 +568,6 @@ class DeviceController extends ChangeNotifier {
     } catch (e) {
       log(e.toString());
       return "error occurred";
-    }
-  }
-
-  ///Updates and gets the battery value from the whole string like "rbatt c 0.100"(The string value might differ) so this will extract the battery value ie 0.100 from the string
-  void updateBattValues(String value) {
-    if (value.contains("s")) {
-      _batteryS = value.substring(6, 11);
-      log("batteryS is $_batteryS");
-      _batteryInfoStatus = true;
-      notifyListeners();
-    } else {
-      _batteryC = value.substring(6, 11);
-      log("batteryC is $_batteryC");
-      _batteryInfoStatus = true;
-      notifyListeners();
-    }
-  }
-
-  ///Updates wifi provisioned status (The ble device tells us whether it has user's wifi SSID and Password , if it has then wifi is provisioned else it is not );
-  void updateWifiVerificationStatus() {
-    if (_info.contains("provisioned s 1") &&
-        _info.contains("provisioned c 1")) {
-      _wifiProvisioned = true;
-      print("${_wifiProvisioned}tetsing wifi");
-      notifyListeners();
-    } else {
-      _wifiProvisioned = false;
-      notifyListeners();
     }
   }
 }

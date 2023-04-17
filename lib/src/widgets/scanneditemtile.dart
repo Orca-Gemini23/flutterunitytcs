@@ -50,8 +50,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
       builder: (context, deviceController, wifiController, child) {
         return InkWell(
           onTap: () async {
-            var wifiStatus =
-                true; // await deviceController.getProvisionedStatus();
+            var wifiStatus = await deviceController.getWifiProvisionedStatus();
             log(deviceController.wifiProvisionStatus.toString());
 
             Future.delayed(
@@ -63,24 +62,50 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
                 await deviceController.getBatteryRemaining();
               },
             );
-
-            wifiStatus
-                ? Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const CommandPage();
-                      },
-                    ),
-                  )
-                : Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const WifiPage();
-                      },
-                    ),
-                  );
+            switch (wifiStatus) {
+              case 0:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WifiPage(),
+                  ),
+                );
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CommandPage(),
+                  ),
+                );
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommandPage(),
+                  ),
+                );
+                break;
+              default:
+            }
+            // wifiStatus
+            //     ? Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) {
+            //             return const CommandPage();
+            //           },
+            //         ),
+            //       )
+            //     : Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) {
+            //             return const WifiPage();
+            //           },
+            //         ),
+            //       );
           },
           child: ShowCaseView(
             globalKey: key1,
@@ -149,7 +174,7 @@ Widget scannedItem(
     builder: (context, controller, wifiController, child) {
       return InkWell(
         onTap: () async {
-          var wifiStatus = true; //await controller.getProvisionedStatus();
+          var wifiStatus = await controller.getWifiProvisionedStatus();
 
           Future.delayed(
             const Duration(milliseconds: 400),
@@ -160,23 +185,51 @@ Widget scannedItem(
               await controller.getBatteryRemaining();
             },
           );
-          wifiStatus
-              ? Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const CommandPage();
-                    },
-                  ),
-                )
-              : Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const WifiPage();
-                    },
-                  ),
-                );
+          switch (wifiStatus) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const WifiPage(),
+                ),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CommandPage(),
+                ),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CommandPage(),
+                ),
+              );
+              break;
+            default:
+          }
+
+          // wifiStatus
+          //     ? Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) {
+          //             return const CommandPage();
+          //           },
+          //         ),
+          //       )
+          //     : Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) {
+          //             return const WifiPage();
+          //           },
+          //         ),
+          //       );
         },
         child: Container(
           padding: const EdgeInsets.all(8),

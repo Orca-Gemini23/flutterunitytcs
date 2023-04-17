@@ -52,7 +52,7 @@ class _CommandPageState extends State<CommandPage> {
         actions: [
           Consumer2<DeviceController, WifiController>(
             builder: (context, deviceController, wifiController, child) {
-              return IconButton(
+              return ElevatedButton(
                 onPressed: () {
                   if (wifiController.wifiVerificationStatus) {
                     AwesomeDialog(
@@ -99,16 +99,7 @@ class _CommandPageState extends State<CommandPage> {
                     Go.to(context: context, push: const WifiPage());
                   }
                 },
-                icon: (wifiController.wifiVerificationStatus ||
-                        deviceController.wifiProvisionStatus)
-                    ? const Icon(
-                        Icons.verified,
-                        size: 30,
-                      )
-                    : const Icon(
-                        Icons.not_interested,
-                        size: 30,
-                      ),
+                child: getWifiStatusIcons(deviceController.wifiProvisionStatus),
               );
             },
           ),
@@ -525,5 +516,16 @@ class _CommandPageState extends State<CommandPage> {
         ),
       ),
     );
+  }
+
+  Widget getWifiStatusIcons(int status) {
+    if (status == wifiStatus.NOTPROVISONED.index) {
+      return const Icon(Icons.not_interested);
+    }
+    if (status == wifiStatus.PROVISIONED.index) {
+      return const Icon(Icons.verified);
+    } else {
+      return const CircularProgressIndicator();
+    }
   }
 }
