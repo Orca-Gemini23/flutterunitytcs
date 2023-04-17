@@ -50,7 +50,8 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
       builder: (context, deviceController, wifiController, child) {
         return InkWell(
           onTap: () async {
-            var wifiStatus = await deviceController.getProvisionedStatus();
+            var wifiStatus =
+                true; // await deviceController.getProvisionedStatus();
             log(deviceController.wifiProvisionStatus.toString());
 
             Future.delayed(
@@ -148,14 +149,17 @@ Widget scannedItem(
     builder: (context, controller, wifiController, child) {
       return InkWell(
         onTap: () async {
-          var wifiStatus = await controller.getProvisionedStatus();
+          var wifiStatus = true; //await controller.getProvisionedStatus();
 
-          Future.delayed(const Duration(milliseconds: 400), () async {
-            await controller.getBatteryPercentageValues();
-            await controller.getFrequencyValues();
-            await controller.getMagnitudeValues();
-            await controller.getBatteryRemaining();
-          });
+          Future.delayed(
+            const Duration(milliseconds: 400),
+            () async {
+              await controller.getBatteryPercentageValues();
+              await controller.getFrequencyValues();
+              await controller.getMagnitudeValues();
+              await controller.getBatteryRemaining();
+            },
+          );
           wifiStatus
               ? Navigator.push(
                   context,

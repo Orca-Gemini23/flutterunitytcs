@@ -405,6 +405,7 @@ class DeviceController extends ChangeNotifier {
       String tempBattC = String.fromCharCodes(clientResponse);
       String tempBattS = String.fromCharCodes(serverResponse);
       if (double.parse(tempBattS) > 100 || double.parse(tempBattS) < 0) {
+        log("Server Battery Percentage Out of Limit , modifying ....");
         if (double.parse(tempBattS) > 100) {
           _batteryS = "100";
           notifyListeners();
@@ -414,6 +415,7 @@ class DeviceController extends ChangeNotifier {
         }
       }
       if (double.parse(tempBattC) > 100 || double.parse(tempBattC) < 0) {
+        log("Client battery percentage Out of Limit , modifying");
         if (double.parse(tempBattC) > 100) {
           _batteryC = "100";
           notifyListeners();
@@ -423,15 +425,15 @@ class DeviceController extends ChangeNotifier {
         }
         _batteryInfoStatus = true;
       } else {
+        log("Battery values in range");
+        log("CLIENT BATTERY PERCENTAGE is $tempBattC");
+        log("SERVER BATTERY PERCENTAGE is $tempBattS");
         _batteryC = tempBattC;
         _batteryS = tempBattS;
         _batteryInfoStatus = true;
         notifyListeners();
       }
       _batteryInfoStatus = true;
-
-      log("CLIENT BATTERY PERCENTAGE is ${_batteryC}");
-      log("SERVER BATTERY PERCENTAGE is ${_batteryS}");
     } catch (e) {
       log(e.toString());
       log("Something went wrong while getting batteryValues.");

@@ -26,6 +26,8 @@ Widget circularProgressIndicator(
         max: 100,
         appearance: CircularSliderAppearance(
           size: 150,
+          animationEnabled: true,
+          animDurationMultiplier: 4,
           customWidths: CustomSliderWidths(
               handlerSize: 4,
               progressBarWidth: 16,

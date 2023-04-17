@@ -122,64 +122,74 @@ class _CommandPageState extends State<CommandPage> {
         child: ListView(
           shrinkWrap: true,
           children: [
-            Consumer<DeviceController>(builder: (context, controller, child) {
-              isLoaded = controller.batteryInfoStatus;
-              return Container(
-                padding: const EdgeInsets.all(10),
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: const Color(0xffFAFAFA),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                          AppString.batteryStatus,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              //fontWeight: FontWeight.bold,
-                              letterSpacing: 1),
-                        ),
-                        const Spacer(),
-                        IconButton(
+            Consumer<DeviceController>(
+              builder: (context, controller, child) {
+                isLoaded = controller.batteryInfoStatus;
+                return Container(
+                  padding: const EdgeInsets.all(10),
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffFAFAFA),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            AppString.batteryStatus,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                //fontWeight: FontWeight.bold,
+                                letterSpacing: 1),
+                          ),
+                          const Spacer(),
+                          ElevatedButton(
                             onPressed: () async {
                               await controller.getBatteryPercentageValues();
                               await controller.getBatteryRemaining();
                             },
-                            icon: Icon(Icons.refresh)),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    isLoaded
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              circularProgressIndicator(controller.battS, "L",
-                                  controller.serverBatteryRemaining),
-                              circularProgressIndicator(controller.battC, "R",
-                                  controller.clientBatteryRemaining),
-                            ],
-                          )
-                        : const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                  ],
-                ),
-              );
-            }),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColor.purpleColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              elevation: 10,
+                            ),
+                            child: const Icon(Icons.refresh),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      isLoaded
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                circularProgressIndicator(controller.battS, "L",
+                                    controller.serverBatteryRemaining),
+                                circularProgressIndicator(controller.battC, "R",
+                                    controller.clientBatteryRemaining),
+                              ],
+                            )
+                          : const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                    ],
+                  ),
+                );
+              },
+            ),
             const SizedBox(
               height: 5,
             ),
@@ -258,11 +268,11 @@ class _CommandPageState extends State<CommandPage> {
                                       .substring(0, 4)
                                   : controller.frequencyValue.toString();
 
-                          String command = "$FREQ c $approxFrequency;";
+                          String command = "$FREQ s $approxFrequency;";
 
                           log(command);
-                          // await controller.sendToDevice(
-                          //     command, WRITECHARACTERISTICS);
+                          await controller.sendToDevice(
+                              command, WRITECHARACTERISTICS);
                         },
                       ),
                     ),
@@ -330,10 +340,10 @@ class _CommandPageState extends State<CommandPage> {
                             controller.setmagValue(value);
                           },
                           onChangeEnd: (value) async {
-                            String command = "$MAG c ${controller.magValue};";
+                            String command = "$MAG s ${controller.magValue};";
                             log(command);
-                            // await controller.sendToDevice(
-                            //     command, WRITECHARACTERISTICS);
+                            await controller.sendToDevice(
+                                command, WRITECHARACTERISTICS);
                           }),
                     ],
                   ),
@@ -385,8 +395,8 @@ class _CommandPageState extends State<CommandPage> {
                         onChangeEnd: (value) async {
                           String command = "$MODE $modeValue;";
                           log(command);
-                          // await controller.sendToDevice(
-                          //     command, WRITECHARACTERISTICS);
+                          await controller.sendToDevice(
+                              command, WRITECHARACTERISTICS);
                         },
                       ),
                     ],
