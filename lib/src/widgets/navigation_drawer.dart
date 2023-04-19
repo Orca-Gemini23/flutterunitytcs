@@ -34,7 +34,9 @@ Drawer navigationDrawer(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const <Widget>[
-              CircleAvatar(),
+              CircleAvatar(
+                backgroundColor: AppColor.greenDarkColor,
+              ),
               SizedBox(
                 height: 20,
               ),

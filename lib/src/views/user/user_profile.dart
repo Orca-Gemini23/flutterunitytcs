@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/screen_context.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
+
+  static final Map<String, String> _profile = {
+    'Name': 'Kira',
+    'Phone': '+91 9876543216',
+    'Gender': 'Male',
+    'City': 'Mumbai',
+    'Device': 'WALK'
+  };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          AppString.aboutUsTitle,
+          AppString.profileTitle,
           style: TextStyle(
             color: AppColor.greenDarkColor,
           ),
@@ -21,7 +31,7 @@ class ProfilePage extends StatelessWidget {
             color: AppColor.blackColor,
           ),
           onPressed: (() {
-            Navigator.pop(context);
+            Go.back(context: context);
           }),
         ),
         centerTitle: false,
@@ -36,25 +46,40 @@ class ProfilePage extends StatelessWidget {
             (index) {
               return Container(
                 margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                padding: const EdgeInsets.only(bottom: 3),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: AppColor.black12),
-                  ),
+                padding: const EdgeInsets.all(10),
+                height: Screen.height(context: context) * 0.1,
+                decoration: BoxDecoration(
+                  color: AppColor.whiteColor,
+                  borderRadius: BorderRadius.circular(16.0),
+                  // border: const Border(
+                  //   bottom: BorderSide(color: AppColor.black12),
+                  // ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: AppColor.greyLight,
+                      offset: Offset(2, 2),
+                      blurRadius: 2.0,
+                    ),
+                    BoxShadow(
+                      color: AppColor.whiteColor,
+                      offset: Offset(-2, -2),
+                      blurRadius: 2.0,
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const <Widget>[
+                  children: <Widget>[
                     Text(
-                      'Name',
-                      style: TextStyle(
+                      _profile.keys.elementAt(index),
+                      style: const TextStyle(
                         color: AppColor.blackColor,
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'ABC',
-                      style: TextStyle(
+                      _profile.values.elementAt(index),
+                      style: const TextStyle(
                         color: AppColor.blackColor,
                         fontSize: 16,
                       ),

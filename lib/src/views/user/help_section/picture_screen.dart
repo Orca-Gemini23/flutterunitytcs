@@ -34,6 +34,7 @@ class PicturePage extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                /// Pick Image from Gallery
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 400),
                   margin: const EdgeInsets.all(10),
@@ -45,17 +46,37 @@ class PicturePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: userController.images.isEmpty
-                      ? TextButton(
-                          onPressed: userController.pickImage,
-                          child: const Text(
-                            'Select Image..',
-                          ),
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Expanded(
+                              child: TextButton(
+                                onPressed: userController.pickImage,
+                                child: const Text(
+                                  'Select\nImage..',
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: AppColor.greenDarkColor,
+                              padding: const EdgeInsets.all(0.7),
+                              height: 50,
+                            ),
+                            Expanded(
+                              child: TextButton(
+                                onPressed: userController.openCamera,
+                                child: const Text(
+                                  'Open\nCamera..',
+                                ),
+                              ),
+                            ),
+                          ],
                         )
                       : Column(
                           children: <Widget>[
                             SizedBox(
-                              height: Screen.height(context: context) / 2.3,
-                              width: Screen.width(context: context) - 20,
+                              // height: Screen.height(context: context) / 2.3,
+                              // width: Screen.width(context: context) - 20,
                               child: GridView.builder(
                                 shrinkWrap: true,
                                 physics: const BouncingScrollPhysics(),
@@ -108,17 +129,20 @@ class PicturePage extends StatelessWidget {
                               height: 10,
                             ),
                             TextButton(
-                              onPressed: userController.pickImage,
+                              onPressed: () =>
+                                  userController.pickImage(add: true),
                               style: TextButton.styleFrom(
                                 padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                               ),
                               child: const Text(
-                                'Select Image..',
+                                'Add more..',
                               ),
                             ),
                           ],
                         ),
                 ),
+
+                /// Pick Video from Gallery
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 400),
                   margin: const EdgeInsets.all(10),
@@ -136,59 +160,57 @@ class PicturePage extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                           ),
                           child: const Text(
-                            'Select Video..',
+                            'Select Video from gallery..',
                           ),
                         )
-                      : Column(
+                      : ListView(
+                          physics: const BouncingScrollPhysics(),
+                          shrinkWrap: true,
                           children: <Widget>[
-                            SizedBox(
-                              height: Screen.height(context: context) / 2.3,
-                              width: Screen.width(context: context) - 20,
-                              child: InkWell(
-                                onTap: () {
-                                  // photoViewer(image.path, context);
-                                },
-                                child: Column(
-                                  children: <Widget>[
-                                    userController.video == null
-                                        ? const Center()
-                                        : SizedBox(
-                                            height: 150,
-                                            width:
-                                                Screen.width(context: context) -
-                                                    40,
-                                            child: AspectRatio(
-                                              aspectRatio: userController
-                                                  .videoController
-                                                  .value
-                                                  .aspectRatio,
-                                              child: VideoPlayer(userController
-                                                  .videoController),
-                                            ),
-                                          ),
-                                    OutlinedButton.icon(
-                                      onPressed: userController.deleteVideo,
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: AppColor.greenDarkColor,
-                                      ),
-                                      label: const Text(
-                                        'Delete',
-                                        style: TextStyle(
-                                            color: AppColor.greenDarkColor),
-                                      ),
-                                      style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(
-                                          color: AppColor.greenDarkColor,
-                                        ),
-                                        padding: const EdgeInsets.fromLTRB(
-                                            4, 0, 4, 0),
-                                      ),
+                            // SizedBox(
+                            //   height: Screen.height(context: context) / 2.3,
+                            //   width: Screen.width(context: context) - 20,
+                            //   child: InkWell(
+                            //     onTap: () {
+                            //       // photoViewer(image.path, context);
+                            //     },
+                            //     child: Column(
+                            //       children: <Widget>[
+                            userController.video == null
+                                ? const Center()
+                                : SizedBox(
+                                    // height: 150,
+                                    width: Screen.width(context: context) - 40,
+                                    child: AspectRatio(
+                                      aspectRatio: userController
+                                          .videoController.value.aspectRatio,
+                                      child: VideoPlayer(
+                                          userController.videoController),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                                  ),
+                            // OutlinedButton.icon(
+                            //   onPressed: userController.deleteVideo,
+                            //   icon: const Icon(
+                            //     Icons.delete,
+                            //     color: AppColor.greenDarkColor,
+                            //   ),
+                            //   label: const Text(
+                            //     'Delete',
+                            //     style: TextStyle(
+                            //         color: AppColor.greenDarkColor),
+                            //   ),
+                            //   style: OutlinedButton.styleFrom(
+                            //     side: const BorderSide(
+                            //       color: AppColor.greenDarkColor,
+                            //     ),
+                            //     padding: const EdgeInsets.fromLTRB(
+                            //         4, 0, 4, 0),
+                            //   ),
+                            // ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
                             const SizedBox(
                               height: 10,
                             ),
@@ -198,7 +220,7 @@ class PicturePage extends StatelessWidget {
                                 padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                               ),
                               child: const Text(
-                                'Select Image..',
+                                'Select Another..',
                               ),
                             ),
                           ],
@@ -213,7 +235,7 @@ class PicturePage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 10),
         child: FloatingActionButton.extended(
           onPressed: null,
-          label: Text(
+          label: const Text(
             'Send selected media',
             style: TextStyle(
               color: AppColor.whiteColor,

@@ -63,10 +63,20 @@ class UserController extends ChangeNotifier {
   }
 
   /// Pick an image from gallery
-  void pickImage() async {
+  void pickImage({bool add = false}) async {
     try {
       var pics = await imagePicker.pickMultiImage();
-      images = pics.map((e) => File(e.path)).toList();
+      // ignore: unnecessary_null_comparison
+      if (pics.isNotEmpty && pics != null) {
+        if (add) {
+          for (var element in pics) {
+            File f = File(element.path);
+            images.add(f);
+          }
+        } else {
+          images = pics.map((e) => File(e.path)).toList();
+        }
+      }
       notifyListeners();
     } catch (e) {
       log('pickImage func error: $e');
@@ -84,12 +94,29 @@ class UserController extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      log('pickImage func error: $e');
+      log('pickVideo func error: $e');
       notifyListeners();
     }
   }
 
-  /// Delete images from lisy
+  /// Opens camera for taking pics
+  void openCamera() async {
+    try {
+      var pics = await imagePicker.pickImage(source: ImageSource.camera);
+      if (pics != null) {
+        images.add(File(pics.path));
+      } else {
+        log('not captured any image or video');
+      }
+
+      notifyListeners();
+    } catch (e) {
+      log('Capture image func error: $e');
+      notifyListeners();
+    }
+  }
+
+  /// Delete images from list
   void deleteImage(int index) async {
     try {
       images.removeAt(index);
