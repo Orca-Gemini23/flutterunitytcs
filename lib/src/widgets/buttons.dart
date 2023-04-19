@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:walk/src/controllers/devicecontroller.dart';
+import 'package:walk/src/controllers/device_controller.dart';
 
 import 'package:walk/src/views/showcase/showcaseview.dart';
 

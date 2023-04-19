@@ -19,7 +19,7 @@ class Test {
     for (var map in list) {
       rows.add([map["Time"], map["BattValue"]]);
     }
-    print(rows.toString());
+    log(rows.toString());
 
     String csv = const ListToCsvConverter().convert(rows);
     String dir = await localPath();

@@ -1,4 +1,3 @@
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String wifiKey = "isWifiCredsSaved";

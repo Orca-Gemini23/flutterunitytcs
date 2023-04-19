@@ -6,7 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/utils/background_isolate.dart';
 import 'package:walk/walk_app.dart';
-import 'package:walk/src/controllers/notificationcontroller.dart';
+import 'package:walk/src/controllers/notification_controller.dart';
 
 void main() async {
   /// Ensuring widgets initialization

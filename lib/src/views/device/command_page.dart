@@ -8,12 +8,12 @@ import 'package:walk/src/constants/bt_constants.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/wifi_enum.dart';
-import 'package:walk/src/controllers/devicecontroller.dart';
-import 'package:walk/src/controllers/sharedpreferences.dart';
-import 'package:walk/src/controllers/wificontroller.dart';
+import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/controllers/shared_preferences.dart';
+import 'package:walk/src/controllers/wifi_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 
-import 'package:walk/src/views/device/wifipage.dart';
+import 'package:walk/src/views/device/wifi_page.dart';
 import 'package:walk/src/widgets/circlebattstatus.dart';
 
 class CommandPage extends StatefulWidget {

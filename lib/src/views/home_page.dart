@@ -1,23 +1,18 @@
+// ignore_for_file: prefer_final_fields
+
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:walk/src/utils/background_isolate.dart';
-import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/controllers/devicecontroller.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/auth/login_page.dart';
-import 'package:walk/src/views/device/wifipage.dart';
-import 'package:walk/src/widgets/loadingdialog.dart';
-import 'package:walk/src/widgets/navigationdrawer.dart';
+import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/widgets/navigation_drawer.dart';
 import 'package:walk/test.dart';
-import '../widgets/scanneditemtile.dart';
+import '../widgets/scanned_item_tile.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key, required this.isShowCaseDone});
@@ -32,9 +27,9 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
   final GlobalKey globalKey3 = GlobalKey();
   final GlobalKey globalKey4 = GlobalKey();
   final PageController pageController = PageController();
-  bool _isPeriodicRunning = false;
+  // bool _isPeriodicRunning = false;
 
-  bool _isInForeground = true;
+  // bool _isInForeground = true;
   bool serviceStarted = false;
   static const platform = MethodChannel("example_service");
   String _serverState = "Did you not make the call yet ";
@@ -45,8 +40,8 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
           : Timer(
               const Duration(seconds: 2),
               (() async {
-                final result =
-                    await platform.invokeMethod('startExampleService');
+                // final result =
+                await platform.invokeMethod('startExampleService');
 
                 ///TODO : Start Scan and try connecting to the device
               }),
@@ -179,14 +174,12 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
             },
           ),
         ),
-        floatingActionButton:
-
-            ///TODO:Add refresh button
-            Consumer<DeviceController>(
-                builder: (context, controller, snapshot) {
+        floatingActionButton: Consumer<DeviceController>(
+            builder: (context, controller, snapshot) {
           return FloatingActionButton(
             onPressed: () async {
-              String value = await controller.getRawBatteryNewton();
+              // String value =
+              await controller.getRawBatteryNewton();
               List<Map<String, String>> batteryMap = [];
 
               Timer.periodic(
@@ -197,7 +190,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
                     batteryMap.clear();
                     batteryMap.add({
                       "Time": DateTime.now().toString(),
-                      "BattValue": "$value"
+                      "BattValue": value
                     });
                     Test.exportCSV(batteryMap);
                   }

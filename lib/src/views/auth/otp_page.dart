@@ -4,8 +4,7 @@ import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
-import 'package:walk/src/views/auth/signuppage.dart';
-import 'package:walk/src/widgets/textfields.dart';
+import 'package:walk/src/views/auth/signup_page.dart';
 
 class OTPPage extends StatefulWidget {
   const OTPPage({super.key});
@@ -15,8 +14,6 @@ class OTPPage extends StatefulWidget {
 }
 
 class _OTPPageState extends State<OTPPage> {
-  final TextEditingController _phoneController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -71,7 +68,7 @@ class _OTPPageState extends State<OTPPage> {
                       ElevatedButton(
                         onPressed: () {
                           //add checks and submit details
-                          Go.to(context: context, push: SignupPage());
+                          Go.to(context: context, push: const SignupPage());
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(

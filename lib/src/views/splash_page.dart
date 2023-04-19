@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/controllers/sharedpreferences.dart';
-import 'package:walk/src/views/auth/first_page.dart';
-import 'package:walk/src/views/chart_details.dart';
-import 'package:walk/src/views/homepage.dart';
+import 'package:walk/src/controllers/shared_preferences.dart';
+import 'package:walk/src/views/home_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -38,12 +36,13 @@ class _SplashPageState extends State<SplashPage> {
       transitionsBuilder: ((context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 10.0);
         const end = Offset.zero;
-        const curve = Curves.easeIn;
-        var tween = Tween(begin: begin, end: end);
-        final curvedAnimation = CurvedAnimation(
-          parent: animation,
-          curve: curve,
-        );
+        // const curve = Curves.easeIn;
+        // var tween =
+        Tween(begin: begin, end: end);
+        // final curvedAnimation = CurvedAnimation(
+        //   parent: animation,
+        //   curve: curve,
+        // );
         return ScaleTransition(
           scale: animation,
           child: child,

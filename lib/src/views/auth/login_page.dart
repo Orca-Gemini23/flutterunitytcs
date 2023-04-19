@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Go.to(context: context, push: PhoneAuthPage());
+                        Go.to(context: context, push: const PhoneAuthPage());
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(

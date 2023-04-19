@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -14,7 +16,6 @@ import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/constants/wifi_enum.dart';
-import 'package:walk/src/controllers/sharedpreferences.dart';
 
 class DeviceController extends ChangeNotifier {
   /// stores scanned devices
@@ -316,10 +317,10 @@ class DeviceController extends ChangeNotifier {
           .first
           .characteristics;
 
-      _characteristics.forEach((element) {
+      for (var element in _characteristics) {
         characteristicMap.putIfAbsent(element.uuid, () => element);
         notifyListeners();
-      });
+      }
 
       //log(characteristicMap[CHARGERCONN].toString());
 

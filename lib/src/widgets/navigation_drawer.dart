@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/controllers/devicecontroller.dart';
+import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
-import 'package:walk/src/views/device/commandpage.dart';
+import 'package:walk/src/views/device/command_page.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
 import 'package:walk/src/views/user/help_section/help.dart';
-import 'package:walk/src/views/user/help_section/raise_ticket.dart';
 import 'package:walk/src/views/user/user_profile.dart';
 
 Drawer navigationDrawer(BuildContext context) {
@@ -83,13 +82,13 @@ Widget drawerItem(BuildContext context) {
       Go.to(context: context, push: const ProfilePage());
     },
     () {
-      // if (Provider.of<DeviceController>(context, listen: false)
-      //     .getConnectedDevices
-      //     .isEmpty) {
-      //   Fluttertoast.showToast(msg: 'No devices connected!');
-      // } else {
-      Go.to(context: context, push: const RaiseTicketPage());
-      // }
+      if (Provider.of<DeviceController>(context, listen: false)
+          .getConnectedDevices
+          .isEmpty) {
+        Fluttertoast.showToast(msg: 'No devices connected!');
+      } else {
+        Go.to(context: context, push: const CommandPage());
+      }
     },
     () {
       Go.to(context: context, push: const AboutUsPage());
