@@ -1,7 +1,10 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/models/medication_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/user/medication/medication_page.dart';
 import 'package:walk/src/views/user/medication/prescription_page.dart';
@@ -9,8 +12,20 @@ import 'package:walk/src/views/user/personal_info.dart';
 import 'package:walk/src/views/user/quiz_section/quiz_page.dart';
 
 class UserController extends ChangeNotifier {
-  /// adding prescriptionLoader
-  bool addPrescriptionLoader = false;
+  UserController() {
+    medicineTextController = [
+      medNameController,
+      medDescController,
+      medAmountController,
+      medTypeController
+    ];
+  }
+
+  /// Currently opened prescription
+  PrescriptionModel? currentPrescription;
+
+  /// Prescription Index also its ID from Hive box
+  int prescriptionIndex = -1;
 
   /// Prescription Name
   TextEditingController prescriptionNameController = TextEditingController();
@@ -33,154 +48,125 @@ class UserController extends ChangeNotifier {
   /// Medication Type (Capsule/syrup etc)
   TextEditingController medTypeController = TextEditingController();
 
+  /// List of medicine controller
+  List<TextEditingController> medicineTextController = [];
+
   /// Medication Time during a day (morning/afternoon/evening/night)
-  int medTiming = -1;
+  int medTiming = 0;
+  List<int> medTimings = [0, 1, 2, 3];
 
   /// Medication before or after food
-  bool afterFood = false;
+  int afterFood = 0;
 
   /// Medication Duration (for how many days)
   DateTime medicationDuration = DateTime.now();
 
   /// showDialog Global Form key for prescription
-  final _prescriptionFormKey = GlobalKey<FormState>();
+  final prescriptionFormKey = GlobalKey<FormState>();
 
   /// showDialog Global Form key for Medication Page
   final medicineFormKey = GlobalKey<FormState>();
 
+  /// List of prescriptions
+  List<PrescriptionModel> prescriptionList = [];
+
+  /// List of Medicines
+  List<MedicineModel> medicineList = [];
+
   /// Creates new prescription reminder
   Future<void> addPrescription(BuildContext context) async {
     try {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          content: SizedBox(
-            width: 150,
+      if (prescriptionFormKey.currentState!.validate()) {
+        // generates unique id for prescription
+        dynamic uniqueID = UniqueKey();
+        log('Unique prescription ID: $uniqueID');
 
-            // padding: const EdgeInsets.all(10.0),
-            // decoration: BoxDecoration(
-            //   borderRadius: BorderRadius.circular(16.0),
-            //   color: AppColor.whiteColor,
-            // ),
-            child: Form(
-              key: _prescriptionFormKey,
-              child: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  Align(
-                    child: TextFormField(
-                      controller: prescriptionNameController,
-                      cursorColor: AppColor.greenDarkColor,
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          return null;
-                        } else {
-                          return 'Field cannot be empty!';
-                        }
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Prescription Name',
-                        hintText: 'Medication for what ailment or condition',
-                        focusColor: AppColor.greenDarkColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Align(
-                    child: TextFormField(
-                      controller: prescriptionDoctorController,
-                      cursorColor: AppColor.greenDarkColor,
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          return null;
-                        } else {
-                          return 'Field cannot be empty!';
-                        }
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Doctor Name',
-                        hintText: 'Prescribed by?',
-                        focusColor: AppColor.greenDarkColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        ElevatedButton(
-                          onPressed: () {
-                            prescriptionNameController.clear();
-                            prescriptionDoctorController.clear();
-                            Go.back(context: context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColor.whiteColor,
-                            shape: const StadiumBorder(),
-                          ),
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(color: AppColor.greenDarkColor),
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_prescriptionFormKey.currentState!.validate()) {
-                              Go.to(
-                                  context: context,
-                                  push: const MedicationPage());
-                            } else {
-                              log('Field EMPTY!');
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColor.greenDarkColor,
-                            shape: const StadiumBorder(),
-                          ),
-                          child: const Text(
-                            'OK',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
+        // saving prescription in local storage
+        LocalDB.savePrescription(PrescriptionModel(
+          prescriptionId: uniqueID.toString(),
+          prescriptionName: prescriptionNameController.text,
+          doctorName: prescriptionDoctorController.text,
+        ));
+
+        // closes showDialog
+        Go.back(context: context);
+
+        // clears the specified fields
+        prescriptionNameController.clear();
+        prescriptionDoctorController.clear();
+      } else {
+        log('Field EMPTY!');
+      }
+
       notifyListeners();
     } catch (e) {
       log('Adding prescription error: $e');
     }
+  }
+
+  /// Deletes prescription from local storage
+  void deletePrescription(int index) async {
+    try {
+      await LocalDB.deletePrescription(index);
+      notifyListeners();
+    } catch (e) {
+      log('Deleting prescription from storage error: $e');
+    }
+  }
+
+  /// Prescription tile on Tap method
+  void prescriptionTileTap(
+      BuildContext context, PrescriptionModel prescription, int presIndex) {
+    try {
+      prescriptionIndex = presIndex;
+      currentPrescription = prescription;
+      Go.to(
+          context: context,
+          push: MedicationPage(
+            medPageTitle: prescription.prescriptionName,
+          ));
+      notifyListeners();
+    } catch (e) {
+      log('prescription tile on tap error: $e');
+    }
+  }
+
+  /// Adds Medicine in the prescription
+  void addMedicine(BuildContext context) async {
+    try {
+      if (currentPrescription != null) {
+        var newMedicineBox = await LocalDB.openNewMedicineBox(
+            currentPrescription!.prescriptionId);
+
+        var medicine = MedicineModel(
+          medicineId: '',
+          medicineName: medNameController.text,
+          medicineDesc: medDescController.text,
+          medicineAmount: medAmountController.text,
+          medicineType: medTypeController.text,
+          medicineTiming: medTiming,
+          afterFood: afterFood,
+          medicineDuration: DateTime.now(),
+        );
+        LocalDB.saveMedicine(newMedicineBox, medicine);
+        // currentPrescription!.medicineModel = newMedicineBox;
+        // // updating prescription with medicine in local storage
+        // LocalDB.updatePrescription(prescriptionIndex, currentPrescription);
+        log('success?');
+      }
+    } catch (e) {
+      log('Add medicine error: $e');
+    }
+  }
+
+  void onMedTimingSwitch(int value) {
+    medTiming = value;
+    notifyListeners();
+  }
+
+  void onAfterFood(int value) {
+    afterFood = value;
+    notifyListeners();
   }
 
   /// Account main screen navigation switch case
@@ -189,16 +175,12 @@ class UserController extends ChangeNotifier {
       switch (index) {
         case 0:
           Go.to(context: context, push: const ProfilePage());
-
           break;
-
         case 1:
           Go.to(context: context, push: const PrescriptionPage());
-
           break;
         case 2:
           Go.to(context: context, push: const QuizPage());
-
           break;
         default:
       }
@@ -207,12 +189,26 @@ class UserController extends ChangeNotifier {
     }
   }
 
+  /// Text label for Medicine page's add medicine method
+  List<String> medicineTextEditingLabel = [
+    'Name',
+    'Description',
+    'Medicine Amount',
+    'Medicine Type'
+  ];
+
   /// List of navigation in Account page
   Map<String, String> accountNavigationTile = {
     'Profle': 'Personal Information',
     'Medication Reminder': 'Create your own reminder for medications.',
     'Take a Quiz': 'Help us calibrate your device, for you personally.',
   };
+
+  /// List of Time duration in a day
+  List<String> dayTimings = ['Morning', 'Afternoon', 'Evening', 'Dinner'];
+
+  /// Tile Icon Data for account page
+  List<IconData> accountTileIcon = [Icons.person, Icons.medication, Icons.quiz];
 
   @override
   void dispose() {
@@ -223,7 +219,6 @@ class UserController extends ChangeNotifier {
     medAmountController.dispose();
     medDescController.dispose();
     medTypeController.dispose();
-
     super.dispose();
   }
 }

@@ -42,9 +42,12 @@ class AccountPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: ListTile(
-              leading: const Icon(
-                Icons.help,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              leading: Icon(
+                userContoller.accountTileIcon[index],
                 color: AppColor.whiteColor,
+                size: 30,
               ),
               title: Text(
                 userContoller.accountNavigationTile.keys.elementAt(index),

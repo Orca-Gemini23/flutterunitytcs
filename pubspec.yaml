@@ -36,6 +36,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   awesome_dialog: ^3.0.2
+  animated_toggle_switch: ^0.6.1
   bluetooth_enable_fork: ^0.1.6
   permission_handler: ^10.2.0
   font_awesome_flutter: ^10.4.0
@@ -82,6 +83,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  # For generating TypeAdapters for Custom Objects and save it in Local Storage
+  hive_generator: ^2.0.0
+  build_runner: ^2.3.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
