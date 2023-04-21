@@ -3,7 +3,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/controllers/user_controller.dart';
+import 'package:walk/src/controllers/help_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 
@@ -29,7 +29,7 @@ class PicturePage extends StatelessWidget {
         elevation: 0,
         backgroundColor: AppColor.whiteColor,
       ),
-      body: Consumer<UserController>(
+      body: Consumer<HelpController>(
         builder: (context, userController, child) {
           return SingleChildScrollView(
             child: Column(

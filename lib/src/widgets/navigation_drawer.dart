@@ -8,8 +8,9 @@ import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/device/command_page.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
+import 'package:walk/src/views/user/account_page.dart';
 import 'package:walk/src/views/user/help_section/help.dart';
-import 'package:walk/src/views/user/user_profile.dart';
+import 'package:walk/src/views/user/personal_info.dart';
 
 Drawer navigationDrawer(BuildContext context) {
   return Drawer(
@@ -69,7 +70,7 @@ Widget drawerItem(BuildContext context) {
   ];
   List<String> drawerTileName = [
     'Home',
-    'Profile',
+    'Account',
     'Device Control',
     'About Us',
     'Contact Us',
@@ -81,7 +82,7 @@ Widget drawerItem(BuildContext context) {
       //Home
     },
     () {
-      Go.to(context: context, push: const ProfilePage());
+      Go.to(context: context, push: const AccountPage());
     },
     () {
       if (Provider.of<DeviceController>(context, listen: false)

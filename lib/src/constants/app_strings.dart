@@ -38,7 +38,10 @@ class AppString {
   static const beInContact =
       'If you have a family member who has been diagnosed with Parkinson\'s or if you are a caregiver, please feel free to contact us.';
   static const weAreAvailable = "We are also available on";
+  static const accountTitle = "Account";
   static const profileTitle = "Profile";
+  static const medicationTitle = "Medication Remider";
+  static const quizTitle = "Lifespark Quiz!";
   static const aboutUsTitle = "About Us";
   static const yours = "Thoughtfully Yours";
   static const companyDetails = "Company details";
