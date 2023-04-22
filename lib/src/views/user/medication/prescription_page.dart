@@ -39,7 +39,7 @@ class PrescriptionPage extends StatelessWidget {
         elevation: 0,
       ),
       body: ValueListenableBuilder<Box<PrescriptionModel>>(
-          valueListenable: LocalDB.medS(),
+          valueListenable: LocalDB.listenablePrescription(),
           builder: (context, prescription, child) {
             return ListView.builder(
               itemCount: prescription.length,
@@ -48,7 +48,8 @@ class PrescriptionPage extends StatelessWidget {
                 return PrescriptionCard(
                   title: presc.prescriptionName,
                   doctor: presc.doctorName,
-                  onDelete: () => userController.deletePrescription(index),
+                  onDelete: () => userController.deletePrescription(
+                      index, presc.prescriptionId),
                   onTap: () =>
                       userController.prescriptionTileTap(context, presc, index),
                 );

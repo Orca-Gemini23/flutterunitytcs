@@ -27,40 +27,40 @@ Future<void> disposeHiveBox() async {
 }
 
 class LocalDB {
-  /// Opens new Box for every new medicine
-  static Future<Box<MedicineModel>> openNewMedicineBox(String name) async =>
-      await Hive.openBox<MedicineModel>(name);
-
   /// Instance of Hive box for storing prescriptions
-  static Box<PrescriptionModel> medBox() =>
+  static Box<PrescriptionModel> prescriptionBox() =>
       Hive.box<PrescriptionModel>("medBox"); //static Box<PrescriptionModel>
 
   /// Get specific prescription by its ID
   static PrescriptionModel? get prescription =>
-      medBox().get(prescription?.prescriptionId);
+      prescriptionBox().get(prescription?.prescriptionId);
 
   /// Save specific prescription in local storage
   static savePrescription(PrescriptionModel prescription) {
-    medBox().add(prescription);
+    prescriptionBox().add(prescription);
   }
 
   /// Updates specific prescription in local storage
   static updatePrescription(int key, PrescriptionModel? prescription) {
-    medBox().put(key, prescription!);
+    prescriptionBox().put(key, prescription!);
   }
 
   /// Deletes specific prescription from local storage
   static deletePrescription(int index) async {
-    await medBox().deleteAt(index);
+    await prescriptionBox().deleteAt(index);
   }
 
   /// Listenable value for prescription Box
-  static ValueListenable<Box<PrescriptionModel>> medS() =>
-      medBox().listenable();
+  static ValueListenable<Box<PrescriptionModel>> listenablePrescription() =>
+      prescriptionBox().listenable();
 
-  //     /// Instance of Hive box for storing prescriptions
-  // static Box<MedicineModel> medicine() =>
-  //     Hive.box<MedicineModel>("medBox"); //static Box<PrescriptionModel>
+  /// Opens new Box for every new medicine
+  static Future<Box<MedicineModel>> openNewMedicineBox(String name) async =>
+      await Hive.openBox<MedicineModel>(name);
+
+  /// Instance of Hive box for storing medicine
+  static Box<MedicineModel> medicineBox(String name) =>
+      Hive.box<MedicineModel>(name); //static Box<PrescriptionModel>
 
   /// Get specific prescription by its ID
   // static MedicineModel? get medicineID =>
@@ -80,6 +80,12 @@ class LocalDB {
   /// Deletes medicine from local storage
   static deleteMedicine(Box<MedicineModel> medicineBox, int index) async {
     await medicineBox.deleteAt(index);
+  }
+
+  /// Deletes All the medicine in the specific prescription from local storage
+  static deleteMedicineBox(String name) async {
+    var medicineBox = Hive.box<MedicineModel>(name);
+    await medicineBox.deleteFromDisk();
   }
 
   /// Listenable value for medicine Box

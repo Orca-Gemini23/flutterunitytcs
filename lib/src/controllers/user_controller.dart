@@ -53,7 +53,13 @@ class UserController extends ChangeNotifier {
 
   /// Medication Time during a day (morning/afternoon/evening/night)
   int medTiming = 0;
-  List<int> medTimings = [0, 1, 2, 3];
+  // List<int> medTimings = [0, 1, 2, 3];
+  Map<String, bool> medTimings = {
+    'Morning': false,
+    'Afternoon': false,
+    'Evening': false,
+    'Night': false
+  };
 
   /// Medication before or after food
   int afterFood = 0;
@@ -105,9 +111,10 @@ class UserController extends ChangeNotifier {
   }
 
   /// Deletes prescription from local storage
-  void deletePrescription(int index) async {
+  void deletePrescription(int index, String medicineBoxName) async {
     try {
       await LocalDB.deletePrescription(index);
+      await LocalDB.deleteMedicineBox(medicineBoxName);
       notifyListeners();
     } catch (e) {
       log('Deleting prescription from storage error: $e');
@@ -115,15 +122,17 @@ class UserController extends ChangeNotifier {
   }
 
   /// Prescription tile on Tap method
-  void prescriptionTileTap(
-      BuildContext context, PrescriptionModel prescription, int presIndex) {
+  void prescriptionTileTap(BuildContext context, PrescriptionModel prescription,
+      int presIndex) async {
     try {
+      await LocalDB.openNewMedicineBox(prescription.prescriptionId);
+
       prescriptionIndex = presIndex;
       currentPrescription = prescription;
       Go.to(
           context: context,
           push: MedicationPage(
-            medPageTitle: prescription.prescriptionName,
+            prescriptionModel: prescription,
           ));
       notifyListeners();
     } catch (e) {
@@ -135,8 +144,8 @@ class UserController extends ChangeNotifier {
   void addMedicine(BuildContext context) async {
     try {
       if (currentPrescription != null) {
-        var newMedicineBox = await LocalDB.openNewMedicineBox(
-            currentPrescription!.prescriptionId);
+        var medicineBox =
+            LocalDB.medicineBox(currentPrescription!.prescriptionId);
 
         var medicine = MedicineModel(
           medicineId: '',
@@ -148,7 +157,7 @@ class UserController extends ChangeNotifier {
           afterFood: afterFood,
           medicineDuration: DateTime.now(),
         );
-        LocalDB.saveMedicine(newMedicineBox, medicine);
+        LocalDB.saveMedicine(medicineBox, medicine);
         // currentPrescription!.medicineModel = newMedicineBox;
         // // updating prescription with medicine in local storage
         // LocalDB.updatePrescription(prescriptionIndex, currentPrescription);
@@ -156,6 +165,18 @@ class UserController extends ChangeNotifier {
       }
     } catch (e) {
       log('Add medicine error: $e');
+    }
+  }
+
+  /// Deletes medicine from local storage
+  void deleteMedicine(int index) async {
+    try {
+      var medicineBox =
+          LocalDB.medicineBox(currentPrescription!.prescriptionId);
+      await LocalDB.deleteMedicine(medicineBox, index);
+      notifyListeners();
+    } catch (e) {
+      log('Deleting prescription from storage error: $e');
     }
   }
 

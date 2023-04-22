@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
@@ -14,15 +15,15 @@ import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/widgets/medication_card.dart';
 
 class MedicationPage extends StatelessWidget {
-  const MedicationPage({super.key, required this.medPageTitle});
-  final String medPageTitle;
+  const MedicationPage({super.key, required this.prescriptionModel});
+  final PrescriptionModel prescriptionModel;
   @override
   Widget build(BuildContext context) {
     var userController = Provider.of<UserController>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          medPageTitle,
+          prescriptionModel.prescriptionName,
           style: const TextStyle(
             color: AppColor.greenDarkColor,
           ),
@@ -36,18 +37,18 @@ class MedicationPage extends StatelessWidget {
             Go.back(context: context);
           }),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColor.blackColor,
-            ),
-            onPressed: (() {
-              var l = LocalDB.medicinesList('[#d65af]'); //[#d65af]
-              log(l.length.toString());
-            }),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(
+        //       Icons.arrow_back,
+        //       color: AppColor.blackColor,
+        //     ),
+        //     onPressed: (() {
+        //       var l = LocalDB.medicinesList('[#d65af]'); //[#d65af]
+        //       log(l.length.toString());
+        //     }),
+        //   ),
+        // ],
         centerTitle: false,
         backgroundColor: AppColor.whiteColor,
         elevation: 0,
@@ -62,8 +63,10 @@ class MedicationPage extends StatelessWidget {
                 var meds = medicine.values.toList().elementAt(index);
                 return MedicineCard(
                   title: meds.medicineName,
-                  subtitle: meds.medicineAmount,
-                  // onDelete: () => userController.deletePrescription(index),
+                  type: meds.medicineType,
+                  amount: meds.medicineAmount,
+                  afterFood: meds.afterFood,
+                  onDelete: () => userController.deleteMedicine(index),
                   // onTap: () =>
                   //     userController.prescriptionTileTap(context, presc, index),
                 );
@@ -100,7 +103,7 @@ class MedicationPage extends StatelessWidget {
           child: Stack(
             children: [
               ListView(
-                physics: const NeverScrollableScrollPhysics(),
+                // physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(top: 50),
                 shrinkWrap: true,
                 children: <Widget>[
@@ -142,76 +145,57 @@ class MedicationPage extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  SizedBox(
-                    width: Screen.width(context: context) - 20,
-                    child: Consumer<UserController>(
-                      builder: (context, controller, child) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                AnimatedToggleSwitch<int>.rolling(
-                                  current: controller.medTiming,
-                                  values: controller.medTimings,
-                                  borderColor: AppColor.greenDarkColor,
-                                  indicatorColor: AppColor.greenDarkColor,
-                                  onChanged: controller.onMedTimingSwitch,
-                                  customIconBuilder: (context, local, global) {
-                                    var ic = [
-                                      Icons.cloud,
-                                      Icons.sunny,
-                                      Icons.cloudy_snowing,
-                                      Icons.nightlight_round,
-                                    ];
-                                    return Icon(
-                                      ic[local.index],
-                                      color: local.value == controller.medTiming
-                                          ? AppColor.whiteColor
-                                          : AppColor.blackColor,
-                                    );
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  userController
-                                      .dayTimings[userController.medTiming],
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColor.greenDarkColor),
-                                ),
-                              ],
+                  Consumer<UserController>(
+                    builder: (context, controller, child) {
+                      List<MultiSelectItem<bool>> items = [];
+                      controller.medTimings.forEach((key, value) {
+                        items.add(MultiSelectItem(value, key));
+                      });
+                      return Column(
+                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          MultiSelectChipDisplay<bool>(
+                            items: items,
+
+                            onTap: (value) {
+                              try {
+                                // controller.medTimings
+                                //     .update(value.el, (value) => value);
+                              } catch (e) {
+                                log('$e');
+                              }
+                            },
+                            // title: const Text(
+                            //   'Timings',
+                            //   style: TextStyle(color: AppColor.whiteColor),
+                            // ),
+                            // headerColor: AppColor.greenDarkColor,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          AnimatedToggleSwitch.dual(
+                            current: controller.afterFood,
+                            first: 0,
+                            second: 1,
+                            borderColor: AppColor.greenDarkColor,
+                            height: 45,
+                            indicatorColor: AppColor.greenDarkColor,
+                            textBuilder: (value) => Text(
+                              value == 0 ? 'Before Food' : 'After Food',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColor.greenDarkColor,
+                              ),
                             ),
-                            Column(
-                              children: [
-                                AnimatedToggleSwitch.dual(
-                                  current: controller.afterFood,
-                                  first: 0,
-                                  second: 1,
-                                  borderColor: AppColor.greenDarkColor,
-                                  height: 45,
-                                  indicatorColor: AppColor.greenDarkColor,
-                                  textBuilder: (value) => Text(
-                                    value == 0 ? 'Before Food' : 'After Food',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColor.greenDarkColor,
-                                    ),
-                                  ),
-                                  onChanged: userController.onAfterFood,
-                                ),
-                                const SizedBox(
-                                  height: 25,
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                            onChanged: userController.onAfterFood,
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 10,
