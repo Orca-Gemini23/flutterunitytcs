@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:walk/src/constants/app_strings.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
@@ -23,14 +24,26 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lifespark Quiz"),
+        title: const Text(AppString.quizTitle),
       ),
-      body: Container(
+      body: SizedBox(
         width: double.maxFinite,
         height: double.maxFinite,
         child: FutureBuilder(
           builder: ((context, snapshot) {
-            return const CircularProgressIndicator();
+            return Stack(
+              children: const [
+                Center(
+                  child: SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: CircularProgressIndicator()),
+                ),
+                Center(
+                  child: Text('Comning soon!'),
+                ),
+              ],
+            );
           }),
         ),
       ),

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/controllers/devicecontroller.dart';
+import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
-import 'package:walk/src/views/device/commandpage.dart';
+import 'package:walk/src/views/device/command_page.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
+import 'package:walk/src/views/user/account_page.dart';
 import 'package:walk/src/views/user/help_section/help.dart';
-import 'package:walk/src/views/user/help_section/raise_ticket.dart';
-import 'package:walk/src/views/user/user_profile.dart';
+import 'package:walk/src/views/user/personal_info.dart';
 
 Drawer navigationDrawer(BuildContext context) {
   return Drawer(
@@ -35,7 +35,9 @@ Drawer navigationDrawer(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const <Widget>[
-              CircleAvatar(),
+              CircleAvatar(
+                backgroundColor: AppColor.greenDarkColor,
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -68,7 +70,7 @@ Widget drawerItem(BuildContext context) {
   ];
   List<String> drawerTileName = [
     'Home',
-    'Profile',
+    'Account',
     'Device Control',
     'About Us',
     'Contact Us',
@@ -80,16 +82,16 @@ Widget drawerItem(BuildContext context) {
       //Home
     },
     () {
-      Go.to(context: context, push: const ProfilePage());
+      Go.to(context: context, push: const AccountPage());
     },
     () {
-      // if (Provider.of<DeviceController>(context, listen: false)
-      //     .getConnectedDevices
-      //     .isEmpty) {
-      //   Fluttertoast.showToast(msg: 'No devices connected!');
-      // } else {
-      Go.to(context: context, push: const RaiseTicketPage());
-      // }
+      if (Provider.of<DeviceController>(context, listen: false)
+          .getConnectedDevices
+          .isEmpty) {
+        Fluttertoast.showToast(msg: 'No devices connected!');
+      } else {
+        Go.to(context: context, push: const CommandPage());
+      }
     },
     () {
       Go.to(context: context, push: const AboutUsPage());

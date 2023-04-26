@@ -1,9 +1,9 @@
-import 'dart:convert';
-import 'dart:developer';
+// import 'dart:convert';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
+// import 'package:provider/provider.dart';
+// import 'package:http/http.dart' as http;
 
 class AuthController extends ChangeNotifier {
   // Future registerUser(String firstName, String lastName, String email,

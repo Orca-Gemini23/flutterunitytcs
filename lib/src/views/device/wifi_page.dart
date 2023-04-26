@@ -2,11 +2,11 @@ import "package:flutter/material.dart";
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/controllers/devicecontroller.dart';
-import 'package:walk/src/controllers/wificontroller.dart';
+import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/controllers/wifi_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/device/commandpage.dart';
-import 'package:walk/src/constants/bluetoothconstants.dart';
+import 'package:walk/src/views/device/command_page.dart';
+import 'package:walk/src/constants/bt_constants.dart';
 
 class WifiPage extends StatefulWidget {
   const WifiPage({super.key});
@@ -178,11 +178,11 @@ class _WifiPageState extends State<WifiPage> {
 
   Widget wifiSignal(int level) {
     if (level > -70) {
-      return Icon(Icons.signal_wifi_4_bar_rounded);
+      return const Icon(Icons.signal_wifi_4_bar_rounded);
     } else if (level > -80) {
-      return Icon(Icons.network_wifi_2_bar_rounded);
+      return const Icon(Icons.network_wifi_2_bar_rounded);
     } else {
-      return Icon(Icons.network_wifi_1_bar);
+      return const Icon(Icons.network_wifi_1_bar);
     }
   }
 }

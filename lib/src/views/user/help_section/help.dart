@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/controllers/user_controller.dart';
+import 'package:walk/src/controllers/help_controller.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var userContoller = Provider.of<UserController>(context, listen: false);
+    var userContoller = Provider.of<HelpController>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -19,7 +20,7 @@ class HelpPage extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () => Go.back(context: context),
           icon: const Icon(Icons.arrow_back),
           color: AppColor.blackColor,
         ),

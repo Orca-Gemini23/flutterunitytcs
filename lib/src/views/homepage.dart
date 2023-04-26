@@ -8,12 +8,12 @@ import 'package:showcaseview/showcaseview.dart';
 
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/controllers/devicecontroller.dart';
+import 'package:walk/src/controllers/device_controller.dart';
 
-import 'package:walk/src/widgets/navigationdrawer.dart';
+import 'package:walk/src/widgets/navigation_drawer.dart';
+
+import 'package:walk/src/widgets/scanned_item_tile.dart';
 import 'package:walk/src/widgets/unboxingsetup.dart';
-
-import '../widgets/scanneditemtile.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key, required this.isShowCaseDone});

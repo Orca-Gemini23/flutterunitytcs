@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_final_fields
+
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
@@ -11,16 +14,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
 
 import 'package:permission_handler/permission_handler.dart';
-import 'package:walk/src/constants/bluetoothconstants.dart';
-
-///Controls the bluetooth device information and manages connection and data flow between the device and application.;
-
-enum wifiStatus {
-  NOTPROVISONED,
-
-  PROVISIONED,
-  PROCESSING
-}
+import 'package:walk/src/constants/bt_constants.dart';
+import 'package:walk/src/constants/wifi_enum.dart';
 
 class DeviceController extends ChangeNotifier {
   /// stores scanned devices
@@ -271,6 +266,7 @@ class DeviceController extends ChangeNotifier {
       log("coming here");
       Fluttertoast.showToast(msg: "Connecting to ${device.name}");
       await device.connect();
+
       await HapticFeedback.vibrate();
 
       Fluttertoast.showToast(msg: "Connected to ${device.name}");
@@ -278,6 +274,10 @@ class DeviceController extends ChangeNotifier {
       _connectedDevices.clear;
       _connectedDevices.add(device);
       notifyListeners();
+      var encodedDevice = jsonEncode(device);
+      log(encodedDevice);
+      // PreferenceController.saveDeviceMAC(
+      //     device.id.toString(), device.id.toString());
     } catch (e) {
       log(e.toString());
       Fluttertoast.showToast(msg: "Could not connect :$e");
@@ -321,10 +321,10 @@ class DeviceController extends ChangeNotifier {
           .first
           .characteristics;
 
-      _characteristics.forEach((element) {
+      for (var element in _characteristics) {
         characteristicMap.putIfAbsent(element.uuid, () => element);
         notifyListeners();
-      });
+      }
 
       //log(characteristicMap[CHARGERCONN].toString());
 
@@ -517,20 +517,19 @@ class DeviceController extends ChangeNotifier {
 
       if (String.fromCharCodes(clientResponse) == "1" &&
           String.fromCharCodes(serverResponse) == "1") {
-        _wifiProvisioned = wifiStatus.PROVISIONED.index;
-        log("here");
+        _wifiProvisioned = WifiStatus.PROVISIONED.index;
         notifyListeners();
       }
       if (String.fromCharCodes(clientResponse) == "-1" ||
           String.fromCharCodes(serverResponse) == "-1") {
-        _wifiProvisioned = wifiStatus.PROCESSING.index;
+        _wifiProvisioned = WifiStatus.PROCESSING.index;
         log("hgererer");
         notifyListeners();
       }
       if (String.fromCharCodes(clientResponse) == "0" ||
           String.fromCharCodes(serverResponse) == "0") {
         log("elseee");
-        _wifiProvisioned = wifiStatus.NOTPROVISONED.index;
+        _wifiProvisioned = WifiStatus.NOTPROVISONED.index;
         notifyListeners();
       }
 

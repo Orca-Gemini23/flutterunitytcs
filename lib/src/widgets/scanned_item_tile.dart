@@ -5,12 +5,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:walk/src/controllers/devicecontroller.dart';
-import 'package:walk/src/controllers/wificontroller.dart';
-import 'package:walk/src/views/device/commandpage.dart';
+import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/controllers/wifi_controller.dart';
+import 'package:walk/src/views/device/command_page.dart';
 
 import 'package:walk/src/views/showcase/showcaseview.dart';
-import 'package:walk/src/views/device/wifipage.dart';
+import 'package:walk/src/views/device/wifi_page.dart';
 import 'package:walk/src/widgets/buttons.dart';
 
 class ScannedDevicesList extends StatefulWidget {
@@ -84,7 +84,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CommandPage(),
+                    builder: (context) => const CommandPage(),
                   ),
                 );
                 break;
@@ -116,16 +116,17 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        deviceController.getScannedDevices.elementAt(0).name,
-                        style: const TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 20,
-                            color: Colors.white,
-                            letterSpacing: 3,
-                            fontWeight: FontWeight.w700),
+                      Expanded(
+                        child: Text(
+                          deviceController.getScannedDevices.elementAt(0).name,
+                          style: const TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 20,
+                              color: Colors.white,
+                              letterSpacing: 3,
+                              fontWeight: FontWeight.w700),
+                        ),
                       ),
-                      const Spacer(),
                       showCaseConnectButton(key2, deviceController)
                     ],
                   ),
@@ -191,7 +192,7 @@ Widget scannedItem(
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CommandPage(),
+                  builder: (context) => const CommandPage(),
                 ),
               );
               break;
@@ -219,16 +220,17 @@ Widget scannedItem(
             children: [
               Row(
                 children: [
-                  Text(
-                    controller.getScannedDevices.elementAt(index).name,
-                    style: const TextStyle(
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: 20,
-                        color: Colors.white,
-                        letterSpacing: 3,
-                        fontWeight: FontWeight.w700),
+                  Expanded(
+                    child: Text(
+                      controller.getScannedDevices.elementAt(index).name,
+                      style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 20,
+                          color: Colors.white,
+                          letterSpacing: 3,
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
-                  const Spacer(),
                   ConnectButton(
                     controller: controller,
                     index: index,

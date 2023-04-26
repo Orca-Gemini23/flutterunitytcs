@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import "package:fl_chart/fl_chart.dart";
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/models/chartdata.dart';
+import 'package:walk/src/models/chart_model.dart';
 
 class DetailChart extends StatefulWidget {
   const DetailChart({super.key});

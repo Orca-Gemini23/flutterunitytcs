@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/controllers/user_controller.dart';
+import 'package:walk/src/controllers/help_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/widgets/dropdown.dart';
 import 'package:walk/src/widgets/textfields.dart';
@@ -87,7 +87,7 @@ class _RaiseTicketPageState extends State<RaiseTicketPage> {
             //     ),
             //   ),
             // ),
-            Consumer<UserController>(builder: (context, userController, child) {
+            Consumer<HelpController>(builder: (context, userController, child) {
               return ExpansionPanelList(
                 expansionCallback: userController.onExpansionCallBack,
                 children: List.generate(
