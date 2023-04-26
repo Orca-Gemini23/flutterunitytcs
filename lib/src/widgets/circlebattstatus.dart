@@ -17,7 +17,7 @@ Widget circularProgressIndicator(
               fontWeight: FontWeight.bold,
               color: Color(0xff9C9C9C)),
 
-          //TextStyle(color: Colors.black, fontSize: 12),
+        
         ),
       ),
       SleekCircularSlider(

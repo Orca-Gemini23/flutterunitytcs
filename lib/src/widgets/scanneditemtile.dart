@@ -60,6 +60,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
                 await deviceController.getFrequencyValues();
                 await deviceController.getMagnitudeValues();
                 await deviceController.getBatteryRemaining();
+                await deviceController.getClientStatusStream();
               },
             );
             switch (wifiStatus) {
@@ -89,23 +90,6 @@ class _ScannedDevicesListState extends State<ScannedDevicesList> {
                 break;
               default:
             }
-            // wifiStatus
-            //     ? Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) {
-            //             return const CommandPage();
-            //           },
-            //         ),
-            //       )
-            //     : Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) {
-            //             return const WifiPage();
-            //           },
-            //         ),
-            //       );
           },
           child: ShowCaseView(
             globalKey: key1,
@@ -183,6 +167,7 @@ Widget scannedItem(
               await controller.getFrequencyValues();
               await controller.getMagnitudeValues();
               await controller.getBatteryRemaining();
+              await controller.getClientStatusStream();
             },
           );
           switch (wifiStatus) {
@@ -212,24 +197,6 @@ Widget scannedItem(
               break;
             default:
           }
-
-          // wifiStatus
-          //     ? Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) {
-          //             return const CommandPage();
-          //           },
-          //         ),
-          //       )
-          //     : Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) {
-          //             return const WifiPage();
-          //           },
-          //         ),
-          //       );
         },
         child: Container(
           padding: const EdgeInsets.all(8),

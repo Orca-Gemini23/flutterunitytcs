@@ -1,20 +1,18 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:walk/src/constants/app_assets.dart';
+
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/devicecontroller.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/auth/login_page.dart';
-import 'package:walk/src/views/device/wifipage.dart';
-import 'package:walk/src/widgets/loadingdialog.dart';
+
 import 'package:walk/src/widgets/navigationdrawer.dart';
-import 'package:walk/test.dart';
+import 'package:walk/src/widgets/unboxingsetup.dart';
+
 import '../widgets/scanneditemtile.dart';
 
 class Homepage extends StatefulWidget {
@@ -72,9 +70,25 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addObserver(this);
+
     (WidgetsBinding.instance).addPostFrameCallback(
       (_) {
+        showDialog(
+          context: (context),
+          builder: (context) {
+            return Dialog(
+              elevation: 60,
+              insetAnimationCurve: Curves.easeOut,
+              shape: const RoundedRectangleBorder(
+                  side: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              child: UnboxingSetupDialog(),
+            );
+          },
+        );
+
         widget.isShowCaseDone
             ? null
             : ShowCaseWidget.of(context).startShowCase(
@@ -155,149 +169,32 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
                 builder: (context, controller, snapshot) {
           return FloatingActionButton(
             onPressed: () async {
-              String value = await controller.getRawBatteryNewton();
-              List<Map<String, String>> batteryMap = [];
+              //await controller.getClientStatus().asStream();
 
-              Timer.periodic(
-                const Duration(seconds: 5),
-                (timer) async {
-                  String value = await controller.getRawBatteryNewton();
-                  if (value != "error occurred") {
-                    batteryMap.clear();
-                    batteryMap.add({
-                      "Time": DateTime.now().toString(),
-                      "BattValue": "$value"
-                    });
-                    Test.exportCSV(batteryMap);
-                  }
-                },
-              );
+              // String value = await controller.getRawBatteryNewton();
+              // List<Map<String, String>> batteryMap = [];
 
-              //controller.getProvisionedStatus();
+              // Timer.periodic(
+              //   const Duration(seconds: 5),
+              //   (timer) async {
+              //     String value = await controller.getRawBatteryNewton();
+              //     if (value != "error occurred") {
+              //       batteryMap.clear();
+              //       batteryMap.add({
+              //         "Time": DateTime.now().toString(),
+              //         "BattValue": "$value"
+              //       });
+              //       Test.exportCSV(batteryMap);
+              //     }
+              //   },
+              // );
+
               // Go.to(context: context, push: WifiPage());
               // print("LEngth is " + controller.info.length.toString());
               // controller.info.forEach((element) {
               //   print(element);
               // });
               // loadingDialog(context);
-
-              // showDialog(
-              //   context: (context),
-              //   builder: (context) {
-              //     return Dialog(
-              //       shape: const RoundedRectangleBorder(
-              //           side: BorderSide.none,
-              //           borderRadius: BorderRadius.all(Radius.circular(20))),
-              //       child: Container(
-              //         decoration: BoxDecoration(
-              //             color: AppColor.greenDarkColor,
-              //             borderRadius: BorderRadius.circular(20)),
-              //         height: 400,
-              //         child: PageView(
-              //           controller: pageController,
-              //           physics: const BouncingScrollPhysics(),
-              //           scrollDirection: Axis.horizontal,
-              //           pageSnapping: true,
-              //           padEnds: true,
-              //           onPageChanged: (value) {
-              //             pageController.initialPage == 4
-              //                 ? pageController.dispose()
-              //                 : null;
-              //           },
-              //           children: [
-              //             Container(
-              //               padding: const EdgeInsets.all(8),
-              //               width: double.maxFinite,
-              //               decoration: BoxDecoration(
-              //                   borderRadius: BorderRadius.circular(20)),
-              //               child: Stack(children: [
-              //                 const Positioned(
-              //                     child: Text(
-              //                   AppString.takeOutBands,
-              //                   style: TextStyle(
-              //                     color: AppColor.whiteColor,
-              //                     fontSize: 20,
-              //                   ),
-              //                 )),
-              //                 Center(
-              //                   child: Image.asset(
-              //                     AppAssets.productImage,
-              //                     fit: BoxFit.fill,
-              //                   ),
-              //                 ),
-              //               ]),
-              //             ),
-              //             Container(
-              //               padding: const EdgeInsets.all(8),
-              //               width: double.maxFinite,
-              //               decoration: BoxDecoration(
-              //                   borderRadius: BorderRadius.circular(20)),
-              //               child: Stack(
-              //                 children: [
-              //                   const Positioned(
-              //                     child: Text(
-              //                       AppString.turnOnSwitch,
-              //                       style: TextStyle(
-              //                         color: AppColor.whiteColor,
-              //                         fontSize: 20,
-              //                       ),
-              //                     ),
-              //                   ),
-              //                   // Center(
-              //                   //   child: Image.asset(
-              //                   //     AppAssets.buttonAnimation,
-              //                   //     fit: BoxFit.fill,
-              //                   //   ),
-              //                   // ),
-              //                 ],
-              //               ),
-              //             ),
-              //             Container(
-              //               width: double.maxFinite,
-              //               color: Colors.blue,
-              //               child: const Center(
-              //                 child: Text("helkloooo"),
-              //               ),
-              //             ),
-              //             Container(
-              //               padding: const EdgeInsets.all(8),
-              //               width: double.maxFinite,
-              //               decoration: BoxDecoration(
-              //                   borderRadius: BorderRadius.circular(20)),
-              //               child: Stack(children: [
-              //                 const Positioned(
-              //                   child: Text(
-              //                     "Please take out the bands from the box , and put them on a table.",
-              //                     style: TextStyle(
-              //                       color: Colors.white,
-              //                       fontSize: 20,
-              //                     ),
-              //                   ),
-              //                 ),
-              //                 Center(
-              //                   child: Image.asset(
-              //                     "assets/images/product.png",
-              //                     fit: BoxFit.fill,
-              //                   ),
-              //                 ),
-              //                 Align(
-              //                   alignment: Alignment.bottomRight,
-              //                   child: ElevatedButton(
-              //                     child: const Text("Close"),
-              //                     onPressed: () {
-              //                       Navigator.of(context, rootNavigator: true)
-              //                           .pop();
-              //                     },
-              //                   ),
-              //                 )
-              //               ]),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     );
-              //   },
-              // );
             },
           );
         }),

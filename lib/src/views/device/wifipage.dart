@@ -62,8 +62,9 @@ class _WifiPageState extends State<WifiPage> {
                                       "${accessPoint.ssid}/${wifiController.passwdController.text}",
                                       WRITECHARACTERISTICS);
                                   Go.pushReplacement(
-                                      context: context,
-                                      pushReplacement: const CommandPage());
+                                    context: context,
+                                    pushReplacement: const CommandPage(),
+                                  );
                                 } else {
                                   debugPrint('Error!!!!: $success');
                                 }

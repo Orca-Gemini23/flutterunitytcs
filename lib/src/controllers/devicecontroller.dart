@@ -119,6 +119,10 @@ class DeviceController extends ChangeNotifier {
   /// Getting wifi provision status
   int get wifiProvisionStatus => _wifiProvisioned;
 
+  int _clientStatus = 0;
+
+  int get clientStatus => _clientStatus;
+
   /// Status of battery
   bool _batteryInfoStatus = false;
 
@@ -219,7 +223,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   /// Used to scan the devices and add the scanned devices to the scannedDevices list;
-  void startDiscovery() async {
+  Future<void> startDiscovery() async {
     try {
       await askForPermission();
       _scannedDevices.clear();
@@ -290,7 +294,7 @@ class DeviceController extends ChangeNotifier {
       await device.disconnect();
       await HapticFeedback.mediumImpact();
       Fluttertoast.showToast(msg: "Disconnected successfully");
-      _connectedDevices.remove(device);
+      _connectedDevices.clear();
 
       ///Removing the device for the connectedDevices list
       _services.clear();
@@ -514,13 +518,18 @@ class DeviceController extends ChangeNotifier {
       if (String.fromCharCodes(clientResponse) == "1" &&
           String.fromCharCodes(serverResponse) == "1") {
         _wifiProvisioned = wifiStatus.PROVISIONED.index;
+        log("here");
         notifyListeners();
       }
       if (String.fromCharCodes(clientResponse) == "-1" ||
           String.fromCharCodes(serverResponse) == "-1") {
         _wifiProvisioned = wifiStatus.PROCESSING.index;
+        log("hgererer");
         notifyListeners();
-      } else {
+      }
+      if (String.fromCharCodes(clientResponse) == "0" ||
+          String.fromCharCodes(serverResponse) == "0") {
+        log("elseee");
         _wifiProvisioned = wifiStatus.NOTPROVISONED.index;
         notifyListeners();
       }
@@ -555,6 +564,25 @@ class DeviceController extends ChangeNotifier {
     } catch (e) {
       log(e.toString());
       log("Something went wrong while getting battery left values ");
+    }
+  }
+
+  Future<void> getClientStatusStream() async {
+    ////actually this is just wifi provisioned status charac , listening for status here only!
+    try {
+      BluetoothCharacteristic? target = _characteristicMap[PROVISIONED_CLIENT];
+      Timer.periodic(const Duration(seconds: 10), (timer) async {
+        var devices = getConnectedDevices;
+        if (devices.isNotEmpty) {
+          var response = await target!.read();
+          var result = String.fromCharCodes(response);
+          log("Client Status Result is $result");
+        } else {
+          timer.cancel();
+        }
+      });
+    } catch (e) {
+      throw Exception("Reading from the device clashed!! , Retrying");
     }
   }
 

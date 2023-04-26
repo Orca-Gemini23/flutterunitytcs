@@ -53,6 +53,13 @@ class _CommandPageState extends State<CommandPage> {
           Consumer2<DeviceController, WifiController>(
             builder: (context, deviceController, wifiController, child) {
               return ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 onPressed: () {
                   if (wifiController.wifiVerificationStatus) {
                     AwesomeDialog(
@@ -99,7 +106,9 @@ class _CommandPageState extends State<CommandPage> {
                     Go.to(context: context, push: const WifiPage());
                   }
                 },
-                child: getWifiStatusIcons(deviceController.wifiProvisionStatus),
+                child: getWifiStatusIcons(
+                  deviceController.wifiProvisionStatus,
+                ),
               );
             },
           ),
