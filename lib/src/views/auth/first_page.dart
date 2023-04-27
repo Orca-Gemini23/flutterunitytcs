@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/login_page.dart';
 import 'package:walk/src/views/auth/signup_page.dart';
+import 'package:walk/src/views/home_page.dart';
 
 class LoginRegister extends StatelessWidget {
   const LoginRegister({super.key});
@@ -40,14 +42,17 @@ class LoginRegister extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const LoginPage();
-                          },
-                        ),
-                      );
+                      Go.to(
+                          context: context,
+                          push: const Homepage(isShowCaseDone: true));
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) {
+                      //       return const LoginPage();
+                      //     },
+                      //   ),
+                      // );
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:walk/src/models/raise_ticket_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/user/help_section/debug_walk.dart';
 import 'package:walk/src/views/user/help_section/picture_screen.dart';
@@ -29,9 +30,7 @@ class HelpController extends ChangeNotifier {
   /// Raise Ticket expansionPanelList on expansionCallBack
   void onExpansionCallBack(int index, bool isExpanded) {
     try {
-      // ticketQueryQuestion.entries.elementAt(index).value = isExpanded;
-      ticketQueryQuestion.update(
-          ticketQueryQuestion.keys.elementAt(index), (value) => isExpanded);
+      ticketQueryQuestion[index].isExpanded = !isExpanded;
       notifyListeners();
     } catch (e) {
       log('Raise ticket onExpansionCallBack error: $e');
@@ -137,10 +136,16 @@ class HelpController extends ChangeNotifier {
   }
 
   /// Map of raised tickets tile and its expanded value
-  Map<String, bool> ticketQueryQuestion = {
-    'Select the issues you are facing from the dropdown': false,
-    'User related issues': false
-  };
+  List<RaiseTicketExpansionModel> ticketQueryQuestion = [
+    RaiseTicketExpansionModel(
+      title: 'Select the issues you are facing from the dropdown',
+      children: [],
+    ),
+    RaiseTicketExpansionModel(
+      title: 'User related issues',
+      children: [],
+    ),
+  ];
 
   /// List of navigation in help page
   Map<String, String> helpNavListTIle = {

@@ -8,7 +8,7 @@ import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/signup_page.dart';
-import 'package:walk/src/views/homepage.dart';
+import 'package:walk/src/views/home_page.dart';
 
 class OTPPage extends StatefulWidget {
   OTPPage({super.key, required this.email});
