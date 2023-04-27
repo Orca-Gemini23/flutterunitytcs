@@ -3,9 +3,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:walk/main.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
+import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/home_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -28,10 +30,13 @@ class _SplashPageState extends State<SplashPage> {
     return PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 800),
       pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
-        builder: Builder(
-          builder: (context) => // RaiseTicketPage(),
-              Homepage(isShowCaseDone: _isShowCasedone), //DetailChart()
-        ),
+        builder: Builder(builder: (context) {
+          if (userToken == "") {
+            return const LoginRegister();
+          } else {
+            return Homepage(isShowCaseDone: _isShowCasedone);
+          }
+        }),
       ),
       transitionsBuilder: ((context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 10.0);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/auth_controller.dart';
@@ -12,14 +13,12 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final TextEditingController _firstnameController = TextEditingController();
-  final TextEditingController _lastnameController = TextEditingController();
+  final TextEditingController _fullnameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmpasswordController =
-      TextEditingController();
+
   String _selectedGender = "Male";
   List<String> gender = ["Male", "Female"];
   @override
@@ -52,9 +51,9 @@ class _SignupPageState extends State<SignupPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            getTextfield("First Name", _firstnameController, Icons.person),
-            getTextfield("Last Name", _lastnameController, Icons.person),
+            getTextfield("Full Name", _fullnameController, Icons.person),
             getTextfield("Email", _emailController, Icons.mail),
+            getTextfield("Age", _ageController, Icons.numbers),
             Container(
               padding: const EdgeInsets.only(right: 20),
               decoration: const BoxDecoration(
@@ -112,31 +111,20 @@ class _SignupPageState extends State<SignupPage> {
             ),
             getTextfield("Phone", _phoneController, Icons.phone),
             getTextfield("City", _cityController, Icons.location_city),
-            getTextfield("Password", _passwordController, Icons.lock),
-            getTextfield(
-                "Confirm Password", _confirmpasswordController, Icons.lock),
             const Spacer(),
             Consumer<AuthController>(builder: (context, controller, widget) {
               return ElevatedButton(
-                onPressed: () {
-                  // print(_firstnameController.text);
-                  // print(_lastnameController.text);
-                  // print(_emailController.text);
-                  // print(_selectedGender[0]);
-                  // print(_cityController.text);
-                  // print(_passwordController.text);
-
-                  // await controller.registerUser(
-                  //   _firstnameController.text,
-                  //   _lastnameController.text,
-                  //   _emailController.text,
-                  //   _phoneController.text,
-                  //   _cityController.text,
-                  //   _selectedGender[0],
-                  //   _passwordController.text,
-                  // );
-
-                  //add checks and submit details
+                onPressed: () async {
+                  bool isRegistered = await controller.registerUser(
+                      _fullnameController.text,
+                      _emailController.text,
+                      _phoneController.text,
+                      _cityController.text,
+                      _selectedGender,
+                      _ageController.text);
+                  if (isRegistered) {
+                    Navigator.pop(context);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   padding:
@@ -149,7 +137,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
                 child: const Text(
-                  AppString.nextPage,
+                  AppString.register,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,

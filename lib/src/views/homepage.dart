@@ -75,19 +75,19 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
 
     (WidgetsBinding.instance).addPostFrameCallback(
       (_) {
-        showDialog(
-          context: (context),
-          builder: (context) {
-            return Dialog(
-              elevation: 60,
-              insetAnimationCurve: Curves.easeOut,
-              shape: const RoundedRectangleBorder(
-                  side: BorderSide.none,
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              child: UnboxingSetupDialog(),
-            );
-          },
-        );
+        // showDialog(
+        //   context: (context),
+        //   builder: (context) {
+        //     return Dialog(
+        //       elevation: 60,
+        //       insetAnimationCurve: Curves.easeOut,
+        //       shape: const RoundedRectangleBorder(
+        //           side: BorderSide.none,
+        //           borderRadius: BorderRadius.all(Radius.circular(20))),
+        //       child: UnboxingSetupDialog(),
+        //     );
+        //   },
+        // );
 
         widget.isShowCaseDone
             ? null

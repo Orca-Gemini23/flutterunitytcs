@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/controllers/auth_controller.dart';
+import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/signup_page.dart';
+import 'package:walk/src/views/homepage.dart';
 
 class OTPPage extends StatefulWidget {
-  const OTPPage({super.key});
-
+  OTPPage({super.key, required this.email});
+  String email;
   @override
   State<OTPPage> createState() => _OTPPageState();
 }
 
 class _OTPPageState extends State<OTPPage> {
+  TextEditingController _otpController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -61,35 +67,56 @@ class _OTPPageState extends State<OTPPage> {
                       SizedBox(
                         height: Screen.height(context: context) * 0.05,
                       ),
-                      const Pinput(),
+                      Pinput(
+                        length: 6,
+                        controller: _otpController,
+                      ),
                       SizedBox(
                         height: Screen.height(context: context) * 0.1,
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          //add checks and submit details
-                          Go.to(context: context, push: const SignupPage());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 30),
-                          fixedSize: const Size(180, 45),
-                          backgroundColor: const Color(0xff005749),
-                          elevation: 7,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+                      Consumer<AuthController>(
+                          builder: (context, authController, child) {
+                        return ElevatedButton(
+                          onPressed: () async {
+                            bool otpVerified = await authController.verifyOtp(
+                                widget.email, _otpController.text);
+                            if (otpVerified) {
+                              bool result =
+                                  await PreferenceController.getboolData(
+                                      showCaseKey);
+
+                              // ignore: use_build_context_synchronously
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return Homepage(isShowCaseDone: result);
+                                  },
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 30),
+                            fixedSize: const Size(180, 45),
+                            backgroundColor: const Color(0xff005749),
+                            elevation: 7,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          AppString.verifyOtp,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
+                          child: const Text(
+                            AppString.verifyOtp,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      }),
                       SizedBox(
                         height: Screen.height(context: context) * 0.1,
                       ),

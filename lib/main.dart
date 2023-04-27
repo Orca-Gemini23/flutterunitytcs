@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/utils/background_isolate.dart';
 import 'package:walk/walk_app.dart';
 import 'package:walk/src/controllers/notification_controller.dart';
+
+String userToken = "";
 
 void main() async {
   /// Ensuring widgets initialization
@@ -39,6 +42,7 @@ void main() async {
 
   /// initializes Hive local database
   await initializeLocalDatabase();
+  userToken = await PreferenceController.getstringData("customerAuthToken");
 
   /// Core app
   runApp(const WalkApp());

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/login_page.dart';
 import 'package:walk/src/views/auth/signup_page.dart';
 
 class LoginRegister extends StatelessWidget {
@@ -38,7 +39,16 @@ class LoginRegister extends StatelessWidget {
                     height: 10,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const LoginPage();
+                          },
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 30),

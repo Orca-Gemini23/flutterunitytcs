@@ -59,7 +59,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                     ElevatedButton(
                       onPressed: () {
                         //add checks and submit details
-                        Go.to(context: context, push: const OTPPage());
+                        //Go.to(context: context, push: const OTPPage());
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
