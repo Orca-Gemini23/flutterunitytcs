@@ -10,8 +10,12 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:walk/src/constants/api_constants.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
+import 'package:walk/src/models/userdetail_model.dart';
 
 class AuthController extends ChangeNotifier {
+  /// List for storing user details
+  List<UserDetails> userDetails = [];
+
   String customerAuthToken = "";
   String get getCustomerAuthToken => customerAuthToken;
   setCustomerAuthToken(String token) {
@@ -47,7 +51,7 @@ class AuthController extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      log("error occurred" + e.toString());
+      log("Register user function error: $e");
       Fluttertoast.showToast(msg: "Something went wrong");
       return false;
     }
@@ -76,7 +80,7 @@ class AuthController extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      log(e.toString());
+      log('Send OTP error: $e');
       return false;
     }
   }
@@ -102,13 +106,14 @@ class AuthController extends ChangeNotifier {
         setCustomerAuthToken(result["customerAuthToken"]);
 
         ///TODO : CREATE A USER DETAILS MODEL HERE , SO THAT HIS DETAILS CAN BE SAVED AND SHOWN IN THE NAVIGATION DRAWER
+        // userDetailsFromJson(result);
         return true;
       } else {
         Fluttertoast.showToast(msg: result["message"]);
         return false;
       }
     } catch (e) {
-      log(e.toString());
+      log('Verify OTP error: $e');
       Fluttertoast.showToast(msg: "Something went wrong please try again");
       return false;
     }
