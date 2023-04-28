@@ -79,6 +79,7 @@ class _RaiseTicketPageState extends State<RaiseTicketPage> {
                                 style: const TextStyle(
                                   color: AppColor.whiteColor,
                                   fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),

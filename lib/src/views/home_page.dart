@@ -122,34 +122,34 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
             fontSize: 20,
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              try {
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  FlutterBackgroundService().startService();
-                });
-                Future.delayed(const Duration(milliseconds: 200), () {
-                  FlutterBackgroundService().invoke('setBackgroundService');
-                  // FlutterBackgroundService().invoke('stopService');
-                });
-              } catch (e) {
-                log('foreground service ERROR: $e');
-              }
-            },
-            icon: const Icon(
-              Icons.miscellaneous_services,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              FlutterBackgroundService().invoke('stopService');
-            },
-            icon: const Icon(
-              Icons.missed_video_call,
-            ),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () async {
+        //       try {
+        //         Future.delayed(const Duration(milliseconds: 500), () {
+        //           FlutterBackgroundService().startService();
+        //         });
+        //         Future.delayed(const Duration(milliseconds: 200), () {
+        //           FlutterBackgroundService().invoke('setBackgroundService');
+        //           // FlutterBackgroundService().invoke('stopService');
+        //         });
+        //       } catch (e) {
+        //         log('foreground service ERROR: $e');
+        //       }
+        //     },
+        //     icon: const Icon(
+        //       Icons.miscellaneous_services,
+        //     ),
+        //   ),
+        //   IconButton(
+        //     onPressed: () {
+        //       FlutterBackgroundService().invoke('stopService');
+        //     },
+        //     icon: const Icon(
+        //       Icons.missed_video_call,
+        //     ),
+        //   ),
+        // ],
         backgroundColor: AppColor.appBarColor,
       ),
       body: RefreshIndicator(
