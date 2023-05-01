@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:walk/env/flavors.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
@@ -110,18 +111,35 @@ Widget drawerItem(BuildContext context) {
   return ListView.builder(
     shrinkWrap: true,
     itemBuilder: (context, index) {
-      return ListTile(
-        leading: Icon(drawerIcon[index]),
-        title: Text(
-          drawerTileName[index],
-          style: const TextStyle(
-            color: AppColor.blackColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w300,
+      if (Flavors.prod) {
+        return index == 5
+            ? const Center()
+            : ListTile(
+                leading: Icon(drawerIcon[index]),
+                title: Text(
+                  drawerTileName[index],
+                  style: const TextStyle(
+                    color: AppColor.blackColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                onTap: drawerOnTap[index],
+              );
+      } else {
+        return ListTile(
+          leading: Icon(drawerIcon[index]),
+          title: Text(
+            drawerTileName[index],
+            style: const TextStyle(
+              color: AppColor.blackColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w300,
+            ),
           ),
-        ),
-        onTap: drawerOnTap[index],
-      );
+          onTap: drawerOnTap[index],
+        );
+      }
     },
     itemCount: drawerTileName.length,
   );

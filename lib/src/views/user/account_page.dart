@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:walk/env/flavors.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/user_controller.dart';
@@ -33,7 +34,7 @@ class AccountPage extends StatelessWidget {
         elevation: 0,
       ),
       body: ListView.builder(
-        itemCount: 3,
+        itemCount: Flavors.prod ? 1 : 3,
         itemBuilder: (context, index) {
           return Container(
             margin: const EdgeInsets.all(10.0),

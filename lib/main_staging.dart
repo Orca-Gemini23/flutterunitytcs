@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:walk/env/flavors.dart';
 import 'package:walk/walk_app.dart';
 import 'package:walk/src/controllers/notification_controller.dart';
 
@@ -19,7 +20,7 @@ void main(List<String> args) async {
       ?.createNotificationChannel(channel);
 
   /// Environment setup
-  // Flavors.setupEnvironment(Environment.stage);
+  Flavors.setupEnvironment(Environment.stage);
 
   runApp(const WalkApp());
 }

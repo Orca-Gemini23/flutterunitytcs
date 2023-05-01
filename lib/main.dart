@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:walk/env/flavors.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/utils/background_isolate.dart';
@@ -15,6 +16,9 @@ String userToken = "";
 void main() async {
   /// Ensuring widgets initialization
   WidgetsFlutterBinding.ensureInitialized();
+
+  /// Setting up Environment
+  Flavors.setupEnvironment(Environment.prod);
 
   /// Fixed app in potrait mode
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
