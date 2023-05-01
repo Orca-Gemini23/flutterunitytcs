@@ -44,8 +44,8 @@ class LoginRegister extends StatelessWidget {
                     onPressed: () {
                       Go.to(
                           context: context,
-                          push: const Homepage(
-                              isShowCaseDone: true)); //LoginPage()); //
+                          push:
+                              const LoginPage()); // Homepage( isShowCaseDone: true)); //
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
