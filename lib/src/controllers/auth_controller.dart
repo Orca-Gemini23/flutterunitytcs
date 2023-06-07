@@ -6,16 +6,16 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:walk/src/constants/api_constants.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
-import 'package:walk/src/models/userdetail_model.dart';
+import 'package:walk/src/controllers/user_controller.dart';
+import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/models/user_model.dart';
 
 class AuthController extends ChangeNotifier {
-  /// List for storing user details
-  List<UserDetails> userDetails = [];
-
   String customerAuthToken = "";
   String get getCustomerAuthToken => customerAuthToken;
   setCustomerAuthToken(String token) {
@@ -103,10 +103,18 @@ class AuthController extends ChangeNotifier {
         Fluttertoast.showToast(msg: "Otp verified Successfully");
         PreferenceController.saveStringData(
             "customerAuthToken", result["customerAuthToken"]);
-        setCustomerAuthToken(result["customerAuthToken"]);
-
-        ///TODO : CREATE A USER DETAILS MODEL HERE , SO THAT HIS DETAILS CAN BE SAVED AND SHOWN IN THE NAVIGATION DRAWER
-        // userDetailsFromJson(result);
+        var user = UserModel(
+          name: result["userDetails"]["name"],
+          age: result["userDetails"]["age"],
+          phone: result["userDetails"]["phone"],
+          gender: result["userDetails"]["gender"],
+          address: result["userDetails"]["address"],
+          email: result["userDetails"]["email"],
+        );
+        LocalDB.saveUser(user);
+        setCustomerAuthToken(
+          result["customerAuthToken"],
+        );
         return true;
       } else {
         Fluttertoast.showToast(msg: result["message"]);

@@ -15,6 +15,7 @@ import 'package:walk/src/utils/custom_navigation.dart';
 
 import 'package:walk/src/views/device/wifi_page.dart';
 import 'package:walk/src/widgets/circlebattstatus.dart';
+import 'package:walk/src/widgets/magnitudeslider.dart';
 
 class CommandPage extends StatefulWidget {
   const CommandPage({super.key});
@@ -233,7 +234,7 @@ class _CommandPageState extends State<CommandPage> {
                     Consumer<DeviceController>(
                         builder: (context, deviceController, child) {
                       return Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           color: AppColor.amberColor,
                           borderRadius: BorderRadius.circular(10),
@@ -246,11 +247,16 @@ class _CommandPageState extends State<CommandPage> {
                                     .toString()
                                     .substring(0, 4)
                                 : deviceController.frequencyValue.toString(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                           ),
                         ),
                       );
                     }),
                     SizedBox(
+                      width: 180,
                       child: Slider(
                         value: controller.frequencyValue,
                         min: 0.3,
@@ -269,7 +275,7 @@ class _CommandPageState extends State<CommandPage> {
                                       .substring(0, 4)
                                   : controller.frequencyValue.toString();
 
-                          String command = "$FREQ s $approxFrequency;";
+                          String command = "$FREQ c $approxFrequency;";
 
                           log(command);
                           await controller.sendToDevice(
@@ -284,9 +290,9 @@ class _CommandPageState extends State<CommandPage> {
             const SizedBox(
               height: 7,
             ),
+
             Consumer<DeviceController>(
-              //MAGNITUDE WIDGET
-              builder: (context, controller, child) {
+              builder: (context, deviceController, child) {
                 return Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -300,57 +306,96 @@ class _CommandPageState extends State<CommandPage> {
                       ),
                     ],
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Text(
-                        AppString.magnitude,
+                        "Magnitude",
                         style: TextStyle(
-                            color: AppColor.blackColor,
-                            fontSize: 22,
-                            letterSpacing: 1),
+                          fontSize: 22,
+                          letterSpacing: 1,
+                        ),
                       ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Consumer<DeviceController>(
-                          builder: (context, deviceController, child) {
-                        return Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: AppColor.amberColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Text(
-                              deviceController.magValue.toString(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Left",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey),
+                                ),
+                                magSlider(false, deviceController),
+                                Consumer<DeviceController>(builder:
+                                    (context, deviceController, child) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: AppColor.amberColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        deviceController.magSValue.toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                })
+                              ],
                             ),
                           ),
-                        );
-                      }),
-                      Slider(
-                          //MAGNITUDE SLIDER
-                          value: controller.magValue,
-                          min: 0,
-                          max: 4,
-                          divisions: 4,
-                          label: controller.magValue.toString(),
-                          thumbColor: AppColor.purpleColor,
-                          onChanged: (value) {
-                            HapticFeedback.lightImpact();
-                            controller.setmagValue(value);
-                          },
-                          onChangeEnd: (value) async {
-                            String command = "$MAG s ${controller.magValue};";
-                            log(command);
-                            await controller.sendToDevice(
-                                command, WRITECHARACTERISTICS);
-                          }),
+                          Container(
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Right",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                magSlider(true, deviceController),
+                                Consumer<DeviceController>(builder:
+                                    (context, deviceController, child) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: AppColor.amberColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        deviceController.magCValue.toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                })
+                              ],
+                            ),
+                          )
+                        ],
+                      )
                     ],
                   ),
                 );
               },
             ),
+
             const SizedBox(height: 10),
             Consumer<DeviceController>(
               //MODE WIDGET
@@ -381,24 +426,27 @@ class _CommandPageState extends State<CommandPage> {
                       const SizedBox(
                         width: 5,
                       ),
-                      Slider(
-                        value: modeValue,
-                        min: -1,
-                        max: 7,
-                        divisions: 8,
-                        label: modeValue.toString(),
-                        thumbColor: AppColor.purpleColor,
-                        onChanged: (value) {
-                          HapticFeedback.lightImpact();
-                          modeValue = value;
-                          setState(() {});
-                        },
-                        onChangeEnd: (value) async {
-                          String command = "$MODE $modeValue;";
-                          log(command);
-                          await controller.sendToDevice(
-                              command, WRITECHARACTERISTICS);
-                        },
+                      SizedBox(
+                        width: 180,
+                        child: Slider(
+                          value: modeValue,
+                          min: -1,
+                          max: 7,
+                          divisions: 8,
+                          label: modeValue.toString(),
+                          thumbColor: AppColor.purpleColor,
+                          onChanged: (value) {
+                            HapticFeedback.lightImpact();
+                            modeValue = value;
+                            setState(() {});
+                          },
+                          onChangeEnd: (value) async {
+                            String command = "$MODE $modeValue;";
+                            log(command);
+                            await controller.sendToDevice(
+                                command, WRITECHARACTERISTICS);
+                          },
+                        ),
                       ),
                     ],
                   ),

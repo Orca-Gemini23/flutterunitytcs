@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/controllers/shared_preferences.dart';
 
 class UnboxingSetupDialog extends StatelessWidget {
   UnboxingSetupDialog({
@@ -300,7 +301,8 @@ class UnboxingSetupDialog extends StatelessWidget {
                       backgroundColor: AppColor.purpleColor,
                     ),
                     onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
+                      PreferenceController.saveboolData("isUnboxingDone", true);
+                      Navigator.of(context, rootNavigator: true).pop("done");
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

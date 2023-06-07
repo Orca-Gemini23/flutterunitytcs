@@ -4,11 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/device/command_page.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
+import 'package:walk/src/views/qrscanner/qrscanner.dart';
 import 'package:walk/src/views/user/account_page.dart';
 import 'package:walk/src/views/user/help_section/help.dart';
 import 'package:walk/src/views/user/personal_info.dart';
@@ -35,16 +37,16 @@ Drawer navigationDrawer(BuildContext context) {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const <Widget>[
-              CircleAvatar(
+            children: <Widget>[
+              const CircleAvatar(
                 backgroundColor: AppColor.greenDarkColor,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Text(
-                "Kira Sardeshpande",
-                style: TextStyle(
+                LocalDB.user!.name,
+                style: const TextStyle(
                   color: AppColor.whiteColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -66,6 +68,7 @@ Widget drawerItem(BuildContext context) {
     Icons.tune,
     Icons.group,
     Icons.email,
+    Icons.qr_code,
     Icons.help,
     Icons.logout_sharp,
   ];
@@ -75,6 +78,7 @@ Widget drawerItem(BuildContext context) {
     'Device Control',
     'About Us',
     'Contact Us',
+    'QR-Scanner',
     'Need help',
     'Log Out',
   ];
@@ -101,6 +105,10 @@ Widget drawerItem(BuildContext context) {
       Go.to(context: context, push: const ContactUsPage());
     },
     () {
+      Go.to(context: context, push: const QrScanner());
+      //Goto qr scanner page
+    },
+    () {
       Go.to(context: context, push: const HelpPage());
     },
     () {
@@ -112,7 +120,7 @@ Widget drawerItem(BuildContext context) {
     shrinkWrap: true,
     itemBuilder: (context, index) {
       if (Flavors.prod) {
-        return index == 5
+        return index == 6
             ? const Center()
             : ListTile(
                 leading: Icon(drawerIcon[index]),

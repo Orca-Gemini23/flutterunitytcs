@@ -1,17 +1,14 @@
 import 'dart:developer';
-
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/user_controller.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/medication_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/widgets/medication_card.dart';
 
 class MedicationPage extends StatelessWidget {
@@ -29,14 +26,13 @@ class MedicationPage extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: AppColor.blackColor,
-          ),
-          onPressed: (() {
-            Go.back(context: context);
-          }),
-        ),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColor.blackColor,
+            ),
+            onPressed: () {
+              Go.back(context: context);
+            }),
         // actions: [
         //   IconButton(
         //     icon: const Icon(

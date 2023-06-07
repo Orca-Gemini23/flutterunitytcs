@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/controllers/shared_preferences.dart';
+import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   static final Map<String, String> _profile = {
-    'Name': 'Kira',
-    'Phone': '+91 9876543216',
-    'Gender': 'Male',
-    'City': 'Mumbai',
-    'Device': 'WALK'
+    'Name': LocalDB.user!.name,
+    'Phone': LocalDB.user!.phone,
+    'Gender': LocalDB.user!.gender,
+    'City': LocalDB.user!.address,
+    'Device': "No Information",
   };
 
   @override

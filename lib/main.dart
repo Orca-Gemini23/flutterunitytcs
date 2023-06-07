@@ -15,6 +15,7 @@ String userToken = "";
 
 void main() async {
   /// Ensuring widgets initialization
+
   WidgetsFlutterBinding.ensureInitialized();
 
   /// Setting up Environment

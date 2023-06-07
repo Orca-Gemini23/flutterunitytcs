@@ -11,8 +11,8 @@ import 'package:walk/src/views/auth/signup_page.dart';
 import 'package:walk/src/views/home_page.dart';
 
 class OTPPage extends StatefulWidget {
-  OTPPage({super.key, required this.email});
-  String email;
+  const OTPPage({super.key, required this.email});
+  final String email;
   @override
   State<OTPPage> createState() => _OTPPageState();
 }
@@ -84,14 +84,16 @@ class _OTPPageState extends State<OTPPage> {
                               bool result =
                                   await PreferenceController.getboolData(
                                       showCaseKey);
+                              bool unboxStatus =
+                                  await PreferenceController.getboolData(
+                                      "isUnboxingDone");
 
                               // ignore: use_build_context_synchronously
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return Homepage(isShowCaseDone: result);
-                                  },
+                              Go.pushAndRemoveUntil(
+                                context: context,
+                                pushReplacement: Homepage(
+                                  isShowCaseDone: result,
+                                  isUnboxingDone: unboxStatus,
                                 ),
                               );
                             }

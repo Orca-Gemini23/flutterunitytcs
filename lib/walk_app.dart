@@ -15,7 +15,7 @@ class WalkApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (_) => DeviceController(),
+            create: (_) => DeviceController(performScan: true),
           ),
           ChangeNotifierProvider(
             create: (_) => WifiController(),

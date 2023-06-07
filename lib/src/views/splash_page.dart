@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:walk/main.dart';
 import 'package:walk/src/constants/app_assets.dart';
@@ -9,6 +10,8 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/home_page.dart';
+
+import '../controllers/device_controller.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -19,14 +22,18 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   bool _isShowCasedone = true;
+  bool _isUnboxingdone = true;
+  GlobalKey splashPageKey = GlobalKey();
 
-  checkshowcase() async {
+  checkShowcase() async {
     bool result = await PreferenceController.getboolData(showCaseKey);
+    _isUnboxingdone = await PreferenceController.getboolData("isUnboxingDone");
     log("Showcase result is $result ");
+    log("Unbox result is ${_isUnboxingdone}");
     _isShowCasedone = result;
   }
 
-  Route _createRoute(bool showCaseDone) {
+  Route _createRoute() {
     return PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 800),
       pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
@@ -34,20 +41,19 @@ class _SplashPageState extends State<SplashPage> {
           if (userToken == "") {
             return const LoginRegister();
           } else {
-            return Homepage(isShowCaseDone: _isShowCasedone);
+            return Homepage(
+              isShowCaseDone: _isShowCasedone,
+              isUnboxingDone: _isUnboxingdone,
+            );
           }
         }),
       ),
       transitionsBuilder: ((context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 10.0);
         const end = Offset.zero;
-        // const curve = Curves.easeIn;
-        // var tween =
+
         Tween(begin: begin, end: end);
-        // final curvedAnimation = CurvedAnimation(
-        //   parent: animation,
-        //   curve: curve,
-        // );
+
         return ScaleTransition(
           scale: animation,
           child: child,
@@ -59,25 +65,21 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    checkshowcase();
-
+    checkShowcase();
     Timer(
       const Duration(seconds: 2),
-      (() => Navigator.pushReplacement(
-            context,
-            _createRoute(_isShowCasedone),
-          )),
+      (() {
+        context.read<DeviceController>().homeContext =
+            splashPageKey.currentContext;
+        Navigator.pushReplacement(context, _createRoute());
+      }),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: splashPageKey,
       body: Stack(
         alignment: Alignment.center,
         children: [

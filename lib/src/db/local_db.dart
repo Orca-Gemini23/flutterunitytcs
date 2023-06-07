@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart' as hive;
 import 'package:walk/src/models/medication_model.dart';
+import 'package:walk/src/models/user_model.dart';
 
 /// Initializing Hive for local storage
 Future<void> initializeLocalDatabase() async {
@@ -11,6 +12,8 @@ Future<void> initializeLocalDatabase() async {
     await Hive.initFlutter();
     hive.Hive.registerAdapter(PrescriptionModelAdapter());
     hive.Hive.registerAdapter(MedicineModelAdapter());
+    hive.Hive.registerAdapter(UserModelAdapter());
+    await Hive.openBox<UserModel>('userBox');
     await Hive.openBox<PrescriptionModel>('medBox');
   } catch (e) {
     log('error initializing local database: $e');
@@ -28,8 +31,22 @@ Future<void> disposeHiveBox() async {
 
 class LocalDB {
   /// Instance of Hive box for storing prescriptions
+  static UserModel defaultUser = UserModel(
+    name: "Unknown User",
+    age: "XX",
+    phone: "XXXXXXXXXX",
+    gender: "X",
+    address: "x",
+    email: "x",
+  );
   static Box<PrescriptionModel> prescriptionBox() =>
       Hive.box<PrescriptionModel>("medBox"); //static Box<PrescriptionModel>
+
+  static Box<UserModel> userBox() => Hive.box<UserModel>("userBox");
+  static UserModel? get user => userBox().get(0, defaultValue: defaultUser);
+  static saveUser(UserModel user) {
+    userBox().add(user);
+  }
 
   /// Get specific prescription by its ID
   static PrescriptionModel? get prescription =>

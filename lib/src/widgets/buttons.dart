@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/views/home_page.dart';
 
 import 'package:walk/src/views/showcase/showcaseview.dart';
+import 'package:walk/src/widgets/showcasewidget.dart';
 
 ///Button to connect to a device , usually this button is used inside the scanned item tile or showcase scanned item tile
 class ConnectButton extends StatefulWidget {
@@ -30,9 +32,8 @@ class _ConnectButtonState extends State<ConnectButton> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18.0),
                 side: const BorderSide(color: Colors.black))),
-        child: Text(widget.controller.getConnectedDevices.any((element) =>
-                element.id ==
-                widget.controller.getScannedDevices.elementAt(widget.index).id)
+        child: Text(widget.controller.connectedDevice?.id ==
+                widget.controller.getConnectedDevices.elementAt(0).id
             ? "Disconnect"
             : "Connect"),
         onPressed: () async {
@@ -45,7 +46,8 @@ class _ConnectButtonState extends State<ConnectButton> {
           } else {
             log("connecting ");
             await widget.controller.connectToDevice(
-                widget.controller.getScannedDevices.elementAt(widget.index));
+                widget.controller.getScannedDevices.elementAt(widget.index),
+                homepageKey.currentContext!);
           }
         },
       ),
@@ -56,9 +58,8 @@ class _ConnectButtonState extends State<ConnectButton> {
 ///This button does the same as the above one , but this one will be included in a showcase ,the above button will not
 Widget showCaseConnectButton(GlobalKey key, DeviceController controller) {
   return SizedBox(
-    child: ShowCaseView(
-      globalKey: key,
-      title: "Connect Button",
+    child: CustomShowCaseWidget(
+      showCaseKey: key,
       description: "Press this button to connect to the device",
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -66,20 +67,19 @@ Widget showCaseConnectButton(GlobalKey key, DeviceController controller) {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18.0),
                 side: const BorderSide(color: Colors.black))),
-        child: Text(controller.getConnectedDevices.any((element) =>
-                element.id == controller.getScannedDevices.elementAt(0).id)
+        child: Text((controller.connectedDevice?.id) ==
+                controller.getScannedDevices.elementAt(0).id
             ? "Disconnect"
             : "Connect"),
         onPressed: () async {
           if (controller.getConnectedDevices.any((element) =>
               element.id == controller.getScannedDevices.elementAt(0).id)) {
-            log("disconnecting ");
             await controller
                 .disconnectDevice(controller.getScannedDevices.elementAt(0));
           } else {
-            log("connecting ");
-            await controller
-                .connectToDevice(controller.getScannedDevices.elementAt(0));
+            await controller.connectToDevice(
+                controller.getScannedDevices.elementAt(0),
+                homepageKey.currentContext!);
           }
         },
       ),

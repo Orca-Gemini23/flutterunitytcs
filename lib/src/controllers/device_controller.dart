@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_final_fields
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +21,23 @@ class DeviceController extends ChangeNotifier {
   /// stores scanned devices
   List<BluetoothDevice> _scannedDevices = [];
 
+  late StreamSubscription<BluetoothDeviceState>
+      _bluetoothDeviceStateStreamSubscription;
+
   /// stores connected devices
   List<BluetoothDevice> _connectedDevices = [];
+
+  BluetoothDevice? _connectedDevice;
+
+  BluetoothDevice? get connectedDevice => _connectedDevice;
 
   /// stores characterisitcs of devices
   List<BluetoothCharacteristic> _characteristics = [];
 
   /// stores services of devices
   List<BluetoothService> _services = [];
+
+  BluetoothDevice? device;
 
   /// checks whether wifi credentials are saved on or not
   int _wifiProvisioned = 0;
@@ -80,9 +89,17 @@ class DeviceController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isScanning = false;
+  bool get scanStatus => isScanning;
+  void changeScanStatus(bool status) {
+    isScanning = status;
+    notifyListeners();
+  }
+
   double _freqValue = 0.3;
   double _modeValue = -1;
-  double _magValue = 0;
+  double _magSValue = 0;
+  double _magCValue = 0;
 
   double get frequencyValue {
     return _freqValue;
@@ -92,8 +109,12 @@ class DeviceController extends ChangeNotifier {
     return _modeValue;
   }
 
-  double get magValue {
-    return _magValue;
+  double get magSValue {
+    return _magSValue;
+  }
+
+  double get magCValue {
+    return _magCValue;
   }
 
   void setmodeValue(double value) {
@@ -101,8 +122,13 @@ class DeviceController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setmagValue(double value) {
-    _magValue = value;
+  void setmagSValue(double value) {
+    _magSValue = value;
+    notifyListeners();
+  }
+
+  void setmagCValue(double value) {
+    _magCValue = value;
     notifyListeners();
   }
 
@@ -223,7 +249,8 @@ class DeviceController extends ChangeNotifier {
       await askForPermission();
       _scannedDevices.clear();
       var ble = FlutterBlue.instance;
-
+      isScanning = true;
+      notifyListeners();
       ble
           .scan(
         timeout: const Duration(seconds: 10),
@@ -231,16 +258,17 @@ class DeviceController extends ChangeNotifier {
         ///timeout can be ignored , to keep the scan running continuosly
         allowDuplicates: false,
       )
-          .listen(
-        (scanResult) {
-          if (scanResult.device.name != "") {
-            ///Consider only those devices that have a name that is not empty
-            ///TODO:Convert it to scanResult.device.name.contains("walk")
-            _scannedDevices.add(scanResult.device);
-            notifyListeners();
-          }
-        },
-      ).onError((error) {
+          .listen((scanResult) {
+        if (scanResult.device.name != "") {
+          ///Consider only those devices that have a name that is not empty
+          ///TODO:Convert it to scanResult.device.name.contains("walk")
+          _scannedDevices.add(scanResult.device);
+          notifyListeners();
+        }
+      }, onDone: () {
+        isScanning = false;
+        notifyListeners();
+      }).onError((error) {
         log('startDiscover() error: $error');
       });
     } catch (e) {
@@ -261,29 +289,47 @@ class DeviceController extends ChangeNotifier {
   }
 
   ///Used to connect to a device and update connectedDevices list
-  Future connectToDevice(BluetoothDevice device) async {
+  Future connectToDevice(BluetoothDevice device, BuildContext context) async {
     try {
-      log("coming here");
       Fluttertoast.showToast(msg: "Connecting to ${device.name}");
       await device.connect();
-
       await HapticFeedback.vibrate();
-
       Fluttertoast.showToast(msg: "Connected to ${device.name}");
       await discoverServices(device);
-      _connectedDevices.clear;
-      _connectedDevices.add(device);
+      _connectedDevice = device;
+
       notifyListeners();
-      var encodedDevice = jsonEncode(device);
-      log(encodedDevice);
-      // PreferenceController.saveDeviceMAC(
-      //     device.id.toString(), device.id.toString());
+      startBluetoothDeviceStateStream(_connectedDevice!, context);
     } catch (e) {
       log(e.toString());
       Fluttertoast.showToast(msg: "Could not connect :$e");
       device.disconnect();
-      _connectedDevices.clear();
+      _connectedDevice = null;
       notifyListeners();
+    }
+  }
+
+  //create a method that starts a stream for bluetoothconnectionstate.
+  void startBluetoothDeviceStateStream(
+      BluetoothDevice device, BuildContext context) {
+    try {
+      _bluetoothDeviceStateStreamSubscription = device.state.listen((state) {
+        log("Device State is ${state.name}");
+        if (state == BluetoothDeviceState.disconnected) {
+          AwesomeDialog(
+            context: context,
+            title: "OOOPS",
+            desc:
+                "Lost connection to WALK ... Please check for power and reconnect to continue WALK-ing !!!",
+          ).show();
+        }
+      }, onError: (err) {
+        log("Error in stream ${err.toString()}");
+      }, onDone: () async {
+        await _bluetoothDeviceStateStreamSubscription.cancel();
+      });
+    } catch (e) {
+      log("startBluetoothDeviceStateStream : $e");
     }
   }
 
@@ -294,7 +340,7 @@ class DeviceController extends ChangeNotifier {
       await device.disconnect();
       await HapticFeedback.mediumImpact();
       Fluttertoast.showToast(msg: "Disconnected successfully");
-      _connectedDevices.clear();
+      _connectedDevice = null;
 
       ///Removing the device for the connectedDevices list
       _services.clear();
@@ -358,47 +404,6 @@ class DeviceController extends ChangeNotifier {
       Fluttertoast.showToast(msg: "Unexpected error in sending command $e");
     }
   }
-
-  // ///Used to listen to a stream of messages when the user sends INFO command
-  // Future notifyRead(Guid characteristic, BuildContext context) async {
-  //   try {
-  //     if (await FlutterBlue.instance.isOn) {
-  //       BluetoothCharacteristic charToTarget = _characteristics
-  //           .firstWhere((element) => element.uuid == characteristic);
-  //       clearInfo();
-
-  //       ///Clear the previous stored info if any
-  //       int count = 0;
-  //       await charToTarget.setNotifyValue(true);
-  //       await charToTarget.write(INFO.codeUnits);
-
-  //       /// sending the info command
-
-  //       await for (var value in charToTarget.value) {
-  //         ///waiting for the stream to complete because we have to show a loading dialog to the user till this is completed
-  //         log(String.fromCharCodes(value));
-
-  //         String information = String.fromCharCodes(value);
-  //         if (information.startsWith("batt")) {
-  //           updateBattValues(information);
-  //         }
-  //         _info.add(information.trim());
-  //         count++;
-  //         if (count == 18) {
-  //           ///We know the length of data we recieve so according to that we end the stream
-  //           updateWifiVerificationStatus();
-  //           break;
-  //         }
-  //       }
-  //     } else {
-  //       Fluttertoast.showToast(msg: "Seems like your Bluetooth is turned off");
-  //     }
-  //   } catch (e) {
-  //     log("Some error occurred in retrieving info ${e.toString()}");
-  //     Fluttertoast.showToast(
-  //         msg: "Some error occurred in retrieving info ${e.toString()}");
-  //   }
-  // }
 
   ///Function used to get battery values
   Future<void> getBatteryPercentageValues() async {
@@ -480,24 +485,43 @@ class DeviceController extends ChangeNotifier {
     try {
       BluetoothCharacteristic? serverTarget =
           _characteristicMap[MAGNITUDE_SERVER];
+      BluetoothCharacteristic? clientTarget =
+          _characteristicMap[MAGNITUDE_CLIENT];
 
       var serverResponse = await serverTarget!.read();
-      var tempMagnitude = double.parse(
+      var clientResponse = await clientTarget!.read();
+      var serverTempMagnitude = double.parse(
         String.fromCharCodes(serverResponse),
       );
-      if (tempMagnitude < 0) {
-        _magValue = 0;
+      var clientTempMagnitude = double.parse(
+        String.fromCharCodes(clientResponse),
+      );
+      if (serverTempMagnitude < 0) {
+        _magSValue = 0;
         notifyListeners();
       }
-      if (tempMagnitude > 4) {
-        _magValue = 4;
+      if (serverTempMagnitude > 4) {
+        _magSValue = 4;
         notifyListeners();
       } else {
-        _magValue = tempMagnitude;
+        _magSValue = serverTempMagnitude;
+        notifyListeners();
+      }
+
+      if (clientTempMagnitude < 0) {
+        _magCValue = 0;
+        notifyListeners();
+      }
+      if (clientTempMagnitude > 4) {
+        _magCValue = 4;
+        notifyListeners();
+      } else {
+        _magCValue = clientTempMagnitude;
         notifyListeners();
       }
 
       log("SERVER Magnitude Value is ${String.fromCharCodes(serverResponse)}");
+      log("Client Magnitude Value is ${String.fromCharCodes(clientResponse)}");
     } catch (e) {
       log(e.toString());
       log("Something went wrong while getting magnitudeValues.");
@@ -568,21 +592,26 @@ class DeviceController extends ChangeNotifier {
 
   Future<void> getClientStatusStream() async {
     ////actually this is just wifi provisioned status charac , listening for status here only!
-    try {
-      BluetoothCharacteristic? target = _characteristicMap[PROVISIONED_CLIENT];
-      Timer.periodic(const Duration(seconds: 10), (timer) async {
-        var devices = getConnectedDevices;
-        if (devices.isNotEmpty) {
-          var response = await target!.read();
-          var result = String.fromCharCodes(response);
-          log("Client Status Result is $result");
-        } else {
-          timer.cancel();
+
+    BluetoothCharacteristic? target = _characteristicMap[PROVISIONED_CLIENT];
+    Timer.periodic(
+      const Duration(seconds: 5),
+      (timer) async {
+        try {
+          var devices = getConnectedDevices;
+          if (devices.isNotEmpty) {
+            var response = await target!.read();
+            var result = String.fromCharCodes(response);
+            log("Client Status Result is $result");
+          } else {
+            timer.cancel();
+          }
+        } catch (e) {
+          log("in stream ${e.toString()}");
+          // throw Exception("Reading from the device clashed!! , Retrying");
         }
-      });
-    } catch (e) {
-      throw Exception("Reading from the device clashed!! , Retrying");
-    }
+      },
+    );
   }
 
   ///ONLY FOR NEWTON'S TESTING NOT TO BE USED IN ACTUAL APPLICATION
