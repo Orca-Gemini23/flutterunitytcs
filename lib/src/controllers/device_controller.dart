@@ -276,12 +276,15 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  ///Checks already connected devices and highlights the restpective device's tile in the home screen.
+  ///Checks already connected devices and highlights the respective device's tile in the home screen.
   Future checkPrevConnection() async {
     log("check prev called ");
     _connectedDevices = await FlutterBlue.instance.connectedDevices;
     if (_connectedDevices.isNotEmpty) {
-      await discoverServices(_connectedDevices[0]);
+      _connectedDevice = _connectedDevices[0];
+      await discoverServices(
+        _connectedDevice!,
+      );
 
       ///Discovering the service of the device at index 0 in connectedDevices
     }
@@ -299,6 +302,7 @@ class DeviceController extends ChangeNotifier {
       _connectedDevice = device;
 
       notifyListeners();
+      // ignore: use_build_context_synchronously
       startBluetoothDeviceStateStream(_connectedDevice!, context);
     } catch (e) {
       log(e.toString());
@@ -309,7 +313,7 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  //create a method that starts a stream for bluetoothconnectionstate.
+  //create a method that starts a stream for bluetoothconnectionstate.Also displays a dialog whenever there is             
   void startBluetoothDeviceStateStream(
       BluetoothDevice device, BuildContext context) {
     try {

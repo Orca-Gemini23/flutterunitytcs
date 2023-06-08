@@ -6,12 +6,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:walk/src/constants/api_constants.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
-import 'package:walk/src/controllers/user_controller.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
 

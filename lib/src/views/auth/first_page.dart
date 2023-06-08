@@ -5,7 +5,6 @@ import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/login_page.dart';
 import 'package:walk/src/views/auth/signup_page.dart';
-import 'package:walk/src/views/home_page.dart';
 
 class LoginRegister extends StatelessWidget {
   const LoginRegister({super.key});
@@ -51,15 +50,9 @@ class LoginRegister extends StatelessWidget {
                       // );
 
                       Go.to(
-<<<<<<< HEAD
                         context: context,
                         push: LoginPage(),
                       );
-=======
-                          context: context,
-                          push:
-                              const LoginPage()); // Homepage( isShowCaseDone: true)); //
->>>>>>> 9906a233fd43a0dbbcf804631630ce25021426b3
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
