@@ -7,7 +7,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/utils/background_isolate.dart';
 import 'package:walk/walk_app.dart';
 import 'package:walk/src/controllers/notification_controller.dart';
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:walk/src/controllers/auth_controller.dart';
 import 'package:walk/src/controllers/device_controller.dart';
@@ -15,7 +16,9 @@ class WalkApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (_) => DeviceController(performScan: true),
+            create: (_) => DeviceController(
+              performScan: true,
+            ),
           ),
           ChangeNotifierProvider(
             create: (_) => WifiController(),

@@ -33,10 +33,22 @@ class _CommandPageState extends State<CommandPage> {
     await PreferenceController.saveboolData(showCaseKey, true);
   }
 
+  giveWifiVerificationPopup() {
+    AwesomeDialog(
+      context: context,
+      title: "Wifi Verification",
+      desc:
+          "Your Wifi Verification is incomplete , please verify your Wifi details , as we need it to upload your health metrics to your server",
+    ).show();
+  }
+
   @override
   void initState() {
     super.initState();
     setShowCaseStatus();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      giveWifiVerificationPopup();
+    });
   }
 
   @override
@@ -83,9 +95,9 @@ class _CommandPageState extends State<CommandPage> {
                             backgroundColor: AppColor.greenColor, elevation: 0),
                         child: const Text('No'),
                       ),
-                      body: Column(
+                      body: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
+                        children: <Widget>[
                           Text(
                             AppString.wifiVerified,
                             style: TextStyle(
@@ -457,119 +469,88 @@ class _CommandPageState extends State<CommandPage> {
               height: 10,
             ),
 
-            Consumer<DeviceController>(
-              builder: (context, controller, child) {
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: AppColor.amberColor,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // ...List.generate(
-                      //   controller.buttonNames.length,
-                      //   (index) {
-                      //     List<Future> buttonFunction = [
-                      //       controller.sendToDevice(SOS, WRITECHARACTERISTICS),
-                      //       controller.sendToDevice(
-                      //           RESTART, WRITECHARACTERISTICS),
-                      //       controller.sendToDevice(RSTF, WRITECHARACTERISTICS),
-                      //       controller.sendToDevice(
-                      //           RPROV, WRITECHARACTERISTICS),
-                      //     ];
-                      //     return ElevatedButton(
-                      //       style: ElevatedButton.styleFrom(
-                      //         shape: const CircleBorder(),
-                      //         backgroundColor: AppColor.purpleColor,
-                      //         padding: const EdgeInsets.all(20),
-                      //         elevation: 6,
-                      //       ),
-                      //       onPressed: () async {
-                      //         await buttonFunction[index];
-                      //       },
-                      //       child: Text(
-                      //         controller.buttonNames[index],
-                      //         style: const TextStyle(
-                      //           fontSize: 16,
-                      //           fontWeight: FontWeight.w400,
-                      //         ),
-                      //       ),
-                      //     );
-                      //   },
-                      // ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.purple,
-                          padding: const EdgeInsets.all(20),
-                          elevation: 6,
-                        ),
-                        onPressed: () async {
-                          // SEND RESTART COMMAND
-                          await controller.sendToDevice(
-                              RESTART, WRITECHARACTERISTICS);
-                        },
-                        child: const Text(
-                          "RES",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.purple,
-                          padding: const EdgeInsets.all(20),
-                          elevation: 6,
-                        ),
-                        onPressed: () async {
-                          //SEND RESET TO FACTORY COMMAND
-                          await controller.sendToDevice(
-                              RSTF, WRITECHARACTERISTICS);
-                        },
-                        child: const Text(
-                          "RSTF",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.purple,
-                          padding: const EdgeInsets.all(20),
-                          elevation: 6,
-                        ),
-                        onPressed: () async {
-                          //SEND REMOVE ALL WIFI CREDENTIALS COMMAND
+            // Consumer<DeviceController>(
+            //   builder: (context, controller, child) {
+            //     return Container(
+            //       padding: const EdgeInsets.all(10),
+            //       decoration: BoxDecoration(
+            //           color: AppColor.amberColor,
+            //           borderRadius: BorderRadius.circular(15)),
+            //       child: Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //         children: [
+            //           ElevatedButton(
+            //             style: ElevatedButton.styleFrom(
+            //               shape: const CircleBorder(),
+            //               backgroundColor: Colors.purple,
+            //               padding: const EdgeInsets.all(20),
+            //               elevation: 6,
+            //             ),
+            //             onPressed: () async {
+            //               // SEND RESTART COMMAND
+            //               await controller.sendToDevice(
+            //                   RESTART, WRITECHARACTERISTICS);
+            //             },
+            //             child: const Text(
+            //               "RES",
+            //               style: TextStyle(
+            //                 fontSize: 16,
+            //                 fontWeight: FontWeight.w400,
+            //               ),
+            //             ),
+            //           ),
+            //           const SizedBox(
+            //             width: 5,
+            //           ),
+            //           ElevatedButton(
+            //             style: ElevatedButton.styleFrom(
+            //               shape: const CircleBorder(),
+            //               backgroundColor: Colors.purple,
+            //               padding: const EdgeInsets.all(20),
+            //               elevation: 6,
+            //             ),
+            //             onPressed: () async {
+            //               //SEND RESET TO FACTORY COMMAND
+            //               await controller.sendToDevice(
+            //                   RSTF, WRITECHARACTERISTICS);
+            //             },
+            //             child: const Text(
+            //               "RSTF",
+            //               style: TextStyle(
+            //                 fontSize: 16,
+            //                 fontWeight: FontWeight.w400,
+            //               ),
+            //             ),
+            //           ),
+            //           const SizedBox(
+            //             width: 5,
+            //           ),
+            //           ElevatedButton(
+            //             style: ElevatedButton.styleFrom(
+            //               shape: const CircleBorder(),
+            //               backgroundColor: Colors.purple,
+            //               padding: const EdgeInsets.all(20),
+            //               elevation: 6,
+            //             ),
+            //             onPressed: () async {
+            //               //SEND REMOVE ALL WIFI CREDENTIALS COMMAND
 
-                          await controller.sendToDevice(
-                              RPROV, WRITECHARACTERISTICS);
-                        },
-                        child: const Text(
-                          "RPRV",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              },
-            ) //Sos ,Restart , Rstf ,rprov   Container
+            //               await controller.sendToDevice(
+            //                   RPROV, WRITECHARACTERISTICS);
+            //             },
+            //             child: const Text(
+            //               "RPRV",
+            //               style: TextStyle(
+            //                 fontSize: 16,
+            //                 fontWeight: FontWeight.w400,
+            //               ),
+            //             ),
+            //           )
+            //         ],
+            //       ),
+            //     );
+            //   },
+            // ) //Sos ,Restart , Rstf ,rprov   Container
           ],
         ),
       ),

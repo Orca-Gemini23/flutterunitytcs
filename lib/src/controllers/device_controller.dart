@@ -16,10 +16,14 @@ import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/constants/wifi_enum.dart';
+import 'package:walk/src/views/home_page.dart';
 
 class DeviceController extends ChangeNotifier {
   /// stores scanned devices
   List<BluetoothDevice> _scannedDevices = [];
+
+  StreamController<BluetoothDeviceState> deviceStateStreamController =
+      StreamController.broadcast();
 
   late StreamSubscription<BluetoothDeviceState>
       _bluetoothDeviceStateStreamSubscription;
@@ -60,9 +64,6 @@ class DeviceController extends ChangeNotifier {
   bool get listenStatus => _isListening;
 
   Set<String> _info = {};
-
-  /// stores remaining battery value
-  int _batteryRemaining = 000;
 
   /// Stores value for remaining battery
   int get clientBatteryRemaining {
@@ -179,11 +180,14 @@ class DeviceController extends ChangeNotifier {
   }
 
   ///Constructor to start scanning as soon as an object of Device Controller is inititated in the runApp
-  DeviceController({bool performScan = true}) {
+  DeviceController(
+      {bool performScan = false, bool checkPrevconnection = false}) {
     if (performScan) {
       startDiscovery();
     }
-    checkPrevConnection();
+    if (checkPrevconnection) {
+      checkPrevConnection();
+    }
   }
 
   ///Handles the bluetooth and location permission for both devices, below and above android version 12;
@@ -282,11 +286,11 @@ class DeviceController extends ChangeNotifier {
     _connectedDevices = await FlutterBlue.instance.connectedDevices;
     if (_connectedDevices.isNotEmpty) {
       _connectedDevice = _connectedDevices[0];
+
       await discoverServices(
+        ///Discovering the service of the device at index 0 in connectedDevices
         _connectedDevice!,
       );
-
-      ///Discovering the service of the device at index 0 in connectedDevices
     }
     notifyListeners();
   }
@@ -295,15 +299,13 @@ class DeviceController extends ChangeNotifier {
   Future connectToDevice(BluetoothDevice device, BuildContext context) async {
     try {
       Fluttertoast.showToast(msg: "Connecting to ${device.name}");
-      await device.connect();
+      await device.connect(autoConnect: true);
       await HapticFeedback.vibrate();
       Fluttertoast.showToast(msg: "Connected to ${device.name}");
       await discoverServices(device);
       _connectedDevice = device;
-
+      // startBluetoothDeviceStateStream(device, context);
       notifyListeners();
-      // ignore: use_build_context_synchronously
-      startBluetoothDeviceStateStream(_connectedDevice!, context);
     } catch (e) {
       log(e.toString());
       Fluttertoast.showToast(msg: "Could not connect :$e");
@@ -313,25 +315,31 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  //create a method that starts a stream for bluetoothconnectionstate.Also displays a dialog whenever there is             
+  //create a method that starts a stream for bluetoothconnectionstate.Also displays a dialog whenever there is connection break
   void startBluetoothDeviceStateStream(
-      BluetoothDevice device, BuildContext context) {
+      BluetoothDevice device, BuildContext context) async {
     try {
-      _bluetoothDeviceStateStreamSubscription = device.state.listen((state) {
-        log("Device State is ${state.name}");
-        if (state == BluetoothDeviceState.disconnected) {
-          AwesomeDialog(
-            context: context,
-            title: "OOOPS",
-            desc:
-                "Lost connection to WALK ... Please check for power and reconnect to continue WALK-ing !!!",
-          ).show();
-        }
-      }, onError: (err) {
-        log("Error in stream ${err.toString()}");
-      }, onDone: () async {
-        await _bluetoothDeviceStateStreamSubscription.cancel();
-      });
+      deviceStateStreamController.addStream(device.state);
+      _bluetoothDeviceStateStreamSubscription =
+          deviceStateStreamController.stream.listen(
+        (state) {
+          log("Device State is ${state.name}");
+          if (state == BluetoothDeviceState.disconnected) {
+            _connectedDevice = null;
+            AwesomeDialog(
+              context: context,
+              title: "OOOPS",
+              desc:
+                  "Lost connection to WALK ... Please check for power and reconnect to continue WALK-ing !!!",
+            ).show();
+          }
+          notifyListeners();
+        },
+        onDone: () async {
+          log("Controller said done ... Done With the stream");
+          await _bluetoothDeviceStateStreamSubscription.cancel();
+        },
+      );
     } catch (e) {
       log("startBluetoothDeviceStateStream : $e");
     }
@@ -394,7 +402,7 @@ class DeviceController extends ChangeNotifier {
             _characteristicMap[WRITECHARACTERISTICS];
 
         ///Searching for the actual characteristic by the GUID of the characteristic known
-        var response = await writeTarget!.write(command.codeUnits);
+        await writeTarget!.write(command.codeUnits);
 
         ///Converting the command to ASCII then sending
         await HapticFeedback.mediumImpact();

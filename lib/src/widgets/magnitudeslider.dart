@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:walk/src/constants/bt_constants.dart';

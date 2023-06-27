@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_import
 
 import 'dart:developer';
 
@@ -17,6 +17,7 @@ import 'package:walk/src/widgets/buttons.dart';
 import 'package:walk/src/widgets/showcasewidget.dart';
 import 'package:walk/src/widgets/unboxingsetup.dart';
 
+// ignore: must_be_immutable
 class ScannedDevicesList extends StatefulWidget {
   ///Represents the devices that have been scanned6
   ScannedDevicesList({
@@ -101,7 +102,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList>
                       await deviceController.getFrequencyValues();
                       await deviceController.getMagnitudeValues();
                       await deviceController.getBatteryRemaining();
-                      await deviceController.getClientStatusStream();
+                      await deviceController.getWifiProvisionedStatus();
                     } catch (e) {
                       log(e.toString());
                       Fluttertoast.showToast(msg: e.toString());
@@ -215,7 +216,7 @@ Widget scannedItem(
                   await controller.getFrequencyValues();
                   await controller.getMagnitudeValues();
                   await controller.getBatteryRemaining();
-                  await controller.getClientStatusStream();
+                  await controller.getWifiProvisionedStatus();
                 } catch (e) {
                   Fluttertoast.showToast(msg: e.toString());
                 }
@@ -257,7 +258,7 @@ Widget scannedItem(
               color: const Color(0XFF184D47),
               borderRadius: BorderRadius.circular(10),
               boxShadow: controller.connectedDevice ==
-                      (controller.getScannedDevices.elementAt(0))
+                      (controller.getScannedDevices.elementAt(index))
                   ? const [
                       BoxShadow(
                           color: Colors.greenAccent,

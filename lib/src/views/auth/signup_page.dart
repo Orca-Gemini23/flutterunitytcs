@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/auth_controller.dart';

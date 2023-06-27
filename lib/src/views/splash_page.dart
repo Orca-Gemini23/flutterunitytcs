@@ -39,7 +39,10 @@ class _SplashPageState extends State<SplashPage> {
       pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
         builder: Builder(builder: (context) {
           if (userToken == "") {
-            return const LoginRegister();
+            return Homepage(
+              isShowCaseDone: _isShowCasedone,
+              isUnboxingDone: _isUnboxingdone,
+            ); //const LoginRegister();
           } else {
             return Homepage(
               isShowCaseDone: _isShowCasedone,

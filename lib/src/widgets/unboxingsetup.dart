@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class UnboxingSetupDialog extends StatelessWidget {
   UnboxingSetupDialog({
     super.key,
@@ -75,9 +75,9 @@ class UnboxingSetupDialog extends StatelessWidget {
                           duration: const Duration(milliseconds: 10),
                           curve: Curves.easeIn);
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.next_plan,
                           color: AppColor.greenColor,
@@ -131,9 +131,9 @@ class UnboxingSetupDialog extends StatelessWidget {
                           duration: const Duration(milliseconds: 10),
                           curve: Curves.easeIn);
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.next_plan,
                           color: AppColor.greenColor,
@@ -162,9 +162,9 @@ class UnboxingSetupDialog extends StatelessWidget {
                           duration: const Duration(milliseconds: 10),
                           curve: Curves.easeIn);
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.arrow_back,
                           color: AppColor.greenColor,
@@ -218,9 +218,9 @@ class UnboxingSetupDialog extends StatelessWidget {
                           duration: const Duration(milliseconds: 10),
                           curve: Curves.easeIn);
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.next_plan,
                           color: AppColor.greenColor,
@@ -249,9 +249,9 @@ class UnboxingSetupDialog extends StatelessWidget {
                           duration: const Duration(milliseconds: 10),
                           curve: Curves.easeIn);
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.arrow_back,
                           color: AppColor.greenColor,
@@ -304,9 +304,9 @@ class UnboxingSetupDialog extends StatelessWidget {
                       PreferenceController.saveboolData("isUnboxingDone", true);
                       Navigator.of(context, rootNavigator: true).pop("done");
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.next_plan,
                           color: AppColor.greenColor,
@@ -335,9 +335,9 @@ class UnboxingSetupDialog extends StatelessWidget {
                           duration: const Duration(milliseconds: 10),
                           curve: Curves.easeIn);
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.arrow_back,
                           color: AppColor.greenColor,

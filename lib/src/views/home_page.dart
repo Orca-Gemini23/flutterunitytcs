@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_final_fields
 
-import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -13,8 +11,7 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/widgets/navigation_drawer.dart';
-import 'package:walk/src/widgets/unboxingsetup.dart';
-import 'package:walk/test.dart';
+
 import '../widgets/scanned_item_tile.dart';
 
 GlobalKey homepageKey = GlobalKey();
@@ -30,9 +27,11 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
   bool serviceStarted = false;
+  MethodChannel channel = const MethodChannel("com.lifespark.walk");
 
   @override
   void initState() {
+    DeviceController(performScan: false, checkPrevconnection: true);
     super.initState();
   }
 
@@ -89,22 +88,24 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
           Consumer<DeviceController>(builder: (context, controller, snapshot) {
         return FloatingActionButton(
           onPressed: () async {
-            // String value =
-            await controller.getRawBatteryNewton();
-            List<Map<String, String>> batteryMap = [];
+            channel.invokeMethod("scanForDevices");
 
-            Timer.periodic(
-              const Duration(seconds: 5),
-              (timer) async {
-                String value = await controller.getRawBatteryNewton();
-                if (value != "error occurred") {
-                  batteryMap.clear();
-                  batteryMap.add(
-                      {"Time": DateTime.now().toString(), "BattValue": value});
-                  Test.exportCSV(batteryMap);
-                }
-              },
-            );
+            // String value =
+            // await controller.getRawBatteryNewton();
+            // List<Map<String, String>> batteryMap = [];
+
+            // Timer.periodic(
+            //   const Duration(seconds: 5),
+            //   (timer) async {
+            //     String value = await controller.getRawBatteryNewton();
+            //     if (value != "error occurred") {
+            //       batteryMap.clear();
+            //       batteryMap.add(
+            //           {"Time": DateTime.now().toString(), "BattValue": value});
+            //       Test.exportCSV(batteryMap);
+            //     }
+            //   },
+            // );
           },
         );
       }),

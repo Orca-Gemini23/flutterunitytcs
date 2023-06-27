@@ -7,10 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/auth_controller.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
-import 'package:walk/src/views/auth/phone_auth.dart';
+
 import 'package:walk/src/widgets/textfields.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,7 +21,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

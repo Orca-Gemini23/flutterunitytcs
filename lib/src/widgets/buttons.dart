@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/views/home_page.dart';
 
-import 'package:walk/src/views/showcase/showcaseview.dart';
 import 'package:walk/src/widgets/showcasewidget.dart';
 
 ///Button to connect to a device , usually this button is used inside the scanned item tile or showcase scanned item tile
@@ -33,13 +32,12 @@ class _ConnectButtonState extends State<ConnectButton> {
                 borderRadius: BorderRadius.circular(18.0),
                 side: const BorderSide(color: Colors.black))),
         child: Text(widget.controller.connectedDevice?.id ==
-                widget.controller.getConnectedDevices.elementAt(0).id
+                widget.controller.getScannedDevices.elementAt(widget.index).id
             ? "Disconnect"
             : "Connect"),
         onPressed: () async {
-          if (widget.controller.getConnectedDevices.any((element) =>
-              element.id ==
-              widget.controller.getScannedDevices.elementAt(widget.index).id)) {
+          if (widget.controller.connectedDevice?.id ==
+              widget.controller.getScannedDevices.elementAt(widget.index).id) {
             log("disconnecting ");
             await widget.controller.disconnectDevice(
                 widget.controller.getScannedDevices.elementAt(widget.index));
@@ -72,8 +70,8 @@ Widget showCaseConnectButton(GlobalKey key, DeviceController controller) {
             ? "Disconnect"
             : "Connect"),
         onPressed: () async {
-          if (controller.getConnectedDevices.any((element) =>
-              element.id == controller.getScannedDevices.elementAt(0).id)) {
+          if (controller.connectedDevice?.id ==
+              controller.getScannedDevices.elementAt(0).id) {
             await controller
                 .disconnectDevice(controller.getScannedDevices.elementAt(0));
           } else {
