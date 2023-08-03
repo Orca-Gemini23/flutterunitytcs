@@ -2,31 +2,22 @@
 
 import 'dart:async';
 import 'dart:developer';
-
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
-
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/constants/wifi_enum.dart';
-import 'package:walk/src/views/home_page.dart';
 
 class DeviceController extends ChangeNotifier {
   /// stores scanned devices
   List<BluetoothDevice> _scannedDevices = [];
 
-  StreamController<BluetoothDeviceState> deviceStateStreamController =
-      StreamController.broadcast();
-
-  late StreamSubscription<BluetoothDeviceState>
-      _bluetoothDeviceStateStreamSubscription;
+  bool isBluetoothOn = false;
 
   /// stores connected devices
   List<BluetoothDevice> _connectedDevices = [];
@@ -35,13 +26,23 @@ class DeviceController extends ChangeNotifier {
 
   BluetoothDevice? get connectedDevice => _connectedDevice;
 
+  void clearConnectedDevice() {
+    _connectedDevice = null;
+    notifyListeners();
+  }
+
+  void updateConnectedDevice(BluetoothDevice device) {
+    _connectedDevice = device;
+    notifyListeners();
+  }
+
   /// stores characterisitcs of devices
   List<BluetoothCharacteristic> _characteristics = [];
 
   /// stores services of devices
   List<BluetoothService> _services = [];
 
-  BluetoothDevice? device;
+  bool isConnecting = false;
 
   /// checks whether wifi credentials are saved on or not
   int _wifiProvisioned = 0;
@@ -148,7 +149,7 @@ class DeviceController extends ChangeNotifier {
   /// Status of battery
   bool _batteryInfoStatus = false;
 
-  ///  Gwtting status of battery
+  ///  Getting status of battery
   bool get batteryInfoStatus => _batteryInfoStatus;
 
   /// Stores server[L] battery value
@@ -179,12 +180,10 @@ class DeviceController extends ChangeNotifier {
     return double.parse(_batteryS);
   }
 
-  ///Constructor to start scanning as soon as an object of Device Controller is inititated in the runApp
+  // //Constructor to start scanning as soon as an object of Device Controller is inititated in the runApp
   DeviceController(
       {bool performScan = false, bool checkPrevconnection = false}) {
-    if (performScan) {
-      startDiscovery();
-    }
+    askForPermission();
     if (checkPrevconnection) {
       checkPrevConnection();
     }
@@ -192,7 +191,8 @@ class DeviceController extends ChangeNotifier {
 
   ///Handles the bluetooth and location permission for both devices, below and above android version 12;
   Future askForPermission() async {
-    final ble = FlutterBlue.instance; // initializes the flutter blue package
+    // initializes the flutter blue package
+
     if (await Permission.location.isDenied ||
         await Permission.bluetooth.isDenied) {
       await Permission.location.request();
@@ -210,10 +210,13 @@ class DeviceController extends ChangeNotifier {
         await location
             .serviceEnabled(); // check whether the service is enabled or not
       }
-    } else if (!await ble.isOn ||
+    } else if (await FlutterBluePlus.adapterState.first !=
+            BluetoothAdapterState.on ||
         !await location.serviceEnabled() && homeContext != null) {
       await location.requestService(); // request to on location service
       await BluetoothEnable.enableBluetooth; // enables bluetooth
+      isBluetoothOn = true;
+      notifyListeners();
     }
   }
 
@@ -229,7 +232,7 @@ class DeviceController extends ChangeNotifier {
       double dialogRadius = 10.0;
       bool barrierDismissible = true; //
 
-      /// Custom Dialog box for turning On Bluetooth
+      // // Custom Dialog box for turning On Bluetooth
       await BluetoothEnable.customBluetoothRequest(
               context,
               dialogTitle,
@@ -247,27 +250,31 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  /// Used to scan the devices and add the scanned devices to the scannedDevices list;
-  Future<void> startDiscovery() async {
+  //// Used to scan the devices and add the scanned devices to the scannedDevices list;
+  Future<void> startDiscovery(Function onConnect) async {
     try {
+      FlutterBluePlus.setLogLevel(LogLevel.verbose);
       await askForPermission();
       _scannedDevices.clear();
-      var ble = FlutterBlue.instance;
+
+      isConnecting =
+          false; ////Reset the connecting flag so that when the scan results come up they can be connected to if needed
+
       isScanning = true;
       notifyListeners();
-      ble
-          .scan(
+      FlutterBluePlus.scan(
         timeout: const Duration(seconds: 10),
+        withServices: [
+          Guid("0000acf0-0000-1000-8000-00805f9b34fb"),
+        ],
 
         ///timeout can be ignored , to keep the scan running continuosly
         allowDuplicates: false,
-      )
-          .listen((scanResult) {
-        if (scanResult.device.name != "") {
-          ///Consider only those devices that have a name that is not empty
-          ///TODO:Convert it to scanResult.device.name.contains("walk")
-          _scannedDevices.add(scanResult.device);
-          notifyListeners();
+      ).listen((scanResult) async {
+        print(scanResult.toString());
+        if (!isConnecting) {
+          ////If the device is not being connected to then only try and connect to it
+          await connectToDevice(scanResult.device, onConnect);
         }
       }, onDone: () {
         isScanning = false;
@@ -283,65 +290,36 @@ class DeviceController extends ChangeNotifier {
   ///Checks already connected devices and highlights the respective device's tile in the home screen.
   Future checkPrevConnection() async {
     log("check prev called ");
-    _connectedDevices = await FlutterBlue.instance.connectedDevices;
+    _connectedDevices = await FlutterBluePlus.connectedSystemDevices;
     if (_connectedDevices.isNotEmpty) {
       _connectedDevice = _connectedDevices[0];
-
-      await discoverServices(
-        ///Discovering the service of the device at index 0 in connectedDevices
-        _connectedDevice!,
-      );
+      await connectToDevice(_connectedDevice!, () {});
     }
-    notifyListeners();
   }
 
   ///Used to connect to a device and update connectedDevices list
-  Future connectToDevice(BluetoothDevice device, BuildContext context) async {
+  Future connectToDevice(BluetoothDevice device, Function onConnect) async {
     try {
-      Fluttertoast.showToast(msg: "Connecting to ${device.name}");
-      await device.connect(autoConnect: true);
-      await HapticFeedback.vibrate();
-      Fluttertoast.showToast(msg: "Connected to ${device.name}");
-      await discoverServices(device);
-      _connectedDevice = device;
-      // startBluetoothDeviceStateStream(device, context);
+      bool gotServices = false;
+      isConnecting = true;
       notifyListeners();
+      Fluttertoast.showToast(msg: "Connecting to ${device.localName}");
+      await device.connect(
+        autoConnect: false,
+      );
+
+      await HapticFeedback.vibrate();
+      Fluttertoast.showToast(msg: "Connected to ${device.localName}");
+      gotServices = await discoverServices(device);
+      gotServices ? _connectedDevice = device : null;
+      notifyListeners();
+      onConnect();
     } catch (e) {
       log(e.toString());
-      Fluttertoast.showToast(msg: "Could not connect :$e");
+      Fluttertoast.showToast(msg: "Could not connect ");
       device.disconnect();
       _connectedDevice = null;
       notifyListeners();
-    }
-  }
-
-  //create a method that starts a stream for bluetoothconnectionstate.Also displays a dialog whenever there is connection break
-  void startBluetoothDeviceStateStream(
-      BluetoothDevice device, BuildContext context) async {
-    try {
-      deviceStateStreamController.addStream(device.state);
-      _bluetoothDeviceStateStreamSubscription =
-          deviceStateStreamController.stream.listen(
-        (state) {
-          log("Device State is ${state.name}");
-          if (state == BluetoothDeviceState.disconnected) {
-            _connectedDevice = null;
-            AwesomeDialog(
-              context: context,
-              title: "OOOPS",
-              desc:
-                  "Lost connection to WALK ... Please check for power and reconnect to continue WALK-ing !!!",
-            ).show();
-          }
-          notifyListeners();
-        },
-        onDone: () async {
-          log("Controller said done ... Done With the stream");
-          await _bluetoothDeviceStateStreamSubscription.cancel();
-        },
-      );
-    } catch (e) {
-      log("startBluetoothDeviceStateStream : $e");
     }
   }
 
@@ -370,7 +348,7 @@ class DeviceController extends ChangeNotifier {
 
   ///Used to discover the services and characteristics;
   ///Also flood services and characteristics into a map
-  Future discoverServices(BluetoothDevice device) async {
+  Future<bool> discoverServices(BluetoothDevice device) async {
     try {
       _services = await device.discoverServices();
       _characteristicMap.clear();
@@ -381,23 +359,24 @@ class DeviceController extends ChangeNotifier {
 
       for (var element in _characteristics) {
         characteristicMap.putIfAbsent(element.uuid, () => element);
-        notifyListeners();
       }
-
-      //log(characteristicMap[CHARGERCONN].toString());
-
-      //log(_characteristics.toString());
+      notifyListeners();
+      return true;
     } catch (e) {
-      Fluttertoast.showToast(msg: "Unexpected error in getting the services$e");
-      log(e.toString());
+      Fluttertoast.showToast(msg: "Unexpected error in getting the services");
+      log("Discover services $e");
+      return false;
     }
   }
 
   ///Used to send any message to the device basically command , it is sent in ASCII format
   Future sendToDevice(String command, Guid characteristic) async {
     try {
-      if (await FlutterBlue.instance.isOn) {
-        ///Checking if the bluetooth is on
+      ///Checking if the bluetooth is on
+      if (await FlutterBluePlus.adapterState.first ==
+          BluetoothAdapterState.on) {
+        log(command);
+
         BluetoothCharacteristic? writeTarget =
             _characteristicMap[WRITECHARACTERISTICS];
 
@@ -406,19 +385,20 @@ class DeviceController extends ChangeNotifier {
 
         ///Converting the command to ASCII then sending
         await HapticFeedback.mediumImpact();
-        log("Command Sent !!!");
-        Fluttertoast.showToast(msg: "Command Sent !! ");
+        if (command.contains(RegExp(r"MODE"))) {
+          Fluttertoast.showToast(msg: "Mode changed ! ");
+        }
       } else {
         Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
       }
     } catch (e) {
       log("error in sending message $e");
-      Fluttertoast.showToast(msg: "Unexpected error in sending command $e");
+      Fluttertoast.showToast(msg: "Unexpected error in sending command ");
     }
   }
 
   ///Function used to get battery values
-  Future<void> getBatteryPercentageValues() async {
+  Future<bool> getBatteryPercentageValues() async {
     try {
       BluetoothCharacteristic? clientTarget =
           _characteristicMap[BATTERY_PERCENTAGE_CLIENT];
@@ -442,7 +422,7 @@ class DeviceController extends ChangeNotifier {
         }
       }
       if (double.parse(tempBattC) > 100 || double.parse(tempBattC) < 0) {
-        log("Client battery percentage Out of Limit , modifying");
+        log("Client battery percentage Out of Limit , modifying ....");
         if (double.parse(tempBattC) > 100) {
           _batteryC = "100";
           notifyListeners();
@@ -461,9 +441,11 @@ class DeviceController extends ChangeNotifier {
         notifyListeners();
       }
       _batteryInfoStatus = true;
+      return true;
     } catch (e) {
       log(e.toString());
       log("Something went wrong while getting batteryValues.");
+      return false;
     }
   }
 
@@ -637,5 +619,14 @@ class DeviceController extends ChangeNotifier {
       log(e.toString());
       return "error occurred";
     }
+  }
+
+  Future<bool> refreshBatteryValues() async {
+    bool refreshed;
+    refreshed = await getBatteryPercentageValues();
+    if (refreshed) {
+      return true;
+    }
+    return false;
   }
 }

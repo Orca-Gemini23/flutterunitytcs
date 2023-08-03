@@ -13,4 +13,6 @@ class AppColor {
   static const Color greenColor = Color(0xFF4CAF50);
   static const Color greenDarkColor = Color(0xff005749);
   static const Color errorColor = Color.fromARGB(255, 233, 57, 57);
+  static const Color lightgreen = Color(0XFFCBE2D2);
+  static const Color lightbluegrey = Color(0XFFE8E8E8);
 }

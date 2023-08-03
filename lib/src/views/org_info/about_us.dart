@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 
@@ -8,84 +9,119 @@ class AboutUsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: AppColor.blackColor,
+        ),
         title: const Text(
           AppString.aboutUsTitle,
           style: TextStyle(
-            color: AppColor.greenDarkColor,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
             color: AppColor.blackColor,
           ),
-          onPressed: (() {
-            Navigator.pop(context);
-          }),
         ),
         centerTitle: false,
-        backgroundColor: AppColor.whiteColor,
+        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: ListView(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  AppString.org,
-                  style: TextStyle(
-                    fontSize: 36,
-                    letterSpacing: 8,
-                    color: AppColor.greenDarkColor,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Container(
-                  height: 40,
-                  padding: const EdgeInsets.all(0.5),
-                  color: AppColor.greenDarkColor,
-                ),
-                const SizedBox(width: 10),
-                const Text(
-                  "Lifespark\nTechnologies",
-                  style: TextStyle(
+      body: SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      AppString.org,
+                      style: TextStyle(
+                        fontSize: 32.sp,
+                        letterSpacing: 4,
+                        color: AppColor.greenDarkColor,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                      height: 40,
+                      padding: const EdgeInsets.all(0.5),
                       color: AppColor.greenDarkColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "Lifespark\nTechnologies",
+                      style: TextStyle(
+                          color: AppColor.greenDarkColor,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.fromLTRB(20.0, 10, 10, 10),
-            height: 60,
-            color: AppColor.greenDarkColor,
-            child: const Text(
-              AppString.yours,
-              style: TextStyle(
-                  color: AppColor.whiteColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w300),
-            ),
-          ),
-          const SizedBox(height: 30),
-          const Align(
-            alignment: Alignment.center,
-            child: Text(
-              AppString.companyDetails,
-              style: TextStyle(
-                color: AppColor.blackColor,
-                fontSize: 16,
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Text(
+                AppString.aboutUsParagraph,
+                textAlign: TextAlign.justify,
+                style: TextStyle(fontSize: 14.sp),
+              ),
+            ),
+            Container(
+              width: double.maxFinite,
+              height: 130.h,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 5,
+              ),
+              decoration: const BoxDecoration(
+                color: AppColor.greyLight,
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 5.h,
+                    child: Text(
+                      "Location",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 40.h,
+                    left: 20.w,
+                    child: SizedBox(
+                      height: 53.h,
+                      width: 106.w,
+                      child: const Image(
+                        fit: BoxFit.fill,
+                        image: AssetImage(
+                          "assets/images/womannav.png",
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                      top: 25.h,
+                      right: 0,
+                      child: Text(
+                        "We are based at the \nIndian Institute of Technology \n,Bombay ,India",
+                        style: TextStyle(
+                          color: AppColor.blackColor,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ))
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

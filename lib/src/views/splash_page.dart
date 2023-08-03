@@ -10,6 +10,7 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/home_page.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 import '../controllers/device_controller.dart';
 
@@ -19,6 +20,8 @@ class SplashPage extends StatefulWidget {
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
+
+String userToken = "";
 
 class _SplashPageState extends State<SplashPage> {
   bool _isShowCasedone = true;
@@ -39,11 +42,13 @@ class _SplashPageState extends State<SplashPage> {
       pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
         builder: Builder(builder: (context) {
           if (userToken == "") {
-            return Homepage(
-              isShowCaseDone: _isShowCasedone,
-              isUnboxingDone: _isUnboxingdone,
-            ); //const LoginRegister();
+            return RevisedHomePage();
+            // return Homepage(
+            //   isShowCaseDone: _isShowCasedone,
+            //   isUnboxingDone: _isUnboxingdone,
+            // ); //const LoginRegister();
           } else {
+            return RevisedHomePage();
             return Homepage(
               isShowCaseDone: _isShowCasedone,
               isUnboxingDone: _isUnboxingdone,
@@ -69,14 +74,11 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     checkShowcase();
-    Timer(
-      const Duration(seconds: 2),
-      (() {
-        context.read<DeviceController>().homeContext =
-            splashPageKey.currentContext;
-        Navigator.pushReplacement(context, _createRoute());
-      }),
-    );
+    Timer(const Duration(seconds: 2), () {
+      context.read<DeviceController>().homeContext =
+          splashPageKey.currentContext;
+      Navigator.pushReplacement(context, _createRoute());
+    });
   }
 
   @override

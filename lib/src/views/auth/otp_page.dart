@@ -1,14 +1,20 @@
+// ignore_for_file: unnecessary_string_interpolations
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import 'package:walk/src/constants/app_assets.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/auth_controller.dart';
-import 'package:walk/src/controllers/shared_preferences.dart';
+
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 
-import 'package:walk/src/views/home_page.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 class OTPPage extends StatefulWidget {
   const OTPPage({super.key, required this.email});
@@ -18,7 +24,9 @@ class OTPPage extends StatefulWidget {
 }
 
 class _OTPPageState extends State<OTPPage> {
-  TextEditingController _otpController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
+  final RoundedLoadingButtonController _buttonController =
+      RoundedLoadingButtonController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +38,15 @@ class _OTPPageState extends State<OTPPage> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Positioned(
-                top: -140,
-                left: -140,
-                child: Image.asset(AppAssets.backgroundImage),
-              ),
+              const Positioned(
+                  top: 50,
+                  child: Image(
+                    height: 120,
+                    width: 120,
+                    image: AssetImage(
+                      "assets/images/walk.png",
+                    ),
+                  )),
               Container(
                 height: Screen.height(context: context),
                 width: Screen.width(context: context),
@@ -48,21 +60,22 @@ class _OTPPageState extends State<OTPPage> {
                         height: Screen.height(context: context) * 0.32,
                       ),
                       const Text(
-                        '${AppString.otpPage}[phoneNumber]',
+                        '${AppString.otpPage}',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 25,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       SizedBox(
-                        height: Screen.height(context: context) * 0.05,
+                        height: Screen.height(context: context) * 0.01,
                       ),
-                      const Text(
-                        AppString.pleaseEnterOtp,
-                        style: TextStyle(
+                      Text(
+                        '${AppString.pleaseEnterOtp}\n${widget.email}',
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 18,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       SizedBox(
                         height: Screen.height(context: context) * 0.05,
@@ -76,38 +89,37 @@ class _OTPPageState extends State<OTPPage> {
                       ),
                       Consumer<AuthController>(
                           builder: (context, authController, child) {
-                        return ElevatedButton(
+                        return RoundedLoadingButton(
+                          controller: _buttonController,
+                          animateOnTap: false,
+                          color: AppColor.greenDarkColor,
+                          successColor: AppColor.greenDarkColor,
                           onPressed: () async {
-                            bool otpVerified = await authController.verifyOtp(
-                                widget.email, _otpController.text);
-                            if (otpVerified) {
-                              bool result =
-                                  await PreferenceController.getboolData(
-                                      showCaseKey);
-                              bool unboxStatus =
-                                  await PreferenceController.getboolData(
-                                      "isUnboxingDone");
+                            if (_otpController.text.length == 6) {
+                              bool otpVerified = await authController.verifyOtp(
+                                  widget.email, _otpController.text);
+                              if (otpVerified) {
+                                _buttonController.success();
+                                // bool result =
+                                //     await PreferenceController.getboolData(
+                                //         showCaseKey);
+                                // bool unboxStatus =
+                                //     await PreferenceController.getboolData(
+                                //         "isUnboxingDone");
 
-                              // ignore: use_build_context_synchronously
-                              Go.pushAndRemoveUntil(
-                                context: context,
-                                pushReplacement: Homepage(
-                                  isShowCaseDone: result,
-                                  isUnboxingDone: unboxStatus,
-                                ),
-                              );
+                                // ignore: use_build_context_synchronously
+                                Go.pushAndRemoveUntil(
+                                  context: context,
+                                  pushReplacement: const RevisedHomePage(),
+                                );
+                              } else {
+                                _buttonController.error();
+                                Timer(const Duration(seconds: 2), () {
+                                  _buttonController.reset();
+                                });
+                              }
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 30),
-                            fixedSize: const Size(180, 45),
-                            backgroundColor: const Color(0xff005749),
-                            elevation: 7,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                          ),
                           child: const Text(
                             AppString.verifyOtp,
                             style: TextStyle(

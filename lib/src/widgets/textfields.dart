@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 Widget getTextfield(
     String labelText, TextEditingController controller, IconData icon) {
   return Flexible(
-    child: TextField(
+    child: TextFormField(
       controller: controller,
+      validator: (value) {
+        if (value == null || value == "") {
+          return "Please enter ${labelText}";
+        }
+      },
       cursorColor: const Color(0xff005749),
       decoration: InputDecoration(
         enabledBorder: const UnderlineInputBorder(

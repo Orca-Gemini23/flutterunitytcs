@@ -1,14 +1,18 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:walk/src/constants/app_assets.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/auth_controller.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
+import 'package:walk/src/views/auth/signup_page.dart';
 
 import 'package:walk/src/widgets/textfields.dart';
 
@@ -22,6 +26,18 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
 
+  final RoundedLoadingButtonController _buttonController =
+      RoundedLoadingButtonController();
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _buttonController.reset();
+    _emailController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,81 +47,108 @@ class _LoginPageState extends State<LoginPage> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Positioned(
-              top: -140,
-              left: -140,
-              child: Image.asset(AppAssets.backgroundImage),
+            const Positioned(
+              top: 50,
+              child: Image(
+                height: 120,
+                width: 120,
+                image: AssetImage("assets/images/walk.png"),
+              ),
             ),
+            const Positioned(
+                top: 200,
+                left: 10,
+                child: Text(
+                  "Login",
+                  style: TextStyle(
+                    color: AppColor.blackColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
+                  ),
+                )),
             Container(
               height: Screen.height(context: context),
               width: Screen.width(context: context),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: Screen.height(context: context) * 0.45,
-                    ),
-                    getTextfield("Email", _emailController, Icons.mail),
-                    // getTextfield("Password", _passwordController, Icons.lock),
-                    SizedBox(
-                      height: Screen.height(context: context) * 0.1,
-                    ),
-                    Consumer<AuthController>(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: Screen.height(context: context) * 0.45,
+                      ),
+                      getTextfield("Email", _emailController, Icons.mail),
+                      // getTextfield("Password", _passwordController, Icons.lock),
+                      SizedBox(
+                        height: Screen.height(context: context) * 0.1,
+                      ),
+                      Consumer<AuthController>(
                         builder: (context, authController, child) {
-                      return ElevatedButton(
-                        onPressed: () async {
-                          bool otpSent = await authController
-                              .sendOtp(_emailController.text);
-                          if (otpSent) {
-                            log("coming here");
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return OTPPage(
-                                    email: _emailController.text,
+                          return RoundedLoadingButton(
+                            animateOnTap: false,
+                            controller: _buttonController,
+                            color: AppColor.greenDarkColor,
+                            successColor: AppColor.greenDarkColor,
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                _buttonController.start();
+                                bool otpSent = await authController
+                                    .sendOtp(_emailController.text);
+                                if (otpSent) {
+                                  _buttonController.success();
+                                  _buttonController.reset();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return OTPPage(
+                                          email: _emailController.text,
+                                        );
+                                      },
+                                    ),
                                   );
-                                },
+                                } else {
+                                  _buttonController.error();
+                                  Timer(const Duration(seconds: 2), () {
+                                    _buttonController.reset();
+                                  });
+                                }
+                              }
+                            },
+                            child: const Text(
+                              AppString.sendOtp,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 2,
                               ),
-                            );
-                          }
+                            ),
+                          );
                         },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 30),
-                          minimumSize: const Size(180, 50),
-                          side: const BorderSide(
-                              color: Color(0xff005749), width: 3),
-                          backgroundColor: Colors.white,
-                          elevation: 7,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                        ),
+                      ),
+                      SizedBox(
+                        height: Screen.height(context: context) * 0.1,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Go.to(
+                            context: context,
+                            push: const SignupPage(),
+                          );
+                        },
                         child: const Text(
-                          AppString.sendOtp,
+                          "New here ? Try signing up first ",
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 2,
-                          ),
+                              color: Colors.black45,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w300),
                         ),
-                      );
-                    }),
-                    SizedBox(
-                      height: Screen.height(context: context) * 0.1,
-                    ),
-                    const Text(
-                      AppString.forgotPassword,
-                      style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )

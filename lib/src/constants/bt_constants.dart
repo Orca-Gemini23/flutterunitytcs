@@ -2,7 +2,7 @@
 //ae is Client
 //ab is Server
 
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 Guid SERVICE = Guid("0000abf0-0000-1000-8000-00805f9b34fb");
 Guid WRITECHARACTERISTICS = Guid("0000abf1-0000-1000-8000-00805f9b34fb");
@@ -37,10 +37,28 @@ Guid BATTERY_TIME_REMAINING_CLIENT =
 
 String FREQ = "freq";
 String MAG = "mag";
-String MODE = "mode";
+String MODE = "MODE";
 String INFO = "info;";
 String SOS = "sos;";
 String RESTART = "restart;";
 String RSTF = "rstf;";
 String RPROV = "rprov;";
 String NOTIFICON = "@mipmap/ic_launcher";
+
+final List<String> modesNames = [
+  'Novib',
+  'Swing phase continuous',
+  'Swing phase burst',
+  'Stance phase continuous',
+  'Stance phase burst',
+  'Open loop'
+];
+
+final Map<String, String> modesDictionary = {
+  'Novib': "-1",
+  'Swing phase continuous': "2",
+  'Swing phase burst': "1",
+  'Stance phase continuous': "0",
+  'Stance phase burst': "3",
+  'Open loop': "4"
+};

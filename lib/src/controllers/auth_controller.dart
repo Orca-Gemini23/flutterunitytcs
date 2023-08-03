@@ -45,7 +45,7 @@ class AuthController extends ChangeNotifier {
         return true;
       } else {
         Fluttertoast.showToast(
-            msg: "Registration was unsuccessful ,Please Try again");
+            msg: "Registration was unsuccessful , Please Try again");
         return false;
       }
     } catch (e) {
@@ -59,7 +59,6 @@ class AuthController extends ChangeNotifier {
     try {
       var uri = Uri.parse(SEND_OTP_ENDPOINT);
       var body = {"email": email};
-      Fluttertoast.showToast(msg: "Sending Otp");
       var response = await http.post(
         uri,
         headers: <String, String>{
@@ -68,6 +67,7 @@ class AuthController extends ChangeNotifier {
         body: jsonEncode(body),
       );
       var result = jsonDecode(response.body);
+      print(result);
 
       if (result["status"] == "Success") {
         Fluttertoast.showToast(msg: "Otp sent Successfully");
@@ -87,7 +87,6 @@ class AuthController extends ChangeNotifier {
     try {
       var uri = Uri.parse(VERIFY_OTP_ENDPOINT);
       var body = {"email": email, "otp": otp};
-      Fluttertoast.showToast(msg: "Sending Otp");
       var response = await http.post(
         uri,
         headers: <String, String>{
@@ -105,6 +104,7 @@ class AuthController extends ChangeNotifier {
           name: result["userDetails"]["name"],
           age: result["userDetails"]["age"],
           phone: result["userDetails"]["phone"],
+          image: "NA",
           gender: result["userDetails"]["gender"],
           address: result["userDetails"]["address"],
           email: result["userDetails"]["email"],

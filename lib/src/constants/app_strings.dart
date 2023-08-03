@@ -8,8 +8,8 @@ class AppString {
   static const or = "OR";
   static const signInGoogle = "Sign in with Google";
   static const forgotPassword = "Forgot Password?";
-  static const otpPage = "OTP Verification";
-  static const pleaseEnterOtp = "Please enter the OTP\nsent to ";
+  static const otpPage = "Verification Code";
+  static const pleaseEnterOtp = "Please enter the OTP sent to";
   static const verifyOtp = "VERIFY";
   static const otpNotReceived = "OTP not received?";
   static const resendOtp = "RESEND";
@@ -50,4 +50,6 @@ class AppString {
   static const wifiVerified = "Wifi already connected and verified!";
   static const wifiChange =
       "Still do you want to connect the device to different Wifi?";
+  static const aboutUsParagraph =
+      "Lifespark Technologies creates solutions for care in chronic neurological conditions such as Stroke, Parkinson's Disease, Spinal cord injury and more. Our solutions are designed for individuals, caregivers and the entire family, because these conditions don't just affect the lives of individuals.\nOur core philosophy is built upon the principles of communication and giving back to society. We strive to ensure optimal feedback and communication in our solutions as well as in our interactions with the community. We have a deep commitment to doing our part to improve the quality of life and health of the community in general. We aim to do so through better therapies, building better connections between communities and making scalable, accessible and economical solutions for all.";
 }

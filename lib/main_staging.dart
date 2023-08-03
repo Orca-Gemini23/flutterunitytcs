@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ String userToken = "";
 void main(List<String> args) async {
   /// Ensuring widgets initialization
   WidgetsFlutterBinding.ensureInitialized();
+  log("Running Main Staging.dart");
 
   /// Setting up Environment
   Flavors.setupEnvironment(Environment.stage);
@@ -41,7 +44,7 @@ void main(List<String> args) async {
       (value) => {value == true ? Permission.notification.request() : null});
 
   /// initializing background and foreground services
-  await initializeService();
+  ///await initializeService();
 
   /// initializes Hive local database
   await initializeLocalDatabase();

@@ -1,21 +1,24 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:walk/backgroundservice.dart';
 import 'package:walk/env/flavors.dart';
-import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/walk_app.dart';
 import 'package:walk/src/controllers/notification_controller.dart';
 
-String userToken = "";
-
 void main() async {
   /// Ensuring widgets initialization
-
+  log("Running Main.dart");
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+    SystemUiOverlay.top,
+  ]);
 
   /// Setting up Environment
   Flavors.setupEnvironment(Environment.prod);
@@ -27,7 +30,7 @@ void main() async {
   await Firebase.initializeApp();
 
   /// GEt token for firebase messaging
-  await FirebaseMessaging.instance.getToken();
+  // await FirebaseMessaging.instance.getToken();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen(showFirebaseNotification);
 
@@ -37,17 +40,23 @@ void main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
-  /// Asks for notifiaction permission
+  /// Asks for notification permission
   await Permission.notification.isDenied.then(
-      (value) => {value == true ? Permission.notification.request() : null});
+    (value) => {value == true ? Permission.notification.request() : null},
+  );
 
   /// initializing background and foreground services
-  // await initializeService();
+  // await Permission.notification.isDenied.then((value) {
+  //   Permission.notification.request();
+  //   Permission.ignoreBatteryOptimizations.request();
+  // });
+  // await initServices();
 
-  /// initializes Hive local database
+  // /// initializes Hive local databased
   await initializeLocalDatabase();
-  userToken = await PreferenceController.getstringData("customerAuthToken");
 
   /// Core app
-  runApp(const WalkApp());
+  runApp(
+    const WalkApp(),
+  );
 }

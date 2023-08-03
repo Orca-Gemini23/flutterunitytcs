@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:walk/src/constants/api_constants.dart';
-import 'package:walk/src/controllers/shared_preferences.dart';
+
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/medication_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
@@ -10,7 +8,6 @@ import 'package:walk/src/views/user/medication/medication_page.dart';
 import 'package:walk/src/views/user/medication/prescription_page.dart';
 import 'package:walk/src/views/user/personal_info.dart';
 import 'package:walk/src/views/user/quiz_section/quiz_page.dart';
-import "package:http/http.dart" as http;
 
 class UserController extends ChangeNotifier {
   UserController() {
@@ -233,8 +230,6 @@ class UserController extends ChangeNotifier {
 
   /// Tile Icon Data for account page
   List<IconData> accountTileIcon = [Icons.person, Icons.medication, Icons.quiz];
-
-
 
   @override
   void dispose() {

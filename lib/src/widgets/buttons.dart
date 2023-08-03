@@ -1,9 +1,6 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/views/home_page.dart';
-
 import 'package:walk/src/widgets/showcasewidget.dart';
 
 ///Button to connect to a device , usually this button is used inside the scanned item tile or showcase scanned item tile
@@ -31,21 +28,24 @@ class _ConnectButtonState extends State<ConnectButton> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18.0),
                 side: const BorderSide(color: Colors.black))),
-        child: Text(widget.controller.connectedDevice?.id ==
-                widget.controller.getScannedDevices.elementAt(widget.index).id
-            ? "Disconnect"
-            : "Connect"),
+        child: Text(
+          widget.controller.connectedDevice?.id ==
+                  widget.controller.getScannedDevices.elementAt(widget.index).id
+              ? "Disconnect"
+              : "Connect",
+        ),
         onPressed: () async {
           if (widget.controller.connectedDevice?.id ==
               widget.controller.getScannedDevices.elementAt(widget.index).id) {
             log("disconnecting ");
             await widget.controller.disconnectDevice(
-                widget.controller.getScannedDevices.elementAt(widget.index));
+              widget.controller.getScannedDevices.elementAt(widget.index),
+            );
           } else {
             log("connecting ");
-            await widget.controller.connectToDevice(
-                widget.controller.getScannedDevices.elementAt(widget.index),
-                homepageKey.currentContext!);
+            // await widget.controller.connectToDevice(
+            //   widget.controller.getScannedDevices.elementAt(widget.index),
+            // );
           }
         },
       ),
@@ -53,7 +53,7 @@ class _ConnectButtonState extends State<ConnectButton> {
   }
 }
 
-///This button does the same as the above one , but this one will be included in a showcase ,the above button will not
+////This button does the same as the above one , but this one will be included in a showcase ,the above button will not
 Widget showCaseConnectButton(GlobalKey key, DeviceController controller) {
   return SizedBox(
     child: CustomShowCaseWidget(
@@ -75,9 +75,9 @@ Widget showCaseConnectButton(GlobalKey key, DeviceController controller) {
             await controller
                 .disconnectDevice(controller.getScannedDevices.elementAt(0));
           } else {
-            await controller.connectToDevice(
-                controller.getScannedDevices.elementAt(0),
-                homepageKey.currentContext!);
+            // await controller.connectToDevice(
+            //   controller.getScannedDevices.elementAt(0),
+            // );
           }
         },
       ),

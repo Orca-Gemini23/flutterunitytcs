@@ -21,15 +21,19 @@ class UserModel extends HiveObject {
   final String gender;
 
   @HiveField(4)
-  final String address;
+  final String image;
 
   @HiveField(5)
+  final String address;
+
+  @HiveField(6)
   final String email;
 
   UserModel({
     required this.name,
     required this.age,
     required this.phone,
+    required this.image,
     required this.gender,
     required this.address,
     required this.email,
@@ -39,6 +43,7 @@ class UserModel extends HiveObject {
         name: json["name"] ?? "Unknown User",
         age: json["age"] ?? "XX",
         phone: json["phone"] ?? "XX",
+        image: json["image"] ?? "NA",
         gender: json["gender"] ?? "XX",
         address: json["address"] ?? "XX",
         email: json["email"] ?? "XX",

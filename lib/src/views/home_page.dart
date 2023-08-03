@@ -1,9 +1,7 @@
 // ignore_for_file: prefer_final_fields
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -11,7 +9,6 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/widgets/navigation_drawer.dart';
-
 import '../widgets/scanned_item_tile.dart';
 
 GlobalKey homepageKey = GlobalKey();
@@ -31,7 +28,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    DeviceController(performScan: false, checkPrevconnection: true);
+    DeviceController(performScan: false, checkPrevconnection: false);
     super.initState();
   }
 
@@ -58,7 +55,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
             if (deviceController.scanStatus == true) {
               Fluttertoast.showToast(msg: "Please wait !! Scanning.....");
             } else {
-              await deviceController.startDiscovery();
+              //await deviceController.startDiscovery();
             }
           },
           child: Container(

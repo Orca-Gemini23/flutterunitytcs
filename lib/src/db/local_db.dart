@@ -35,18 +35,23 @@ class LocalDB {
     name: "Unknown User",
     age: "XX",
     phone: "XXXXXXXXXX",
+    image: "NA",
     gender: "X",
     address: "x",
     email: "x",
   );
+
   static Box<PrescriptionModel> prescriptionBox() =>
       Hive.box<PrescriptionModel>("medBox"); //static Box<PrescriptionModel>
 
   static Box<UserModel> userBox() => Hive.box<UserModel>("userBox");
   static UserModel? get user => userBox().get(0, defaultValue: defaultUser);
-  static saveUser(UserModel user) {
-    userBox().add(user);
+  static saveUser(UserModel newUser) {
+    userBox().put(0, newUser);
   }
+
+  static ValueListenable<Box<UserModel>> listenableUser() =>
+      userBox().listenable();
 
   /// Get specific prescription by its ID
   static PrescriptionModel? get prescription =>

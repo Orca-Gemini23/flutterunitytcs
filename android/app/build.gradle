@@ -28,7 +28,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 33
-    ndkVersion flutter.ndkVersion
+    ndkVersion "25.1.8937393"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -41,6 +41,10 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    lintOptions { 
+    checkReleaseBuilds false
     }
 
     defaultConfig {
@@ -60,6 +64,7 @@ android {
             shrinkResources false
             minifyEnabled false
             signingConfig signingConfigs.debug
+
         }
     }
 }

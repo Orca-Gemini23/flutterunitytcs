@@ -1,14 +1,10 @@
-import 'dart:developer';
-
 import "package:flutter/material.dart";
 import 'package:provider/provider.dart';
-import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/help_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/widgets/dropdown.dart';
-import 'package:walk/src/widgets/textfields.dart';
 
 class RaiseTicketPage extends StatefulWidget {
   const RaiseTicketPage({super.key});
