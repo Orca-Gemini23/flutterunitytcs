@@ -6,6 +6,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 Guid SERVICE = Guid("0000abf0-0000-1000-8000-00805f9b34fb");
 Guid WRITECHARACTERISTICS = Guid("0000abf1-0000-1000-8000-00805f9b34fb");
+Guid THERAPY_CHARACTERISTICS = Guid("0000abf1-0000-1000-8000-00805f9b34fb");
 
 ////SERVER SIDE CHARACTERISTICS
 Guid MAGNITUDE_SERVER = Guid("0000adf8-0000-1000-8000-00805f9b34fb");
@@ -37,7 +38,7 @@ Guid BATTERY_TIME_REMAINING_CLIENT =
 
 String FREQ = "freq";
 String MAG = "mag";
-String MODE = "MODE";
+String MODE = "mode";
 String INFO = "info;";
 String SOS = "sos;";
 String RESTART = "restart;";

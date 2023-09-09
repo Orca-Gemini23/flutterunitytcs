@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,9 +39,9 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
   // Function to open the image picker and get the selected image
   Future<bool> _pickImage() async {
     bool result = false;
-    final ImagePicker _picker = ImagePicker();
+    final ImagePicker picker = ImagePicker();
     final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+        await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
@@ -127,7 +128,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
 
                           bool result = await _pickImage();
                           if (result) {
-                            print("image path selected ");
+                            log("image path selected ");
                             var updatedUser = UserModel(
                               name: nameController.text,
                               age: ageController.text,

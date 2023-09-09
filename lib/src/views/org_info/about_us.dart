@@ -25,8 +25,7 @@ class AboutUsPage extends StatelessWidget {
         elevation: 0,
       ),
       body: SafeArea(
-        child: ListView(
-          shrinkWrap: true,
+        child: Column(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -70,6 +69,7 @@ class AboutUsPage extends StatelessWidget {
                 style: TextStyle(fontSize: 14.sp),
               ),
             ),
+            const Spacer(),
             Container(
               width: double.maxFinite,
               height: 130.h,

@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:developer';
+
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,18 @@ class DeviceController extends ChangeNotifier {
     _connectedDevice = device;
     notifyListeners();
   }
+
+  int _score = 0;
+  void incrementScore() {
+    _score++;
+    notifyListeners();
+  }
+
+  int get gameScore => _score;
+
+  ////Angle Values for Animation Rotation
+  double leftAngleValue = 0;
+  double rightAngleValue = 0;
 
   /// stores characterisitcs of devices
   List<BluetoothCharacteristic> _characteristics = [];
@@ -196,10 +209,7 @@ class DeviceController extends ChangeNotifier {
     if (await Permission.location.isDenied ||
         await Permission.bluetooth.isDenied) {
       await Permission.location.request();
-      await Permission.bluetooth.request();
       await Permission.nearbyWifiDevices.request();
-      await Permission.bluetoothAdvertise.request();
-      await Permission.bluetoothConnect.request();
       await Permission.bluetoothScan.request();
       log("asking for permission complete");
       if (await Permission.bluetooth.isGranted &&
@@ -253,7 +263,11 @@ class DeviceController extends ChangeNotifier {
   //// Used to scan the devices and add the scanned devices to the scannedDevices list;
   Future<void> startDiscovery(Function onConnect) async {
     try {
-      FlutterBluePlus.setLogLevel(LogLevel.verbose);
+      // ignore: unused_local_variable
+      StreamSubscription<ScanResult>? scanSubscription;
+      final StreamController<ScanResult> scanController =
+          StreamController<ScanResult>();
+
       await askForPermission();
       _scannedDevices.clear();
 
@@ -262,25 +276,20 @@ class DeviceController extends ChangeNotifier {
 
       isScanning = true;
       notifyListeners();
-      FlutterBluePlus.scan(
+      scanSubscription = FlutterBluePlus.scan(
         timeout: const Duration(seconds: 10),
-        withServices: [
-          Guid("0000acf0-0000-1000-8000-00805f9b34fb"),
-        ],
-
-        ///timeout can be ignored , to keep the scan running continuosly
+        withServices: [Guid("0000acf0-0000-1000-8000-00805f9b34fb")],
         allowDuplicates: false,
       ).listen((scanResult) async {
-        print(scanResult.toString());
         if (!isConnecting) {
-          ////If the device is not being connected to then only try and connect to it
           await connectToDevice(scanResult.device, onConnect);
         }
-      }, onDone: () {
+      }, onError: (error) {
+        log('startScan() error: $error');
+      }, onDone: () async {
         isScanning = false;
         notifyListeners();
-      }).onError((error) {
-        log('startDiscover() error: $error');
+        await scanController.close(); // Close the stream when scanning is done
       });
     } catch (e) {
       log("Error in startDiscovery$e");
@@ -291,25 +300,34 @@ class DeviceController extends ChangeNotifier {
   Future checkPrevConnection() async {
     log("check prev called ");
     _connectedDevices = await FlutterBluePlus.connectedSystemDevices;
+    print("conected devices $_connectedDevices");
     if (_connectedDevices.isNotEmpty) {
       _connectedDevice = _connectedDevices[0];
-      await connectToDevice(_connectedDevice!, () {});
+      await connectToDevice(
+        _connectedDevice!,
+        () {},
+      );
     }
   }
 
   ///Used to connect to a device and update connectedDevices list
-  Future connectToDevice(BluetoothDevice device, Function onConnect) async {
+  Future connectToDevice(BluetoothDevice device, Function onConnect,
+      {bool showToast = false}) async {
     try {
       bool gotServices = false;
       isConnecting = true;
       notifyListeners();
-      Fluttertoast.showToast(msg: "Connecting to ${device.localName}");
+      showToast
+          ? Fluttertoast.showToast(msg: "Connecting to ${device.localName}")
+          : null;
       await device.connect(
         autoConnect: false,
       );
 
       await HapticFeedback.vibrate();
-      Fluttertoast.showToast(msg: "Connected to ${device.localName}");
+      showToast
+          ? Fluttertoast.showToast(msg: "Connected to ${device.localName}")
+          : null;
       gotServices = await discoverServices(device);
       gotServices ? _connectedDevice = device : null;
       notifyListeners();
@@ -370,12 +388,12 @@ class DeviceController extends ChangeNotifier {
   }
 
   ///Used to send any message to the device basically command , it is sent in ASCII format
-  Future sendToDevice(String command, Guid characteristic) async {
+  Future<bool> sendToDevice(String command, Guid characteristic) async {
     try {
       ///Checking if the bluetooth is on
       if (await FlutterBluePlus.adapterState.first ==
           BluetoothAdapterState.on) {
-        log(command);
+        log("Sending$command");
 
         BluetoothCharacteristic? writeTarget =
             _characteristicMap[WRITECHARACTERISTICS];
@@ -385,15 +403,18 @@ class DeviceController extends ChangeNotifier {
 
         ///Converting the command to ASCII then sending
         await HapticFeedback.mediumImpact();
-        if (command.contains(RegExp(r"MODE"))) {
+        if (command.contains(RegExp(r"mode"))) {
           Fluttertoast.showToast(msg: "Mode changed ! ");
         }
+        return true;
       } else {
         Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
+        return false;
       }
     } catch (e) {
       log("error in sending message $e");
       Fluttertoast.showToast(msg: "Unexpected error in sending command ");
+      return false;
     }
   }
 
@@ -449,7 +470,7 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  Future<void> getFrequencyValues() async {
+  Future<bool> getFrequencyValues() async {
     try {
       BluetoothCharacteristic? serverTarget =
           _characteristicMap[FREQUENCY_SERVER];
@@ -469,13 +490,15 @@ class DeviceController extends ChangeNotifier {
       }
 
       log("SERVER Frequency Value is ${String.fromCharCodes(serverResponse)}");
+      return true;
     } catch (e) {
       log(e.toString());
       log("Something went wrong while getting frequencyValues.");
+      return false;
     }
   }
 
-  Future<void> getMagnitudeValues() async {
+  Future<bool> getMagnitudeValues() async {
     try {
       BluetoothCharacteristic? serverTarget =
           _characteristicMap[MAGNITUDE_SERVER];
@@ -516,9 +539,11 @@ class DeviceController extends ChangeNotifier {
 
       log("SERVER Magnitude Value is ${String.fromCharCodes(serverResponse)}");
       log("Client Magnitude Value is ${String.fromCharCodes(clientResponse)}");
+      return true;
     } catch (e) {
       log(e.toString());
       log("Something went wrong while getting magnitudeValues.");
+      return false;
     }
   }
 
@@ -541,12 +566,10 @@ class DeviceController extends ChangeNotifier {
       if (String.fromCharCodes(clientResponse) == "-1" ||
           String.fromCharCodes(serverResponse) == "-1") {
         _wifiProvisioned = WifiStatus.PROCESSING.index;
-        log("hgererer");
         notifyListeners();
       }
       if (String.fromCharCodes(clientResponse) == "0" ||
           String.fromCharCodes(serverResponse) == "0") {
-        log("elseee");
         _wifiProvisioned = WifiStatus.NOTPROVISONED.index;
         notifyListeners();
       }
@@ -619,6 +642,42 @@ class DeviceController extends ChangeNotifier {
       log(e.toString());
       return "error occurred";
     }
+  }
+
+  StreamSubscription<List<int>> startStream() {
+    BluetoothCharacteristic? targetCharacteristic =
+        _characteristicMap[THERAPY_CHARACTERISTICS];
+
+    StreamController<List<int>> controller = StreamController<List<int>>();
+
+    late StreamSubscription<List<int>> angleValuesSubscription;
+
+    try {
+      angleValuesSubscription = targetCharacteristic!.onValueReceived.listen(
+        (event) {
+          controller.add(event);
+          String data = String.fromCharCodes(event);
+          // print(data);
+          List<String> legData = data.split(" ");
+
+          leftAngleValue = double.tryParse(legData[1])!;
+          rightAngleValue = double.tryParse(legData[3])!;
+          notifyListeners();
+        },
+        onError: (error) {
+          controller.addError(error);
+        },
+        onDone: () {
+          controller.close();
+        },
+      );
+      targetCharacteristic.setNotifyValue(true);
+    } catch (e) {
+      log("Error in startStream: $e");
+      controller.close(); // Close the custom stream in case of an error
+    }
+
+    return angleValuesSubscription; // Return the original subscription to the Bluetooth characteristic
   }
 
   Future<bool> refreshBatteryValues() async {

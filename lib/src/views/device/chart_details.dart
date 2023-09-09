@@ -1,117 +1,133 @@
 import 'package:flutter/material.dart';
-import "package:fl_chart/fl_chart.dart";
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/models/chart_model.dart';
+import 'package:walk/src/models/game_history_model.dart';
 
 class DetailChart extends StatefulWidget {
-  const DetailChart({super.key});
+  const DetailChart({super.key, required this.historyData});
 
+  final GameHistory historyData;
   @override
   State<DetailChart> createState() => _DetailChartState();
 }
 
 class _DetailChartState extends State<DetailChart> {
-  List<FlSpot> chartData = [];
+  Map<int, GameHistoryElement> gameDataMap = {};
 
-  List<FlSpot> getchartData() {
-    List<FlSpot> temp = [];
-    for (int i = 0; i < 1313; i++) {
-      temp.add(
-        FlSpot(
-          i.toDouble(),
-          voltageValues[i],
-        ),
-      );
-    }
-    return temp;
+  void processData() {
+    widget.historyData.gameHistory?.forEach((element) {
+      gameDataMap.containsValue(element.playedOn)
+          ? null
+          : gameDataMap.addAll({
+              element.score!: element,
+            });
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    chartData = getchartData();
+    processData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Usage chart",
-          style: TextStyle(
-            color: AppColor.greenDarkColor,
-            fontSize: 20,
-          ),
+    return Container(
+        height: 400.h,
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
         ),
-        centerTitle: true,
-        backgroundColor: AppColor.whiteColor,
-      ),
-      body: Container(
-        color: AppColor.whiteColor,
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(
-          child: Container(
-            height: 300,
-            width: 300,
-            decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.all(20),
-            child: LineChart(
-              LineChartData(
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) => Text(
-                        value.toString(),
-                        style: const TextStyle(
-                          color: AppColor.whiteColor,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ),
-                  ),
-                  rightTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) => Text(
-                        value.toString(),
-                        style: const TextStyle(
-                          color: AppColor.whiteColor,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ),
-                  ),
+        padding: const EdgeInsets.all(10),
+        child: SfCartesianChart(
+          primaryXAxis: DateTimeAxis(
+            isVisible: true,
+            axisLine: const AxisLine(color: AppColor.greenDarkColor, width: 4),
+          ),
+          primaryYAxis: NumericAxis(
+            isVisible: true,
+            axisLine: const AxisLine(color: AppColor.greenDarkColor, width: 4),
+          ),
+          series: <ChartSeries>[
+            LineSeries<GameHistoryElement, DateTime>(
+              dataSource: gameDataMap.values.toList(),
+              xValueMapper: (GameHistoryElement element, _) =>
+                  DateTime.tryParse(element.playedOn!)!,
+              yValueMapper: (GameHistoryElement element, _) => element.score,
+              enableTooltip: true,
+              xAxisName: "Date",
+              yAxisName: "Score",
+              name: 'Score',
+              markerSettings: const MarkerSettings(
+                  isVisible: true,
+                  height: 6,
+                  width: 6,
+                  shape: DataMarkerType.circle,
+                  borderWidth: 3,
+                  borderColor: AppColor.greenDarkColor),
+              dataLabelSettings: DataLabelSettings(
+                isVisible: true,
+                textStyle: TextStyle(
+                  color: AppColor.blackColor,
+                  fontSize: 12.sp,
                 ),
-                borderData: FlBorderData(
-                  show: false,
-                  border: Border.all(),
-                ),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: chartData,
-                    dotData: FlDotData(show: false),
-                  ),
-                ],
-                gridData: FlGridData(
-                  show: false,
-                ),
+                labelAlignment: ChartDataLabelAlignment.auto,
               ),
             ),
-          ),
-        ),
-      ),
-    );
+          ],
+        )
+        // child: LineChart(
+        //   LineChartData(
+        //     titlesData: FlTitlesData(
+        //       leftTitles: AxisTitles(
+        //         sideTitles: SideTitles(
+        //           showTitles: true,
+        //           getTitlesWidget: (value, meta) => Text(
+        //             value.toString(),
+        //             style: TextStyle(
+        //               color: const Color(0XFF6B6B6B),
+        //               fontSize: 12.sp,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //       rightTitles: AxisTitles(
+        //         sideTitles: SideTitles(showTitles: false),
+        //       ),
+        //       topTitles: AxisTitles(
+        //         sideTitles: SideTitles(showTitles: false),
+        //       ),
+        //       bottomTitles: AxisTitles(
+        //         sideTitles: SideTitles(
+        //           showTitles: true,
+        //           getTitlesWidget: (value, meta) => Text(
+        //             value.toString(),
+        //             style: TextStyle(
+        //               color: const Color(0XFF6B6B6B),
+        //               fontSize: 12.sp,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //     borderData: FlBorderData(
+        //       show: false,
+        //       border: Border.all(),
+        //     ),
+        //     lineBarsData: [
+        //       LineChartBarData(
+        //         spots: chartData,
+        //         dotData: FlDotData(show: false),
+        //       ),
+        //     ],
+        //     gridData: FlGridData(
+        //       show: true,
+        //       drawHorizontalLine: true,
+        //       drawVerticalLine: false,
+        //     ),
+        //   ),
+        // ),
+        );
   }
 }

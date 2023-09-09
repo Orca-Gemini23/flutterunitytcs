@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import "package:flutter/material.dart";
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
@@ -155,10 +157,10 @@ class _WifiPageState extends State<WifiPage> {
                     .read<WifiController>()
                     .wifiScanPermissionDialog(context);
               },
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     "Walk Device needs to connect to Wifi\nPlease give permission for scan\nAnd select your home Wifi.",
                     textAlign: TextAlign.center,

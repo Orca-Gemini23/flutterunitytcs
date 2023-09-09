@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +14,7 @@ import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/device/command_page.dart';
+import 'package:walk/src/views/faqscreens/faqpage.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
 import 'package:walk/src/views/qrscanner/qrscanner.dart';
@@ -24,6 +24,7 @@ import 'package:walk/src/views/user/help_section/help.dart';
 import 'package:walk/src/views/user/personal_info.dart';
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/views/user/tutorial.dart';
+import 'package:walk/src/widgets/homepage/usernametext.dart';
 
 Drawer navigationDrawer(BuildContext context) {
   return Drawer(
@@ -48,24 +49,7 @@ Drawer navigationDrawer(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              ValueListenableBuilder<Box<UserModel>>(
-                  valueListenable: LocalDB.listenableUser(),
-                  builder: (context, userBox, child) {
-                    return CircleAvatar(
-                      //Show default user icon if there is no image selected
-                      backgroundImage: userBox
-                                  .get(0, defaultValue: LocalDB.defaultUser)!
-                                  .image ==
-                              "NA"
-                          ? const AssetImage("assets/images/defaultuser.png")
-                          : FileImage(
-                              File(userBox
-                                  .get(0, defaultValue: LocalDB.defaultUser)!
-                                  .image),
-                            ) as ImageProvider<Object>,
-                      backgroundColor: AppColor.greenDarkColor,
-                    );
-                  }),
+              const UserNameImage(),
               const SizedBox(
                 height: 20,
               ),
@@ -73,10 +57,12 @@ Drawer navigationDrawer(BuildContext context) {
                 valueListenable: LocalDB.listenableUser(),
                 builder: (contex, userBox, child) {
                   return Text(
-                    "${userBox.get(
+                    userBox
+                        .get(
                           0,
                           defaultValue: LocalDB.defaultUser,
-                        )!.name},",
+                        )!
+                        .name,
                     style: TextStyle(
                       color: AppColor.blackColor,
                       fontSize: 16.sp,
@@ -85,15 +71,6 @@ Drawer navigationDrawer(BuildContext context) {
                   );
                 },
               ),
-
-              // Text(
-              //   LocalDB.user!.name,
-              //   style: const TextStyle(
-              //     color: AppColor.blackColor,
-              //     fontSize: 19,
-              //     fontWeight: FontWeight.w500,
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -112,6 +89,7 @@ Widget drawerItem(BuildContext context) {
     Icons.email,
     Icons.qr_code,
     Icons.help,
+    Icons.question_answer,
     Icons.logout_sharp,
   ];
   List<String> drawerTileName = [
@@ -122,6 +100,7 @@ Widget drawerItem(BuildContext context) {
     'Contact Us',
     'QR-Scanner',
     'Tutorial',
+    "FAQ's",
     'Log Out',
   ];
   List<Function()?> drawerOnTap = [
@@ -137,14 +116,14 @@ Widget drawerItem(BuildContext context) {
     },
     () {
       if (Provider.of<DeviceController>(context, listen: false)
-          .getConnectedDevices
-          .isEmpty) {
-        Fluttertoast.showToast(msg: 'No devices connected!');
+              .connectedDevice ==
+          null) {
+        Fluttertoast.showToast(msg: 'No device connected!');
       } else {
-        Go.to(
-          context: context,
-          push: const DeviceControlPage(),
-        );
+        // Go.to(
+        //   context: context,
+        //   push: DeviceControlPage(),
+        // );
       }
     },
     () {
@@ -173,51 +152,55 @@ Widget drawerItem(BuildContext context) {
       );
     },
     () {
+      Go.to(
+        context: context,
+        push: const Faqpage(),
+      );
+    },
+    () {
       //LogOut
     },
   ];
 
-  return AnimationLimiter(
-    child: ListView.builder(
-      shrinkWrap: true,
-      physics:
-          const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      itemBuilder: (context, index) {
-        if (Flavors.prod) {
-          return index == 8
-              ? const Center()
-              : ListTile(
-                  leading: Icon(
-                    drawerIcon[index],
+  return ListView.builder(
+    shrinkWrap: true,
+    physics:
+        const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+    itemBuilder: (context, index) {
+      if (Flavors.prod) {
+        return index == 9
+            ? const Center()
+            : ListTile(
+                leading: Icon(
+                  drawerIcon[index],
+                  color: AppColor.blackColor,
+                  size: 26,
+                ),
+                title: Text(
+                  drawerTileName[index],
+                  style: const TextStyle(
                     color: AppColor.blackColor,
-                    size: 26,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
                   ),
-                  title: Text(
-                    drawerTileName[index],
-                    style: const TextStyle(
-                      color: AppColor.blackColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                  onTap: drawerOnTap[index],
-                );
-        } else {
-          return ListTile(
-            leading: Icon(drawerIcon[index]),
-            title: Text(
-              drawerTileName[index],
-              style: const TextStyle(
-                color: AppColor.blackColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w300,
-              ),
+                ),
+                onTap: drawerOnTap[index],
+              );
+      } else {
+        return ListTile(
+          leading: Icon(drawerIcon[index]),
+          title: Text(
+            drawerTileName[index],
+            style: const TextStyle(
+              color: AppColor.blackColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w300,
             ),
-            onTap: drawerOnTap[index],
-          );
-        }
-      },
-      itemCount: drawerTileName.length,
-    ),
+          ),
+          onTap: drawerOnTap[index],
+        );
+      }
+    },
+    itemCount: drawerTileName.length,
   );
 }

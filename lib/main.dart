@@ -1,24 +1,27 @@
 import 'dart:developer';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:walk/backgroundservice.dart';
+import 'package:provider/provider.dart';
+import 'package:rive/rive.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/db/local_db.dart';
+
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/walk_app.dart';
-import 'package:walk/src/controllers/notification_controller.dart';
+
+RiveFile? file;
 
 void main() async {
   /// Ensuring widgets initialization
-  log("Running Main.dart");
   WidgetsFlutterBinding.ensureInitialized();
+  log("Running Main.dart");
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     SystemUiOverlay.top,
   ]);
+  Provider.debugCheckInvalidValueType = null;
 
   /// Setting up Environment
   Flavors.setupEnvironment(Environment.prod);
@@ -27,18 +30,7 @@ void main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   /// Initializes the firebase
-  await Firebase.initializeApp();
-
-  /// GEt token for firebase messaging
-  // await FirebaseMessaging.instance.getToken();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessage.listen(showFirebaseNotification);
-
-  /// Implements android notification channel
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  await FirebaseDB.initFirebaseServices();
 
   /// Asks for notification permission
   await Permission.notification.isDenied.then(
@@ -46,14 +38,17 @@ void main() async {
   );
 
   /// initializing background and foreground services
-  // await Permission.notification.isDenied.then((value) {
-  //   Permission.notification.request();
-  //   Permission.ignoreBatteryOptimizations.request();
-  // });
+  await Permission.notification.isDenied.then((value) {
+    Permission.notification.request();
+    Permission.ignoreBatteryOptimizations.request();
+  });
   // await initServices();
 
-  // /// initializes Hive local databased
   await initializeLocalDatabase();
+
+  /// initializes Hive local databased
+
+  // NotificationService.initNotification();
 
   /// Core app
   runApp(

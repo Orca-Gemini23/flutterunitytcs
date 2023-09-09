@@ -67,7 +67,7 @@ class AuthController extends ChangeNotifier {
         body: jsonEncode(body),
       );
       var result = jsonDecode(response.body);
-      print(result);
+      log(result);
 
       if (result["status"] == "Success") {
         Fluttertoast.showToast(msg: "Otp sent Successfully");

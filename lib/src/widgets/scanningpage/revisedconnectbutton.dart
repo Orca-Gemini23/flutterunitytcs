@@ -1,11 +1,9 @@
-import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
-import 'package:walk/src/widgets/notfounddialog.dart';
+import 'package:walk/src/widgets/scanningpage/notfounddialog.dart';
 
 int numberOfScans = 0;
 Widget revisedConnectButton(
@@ -31,6 +29,8 @@ Widget revisedConnectButton(
         ),
         onPressed: () async {
           numberOfScans++;
+
+          print(numberOfScans);
           if (numberOfScans == 3) {
             showDialog(
               context: context,

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,7 +27,7 @@ class _RevisedsplashState extends State<Revisedsplash>
 
   void getUserToken() async {
     userToken = await PreferenceController.getstringData("customerAuthToken");
-    print("userToken is ${userToken}");
+    log("userToken is $userToken");
   }
 
   @override
@@ -66,6 +67,7 @@ class _RevisedsplashState extends State<Revisedsplash>
             ? Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
+                  settings: const RouteSettings(name: "/"),
                   builder: (context) =>
                       const RevisedHomePage(), ////To be changed back to login page after ensuring that the flask servers are up and running
                 ),
@@ -88,8 +90,8 @@ class _RevisedsplashState extends State<Revisedsplash>
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: AppColor.whiteColor,
@@ -100,7 +102,7 @@ class _RevisedsplashState extends State<Revisedsplash>
               AnimatedContainer(
                 duration: const Duration(milliseconds: 2000),
                 curve: Curves.fastLinearToSlowEaseIn,
-                height: _height / _fontSize - 100,
+                height: height / _fontSize - 100,
               ),
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 1000),
@@ -119,11 +121,11 @@ class _RevisedsplashState extends State<Revisedsplash>
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 2000),
                 curve: Curves.fastLinearToSlowEaseIn,
-                height: (_width / _containerSize).h,
-                width: (_width / _containerSize).w,
+                height: (width / _containerSize).h,
+                width: (width / _containerSize).w,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: AppColor.lightgreen,
+                  color: AppColor.whiteColor,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 // child: Image.asset('assets/images/file_name.png')

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 
-import '../constants/app_color.dart';
+import '../../constants/app_color.dart';
 
 Widget magSlider(bool isClient, DeviceController controller) {
   return SizedBox(
@@ -31,7 +31,7 @@ Widget magSlider(bool isClient, DeviceController controller) {
           },
           onChangeEnd: (value) async {
             String command = "";
-            command = isClient ? "${MAG} c ${value}" : "${MAG} s ${value}";
+            command = isClient ? "$MAG c $value" : "$MAG s $value";
             await controller.sendToDevice(command, WRITECHARACTERISTICS);
           }),
     ),

@@ -4,12 +4,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:walk/main.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
-import 'package:walk/src/views/auth/first_page.dart';
-import 'package:walk/src/views/home_page.dart';
+
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 import '../controllers/device_controller.dart';
@@ -24,7 +22,6 @@ class SplashPage extends StatefulWidget {
 String userToken = "";
 
 class _SplashPageState extends State<SplashPage> {
-  bool _isShowCasedone = true;
   bool _isUnboxingdone = true;
   GlobalKey splashPageKey = GlobalKey();
 
@@ -32,8 +29,7 @@ class _SplashPageState extends State<SplashPage> {
     bool result = await PreferenceController.getboolData(showCaseKey);
     _isUnboxingdone = await PreferenceController.getboolData("isUnboxingDone");
     log("Showcase result is $result ");
-    log("Unbox result is ${_isUnboxingdone}");
-    _isShowCasedone = result;
+    log("Unbox result is $_isUnboxingdone");
   }
 
   Route _createRoute() {
@@ -42,17 +38,13 @@ class _SplashPageState extends State<SplashPage> {
       pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
         builder: Builder(builder: (context) {
           if (userToken == "") {
-            return RevisedHomePage();
+            return const RevisedHomePage();
             // return Homepage(
             //   isShowCaseDone: _isShowCasedone,
             //   isUnboxingDone: _isUnboxingdone,
             // ); //const LoginRegister();
           } else {
-            return RevisedHomePage();
-            return Homepage(
-              isShowCaseDone: _isShowCasedone,
-              isUnboxingDone: _isUnboxingdone,
-            );
+            return const RevisedHomePage();
           }
         }),
       ),

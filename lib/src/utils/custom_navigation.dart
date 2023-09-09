@@ -6,7 +6,10 @@ class Go extends Navigator {
 
 // main navigation stack
   /// Pushes new screen on to stack
-  static to({required BuildContext context, required Widget push}) {
+  static to({
+    required BuildContext context,
+    required Widget push,
+  }) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => push));
   }
 
@@ -47,5 +50,13 @@ class Go extends Navigator {
       required GlobalKey<NavigatorState> key,
       bool isRootNavigator = false}) {
     return key.currentState?.pop();
+  }
+
+  static void goBackUntil(
+      {required BuildContext context, required routeToBackUntil}) {
+    return Navigator.popUntil(
+      context,
+      ModalRoute.withName(routeToBackUntil),
+    );
   }
 }

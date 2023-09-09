@@ -9,4 +9,8 @@ class Screen extends MediaQueryData {
   static double height({required BuildContext context}) {
     return MediaQuery.of(context).size.height;
   }
+
+  static double ratio({required BuildContext context}) {
+    return height(context: context) / width(context: context);
+  }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:developer';
 
@@ -161,7 +163,7 @@ class _SignupPageState extends State<SignupPage> {
                           _buttonController.success();
                           Navigator.pop(context);
                         } else {
-                          print("coming herer");
+                          log("coming herer");
                           _buttonController.error();
                           Timer(
                               const Duration(

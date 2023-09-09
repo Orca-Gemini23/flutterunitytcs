@@ -7,8 +7,9 @@ Widget getTextfield(
       controller: controller,
       validator: (value) {
         if (value == null || value == "") {
-          return "Please enter ${labelText}";
+          return "Please enter $labelText";
         }
+        return null;
       },
       cursorColor: const Color(0xff005749),
       decoration: InputDecoration(

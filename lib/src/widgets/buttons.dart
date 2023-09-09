@@ -29,14 +29,18 @@ class _ConnectButtonState extends State<ConnectButton> {
                 borderRadius: BorderRadius.circular(18.0),
                 side: const BorderSide(color: Colors.black))),
         child: Text(
-          widget.controller.connectedDevice?.id ==
-                  widget.controller.getScannedDevices.elementAt(widget.index).id
+          widget.controller.connectedDevice?.remoteId ==
+                  widget.controller.getScannedDevices
+                      .elementAt(widget.index)
+                      .remoteId
               ? "Disconnect"
               : "Connect",
         ),
         onPressed: () async {
-          if (widget.controller.connectedDevice?.id ==
-              widget.controller.getScannedDevices.elementAt(widget.index).id) {
+          if (widget.controller.connectedDevice?.remoteId ==
+              widget.controller.getScannedDevices
+                  .elementAt(widget.index)
+                  .remoteId) {
             log("disconnecting ");
             await widget.controller.disconnectDevice(
               widget.controller.getScannedDevices.elementAt(widget.index),
@@ -65,13 +69,13 @@ Widget showCaseConnectButton(GlobalKey key, DeviceController controller) {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18.0),
                 side: const BorderSide(color: Colors.black))),
-        child: Text((controller.connectedDevice?.id) ==
-                controller.getScannedDevices.elementAt(0).id
+        child: Text((controller.connectedDevice?.remoteId) ==
+                controller.getScannedDevices.elementAt(0).remoteId
             ? "Disconnect"
             : "Connect"),
         onPressed: () async {
-          if (controller.connectedDevice?.id ==
-              controller.getScannedDevices.elementAt(0).id) {
+          if (controller.connectedDevice?.remoteId ==
+              controller.getScannedDevices.elementAt(0).remoteId) {
             await controller
                 .disconnectDevice(controller.getScannedDevices.elementAt(0));
           } else {

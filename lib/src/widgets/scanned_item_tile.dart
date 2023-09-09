@@ -161,7 +161,9 @@ class _ScannedDevicesListState extends State<ScannedDevicesList>
                     children: [
                       Expanded(
                         child: Text(
-                          deviceController.getScannedDevices.elementAt(0).name,
+                          deviceController.getScannedDevices
+                              .elementAt(0)
+                              .localName,
                           style: const TextStyle(
                               overflow: TextOverflow.ellipsis,
                               fontSize: 20,
@@ -176,7 +178,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList>
                   Text(
                     deviceController.getScannedDevices
                         .elementAt(0)
-                        .id
+                        .remoteId
                         .toString(),
                     style: const TextStyle(
                       color: Colors.white38,
@@ -273,7 +275,7 @@ Widget scannedItem(
                 children: [
                   Expanded(
                     child: Text(
-                      controller.getScannedDevices.elementAt(index).name,
+                      controller.getScannedDevices.elementAt(index).localName,
                       style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontSize: 20,
@@ -289,7 +291,10 @@ Widget scannedItem(
                 ],
               ),
               Text(
-                controller.getScannedDevices.elementAt(index).id.toString(),
+                controller.getScannedDevices
+                    .elementAt(index)
+                    .remoteId
+                    .toString(),
                 style: const TextStyle(
                   color: Colors.white38,
                   fontWeight: FontWeight.w400,

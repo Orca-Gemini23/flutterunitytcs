@@ -51,7 +51,7 @@ class LoginRegister extends StatelessWidget {
 
                       Go.to(
                         context: context,
-                        push: LoginPage(),
+                        push: const LoginPage(),
                       );
                     },
                     style: ElevatedButton.styleFrom(

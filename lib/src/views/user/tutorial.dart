@@ -14,7 +14,7 @@ class TutorialPage extends StatefulWidget {
 }
 
 class _TutorialPageState extends State<TutorialPage> {
-  CarouselController _controller = CarouselController();
+  final CarouselController _controller = CarouselController();
   int _current = 0;
 
   @override
@@ -35,7 +35,7 @@ class _TutorialPageState extends State<TutorialPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Container(
+      body: SizedBox(
         // padding: EdgeInsets.symmetric(horizontal: 15, vertical: 100),
         height: double.maxFinite,
         width: double.maxFinite,

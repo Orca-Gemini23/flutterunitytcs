@@ -14,8 +14,8 @@ import 'package:walk/src/controllers/wifi_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 
 import 'package:walk/src/views/device/wifi_page.dart';
-import 'package:walk/src/widgets/circlebattstatus.dart';
-import 'package:walk/src/widgets/magnitudeslider.dart';
+import 'package:walk/src/widgets/devicecontrolpage/circlebattstatus.dart';
+import 'package:walk/src/widgets/devicecontrolpage/magnitudeslider.dart';
 
 class CommandPage extends StatefulWidget {
   const CommandPage({super.key});
@@ -333,7 +333,7 @@ class _CommandPageState extends State<CommandPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
+                          SizedBox(
                             child: Column(
                               children: [
                                 const Text(
@@ -366,7 +366,7 @@ class _CommandPageState extends State<CommandPage> {
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             child: Column(
                               children: [
                                 const Text(

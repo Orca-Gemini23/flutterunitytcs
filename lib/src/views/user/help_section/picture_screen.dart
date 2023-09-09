@@ -254,8 +254,8 @@ class PicturePage extends StatelessWidget {
     return showDialog(
       context: context,
       barrierDismissible: true,
-      barrierColor: Color.fromARGB(52, 255, 255, 255),
-      builder: (context) => Container(
+      barrierColor: const Color.fromARGB(52, 255, 255, 255),
+      builder: (context) => SizedBox(
         width: Screen.width(context: context),
         child: PhotoView(imageProvider: AssetImage(name)),
       ),

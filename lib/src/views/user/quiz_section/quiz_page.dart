@@ -29,8 +29,8 @@ class _QuizPageState extends State<QuizPage> {
         height: double.maxFinite,
         child: FutureBuilder(
           builder: ((context, snapshot) {
-            return Stack(
-              children: const [
+            return const Stack(
+              children: [
                 Center(
                   child: SizedBox(
                       height: 150,

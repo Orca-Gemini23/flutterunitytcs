@@ -79,9 +79,9 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                                   modesDictionary[element] == newValue);
                         });
                         ////Send Change Mode Command to device
-                        log("$MODE $newValue");
+                        log("$MODE $newValue;");
                         await deviceController.sendToDevice(
-                            "$MODE $newValue", WRITECHARACTERISTICS);
+                            "$MODE $newValue;", WRITECHARACTERISTICS);
                       },
                     );
                   }),
@@ -103,7 +103,9 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        ////Reset the device
+                      },
                       child: const Text(
                         "Reset",
                         style:

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/widgets/bluetoothconnectionicon.dart';
-import 'package:walk/src/widgets/revisedconnectbutton.dart';
+import 'package:walk/src/widgets/scanningpage/bluetoothconnectionicon.dart';
+import 'package:walk/src/widgets/scanningpage/revisedconnectbutton.dart';
 
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({super.key});
@@ -30,6 +30,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
       backgroundColor: AppColor.whiteColor,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        automaticallyImplyLeading: !Provider.of<DeviceController>(context,
+                listen: true)
+            .isScanning, ////Remove the default back button when scan is running
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         iconTheme: const IconThemeData(
@@ -81,36 +84,39 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
               left: 0,
               right: 0,
               child: Consumer<DeviceController>(
-                  builder: (context, deviceController, widget) {
-                if (deviceController.scanStatus) {
-                  return const SizedBox.shrink();
-                } else {
-                  return Visibility(
-                    visible: deviceController.isBluetoothOn,
-                    child: const Text(
-                      "Turn on your Bluetooth \n connection and make sure your \n device is nearby",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColor.blackColor,
-                        fontSize: 19,
-                      ),
-                    ),
-                  );
-                }
-              }),
-            ),
-            Consumer<DeviceController>(//Connect Device Button
                 builder: (context, deviceController, widget) {
-              return Positioned(
-                top: MediaQuery.of(context).size.height - 150,
-                left: 0,
-                right: 0,
-                child: revisedConnectButton(
-                  deviceController,
-                  context,
-                ),
-              );
-            })
+                  if (deviceController.scanStatus) {
+                    return const SizedBox.shrink();
+                  } else {
+                    return Visibility(
+                      visible: deviceController.isBluetoothOn,
+                      child: const Text(
+                        "Turn on your Bluetooth \n connection and make sure your \n device is nearby",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColor.blackColor,
+                          fontSize: 19,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+            Consumer<DeviceController>(
+              //Connect Device Button
+              builder: (context, deviceController, widget) {
+                return Positioned(
+                  top: MediaQuery.of(context).size.height - 150,
+                  left: 0,
+                  right: 0,
+                  child: revisedConnectButton(
+                    deviceController,
+                    context,
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),

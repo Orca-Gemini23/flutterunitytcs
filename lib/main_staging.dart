@@ -1,17 +1,14 @@
 import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/utils/background_isolate.dart';
+
 import 'package:walk/walk_app.dart';
-import 'package:walk/src/controllers/notification_controller.dart';
 
 String userToken = "";
 void main(List<String> args) async {
@@ -29,15 +26,15 @@ void main(List<String> args) async {
   await Firebase.initializeApp();
 
   /// GEt token for firebase messaging
-  await FirebaseMessaging.instance.getToken();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessage.listen(showFirebaseNotification);
+  // await FirebaseMessaging.instance.getToken();
+  // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  // FirebaseMessaging.onMessage.listen(showFirebaseNotification);
 
-  /// Implements android notification channel
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  // /// Implements android notification channel
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
 
   /// Asks for notifiaction permission
   await Permission.notification.isDenied.then(

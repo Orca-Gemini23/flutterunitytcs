@@ -1,60 +1,45 @@
-import 'dart:developer';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:walk/src/constants/bt_constants.dart';
+class NotificationController {
+  static NotificationChannel walkPrimaryNotificationChannel =
+      NotificationChannel(
+          channelKey: "PrimaryChannel",
+          channelName: "WALK Notification Channel",
+          channelDescription:
+              "This is the primary notification channel of WALK application");
+  static NotificationChannel walkServiceNotificationChannel = NotificationChannel(
+      channelKey: "PrimaryServiceChannel",
+      channelName: "WALK Service Notification Channel",
+      channelDescription:
+          "This is the primary service notification channel of WALK application ");
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description:
-        'This channel is used for important notifications.', // description
-    importance: Importance.high,
-    playSound: true);
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  log("Remote Message found !! calling Background Message Handler");
-  await showFirebaseNotification(message);
-}
-
-showFirebaseNotification(RemoteMessage message) {
-  RemoteNotification? notification = message.notification;
-  AndroidNotification? android = message.notification?.android;
-
-  if (notification != null && android != null) {
-    flutterLocalNotificationsPlugin.show(
-      notification.hashCode,
-      notification.title,
-      notification.body,
-      NotificationDetails(
-        android: AndroidNotificationDetails(channel.id, channel.name,
-            channelDescription: channel.description,
-            color: Colors.blue,
-            playSound: true,
-            icon: NOTIFICON),
-      ),
+  static initNotificationController() {
+    AwesomeNotifications().initialize(
+      "",
+      [
+        walkPrimaryNotificationChannel,
+        walkServiceNotificationChannel,
+      ],
+      debug: true,
     );
   }
-}
 
-Future customNotification(int id, String title, String body) async {
-  flutterLocalNotificationsPlugin.show(
-    id,
-    title,
-    body,
-    NotificationDetails(
-      android: AndroidNotificationDetails(
-        channel.id,
-        channel.name,
-        channelDescription: channel.description,
-        color: Colors.blue,
-        playSound: true,
-        icon: NOTIFICON,
+  static sendNotification(
+      {String? channelkey,
+      int? id,
+      String? title,
+      String? body,
+      List<NotificationActionButton>? actionButtons}) {
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        channelKey: channelkey!,
+        id: id!,
+        title: title,
+        body: body,
       ),
-    ),
-  );
+      actionButtons: actionButtons,
+    );
+  }
+
+  static startListeningToNotifications() {}
 }
