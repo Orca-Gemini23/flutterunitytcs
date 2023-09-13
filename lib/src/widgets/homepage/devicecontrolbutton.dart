@@ -19,7 +19,6 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
     with WidgetsBindingObserver {
   DeviceController? deviceController;
   bool _isDeviceButtonTapped = false;
-  bool _isDialogUp = true;
 
   @override
   Widget build(BuildContext context) {

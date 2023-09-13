@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 // import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -21,12 +20,12 @@ String walkServiceNotificationChannelDescription =
 
 Future<void> initServices() async {
   final service = FlutterBackgroundService();
-  NotificationChannel walkServiceNotificationChannel = NotificationChannel(
-    channelKey: walkServiceNotificationChannelKey,
-    channelName: walkServiceNotificationChannelName,
-    channelDescription: walkServiceNotificationChannelDescription,
-    defaultColor: const Color(0XFFCBE2D2),
-  );
+  // NotificationChannel walkServiceNotificationChannel = NotificationChannel(
+  //   channelKey: walkServiceNotificationChannelKey,
+  //   channelName: walkServiceNotificationChannelName,
+  //   channelDescription: walkServiceNotificationChannelDescription,
+  //   defaultColor: const Color(0XFFCBE2D2),
+  // );
 
   await service.configure(
     iosConfiguration: IosConfiguration(),
