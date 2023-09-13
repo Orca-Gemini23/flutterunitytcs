@@ -14,7 +14,7 @@ android:
     paths:
       - build/artifacts/
   tags:
-    - flutter
+    - flutterandroid
 
 playstore:
   stage: androidDeploy
@@ -23,5 +23,5 @@ playstore:
   script:
     - cd android && bundle exec fastlane playstore_internal_release
   tags:
-    - flutter
+    - flutterandroid
 
