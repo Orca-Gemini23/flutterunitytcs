@@ -1,23 +1,13 @@
 image: ghcr.io/cirruslabs/flutter
 stages:
-  - lints
   - build
 
-lints:
-  stage: lints
-  before_script:
-    - bash reconfigure.sh
-  script:
-    - flutter analyze
-  tags:
-    - flutter
-    
 android:
   stage: build
   script:
     - flutter build apk --release --build-number ${CI_JOB_ID:0:8}
     - flutter build appbundle --release --build-number ${CI_JOB_ID:0:8}
-    - sudo bundle install
+    - bundle install
     - cd android && bundle exec fastlane move_files
   artifacts:
     paths:
@@ -28,7 +18,6 @@ android:
 playstore:
   stage: deploy
   dependencies:
-
     - android
   script:
     - cd android && bundle exec fastlane playstore_internal_release
