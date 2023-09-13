@@ -1,9 +1,10 @@
 image: ghcr.io/cirruslabs/flutter
 stages:
-  - build
+  - androidBuild
+  - androidDeploy
 
 android:
-  stage: build
+  stage: androidBuild
   script:
     - flutter build apk --release --build-number ${CI_JOB_ID:0:8}
     - flutter build appbundle --release --build-number ${CI_JOB_ID:0:8}
@@ -16,7 +17,7 @@ android:
     - flutter
 
 playstore:
-  stage: deploy
+  stage: androidDeploy
   dependencies:
     - android
   script:
