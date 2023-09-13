@@ -1,10 +1,7 @@
 image: ghcr.io/cirruslabs/flutter
-
 stages:
   - lints
-  - androidBuild
-  - androidDeploy
-
+  - build
 
 lints:
   stage: lints
@@ -14,27 +11,27 @@ lints:
     - flutter analyze
   tags:
     - flutter
-
+    
 android:
-  stage: androidBuild
-  script: 
-    - flutter build apk --release  --build-number ${CI_JOB_ID:0:8}
-    - flutter build appbundle  --build-number ${CI_JOB_ID:0:8}
-    - bundle install
+  stage: build
+  script:
+    - flutter build apk --release --build-number ${CI_JOB_ID:0:8}
+    - flutter build appbundle --release --build-number ${CI_JOB_ID:0:8}
+    - sudo bundle install
     - cd android && bundle exec fastlane move_files
   artifacts:
     paths:
-      -build/artifacts/
+      - build/artifacts/
   tags:
     - flutter
 
 playstore:
-  stage: androidDeploy
+  stage: deploy
   dependencies:
+
     - android
   script:
     - cd android && bundle exec fastlane playstore_internal_release
   tags:
     - flutter
-
 
