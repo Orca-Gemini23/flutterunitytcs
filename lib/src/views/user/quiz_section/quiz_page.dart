@@ -24,27 +24,32 @@ class _QuizPageState extends State<QuizPage> {
       appBar: AppBar(
         title: const Text(AppString.quizTitle),
       ),
-      body: SizedBox(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        child: FutureBuilder(
-          builder: ((context, snapshot) {
-            return const Stack(
-              children: [
-                Center(
-                  child: SizedBox(
-                      height: 150,
-                      width: 150,
-                      child: CircularProgressIndicator()),
-                ),
-                Center(
-                  child: Text('Comning soon!'),
-                ),
-              ],
-            );
-          }),
-        ),
-      ),
+      body: Center(),
+      // body: SizedBox(
+      //   width: double.maxFinite,
+      //   height: double.maxFinite,
+      //   child: Column(
+      //     children: [
+      //       FutureBuilder(
+      //         builder: ((context, snapshot) {
+      //           return const Stack(
+      //             children: [
+      //               Center(
+      //                 child: SizedBox(
+      //                     height: 150,
+      //                     width: 150,
+      //                     child: CircularProgressIndicator()),
+      //               ),
+      //               Center(
+      //                 child: Text('Comning soon!'),
+      //               ),
+      //             ],
+      //           );
+      //         }),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }
