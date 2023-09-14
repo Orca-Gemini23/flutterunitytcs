@@ -9,7 +9,7 @@ android:
     - flutter build apk --release --build-number ${CI_JOB_ID:0:8}
     - flutter build appbundle --release --build-number ${CI_JOB_ID:0:8}
     - bundle install
-    - (cd android) -and ( bundle exec fastlane move_files)
+    - (cd android) -and (bundle exec fastlane move_files)
   artifacts:
     paths:
       - build/artifacts/
