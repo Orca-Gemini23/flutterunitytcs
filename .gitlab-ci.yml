@@ -12,8 +12,6 @@ android:
   artifacts:
     paths:
       - build/artifacts/
-  tags:
-    - flutterandroid
 
 # playstore:
 #   stage: androidDeploy
