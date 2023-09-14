@@ -8,7 +8,7 @@ android:
   script:
     - rm pubspec.lock 
     - flutter pub get
-    - flutter build appbundle --release --build-number ${CI_JOB_ID:0:8}
+    - flutter build appbundle --build-number ${CI_JOB_ID:0:8}
     - (cd android) -and (bundle exec fastlane move_files)
   artifacts:
     paths:
