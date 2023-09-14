@@ -1,4 +1,5 @@
-image: ghcr.io/cirruslabs/flutter
+# image: ghcr.io/cirruslabs/flutter
+image: flutter/flutter:stable
 stages:
   - androidBuild
 
