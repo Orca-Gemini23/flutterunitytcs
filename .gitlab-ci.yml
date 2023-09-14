@@ -7,5 +7,5 @@ android:
   script:
     - flutter clean 
     - flutter pub get
-    - flutter build appbundle --build-number ${CI_JOB_ID:0:8}
+    - flutter build appbundle 
 
