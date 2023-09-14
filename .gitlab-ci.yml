@@ -16,12 +16,12 @@ android:
   tags:
     - flutterandroid
 
-playstore:
-  stage: androidDeploy
-  dependencies:
-    - android
-  script:
-    - (cd android) -and (bundle exec fastlane playstore_internal_release)
-  tags:
-    - flutterandroid
+# playstore:
+#   stage: androidDeploy
+#   dependencies:
+#     - android
+#   script:
+#     - (cd android) -and (bundle exec fastlane playstore_internal_release)
+#   tags:
+#     - flutterandroid
 
