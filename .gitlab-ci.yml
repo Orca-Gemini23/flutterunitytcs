@@ -1,23 +1,11 @@
 image: ghcr.io/cirruslabs/flutter
 stages:
   - androidBuild
-  - androidDeploy
 
 android:
   stage: androidBuild
   script:
-    - rm pubspec.lock 
+    - flutter clean 
     - flutter pub get
     - flutter build appbundle --build-number ${CI_JOB_ID:0:8}
-    - (cd android) -and (bundle exec fastlane move_files)
-  artifacts:
-    paths:
-      - build/artifacts/
-
-playstore:
-  stage: androidDeploy
-  dependencies:
-    - android
-  script:
-    - (cd android) -and (bundle exec fastlane playstore_internal_release)
 
