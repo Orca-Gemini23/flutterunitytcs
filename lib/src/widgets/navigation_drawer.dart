@@ -139,10 +139,10 @@ Widget drawerItem(BuildContext context) {
       );
     },
     () {
-      Go.to(
-        context: context,
-        push: const QrScanner(),
-      );
+      // Go.to(
+      //   context: context,
+      //   push: const QrScanner(),
+      // );
       //Goto qr scanner page
     },
     () {
