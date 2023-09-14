@@ -17,7 +17,6 @@ import 'package:walk/src/views/device/command_page.dart';
 import 'package:walk/src/views/faqscreens/faqpage.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
-import 'package:walk/src/views/qrscanner/qrscanner.dart';
 import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
 import 'package:walk/src/views/user/account_page.dart';
 import 'package:walk/src/views/user/help_section/help.dart';
