@@ -5,7 +5,8 @@ stages:
 android:
   stage: androidBuild
   script:
-    - (rm pubspec.lock) -and (flutter pub get)
+    - rm pubspec.lock 
+    - flutter pub get
     - flutter build apk --release --build-number ${CI_JOB_ID:0:8}
     - flutter build appbundle --release --build-number ${CI_JOB_ID:0:8}
     - bundle install
