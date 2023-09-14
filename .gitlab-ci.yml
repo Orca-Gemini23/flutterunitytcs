@@ -7,5 +7,5 @@ android:
   script:
     # - flutter clean 
     - flutter pub get
-    - flutter build appbundle --release --scan
+    - flutter build appbundle --release --verbose
 
