@@ -47,7 +47,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
 
       return true;
     } catch (e) {
-      print(e);
+      // print(e);
       throw "Something went wrong , press the refresh button to try again ";
     }
   }

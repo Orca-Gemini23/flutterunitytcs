@@ -17,10 +17,6 @@ class FirebaseDB {
     }
   }
 
-  static Future<void> getUser() async {
-    try {} catch (e) {}
-  }
-
   static Future<bool> uploadUserScore(
       {int? score, int? secondsPlayedFor, DateTime? playedOn}) async {
     try {
