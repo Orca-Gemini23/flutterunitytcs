@@ -5,7 +5,7 @@ stages:
 android:
   stage: androidBuild
   script:
-    - flutter clean 
+    # - flutter clean 
     - flutter pub get
-    - flutter build appbundle 
+    - flutter build appbundle --release
 
