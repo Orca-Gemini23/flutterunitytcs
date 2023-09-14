@@ -1,7 +1,6 @@
 image: ghcr.io/cirruslabs/flutter
 stages:
   - androidBuild
-  # - androidDeploy
 
 android:
   stage: androidBuild
