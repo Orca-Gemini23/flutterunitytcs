@@ -300,7 +300,7 @@ class DeviceController extends ChangeNotifier {
   Future checkPrevConnection() async {
     log("check prev called ");
     _connectedDevices = await FlutterBluePlus.connectedSystemDevices;
-    print("conected devices $_connectedDevices");
+    // print("conected devices $_connectedDevices");
     if (_connectedDevices.isNotEmpty) {
       _connectedDevice = _connectedDevices[0];
       await connectToDevice(
