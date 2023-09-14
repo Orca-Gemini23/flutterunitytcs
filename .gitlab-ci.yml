@@ -9,7 +9,7 @@ android:
     - flutter build apk --release --build-number ${CI_JOB_ID:0:8}
     - flutter build appbundle --release --build-number ${CI_JOB_ID:0:8}
     - bundle install
-    - cd android && bundle exec fastlane move_files
+    - (cd android) -and ( bundle exec fastlane move_files)
   artifacts:
     paths:
       - build/artifacts/
@@ -21,7 +21,7 @@ playstore:
   dependencies:
     - android
   script:
-    - cd android && bundle exec fastlane playstore_internal_release
+    - (cd android) -and (bundle exec fastlane playstore_internal_release)
   tags:
     - flutterandroid
 
