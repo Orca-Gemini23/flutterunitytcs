@@ -19,3 +19,4 @@ android:
     - flutter build appbundle --release
   tags:
     - flutterAndroid2 
+
