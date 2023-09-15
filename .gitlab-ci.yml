@@ -8,6 +8,8 @@ androidBuild :
   script :
     - $env:Path += ';C:\flutter\bin'
     # - echo $env:PATH
-    - flutter doctor
+    - flutter clean 
+    - flutter pub get
+    - flutter build appbundle 
   tags :
     - flutterandroid
