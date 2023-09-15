@@ -9,8 +9,6 @@ androidBuild :
     - $env:Path += ';C:\flutter\bin'
     - $env:ANDROID_SDK_ROOT = "C:\Users\EASHUBH THAPLIYAL\AppData\Local\Android\Sdk"
     # - echo $env:PATH
-    - flutter clean 
-    - flutter pub get
     - flutter build appbundle --verbose
   tags :
     - flutterandroid
