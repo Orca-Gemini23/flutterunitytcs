@@ -10,4 +10,4 @@ androidBuild :
   script :
     - flutter build appbundle
   tags :
-    - flutterAndroid
+    - flutterandroid
