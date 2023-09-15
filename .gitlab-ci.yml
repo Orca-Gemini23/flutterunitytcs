@@ -1,4 +1,4 @@
-image : ghcr.io/cirruslabs/flutter
+image : ghcr.io/cirruslabs/flutter:stable
 
 stages :
   - androidBuild
@@ -11,6 +11,6 @@ androidBuild :
     # - echo $env:PATH
     - flutter clean 
     - flutter pub get
-    - flutter build appbundle 
+    - flutter build appbundle --verbose
   tags :
     - flutterandroid
