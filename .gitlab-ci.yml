@@ -8,4 +8,4 @@ androidBuild :
   script :
     - flutter build appbundle
   tags :
-    - flutterandroid
+    - flutterandroid ,flutterios
