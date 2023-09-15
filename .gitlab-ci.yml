@@ -7,7 +7,7 @@ androidBuild :
   stage : androidBuild
   script :
     - $env:Path = 'C:\flutter\bin;' + $env:Path
-    - echo $env:PATH
+    # - echo $env:PATH
     # - flutter doctor
   tags :
     - flutterandroid
