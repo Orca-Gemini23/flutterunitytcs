@@ -2,6 +2,7 @@ image: ghcr.io/cirruslabs/flutter:stable
 # image: flutter/flutter:stable
 stages:
   - androidBuild
+  - androidBuild2
 
 android:
   stage: androidBuild
@@ -9,3 +10,12 @@ android:
     - flutter clean 
     - flutter pub get
     - flutter build appbundle --release 
+
+android:
+  stage: androidBuild2
+  script:
+    - flutter clean 
+    - flutter pub get
+    - flutter build appbundle --release
+  tags:
+    - flutterAndroid2 
