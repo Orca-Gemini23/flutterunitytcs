@@ -6,6 +6,6 @@ stages :
 androidBuild :
   stage : androidBuild
   script :
-    - flutter build appbundle
+    - flutter doctor
   tags :
     - flutterandroid
