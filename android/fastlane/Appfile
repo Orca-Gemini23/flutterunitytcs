@@ -1,2 +1,0 @@
-json_key_file("android/secrets/play_store_creds_fastlane.json")
-package_name("com.lifesparktech.walk")
