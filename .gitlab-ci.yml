@@ -18,5 +18,6 @@ android:
     - flutter pub get
     - flutter build appbundle --release
   tags:
-    - flutterAndroid2 
+    - flutterAndroid2
+    - flutterIos2
 
