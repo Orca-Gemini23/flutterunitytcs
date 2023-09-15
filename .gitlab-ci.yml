@@ -1,4 +1,4 @@
-image: ghcr.io/cirruslabs/flutter
+image: ghcr.io/cirruslabs/flutter:stable
 # image: flutter/flutter:stable
 stages:
   - androidBuild
@@ -6,6 +6,6 @@ stages:
 android:
   stage: androidBuild
   script:
-    # - flutter clean 
+    - flutter clean 
     - flutter pub get
-    # - flutter build appbundle --release 
+    - flutter build appbundle --release 
