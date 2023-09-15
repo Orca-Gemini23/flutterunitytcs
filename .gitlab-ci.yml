@@ -6,6 +6,7 @@ stages :
 androidBuild :
   stage : androidBuild
   script :
-    - flutter doctor
+    - echo $env:PATH
+    # - flutter doctor
   tags :
     - flutterandroid
