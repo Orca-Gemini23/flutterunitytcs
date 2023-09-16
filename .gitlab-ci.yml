@@ -28,12 +28,13 @@ android:build:
     - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
     - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
     - cd android
-    - rm -f android/local.properties
-    - rm -f android/key.properties
+    - fastlane deploy_android 
+    - rm android/local.properties
+    - rm android/key.properties
   artifacts:
     paths:
     - build/app/outputs/apk/release/app-release.apk
-    - build/app/outputs/bundle/release/app.aab
+    - build/app/outputs/bundle/release/app-rekease.aab
     expire_in: 1 week
   interruptible: true
 
