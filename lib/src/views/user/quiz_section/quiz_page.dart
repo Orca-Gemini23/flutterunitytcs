@@ -24,7 +24,7 @@ class _QuizPageState extends State<QuizPage> {
       appBar: AppBar(
         title: const Text(AppString.quizTitle),
       ),
-      body: Center(),
+      body: const Center(),
       // body: SizedBox(
       //   width: double.maxFinite,
       //   height: double.maxFinite,

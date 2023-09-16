@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
+import 'package:walk/src/views/devicecodepage/device_code_page.dart';
 
 class Revisedsplash extends StatefulWidget {
   const Revisedsplash({super.key});
@@ -61,25 +61,30 @@ class _RevisedsplashState extends State<Revisedsplash>
       });
     });
 
-    Timer(const Duration(seconds: 4), () {
-      setState(() {
-        userToken == ""
-            ? Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: "/"),
-                  builder: (context) =>
-                      const RevisedHomePage(), ////To be changed back to login page after ensuring that the flask servers are up and running
-                ),
-              )
-            : Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const RevisedHomePage(),
-                ),
-              );
-      });
-    });
+    Timer(
+      const Duration(seconds: 4),
+      () {
+        setState(
+          () {
+            userToken == ""
+                ? Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      settings: const RouteSettings(name: "/"),
+                      builder: (context) =>
+                          const DeviceCodePage(), ////To be changed back to login page after ensuring that the flask servers are up and running
+                    ),
+                  )
+                : Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DeviceCodePage(),
+                    ),
+                  );
+          },
+        );
+      },
+    );
   }
 
   @override

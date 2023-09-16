@@ -146,6 +146,7 @@ class _SignupPageState extends State<SignupPage> {
                     loaderSize: 25,
                     controller: _buttonController,
                     onPressed: () async {
+                      ////TODO :: Create a user in the server and get the details for the same
                       if (_formKey.currentState!.validate()) {
                         _buttonController.start();
                         bool isRegistered = await controller.registerUser(

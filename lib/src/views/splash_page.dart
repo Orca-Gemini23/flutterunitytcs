@@ -7,8 +7,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
-
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
+import 'package:walk/src/views/devicecodepage/device_code_page.dart';
 
 import '../controllers/device_controller.dart';
 
@@ -38,13 +37,13 @@ class _SplashPageState extends State<SplashPage> {
       pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
         builder: Builder(builder: (context) {
           if (userToken == "") {
-            return const RevisedHomePage();
+            return const DeviceCodePage();
             // return Homepage(
             //   isShowCaseDone: _isShowCasedone,
             //   isUnboxingDone: _isUnboxingdone,
             // ); //const LoginRegister();
           } else {
-            return const RevisedHomePage();
+            return const DeviceCodePage();
           }
         }),
       ),

@@ -210,7 +210,6 @@ class DeviceController extends ChangeNotifier {
         await Permission.bluetooth.isDenied) {
       await Permission.location.request();
       await Permission.nearbyWifiDevices.request();
-      await Permission.bluetoothScan.request();
       log("asking for permission complete");
       if (await Permission.bluetooth.isGranted &&
           await Permission.location.isGranted &&

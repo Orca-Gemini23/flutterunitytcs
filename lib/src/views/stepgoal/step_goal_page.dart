@@ -218,7 +218,7 @@ class _StepGoalPageState extends State<StepGoalPage> {
       3: "Kerala"
     };
 
-    return Container(
+    return SizedBox(
       width: double.maxFinite,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
