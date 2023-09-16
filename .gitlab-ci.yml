@@ -28,7 +28,6 @@ android:build:
     - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
     - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
     - cd android
-    - fastlane deploy_android 
     - rm -f android/local.properties
     - rm -f android/key.properties
   artifacts:
