@@ -2,8 +2,6 @@ stages:
   - update
   - build
   - deploy
-
-
 update:
   stage: update
   only:
@@ -30,7 +28,7 @@ android:build:
     - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
     - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
     - cd android
-    - bundle exec fastlane deploy_android internal:true
+    - fastlane deploy_android 
     - rm -f android/local.properties
     - rm -f android/key.properties
   artifacts:
@@ -40,61 +38,13 @@ android:build:
     expire_in: 1 week
   interruptible: true
 
-# ios:build:
-#   stage: build
-#   tags:
-#     - appditto_mac
-#   script:
-#     - cd ios
-#     - export TEMP_KEYCHAIN_NAME=fastlane_$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w ${1:-16} | head -n 1)
-#     - export TEMP_KEYCHAIN_PASSWORD=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w ${1:-64} | head -n 1)
-#     - bundle exec fastlane build_ios
-#   artifacts:
-#     paths:
-#     - ios/Runner.ipa
-#     expire_in: 1 week
-#   interruptible: true
-
-# prod:android:deploy:
-#   stage: deploy
-#   tags:
-#     - appditto_mac
-#   script:
-#     - cd android
-#     - bundle exec fastlane deploy_android production:true
-#   when: manual
-#   dependencies:
-#     - android:build
-
-# prod:ios:deploy:
-#   stage: deploy
-#   tags:
-#     - appditto_mac
-#   script:
-#     - cd ios
-#     - bundle exec fastlane deploy_ios
-#   when: manual
-#   dependencies:
-#     - ios:build
-
 z:internal:android:deploy:
   stage: deploy
   tags:
     - appditto_mac
   script:
     - cd android
-    - bundle exec fastlane deploy_android internal:true
+    - fastlane deploy_android 
   when: manual
   dependencies:
     - android:build
-
-# z:tflight:ios:deploy:
-#   stage: deploy
-#   tags:
-#     - appditto_mac
-#   script:
-#     - cd ios
-#     - bundle exec fastlane deploy_ios testflight:true
-#   when: manual
-#   dependencies:
-#     - android:build
