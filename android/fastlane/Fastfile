@@ -4,10 +4,14 @@ default_platform(:android)
 platform :android do
   desc "Build android aab and apk"
   lane :build_android do |options|
-    # Build AAB
-    sh "./flutter_build.sh clean"
+    # Clean Project
+    sh "./flutter_build.bat clean"
+    # Get Packages
+    sh "./flutter_build.bat get"
     # Build APK
-    sh "./flutter_build.sh apk"
+    sh "./flutter_build.bat apk"
+    # Build AAB
+    sh "./flutter_build.bat"
   end
 
   desc "Deploy (Upload to play store)"
@@ -17,7 +21,7 @@ platform :android do
       track: track,
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       skip_upload_images: true,
-      skip_upload_screenshots: true,
+      skip_upload_screenshots: true, 
     )
   end
 end
