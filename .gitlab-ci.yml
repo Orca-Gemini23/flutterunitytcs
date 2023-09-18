@@ -18,6 +18,8 @@ android:build:
   tags:
     - WalkAndroidRunner
   before_script:
+    - chcp 65001  # Set the code page to UTF-8
+    - set LC_ALL=en_US.UTF-8
     - gem install fastlane  
   script:
     # Flutter local configuration
