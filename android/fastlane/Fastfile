@@ -5,9 +5,9 @@ platform :android do
   desc "Build android aab and apk"
   lane :build_android do |options|
     # Clean Project
-    sh "./flutter_build.bat clean"
-    # Get Packages
-    sh "./flutter_build.bat get"
+    # sh "./flutter_build.bat clean"
+    # # Get Packages
+    # sh "./flutter_build.bat get"
     # Build APK
     sh "./flutter_build.bat apk"
     # Build AAB
