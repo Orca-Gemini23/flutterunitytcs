@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/views/devicecodepage/device_code_page.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 class Revisedsplash extends StatefulWidget {
   const Revisedsplash({super.key});
@@ -70,15 +71,15 @@ class _RevisedsplashState extends State<Revisedsplash>
                 ? Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      settings: const RouteSettings(name: "/"),
-                      builder: (context) =>
-                          const DeviceCodePage(), ////To be changed back to login page after ensuring that the flask servers are up and running
-                    ),
+                        settings: const RouteSettings(name: "/"),
+                        builder: (context) =>
+                            const RevisedHomePage() //DeviceCodePage(), ////To be changed back to login page after ensuring that the flask servers are up and running
+                        ),
                   )
                 : Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const DeviceCodePage(),
+                      builder: (context) => const RevisedHomePage(),
                     ),
                   );
           },

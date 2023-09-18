@@ -7,7 +7,7 @@ update:
   only:
     - master
   tags:
-    - appditto_mac
+    - WalkAndroidRunner
   script:
     - flutter packages get
     - flutter packages upgrade
@@ -17,6 +17,8 @@ android:build:
   stage: build
   tags:
     - WalkAndroidRunner
+  before_script:
+    - gem install fastlane  
   script:
     # Flutter local configuration
     - echo flutter.sdk=$FLUTTER_PATH > android/local.properties
@@ -41,10 +43,10 @@ android:build:
 z:internal:android:deploy:
   stage: deploy
   tags:
-    - appditto_mac
+    - WalkAndroidRunner
   script:
     - cd android
-    - fastlane deploy_android 
+    - fastlane deploy_android track:internal
   when: manual
   dependencies:
     - android:build
