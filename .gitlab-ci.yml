@@ -1,17 +1,17 @@
 stages:
-  - update
+  # - update
   - build
   - deploy
-update:
-  stage: update
-  only:
-    - master
-  tags:
-    - WalkAndroidRunner
-  script:
-    - flutter packages get
-    - C:/flutter/bin/flutter packages upgrade
-  interruptible: true
+# update:
+#   stage: update
+#   only:
+#     - master
+#   tags:
+#     - WalkAndroidRunner
+#   script:
+#     - flutter packages get
+#     - C:/flutter/bin/flutter packages upgrade
+#   interruptible: true
 
 android:build:
   stage: build
