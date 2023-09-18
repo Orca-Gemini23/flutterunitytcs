@@ -10,7 +10,7 @@ update:
     - WalkAndroidRunner
   script:
     - flutter packages get
-    - flutter packages upgrade
+    - C:/flutter/bin/flutter packages upgrade
   interruptible: true
 
 android:build:
