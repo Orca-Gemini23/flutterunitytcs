@@ -4,6 +4,7 @@ default_platform(:android)
 platform :android do
   desc "Build android aab and apk"
   lane :build_android do |options|
+    ENV["ANDROID_SDK_ROOT"] = "C:\\Users\\\EASHUBH THAPLIYAL\\AppData\\Local\\Android\\sdk"
     # Clean Project
     sh "./flutter_build.bat clean"
     # Get Packages
