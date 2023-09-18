@@ -19,8 +19,9 @@ android:build:
     - WalkAndroidRunner
   before_script:
     # - chcp 65001  # Set the code page to UTF-8
-    # - set FLUTTER_PATH= C:/flutter/bin/flutter
+    - set FLUTTER_PATH= C:/flutter/bin/flutter
     # - echo flutter.sdk=%FLUTTER_PATH% > android/local.properties
+    - set ANDROID_SDK_PATH=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/sdk
     # - echo sdk.dir=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/Sdk >> android/local.properties
     - gem install fastlane  
   script:
