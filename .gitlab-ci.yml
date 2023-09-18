@@ -1,28 +1,25 @@
 stages:
-  # - update
+  - update
   - build
   - deploy
-# update:
-#   stage: update
-#   only:
-#     - master
-#   tags:
-#     - WalkAndroidRunner
-#   script:
-#     - flutter packages get
-#     - C:/flutter/bin/flutter packages upgrade
-#   interruptible: true
+update:
+  stage: update
+  only:
+    - master
+  tags:
+    - WalkAndroidRunner
+  script:
+   - bundle install 
+   - bundle update fastlane
+  interruptible: true
 
 android:build:
   stage: build
   tags:
     - WalkAndroidRunner
   before_script:
-    # - chcp 65001  # Set the code page to UTF-8
     - set FLUTTER_PATH= C:/flutter/bin/flutter
-    # - echo flutter.sdk=%FLUTTER_PATH% > android/local.properties
     - set ANDROID_SDK_ROOT=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/sdk
-    # - echo sdk.dir=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/Sdk >> android/local.properties
     - gem install fastlane  
   script:
     # Flutter local configuration
