@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
-import 'package:walk/src/views/devicecodepage/device_code_page.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 class Revisedsplash extends StatefulWidget {
