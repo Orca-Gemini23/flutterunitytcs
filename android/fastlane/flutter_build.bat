@@ -17,8 +17,8 @@ if "%1%"=="get" (
 
 if "%1%"=="apk" (
    echo Building APK...
-   C:/flutter/bin/flutter build apk --release
+   C:/flutter/bin/flutter build apk --release --verbose
 ) else (
    echo Building AAB...
-   C:/flutter/bin/flutter build appbundle --release
+   C:/flutter/bin/flutter build appbundle --release --verbose
 )
