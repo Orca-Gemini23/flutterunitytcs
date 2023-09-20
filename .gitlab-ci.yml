@@ -22,11 +22,6 @@ android:build:
     - set ANDROID_SDK_ROOT=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/sdk
     - gem install fastlane  
   script:
-    # Flutter local configuration
-    # - echo flutter.sdk=$FLUTTER_PATH > android/local.properties
-    # - echo sdk.dir=$ANDROID_SDK_PATH >> android/local.properties
-    # - echo flutter.buildMode=release >> android/local.properties
-    # Android signing
     - echo storePassword=$ANDROID_KEY_STORE_PASSWORD > android/key.properties
     - echo keyPassword=$ANDROID_KEY_PASSWORD >> android/key.properties
     - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
