@@ -24,14 +24,14 @@ create_property_files:
     - curl -s https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer | bash
     # - Rename-Item upload-keystore.jsk 
     # - echo $KEYSTORE | base64 -d > my.keystore
-    - echo "storeFile=upload-keystore.jks" > key.properties
-    - echo "storePassword=$KEYSTORE_PASSWORD" >> key.properties
-    - echo "keyAlias=$ALIAS" >> key.properties
-    - echo "keyPassword=$KEY_PASSWORD" >> key.properties
+    - echo "storeFile=upload-keystore.jks" > keytest.properties
+    - echo "storePassword=$KEYSTORE_PASSWORD" >> keytest.properties
+    - echo "keyAlias=$ALIAS" >> keytest.properties
+    - echo "keyPassword=$KEY_PASSWORD" >> keytest.properties
   artifacts:
     paths:
       - upload-keystore.jks
-      - key.properties
+      - keytest.properties
     expire_in: 10 mins
 
 
@@ -44,10 +44,10 @@ android:build:
     - set ANDROID_SDK_ROOT=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/sdk
     - gem install fastlane  
   script:
-    - echo storePassword=$ANDROID_KEY_STORE_PASSWORD > android/key.properties
-    - echo keyPassword=$ANDROID_KEY_PASSWORD >> android/key.properties
-    - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
-    - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
+    # - echo storePassword=$ANDROID_KEY_STORE_PASSWORD > android/key.properties
+    # - echo keyPassword=$ANDROID_KEY_PASSWORD >> android/key.properties
+    # - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
+    # - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
     - cd android
     - fastlane build_android 
     - rm android/local.properties

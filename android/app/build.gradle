@@ -65,7 +65,7 @@ android {
     }
     signingConfigs {
        release {
-           file("../key.properties").with { propFile ->
+           file("../keytest.properties").with { propFile ->
            if (propFile.canRead()) {
                 def properties = new Properties()
                 properties.load(new FileInputStream(propFile))
