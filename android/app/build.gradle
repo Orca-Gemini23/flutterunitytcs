@@ -65,15 +65,14 @@ android {
     }
     signingConfigs {
        release {
-           file("../keytest.properties").with { propFile ->
+           file("../key.properties").with { propFile ->
            if (propFile.canRead()) {
                 def properties = new Properties()
                 properties.load(new FileInputStream(propFile))
-
                 storeFile file(properties['storeFile'])
                 storePassword properties['storePassword']
                 keyAlias properties['keyAlias']
-                keyPassword properties['storePassword']
+                keyPassword properties['keyPassword']
            } else {
                 println 'Unable to read key.properties'
            }

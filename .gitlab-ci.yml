@@ -25,10 +25,10 @@ create_property_files:
     - ls 
     # - Rename-Item upload-keystore.jsk 
     # - echo $KEYSTORE | base64 -d > my.keystore
-    - echo "storeFile=upload-keystore.jks" > keytest.properties
-    - echo "storePassword=$KEYSTORE_PASSWORD" >> keytest.properties
-    - echo "keyAlias=$ALIAS" >> keytest.properties
-    - echo "keyPassword=$KEY_PASSWORD" >> keytest.properties
+    - echo "storeFile=upload-keystore.jks" > key.properties
+    - echo "storePassword=$KEYSTORE_PASSWORD" >> key.properties
+    - echo "keyAlias=$ALIAS" >> key.properties
+    - echo "keyPassword=$KEY_PASSWORD" >> key.properties
   artifacts:
     paths:
       - upload-keystore.jks
@@ -51,8 +51,8 @@ android:build:
     # - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
     - cd android
     - fastlane build_android 
-    - rm android/local.properties
-    - rm android/key.properties
+    # - rm android/local.properties
+    # - rm android/key.properties
   artifacts:
     paths:
     - build/app/outputs/apk/release/app-release.apk
