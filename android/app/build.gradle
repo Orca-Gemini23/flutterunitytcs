@@ -65,10 +65,24 @@ android {
     }
     signingConfigs {
        release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-           storePassword keystoreProperties['storePassword']
+           file("../key.properties").with { propFile ->
+           if (propFile.canRead()) {
+                def properties = new Properties()
+                properties.load(new FileInputStream(propFile))
+
+                storeFile file(properties['storeFile'])
+                storePassword properties['storePassword']
+                keyAlias properties['keyAlias']
+                keyPassword properties['storePassword']
+           } else {
+                println 'Unable to read key.properties'
+           }
+           }
+        
+        //    keyAlias keystoreProperties['keyAlias']
+        //    keyPassword keystoreProperties['keyPassword']
+        //    storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+        //    storePassword keystoreProperties['storePassword']
        }
     }
     buildTypes {

@@ -1,5 +1,6 @@
 stages:
   - update
+  - prepare
   - build
   - deploy
 update:
@@ -12,6 +13,27 @@ update:
    - bundle install 
    - bundle update fastlane
   interruptible: true
+
+create_property_files:
+  stage: prepare
+  variables: 
+    SECURE_FILES_DOWNLOAD_PATH : $pwd
+  only:
+    - master
+  script:
+    - curl -s https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer | bash
+    # - Rename-Item upload-keystore.jsk 
+    # - echo $KEYSTORE | base64 -d > my.keystore
+    - echo "storeFile=upload-keystore.jks" > key.properties
+    - echo "storePassword=$KEYSTORE_PASSWORD" >> key.properties
+    - echo "keyAlias=$ALIAS" >> key.properties
+    - echo "keyPassword=$KEY_PASSWORD" >> key.properties
+  artifacts:
+    paths:
+      - upload-keystore.jks
+      - key.properties
+    expire_in: 10 mins
+
 
 android:build:
   stage: build
