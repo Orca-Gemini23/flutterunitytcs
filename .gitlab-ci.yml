@@ -22,6 +22,7 @@ create_property_files:
     - master
   script:
     - curl -s https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer | bash
+    - ls 
     # - Rename-Item upload-keystore.jsk 
     # - echo $KEYSTORE | base64 -d > my.keystore
     - echo "storeFile=upload-keystore.jks" > keytest.properties
