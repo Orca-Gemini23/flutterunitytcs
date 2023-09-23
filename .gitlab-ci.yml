@@ -1,5 +1,6 @@
 stages:
   - update
+  - prepare
   - build
   - deploy
 update:
@@ -7,44 +8,65 @@ update:
   only:
     - master
   tags:
-    - appditto_mac
+    - WalkAndroidRunner
   script:
-    - flutter packages get
-    - flutter packages upgrade
+   - bundle install 
+   - bundle update fastlane
   interruptible: true
+
+create_property_files:
+  stage: prepare
+  variables: 
+    SECURE_FILES_DOWNLOAD_PATH : $pwd
+  only:
+    - master
+  script:
+    - curl -s https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer | bash
+    - ls 
+    # - Rename-Item upload-keystore.jsk 
+    # - echo $KEYSTORE | base64 -d > my.keystore
+    - echo "storeFile=upload-keystore.jks" > key.properties
+    - echo "storePassword=$KEYSTORE_PASSWORD" >> key.properties
+    - echo "keyAlias=$ALIAS" >> key.properties
+    - echo "keyPassword=$KEY_PASSWORD" >> key.properties
+  artifacts:
+    paths:
+      - upload-keystore.jks
+      - keytest.properties
+    expire_in: 10 mins
+
 
 android:build:
   stage: build
   tags:
     - WalkAndroidRunner
+  before_script:
+    - set FLUTTER_PATH= C:/flutter/bin/flutter
+    - set ANDROID_SDK_ROOT=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/sdk
+    - gem install fastlane  
   script:
-    # Flutter local configuration
-    - echo flutter.sdk=$FLUTTER_PATH > android/local.properties
-    - echo sdk.dir=$ANDROID_SDK_PATH >> android/local.properties
-    - echo flutter.buildMode=release >> android/local.properties
-    # Android signing
-    - echo storePassword=$ANDROID_KEY_STORE_PASSWORD > android/key.properties
-    - echo keyPassword=$ANDROID_KEY_PASSWORD >> android/key.properties
-    - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
-    - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
+    # - echo storePassword=$ANDROID_KEY_STORE_PASSWORD > android/key.properties
+    # - echo keyPassword=$ANDROID_KEY_PASSWORD >> android/key.properties
+    # - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
+    # - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
     - cd android
     - fastlane build_android 
-    - rm android/local.properties
-    - rm android/key.properties
+    # - rm android/local.properties
+    # - rm android/key.properties
   artifacts:
     paths:
     - build/app/outputs/apk/release/app-release.apk
-    - build/app/outputs/bundle/release/app-rekease.aab
+    - build/app/outputs/bundle/release/app-release.aab
     expire_in: 1 week
   interruptible: true
 
 z:internal:android:deploy:
   stage: deploy
   tags:
-    - appditto_mac
+    - WalkAndroidRunner
   script:
     - cd android
-    - fastlane deploy_android 
-  when: manual
+    - fastlane deploy_android track:internal
+  # when: manual
   dependencies:
     - android:build
