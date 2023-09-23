@@ -160,7 +160,6 @@ class _SignupPageState extends State<SignupPage> {
                         log(isRegistered.toString());
 
                         if (isRegistered) {
-                          ////After registration is successful take the user to login page. And let the user login
                           _buttonController.success();
                           Navigator.pop(context);
                         } else {
