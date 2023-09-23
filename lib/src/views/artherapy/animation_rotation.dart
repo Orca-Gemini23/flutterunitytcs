@@ -14,6 +14,7 @@ import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/controllers/game_controller.dart';
 import 'package:walk/src/utils/animationloader_isolate.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/widgets/bledisconnecteddialog/ble_disconnected_dialog.dart';
 import 'dart:developer' as dev;
 
 import 'package:walk/src/widgets/therapypage/startstoptherapybutton.dart';
@@ -113,26 +114,16 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                   const Stream.empty(),
               builder: (context, snapshot) {
                 if (snapshot.data == BluetoothConnectionState.disconnected) {
+                  deviceController.clearConnectedDevice();
                   if (isDialogup) {
                     WidgetsBinding.instance.addPostFrameCallback(
                       (timeStamp) {
                         setState(() {
                           isDialogup = false;
                         });
-                        AwesomeDialog(
-                          context: context,
-                          title: "Bluetooth Disconnected",
-                          dismissOnTouchOutside: false,
-                          desc:
-                              "Oops , lost bluetooth connection please try and connect again",
-                          btnOkOnPress: () {
-                            deviceController.clearConnectedDevice();
-
-                            Go.back(context: context);
-                          },
-                          btnOkText: "Take me to home",
-                          btnOkColor: AppColor.greenDarkColor,
-                        ).show();
+                        BleDisconnectedDialog.showBleDisconnectedDialog(
+                          context,
+                        );
                       },
                     );
                   }

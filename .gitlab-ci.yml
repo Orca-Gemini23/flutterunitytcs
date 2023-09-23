@@ -67,6 +67,6 @@ z:internal:android:deploy:
   script:
     - cd android
     - fastlane deploy_android track:internal
-  # when: manual
+  when: manual
   dependencies:
     - android:build
