@@ -24,6 +24,7 @@ platform :android do
       track: track,
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       skip_upload_images: true,
+      release_status: "draft"
       skip_upload_screenshots: true, 
     )
   end
