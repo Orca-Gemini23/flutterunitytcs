@@ -33,24 +33,31 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                   });
           },
           onTap: () async {
-            if (deviceController.connectedDevice == null) {
-              Fluttertoast.showToast(
-                msg: "Please Connect to the device first",
-              );
-            } else {
-              bool res = await deviceController.sendToDevice(
-                  "mode 9;", WRITECHARACTERISTICS);
-              res
-                  ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => const RiveAnimationPage()),
-                      ),
-                    )
-                  : Fluttertoast.showToast(
-                      msg: "Please try again",
-                    );
-            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: ((context) => const RiveAnimationPage()),
+              ),
+            );
+
+            // if (deviceController.connectedDevice == null) {
+            //   Fluttertoast.showToast(
+            //     msg: "Please Connect to the device first",
+            //   );
+            // } else {
+            //   bool res = await deviceController.sendToDevice(
+            //       "mode 9;", WRITECHARACTERISTICS);
+            //   res
+            //       ? Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: ((context) => const RiveAnimationPage()),
+            //           ),
+            //         )
+            //       : Fluttertoast.showToast(
+            //           msg: "Please try again",
+            //         );
+            // }
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),

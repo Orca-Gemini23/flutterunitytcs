@@ -60,50 +60,52 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
             animationValuesController, child) {
       return ElevatedButton(
         onPressed: () async {
+          testGame();
+
           ////check if the game is running or not
-          if (gameController.gameStatus == true) {
-            //// stop the game and handle upload to cloud
-            gameController.stopTimer();
-            await animationValues!.cancel();
-            gameController.changeGameStatus(false);
-            ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
+          // if (gameController.gameStatus == true) {
+          //   //// stop the game and handle upload to cloud
+          //   gameController.stopTimer();
+          //   await animationValues!.cancel();
+          //   gameController.changeGameStatus(false);
+          //   ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
 
-            if (gameController.secondsPlayed > 10) {
-              AwesomeDialog(
-                context: context,
-                dialogType: DialogType.info,
-                title: "Uploading you scores",
-                desc: "Please wait while we upload your data to cloud .",
-                customHeader: const CircularProgressIndicator(
-                  color: AppColor.greenDarkColor,
-                  backgroundColor: Colors.white,
-                ),
-                borderSide:
-                    const BorderSide(color: AppColor.greenDarkColor, width: 4),
-                dismissOnBackKeyPress: false,
-                dismissOnTouchOutside: false,
-              ).show();
+          //   if (gameController.secondsPlayed > 10) {
+          //     AwesomeDialog(
+          //       context: context,
+          //       dialogType: DialogType.info,
+          //       title: "Uploading you scores",
+          //       desc: "Please wait while we upload your data to cloud .",
+          //       customHeader: const CircularProgressIndicator(
+          //         color: AppColor.greenDarkColor,
+          //         backgroundColor: Colors.white,
+          //       ),
+          //       borderSide:
+          //           const BorderSide(color: AppColor.greenDarkColor, width: 4),
+          //       dismissOnBackKeyPress: false,
+          //       dismissOnTouchOutside: false,
+          //     ).show();
 
-              bool result = await FirebaseDB.uploadUserScore(
-                score: gameController.scores,
-                playedOn: DateTime.now(),
-                secondsPlayedFor: gameController.secondsPlayed,
-              );
-              if (result) {
-                Fluttertoast.showToast(msg: "Data uploaded");
-                Navigator.of(context, rootNavigator: true).pop();
-                gameController.resetTimer();
-                gameController.resetGameScore();
-              } else {
-                Navigator.of(context, rootNavigator: true).pop();
-              }
-            }
-          } else {
-            gameController.startTimer();
-            handleGame(
-                deviceController, animationValuesController, gameController);
-            gameController.changeGameStatus(true);
-          }
+          //     bool result = await FirebaseDB.uploadUserScore(
+          //       score: gameController.scores,
+          //       playedOn: DateTime.now(),
+          //       secondsPlayedFor: gameController.secondsPlayed,
+          //     );
+          //     if (result) {
+          //       Fluttertoast.showToast(msg: "Data uploaded");
+          //       Navigator.of(context, rootNavigator: true).pop();
+          //       gameController.resetTimer();
+          //       gameController.resetGameScore();
+          //     } else {
+          //       Navigator.of(context, rootNavigator: true).pop();
+          //     }
+          //   }
+          // } else {
+          //   gameController.startTimer();
+          //   handleGame(
+          //       deviceController, animationValuesController, gameController);
+          //   gameController.changeGameStatus(true);
+          // }
         },
         style: ElevatedButton.styleFrom(
           minimumSize: Size(double.maxFinite, 80.h),
@@ -219,5 +221,16 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
 
   int selectRandomBall() {
     return Random().nextInt(2);
+  }
+
+  void testGame() {
+    var ballTimer = Timer.periodic(const Duration(seconds: 6), (timer) async {
+      if (true) {
+        for (int i = 0; i <= 100; i++) {
+          await Future.delayed(const Duration(milliseconds: 20));
+          widget.leftballInput!.change(i.toDouble());
+        }
+      }
+    });
   }
 }

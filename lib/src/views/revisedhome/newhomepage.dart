@@ -1,24 +1,18 @@
 // ignore_for_file: use_build_context_synchronously, unrelated_type_equality_checks, unused_import
 
 import 'dart:developer';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
-
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/models/game_history_model.dart';
-
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/views/device/chart_details.dart';
-
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
 import 'package:walk/src/widgets/homepage/therapysessionbutton.dart';
