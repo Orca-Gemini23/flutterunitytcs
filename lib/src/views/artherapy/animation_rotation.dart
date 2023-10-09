@@ -76,7 +76,6 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
           : await animationAngleValueStream!.cancel();
 
       _stateMachineController!.dispose();
-      deviceController == null ? null : deviceController!.dispose();
     });
 
     super.dispose();
@@ -114,16 +113,17 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                   const Stream.empty(),
               builder: (context, snapshot) {
                 if (snapshot.data == BluetoothConnectionState.disconnected) {
-                  deviceController.clearConnectedDevice();
+                  // deviceController.clearConnectedDevice();
                   if (isDialogup) {
                     WidgetsBinding.instance.addPostFrameCallback(
                       (timeStamp) {
                         setState(() {
                           isDialogup = false;
                         });
+                        deviceController.clearConnectedDevice();
+
                         BleDisconnectedDialog.showBleDisconnectedDialog(
-                          context,
-                        );
+                            context);
                       },
                     );
                   }

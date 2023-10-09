@@ -31,17 +31,6 @@ void main() async {
 
   /// Initializes the firebase
   await FirebaseDB.initFirebaseServices();
-
-  /// Asks for notification permission
-  await Permission.notification.isDenied.then(
-    (value) => {value == true ? Permission.notification.request() : null},
-  );
-
-  /// initializing background and foreground services
-  await Permission.notification.isDenied.then((value) {
-    Permission.notification.request();
-    Permission.ignoreBatteryOptimizations.request();
-  });
   // await initServices();
 
   await initializeLocalDatabase();

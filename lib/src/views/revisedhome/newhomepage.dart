@@ -21,6 +21,7 @@ import 'package:walk/src/views/device/chart_details.dart';
 
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
+import 'package:walk/src/widgets/homepage/gamehistorybuilder.dart';
 import 'package:walk/src/widgets/homepage/therapysessionbutton.dart';
 import 'package:walk/src/widgets/homepage/todaysgoalcontainer.dart';
 import 'package:walk/src/widgets/navigation_drawer.dart';
@@ -39,7 +40,6 @@ class RevisedHomePage extends StatefulWidget {
 class _RevisedHomePageState extends State<RevisedHomePage>
     with WidgetsBindingObserver {
   late DeviceController deviceController;
-  late Future<GameHistory?> userGameHistoryFuture;
 
   ////Also add the option for adding the app shortcut icon in the homescreen
   @override
@@ -50,7 +50,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
     deviceController = DeviceController();
-    userGameHistoryFuture = FirebaseDB.getUserGameHistory();
 
     // NotificationService.listenToNotificationResults();
   }
@@ -98,8 +97,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
 
   @override
   Widget build(BuildContext context) {
-    print(
-        "------------------------Building Home Page UI--------------------------");
+    // print(
+    //     "------------------------Building Home Page UI--------------------------");
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -182,34 +181,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
                     color: AppColor.black12,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: FutureBuilder<GameHistory?>(
-                    future: userGameHistoryFuture,
-                    builder: (context, snapshot) {
-                      print(snapshot.data.toString());
-                      if (snapshot.hasData) {
-                        if (snapshot.data == null) {
-                          return const Center(
-                            child: Text(
-                                "No data to show , please do a therapy sesssion"),
-                          );
-                        } else {
-                          return DetailChart(historyData: snapshot.data!);
-                        }
-                      }
-                      if (snapshot.hasError) {
-                        return const Center(
-                          child: Text("Coming Soon"),
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColor.greenDarkColor,
-                            strokeWidth: 5,
-                          ),
-                        );
-                      }
-                    },
-                  ),
+                  child: const GameHistoryBuilder(),
                 ),
               ),
             ],

@@ -105,13 +105,14 @@ class _DeviceControlPageState extends State<DeviceControlPage>
             log("Stream output is ${connectionSnapshot.data} ");
             if (connectionSnapshot.data ==
                 BluetoothConnectionState.disconnected) {
-              deviceController.clearConnectedDevice();
               if (isDialogup) {
                 WidgetsBinding.instance.addPostFrameCallback(
                   (timeStamp) {
                     setState(() {
                       isDialogup = false;
                     });
+                    deviceController.clearConnectedDevice();
+
                     BleDisconnectedDialog.showBleDisconnectedDialog(context);
                   },
                 );
