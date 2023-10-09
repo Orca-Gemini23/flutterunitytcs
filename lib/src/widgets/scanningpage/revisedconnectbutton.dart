@@ -30,7 +30,6 @@ Widget revisedConnectButton(
         onPressed: () async {
           numberOfScans++;
 
-          print(numberOfScans);
           if (numberOfScans == 3) {
             showDialog(
               context: context,

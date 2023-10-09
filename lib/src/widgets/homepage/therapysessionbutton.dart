@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/views/artherapy/animation_rotation.dart';
+import 'package:walk/src/views/user/revisedaccountpage.dart';
 
 class TherapySessionBtn extends StatefulWidget {
   const TherapySessionBtn({super.key});
@@ -17,6 +19,22 @@ class TherapySessionBtn extends StatefulWidget {
 }
 
 class _TherapySessionBtnState extends State<TherapySessionBtn> {
+  bool checkAccountEligible() {
+    String userName = LocalDB.listenableUser()
+        .value
+        .get(
+          0,
+          defaultValue: LocalDB.defaultUser,
+        )!
+        .name;
+
+    if (userName == "Unknown User") {
+      ////Dont allow user to use the therapy page
+      return false;
+    }
+    return true;
+  }
+
   bool _isTherapyButtonTapped = false;
   @override
   Widget build(BuildContext context) {
@@ -38,18 +56,30 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                 msg: "Please Connect to the device first",
               );
             } else {
-              bool res = await deviceController.sendToDevice(
-                  "mode 9;", WRITECHARACTERISTICS);
-              res
-                  ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => const RiveAnimationPage()),
-                      ),
-                    )
-                  : Fluttertoast.showToast(
-                      msg: "Please try again",
-                    );
+              if (checkAccountEligible()) {
+                bool res = await deviceController.sendToDevice(
+                    "mode 9;", WRITECHARACTERISTICS);
+                res
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) => const RiveAnimationPage()),
+                        ),
+                      )
+                    : Fluttertoast.showToast(
+                        msg: "Please try again",
+                      );
+              }
+              {
+                Fluttertoast.showToast(
+                    msg: "Please update the account details first");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Revisedaccountpage(),
+                  ),
+                );
+              }
             }
           },
           child: AnimatedContainer(

@@ -24,8 +24,8 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
   Widget build(BuildContext context) {
     deviceController = Provider.of<DeviceController>(context);
 
-    print(
-        "-------------------------Building Device Control Btn UI---------------------------");
+    // print(
+    //     "-------------------------Building Device Control Btn UI---------------------------");
 
     return InkWell(
       highlightColor: Colors.transparent,

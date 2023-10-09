@@ -59,7 +59,9 @@ class FirebaseDB {
 
       return gameHistory;
     } catch (e) {
-      log(e.toString());
+      log(
+        e.toString(),
+      );
       throw "Something went wrong";
     }
   }
