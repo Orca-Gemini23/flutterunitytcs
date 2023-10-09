@@ -41,18 +41,12 @@ android:build:
   tags:
     - WalkAndroidRunner
   before_script:
+    - fastlane env --capture_output
     - set FLUTTER_PATH= C:/flutter/bin/flutter
     - set ANDROID_SDK_ROOT=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/sdk
-    - gem install fastlane  
   script:
-    # - echo storePassword=$ANDROID_KEY_STORE_PASSWORD > android/key.properties
-    # - echo keyPassword=$ANDROID_KEY_PASSWORD >> android/key.properties
-    # - echo keyAlias=$ANDROID_KEY_ALIAS >> android/key.properties
-    # - echo storeFile=$ANDROID_KEYSTORE_PATH >> android/key.properties
     - cd android
     - fastlane build_android 
-    # - rm android/local.properties
-    # - rm android/key.properties
   artifacts:
     paths:
     - build/app/outputs/apk/release/app-release.apk
@@ -67,6 +61,5 @@ z:internal:android:deploy:
   script:
     - cd android
     - fastlane deploy_android track:internal
-  when: manual
   dependencies:
     - android:build

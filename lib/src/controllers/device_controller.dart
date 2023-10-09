@@ -193,10 +193,16 @@ class DeviceController extends ChangeNotifier {
     return double.parse(_batteryS);
   }
 
+  bool permissionRequested = false;
+  bool get permissionRequestStatus => permissionRequested;
+
   // //Constructor to start scanning as soon as an object of Device Controller is inititated in the runApp
   DeviceController(
       {bool performScan = false, bool checkPrevconnection = false}) {
-    askForPermission();
+    if (!permissionRequested) {
+      askForPermission();
+    }
+
     if (checkPrevconnection) {
       checkPrevConnection();
     }
@@ -204,29 +210,64 @@ class DeviceController extends ChangeNotifier {
 
   ///Handles the bluetooth and location permission for both devices, below and above android version 12;
   Future askForPermission() async {
-    // initializes the flutter blue package
+    try {
+      // Check if permissions are already granted
+      final locationStatus = await Permission.location.status;
+      final bluetoothStatus = await Permission.bluetooth.status;
 
-    if (await Permission.location.isDenied ||
-        await Permission.bluetooth.isDenied) {
-      await Permission.location.request();
-      await Permission.nearbyWifiDevices.request();
-      log("asking for permission complete");
-      if (await Permission.bluetooth.isGranted &&
-          await Permission.location.isGranted &&
-          homeContext != null) {
-        turnBluetoothOn(homeContext!);
+      if (locationStatus.isGranted && bluetoothStatus.isGranted) {
+        // Perform actions that require permissions
+        // For example, turn on Bluetooth and use location services.
+      } else {
+        // Request permissions if not granted
+        if (!locationStatus.isGranted) {
+          await Permission.location.request();
+        }
+        if (!bluetoothStatus.isGranted) {
+          await Permission.bluetooth.request();
+        }
 
-        await location
-            .serviceEnabled(); // check whether the service is enabled or not
+        // Check if permissions were granted after the request
+        final locationStatusAfterRequest = await Permission.location.status;
+        final bluetoothStatusAfterRequest = await Permission.bluetooth.status;
+
+        if (locationStatusAfterRequest.isGranted &&
+            bluetoothStatusAfterRequest.isGranted) {
+          // Perform actions that require permissions
+          // For example, turn on Bluetooth and use location services.
+        } else {
+          // Handle the case where permissions were not granted
+          // You can show an error message to the user here.
+          print("Permissions were not granted.");
+        }
       }
-    } else if (await FlutterBluePlus.adapterState.first !=
-            BluetoothAdapterState.on ||
-        !await location.serviceEnabled() && homeContext != null) {
-      await location.requestService(); // request to on location service
-      await BluetoothEnable.enableBluetooth; // enables bluetooth
-      isBluetoothOn = true;
-      notifyListeners();
+    } catch (e) {
+      // Handle exceptions, such as the "PlatformException" for ongoing requests
+      print("Error: $e");
     }
+
+    // log("1");
+    // // initializes the flutter blue package
+    // if (await Permission.location.isDenied ||
+    //     await Permission.bluetooth.isDenied) {
+    //   await Permission.location.request();
+
+    //   log("Requesting permissions complete");
+    // }
+
+    // if (await Permission.bluetooth.isGranted &&
+    //     await Permission.location.isGranted &&
+    //     homeContext != null) {
+    //   turnBluetoothOn(homeContext!);
+    //   await location.serviceEnabled();
+    // } else if (await FlutterBluePlus.adapterState.first !=
+    //         BluetoothAdapterState.on ||
+    //     !await location.serviceEnabled() && homeContext != null) {
+    //   await location.requestService(); // Request to enable location service
+    //   BluetoothEnable.enableBluetooth; // Enable Bluetooth
+    //   isBluetoothOn = true;
+    //   notifyListeners();
+    // }
   }
 
   /// Turning on Bluetooth from within the app

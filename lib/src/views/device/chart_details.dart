@@ -13,6 +13,7 @@ class DetailChart extends StatefulWidget {
 }
 
 class _DetailChartState extends State<DetailChart> {
+  Map<int, DateTime> testGameDataMap = {};
   Map<int, GameHistoryElement> gameDataMap = {};
 
   void processData() {
@@ -22,6 +23,16 @@ class _DetailChartState extends State<DetailChart> {
           : gameDataMap.addAll({
               element.score!: element,
             });
+
+      testGameDataMap.containsValue(element.playedOn)
+          ? null
+          : testGameDataMap.addAll(
+              {
+                element.score ?? 0: DateTime.parse(
+                  element.playedOn!,
+                ),
+              },
+            );
     });
   }
 
@@ -44,14 +55,20 @@ class _DetailChartState extends State<DetailChart> {
           primaryXAxis: DateTimeAxis(
             isVisible: true,
             axisLine: const AxisLine(color: AppColor.greenDarkColor, width: 4),
+            intervalType: DateTimeIntervalType.auto,
           ),
           primaryYAxis: NumericAxis(
             isVisible: true,
             axisLine: const AxisLine(color: AppColor.greenDarkColor, width: 4),
           ),
-          series: <ChartSeries>[
+          tooltipBehavior: TooltipBehavior(
+            enable: true,
+          ),
+          zoomPanBehavior:
+              ZoomPanBehavior(enablePinching: true, enablePanning: true),
+          series: <ChartSeries<GameHistoryElement, DateTime>>[
             LineSeries<GameHistoryElement, DateTime>(
-              dataSource: gameDataMap.values.toList(),
+              dataSource: widget.historyData.gameHistory!,
               xValueMapper: (GameHistoryElement element, _) =>
                   DateTime.tryParse(element.playedOn!)!,
               yValueMapper: (GameHistoryElement element, _) => element.score,
