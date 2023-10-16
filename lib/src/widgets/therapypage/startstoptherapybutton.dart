@@ -15,6 +15,7 @@ import "package:walk/src/controllers/animation_controller.dart";
 import "package:walk/src/controllers/device_controller.dart";
 import "package:walk/src/controllers/game_controller.dart";
 import "package:walk/src/utils/firebasehelper.dart/firebasedb.dart";
+import "package:walk/src/widgets/dialog.dart";
 
 class AnimationControlButton extends StatefulWidget {
   AnimationControlButton({
@@ -60,52 +61,8 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
             animationValuesController, child) {
       return ElevatedButton(
         onPressed: () async {
-          // testBallFalling();
-
-          //check if the game is running or not
-          if (gameController.gameStatus == true) {
-            //// stop the game and handle upload to cloud
-            gameController.stopTimer();
-            await animationValues!.cancel();
-            gameController.changeGameStatus(false);
-            ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
-
-            if (gameController.secondsPlayed > 10) {
-              AwesomeDialog(
-                context: context,
-                dialogType: DialogType.info,
-                title: "Uploading you scores",
-                desc: "Please wait while we upload your data to cloud .",
-                customHeader: const CircularProgressIndicator(
-                  color: AppColor.greenDarkColor,
-                  backgroundColor: Colors.white,
-                ),
-                borderSide:
-                    const BorderSide(color: AppColor.greenDarkColor, width: 4),
-                dismissOnBackKeyPress: false,
-                dismissOnTouchOutside: false,
-              ).show();
-
-              bool result = await FirebaseDB.uploadUserScore(
-                score: gameController.scores,
-                playedOn: DateTime.now(),
-                secondsPlayedFor: gameController.secondsPlayed,
-              );
-              if (result) {
-                Fluttertoast.showToast(msg: "Data uploaded");
-                Navigator.of(context, rootNavigator: true).pop();
-                gameController.resetTimer();
-                gameController.resetGameScore();
-              } else {
-                Navigator.of(context, rootNavigator: true).pop();
-              }
-            }
-          } else {
-            gameController.startTimer();
-            handleGame(
-                deviceController, animationValuesController, gameController);
-            gameController.changeGameStatus(true);
-          }
+          onPressed(
+              gameController, deviceController, animationValuesController);
         },
         style: ElevatedButton.styleFrom(
           minimumSize: Size(double.maxFinite, 80.h),
@@ -127,6 +84,44 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
               ),
       );
     });
+  }
+
+  void onPressed(
+      GameController gameController,
+      DeviceController deviceController,
+      AnimationValuesController animationValuesController) async {
+    // testBallFalling();
+
+    //check if the game is running or not
+    if (gameController.gameStatus == true) {
+      //// stop the game and handle upload to cloud
+      gameController.stopTimer();
+      await animationValues!.cancel();
+      gameController.changeGameStatus(false);
+      ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
+
+      if (gameController.secondsPlayed > 10) {
+        CustomDialogs.showScoreUplodingDialog(context);
+
+        bool result = await FirebaseDB.uploadUserScore(
+          score: gameController.scores,
+          playedOn: DateTime.now(),
+          secondsPlayedFor: gameController.secondsPlayed,
+        );
+        if (result) {
+          Fluttertoast.showToast(msg: "Data uploaded");
+          Navigator.of(context, rootNavigator: true).pop();
+          gameController.resetTimer();
+          gameController.resetGameScore();
+        } else {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+      }
+    } else {
+      gameController.startTimer();
+      handleGame(deviceController, animationValuesController, gameController);
+      gameController.changeGameStatus(true);
+    }
   }
 
   void handleGame(

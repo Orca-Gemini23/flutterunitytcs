@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_final_fields
-
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -212,62 +210,50 @@ class DeviceController extends ChangeNotifier {
   Future askForPermission() async {
     try {
       // Check if permissions are already granted
-      final locationStatus = await Permission.location.status;
-      final bluetoothStatus = await Permission.bluetooth.status;
+      final locationStatus = await Permission.location.isGranted;
+      final bluetoothStatus = await Permission.bluetooth.isGranted;
 
-      if (locationStatus.isGranted && bluetoothStatus.isGranted) {
-        // Perform actions that require permissions
-        // For example, turn on Bluetooth and use location services.
+      if (locationStatus && bluetoothStatus) {
       } else {
-        // Request permissions if not granted
-        if (!locationStatus.isGranted) {
+        if (!locationStatus) {
           await Permission.location.request();
         }
-        if (!bluetoothStatus.isGranted) {
+        if (!bluetoothStatus) {
           await Permission.bluetooth.request();
         }
-
-        // Check if permissions were granted after the request
         final locationStatusAfterRequest = await Permission.location.status;
         final bluetoothStatusAfterRequest = await Permission.bluetooth.status;
 
         if (locationStatusAfterRequest.isGranted &&
             bluetoothStatusAfterRequest.isGranted) {
-          // Perform actions that require permissions
-          // For example, turn on Bluetooth and use location services.
+          return;
         } else {
-          // Handle the case where permissions were not granted
-          // You can show an error message to the user here.
+          await Permission.location.request();
+          await Permission.bluetooth.request();
           print("Permissions were not granted.");
         }
       }
+      return;
     } catch (e) {
-      // Handle exceptions, such as the "PlatformException" for ongoing requests
       print("Error: $e");
     }
+  }
 
-    // log("1");
-    // // initializes the flutter blue package
-    // if (await Permission.location.isDenied ||
-    //     await Permission.bluetooth.isDenied) {
-    //   await Permission.location.request();
-
-    //   log("Requesting permissions complete");
-    // }
-
-    // if (await Permission.bluetooth.isGranted &&
-    //     await Permission.location.isGranted &&
-    //     homeContext != null) {
-    //   turnBluetoothOn(homeContext!);
-    //   await location.serviceEnabled();
-    // } else if (await FlutterBluePlus.adapterState.first !=
-    //         BluetoothAdapterState.on ||
-    //     !await location.serviceEnabled() && homeContext != null) {
-    //   await location.requestService(); // Request to enable location service
-    //   BluetoothEnable.enableBluetooth; // Enable Bluetooth
-    //   isBluetoothOn = true;
-    //   notifyListeners();
-    // }
+  ////Handles the bluetoothAdapaterStatus and turns it on;
+  Future checkBluetoothAdapterState() async {
+    try {
+      if (await FlutterBluePlus.adapterState.first !=
+              BluetoothAdapterState.on &&
+          homeContext != null) {
+        await turnBluetoothOn(homeContext!);
+      }
+    } catch (e) {
+      print("Error in checkingBluetoothAdapterState ${e.toString}");
+      Fluttertoast.showToast(
+        msg:
+            "Unable to turn on the bluetooth,please turn on bluetooth manually",
+      );
+    }
   }
 
   /// Turning on Bluetooth from within the app
@@ -354,24 +340,32 @@ class DeviceController extends ChangeNotifier {
   Future connectToDevice(BluetoothDevice device, Function onConnect,
       {bool showToast = false}) async {
     try {
-      bool gotServices = false;
-      isConnecting = true;
-      notifyListeners();
-      showToast
-          ? Fluttertoast.showToast(msg: "Connecting to ${device.localName}")
-          : null;
-      await device.connect(
-        autoConnect: false,
-      );
+      if (await FlutterBluePlus.adapterState.first ==
+          BluetoothAdapterState.on) {
+        bool gotServices = false;
+        isConnecting = true;
+        notifyListeners();
+        showToast
+            ? Fluttertoast.showToast(msg: "Connecting to ${device.localName}")
+            : null;
+        await device.connect(
+          autoConnect: false,
+        );
 
-      await HapticFeedback.vibrate();
-      showToast
-          ? Fluttertoast.showToast(msg: "Connected to ${device.localName}")
-          : null;
-      gotServices = await discoverServices(device);
-      gotServices ? _connectedDevice = device : null;
-      notifyListeners();
-      onConnect();
+        await HapticFeedback.vibrate();
+        showToast
+            ? Fluttertoast.showToast(msg: "Connected to ${device.localName}")
+            : null;
+        gotServices = await discoverServices(device);
+        gotServices ? _connectedDevice = device : null;
+        notifyListeners();
+        onConnect();
+      } else {
+        ////Display a dialog to turn on the bluetooth
+        if (homeContext == null) {
+          await turnBluetoothOn(homeContext!);
+        }
+      }
     } catch (e) {
       log(e.toString());
       Fluttertoast.showToast(msg: "Could not connect ");
