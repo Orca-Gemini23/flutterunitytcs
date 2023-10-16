@@ -148,11 +148,8 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
                 rightBallValue >= 35 &&
                 rightBallValue <= 45) {
               if (!gameController.isIncremented) {
-                if (!(deviceController.leftAngleValue > 50 &&
-                    deviceController.rightAngleValue > 50)) {
-                  gameController.incrementScore();
-                  gameController.changeIncremented(true);
-                }
+                gameController.incrementScore();
+                gameController.changeIncremented(true);
               }
             }
             if (rightBallValue > 100) {
@@ -221,79 +218,14 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
     return Random().nextInt(2);
   }
 
-  // void testBallFalling() async {
-  //   var rightBallInput =
-  //       widget.animationStateController!.findInput<double>("rightballvalue");
-  //   var leftBallInput =
-  //       widget.animationStateController!.findInput<double>("leftballvalue");
-  //   var sendLeftBall =
-  //       widget.animationStateController!.findInput<bool>("leftBall");
-  //   var sendRightBall =
-  //       widget.animationStateController!.findInput<bool>("rightBall");
-  //   sendLeftBall!.change(false);
-  //   Fluttertoast.showToast(msg: "Starting game in 6 seconds");
-
-  //   Timer ballPeriodicTimer = Timer.periodic(
-  //     const Duration(seconds: 10),
-  //     (timer) async {
-  //       int selectedBall = selectRandomBall();
-  //       print("choosen ball is ${selectedBall}");
-
-  //       if (selectedBall == 0) {
-  //         widget.animationStateController!.setInputValue(
-  //           widget.sendLeftBall!.id,
-  //           true,
-  //         );
-  //         for (int i = 0; i <= 100; i++) {
-  //           await Future.delayed(
-  //             const Duration(milliseconds: 20),
-  //           );
-  //           widget.animationStateController!.setInputValue(
-  //             widget.leftballInput!.id,
-  //             i.toDouble(),
-  //           );
-  //         }
-  //         widget.animationStateController!.setInputValue(
-  //           widget.leftballInput!.id,
-  //           0.0,
-  //         );
-  //         widget.animationStateController!.setInputValue(
-  //           widget.sendLeftBall!.id,
-  //           false,
-  //         );
-  //         print("loop complete");
-  //       }
-  //       if (selectedBall == 1) {
-  //         widget.animationStateController!.setInputValue(
-  //           widget.sendRightBall!.id,
-  //           true,
-  //         );
-  //         widget.animationStateController!.setInputValue(
-  //           widget.rightballInput!.id,
-  //           0.0,
-  //         );
-  //         for (int i = 0; i <= 100; i++) {
-  //           await Future.delayed(
-  //             const Duration(milliseconds: 20),
-  //           );
-  //           print("rightBallInput is   ${rightBallInput!.value}");
-  //           print("lefttBallInput is   ${leftBallInput!.value}");
-  //           print("sendLeftBallInput is ${sendLeftBall.value}");
-  //           print("sendrightBallInput is ${sendRightBall!.value}");
-  //           leftBallInput.change(0);
-  //           rightBallInput.change(i.toDouble());
-  //         }
-  //         widget.animationStateController!.setInputValue(
-  //           widget.sendRightBall!.id,
-  //           false,
-  //         );
-  //         widget.animationStateController!.setInputValue(
-  //           widget.rightballInput!.id,
-  //           0.0,
-  //         );
-  //         print("loop complete");
-  //       }
-  //     },
-  //   );
-  // }
+  void testGame() {
+    var ballTimer = Timer.periodic(const Duration(seconds: 6), (timer) async {
+      if (true) {
+        for (int i = 0; i <= 100; i++) {
+          await Future.delayed(const Duration(milliseconds: 20));
+          widget.leftballInput!.change(i.toDouble());
+        }
+      }
+    });
+  }
 }
