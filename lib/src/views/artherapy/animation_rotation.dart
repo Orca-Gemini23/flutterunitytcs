@@ -14,7 +14,7 @@ import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/controllers/game_controller.dart';
 import 'package:walk/src/utils/animationloader_isolate.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/widgets/bledisconnecteddialog/ble_disconnected_dialog.dart';
+import 'package:walk/src/widgets/dialog.dart';
 import 'dart:developer' as dev;
 
 import 'package:walk/src/widgets/therapypage/startstoptherapybutton.dart';
@@ -122,8 +122,7 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                         });
                         deviceController.clearConnectedDevice();
 
-                        BleDisconnectedDialog.showBleDisconnectedDialog(
-                            context);
+                        CustomDialogs.showBleDisconnectedDialog(context);
                       },
                     );
                   }

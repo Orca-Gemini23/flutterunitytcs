@@ -110,10 +110,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   top: MediaQuery.of(context).size.height - 150,
                   left: 0,
                   right: 0,
-                  child: revisedConnectButton(
-                    deviceController,
-                    context,
-                  ),
+                  child: const RevisedConnectButton(),
                 );
               },
             )

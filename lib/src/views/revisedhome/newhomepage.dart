@@ -13,6 +13,8 @@ import 'package:walk/src/models/game_history_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/views/device/chart_details.dart';
+import 'package:walk/src/views/home_page.dart';
+
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
 import 'package:walk/src/widgets/homepage/gamehistorybuilder.dart';
@@ -33,7 +35,8 @@ class RevisedHomePage extends StatefulWidget {
 
 class _RevisedHomePageState extends State<RevisedHomePage>
     with WidgetsBindingObserver {
-  late DeviceController deviceController;
+  // late DeviceController deviceController;
+  GlobalKey homePagekey = GlobalKey();
 
   ////Also add the option for adding the app shortcut icon in the homescreen
   @override
@@ -43,7 +46,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
-    deviceController = DeviceController();
+    // deviceController = DeviceController();
+    context.read<DeviceController>().homeContext = homepageKey.currentContext;
 
     // NotificationService.listenToNotificationResults();
   }
@@ -94,6 +98,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     // print(
     //     "------------------------Building Home Page UI--------------------------");
     return Scaffold(
+      key: homePagekey,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,

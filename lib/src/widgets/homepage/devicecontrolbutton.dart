@@ -23,10 +23,6 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
   @override
   Widget build(BuildContext context) {
     deviceController = Provider.of<DeviceController>(context);
-
-    // print(
-    //     "-------------------------Building Device Control Btn UI---------------------------");
-
     return InkWell(
       highlightColor: Colors.transparent,
       splashColor: AppColor.greenDarkColor,
@@ -36,23 +32,7 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
         });
       },
       onTap: () async {
-        await deviceController?.checkPrevConnection();
-        if (deviceController?.connectedDevice ==
-            null) ////no device yet connected
-        {
-          Go.to(
-            context: context,
-            push: const ConnectionScreen(),
-          );
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              settings: const RouteSettings(name: "/devicecontrolpage"),
-              builder: (context) => const DeviceControlPage(),
-            ),
-          );
-        }
+        onPressed(deviceController);
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -111,5 +91,24 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
         ),
       ),
     );
+  }
+
+  void onPressed(DeviceController? deviceController) async {
+    await deviceController?.checkPrevConnection();
+    if (deviceController?.connectedDevice == null) ////no device yet connected
+    {
+      Go.to(
+        context: context,
+        push: const ConnectionScreen(),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          settings: const RouteSettings(name: "/devicecontrolpage"),
+          builder: (context) => const DeviceControlPage(),
+        ),
+      );
+    }
   }
 }

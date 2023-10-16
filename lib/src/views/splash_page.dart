@@ -1,15 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/views/devicecodepage/device_code_page.dart';
-
-import '../controllers/device_controller.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -22,7 +18,6 @@ String userToken = "";
 
 class _SplashPageState extends State<SplashPage> {
   bool _isUnboxingdone = true;
-  GlobalKey splashPageKey = GlobalKey();
 
   checkShowcase() async {
     bool result = await PreferenceController.getboolData(showCaseKey);
@@ -66,8 +61,6 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     checkShowcase();
     Timer(const Duration(seconds: 2), () {
-      context.read<DeviceController>().homeContext =
-          splashPageKey.currentContext;
       Navigator.pushReplacement(context, _createRoute());
     });
   }
@@ -75,7 +68,6 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: splashPageKey,
       body: Stack(
         alignment: Alignment.center,
         children: [

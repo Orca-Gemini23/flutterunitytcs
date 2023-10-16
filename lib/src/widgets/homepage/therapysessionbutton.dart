@@ -19,22 +19,6 @@ class TherapySessionBtn extends StatefulWidget {
 }
 
 class _TherapySessionBtnState extends State<TherapySessionBtn> {
-  bool checkAccountEligible() {
-    String userName = LocalDB.listenableUser()
-        .value
-        .get(
-          0,
-          defaultValue: LocalDB.defaultUser,
-        )!
-        .name;
-
-    if (userName == "Unknown User") {
-      ////Dont allow user to use the therapy page
-      return false;
-    }
-    return true;
-  }
-
   bool _isTherapyButtonTapped = false;
   @override
   Widget build(BuildContext context) {
@@ -51,36 +35,7 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                   });
           },
           onTap: () async {
-            if (deviceController.connectedDevice == null) {
-              Fluttertoast.showToast(
-                msg: "Please Connect to the device first",
-              );
-            } else {
-              if (checkAccountEligible()) {
-                bool res = await deviceController.sendToDevice(
-                    "mode 9;", WRITECHARACTERISTICS);
-                res
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => const RiveAnimationPage()),
-                        ),
-                      )
-                    : Fluttertoast.showToast(
-                        msg: "Please try again",
-                      );
-              }
-              {
-                Fluttertoast.showToast(
-                    msg: "Please update the account details first");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Revisedaccountpage(),
-                  ),
-                );
-              }
-            }
+            therapyButtonOnPressed(deviceController);
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
@@ -136,5 +91,55 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
         );
       },
     );
+  }
+
+  bool checkAccountEligible() {
+    String userName = LocalDB.listenableUser()
+        .value
+        .get(
+          0,
+          defaultValue: LocalDB.defaultUser,
+        )!
+        .name;
+
+    if (userName == "Unknown User") {
+      ////Dont allow user to use the therapy page
+      return false;
+    }
+    return true;
+  }
+
+  void therapyButtonOnPressed(DeviceController deviceController) async {
+    print("coming here");
+    if (deviceController.connectedDevice == null) {
+      Fluttertoast.showToast(
+        msg: "Please Connect to the device first",
+      );
+    } else {
+      bool accountEligible = checkAccountEligible();
+
+      if (accountEligible) {
+        bool res = await deviceController.sendToDevice(
+            "mode 9;", WRITECHARACTERISTICS);
+        res
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: ((context) => const RiveAnimationPage()),
+                ),
+              )
+            : Fluttertoast.showToast(
+                msg: "Please try again",
+              );
+      } else {
+        Fluttertoast.showToast(msg: "Please update the account details first");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Revisedaccountpage(),
+          ),
+        );
+      }
+    }
   }
 }

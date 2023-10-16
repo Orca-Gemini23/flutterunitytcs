@@ -15,8 +15,8 @@ import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/additionalsettings/addsettings.dart';
 import 'package:walk/src/views/reviseddevicecontrol/batterydetailscreen.dart';
-import 'package:walk/src/widgets/bledisconnecteddialog/ble_disconnected_dialog.dart';
 import 'package:walk/src/widgets/devicecontrolpage/magnitudeslider.dart';
+import 'package:walk/src/widgets/dialog.dart';
 
 class DeviceControlPage extends StatefulWidget {
   const DeviceControlPage({super.key});
@@ -28,7 +28,6 @@ class DeviceControlPage extends StatefulWidget {
 class _DeviceControlPageState extends State<DeviceControlPage>
     with WidgetsBindingObserver {
   bool sosMode = false;
-  double batteryValue = 0.3;
   late DeviceController deviceController;
   StreamSubscription<BluetoothConnectionState>? _deviceStateSubscription;
   bool isDialogup = true;
@@ -45,7 +44,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
       return true;
     } catch (e) {
       // print(e);
-      throw "Something went wrong , press the refresh button to try again ";
+      throw "Something went wrong , please try again ";
     }
   }
 
@@ -113,7 +112,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                     });
                     deviceController.clearConnectedDevice();
 
-                    BleDisconnectedDialog.showBleDisconnectedDialog(context);
+                    CustomDialogs.showBleDisconnectedDialog(context);
                   },
                 );
               }

@@ -2,8 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location when in use is required to scan the walking aid using BLE</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your location always and when in use is required to scan the walking aid using BLE</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Your camera allows you to scan the qr to obtain your unique WALK Id</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Your bluetooth allows you to search and connect to your walking aid WALK</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Your photo library allows you to select your account display picture</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>$(PRODUCT_NAME) uses bluetooth to connect to the walk device</string>
+	<string>Your bluetooth allows you to stay connected with your walking aid WALK</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -21,11 +33,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>1.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

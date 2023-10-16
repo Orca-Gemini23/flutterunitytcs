@@ -1,95 +1,38 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 
-class CustomDialogBox extends StatefulWidget {
-  final String title, descriptions, text;
-  final Image img;
-
-  const CustomDialogBox(
-      {required Key key,
-      required this.title,
-      required this.descriptions,
-      required this.text,
-      required this.img})
-      : super(key: key);
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _CustomDialogBoxState createState() => _CustomDialogBoxState();
-}
-
-class _CustomDialogBoxState extends State<CustomDialogBox> {
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: contentBox(context),
-    );
+class CustomDialogs {
+  static showBleDisconnectedDialog(
+    BuildContext context,
+  ) {
+    AwesomeDialog(
+      context: context,
+      title: "Bluetooth Disconnected",
+      dismissOnTouchOutside: false,
+      desc: "Oops , lost bluetooth connection please try and connect again.",
+      btnOkOnPress: () {
+        Go.back(context: context);
+      },
+      btnOkText: "Take me to home",
+      btnOkColor: AppColor.greenDarkColor,
+    ).show();
   }
 
-  contentBox(context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          padding:
-              const EdgeInsets.only(left: 20, top: 65, right: 20, bottom: 20),
-          margin: const EdgeInsets.only(top: 45),
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const [
-                BoxShadow(
-                    color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
-              ]),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                widget.title,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                widget.descriptions,
-                style: const TextStyle(fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: 22,
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      widget.text,
-                      style: const TextStyle(fontSize: 18),
-                    )),
-              ),
-            ],
-          ),
-        ),
-        Positioned(
-          left: 20,
-          right: 20,
-          child: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            radius: 45,
-            child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(45)),
-                child: Image.asset("assets/")),
-          ),
-        ),
-      ],
-    );
+  static showScoreUplodingDialog(BuildContext context) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.info,
+      title: "Uploading you scores",
+      desc: "Please wait while we upload your data to cloud .",
+      customHeader: const CircularProgressIndicator(
+        color: AppColor.greenDarkColor,
+        backgroundColor: Colors.white,
+      ),
+      borderSide: const BorderSide(color: AppColor.greenDarkColor, width: 4),
+      dismissOnBackKeyPress: false,
+      dismissOnTouchOutside: false,
+    ).show();
   }
 }
