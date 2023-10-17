@@ -22,9 +22,7 @@ create_property_files:
     - master
   script:
     - curl -s https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer | bash
-    - ls 
-    # - Rename-Item upload-keystore.jsk 
-    # - echo $KEYSTORE | base64 -d > my.keystore
+    - ls  
     - echo "storeFile=upload-keystore.jks" > key.properties
     - echo "storePassword=$KEYSTORE_PASSWORD" >> key.properties
     - echo "keyAlias=$ALIAS" >> key.properties
@@ -42,8 +40,8 @@ android:build:
     - WalkAndroidRunner
   before_script:
     - fastlane env --capture_output
-    - set FLUTTER_PATH= C:/flutter/bin/flutter
-    - set ANDROID_SDK_ROOT=C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/sdk
+    - set FLUTTER_PATH= /Users/lifesparktechnologies/Downloads/flutter/bin
+    - set ANDROID_SDK_ROOT=/Users/lifesparktechnologies/Documents/Android
   script:
     - cd android
     - fastlane build_android 

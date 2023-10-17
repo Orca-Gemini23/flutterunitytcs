@@ -4,17 +4,17 @@ default_platform(:android)
 platform :android do
   desc "Build android aab and apk"
   lane :build_android do |options|
-    ENV["ANDROID_SDK_ROOT"] = "C:/Users/EASHUBH THAPLIYAL/AppData/Local/Android/sdk"
+    ENV["ANDROID_SDK_ROOT"] = "/Users/lifesparktechnologies/Documents/Android"
     ENV["LC_ALL"] = "en_US.UTF-8"
     ENV["LANG"] = "en_US.UTF-8"
     # Clean Project
-    sh "./flutter_build.bat clean"
+    sh "flutter_build_script.sh clean"
     # Get Packages
-    sh "./flutter_build.bat get"
+    sh "flutter_build_script.sh get"
     # Build APK
-    sh "./flutter_build.bat apk"
+    sh "flutter_build_script.sh apk"
     # Build AAB
-    sh "./flutter_build.bat"
+    sh "flutter_build_script.sh"
   end
 
   desc "Deploy (Upload to play store)"

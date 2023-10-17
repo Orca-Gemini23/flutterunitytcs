@@ -296,13 +296,14 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               var newUser = UserModel(
-                                  name: nameController.text,
-                                  age: ageController.text,
-                                  phone: "",
-                                  image: _image?.path ?? "NA",
-                                  gender: genderController.text,
-                                  address: cityController.text,
-                                  email: emailController.text);
+                                name: nameController.text,
+                                age: ageController.text,
+                                phone: "",
+                                image: _image?.path ?? "NA",
+                                gender: genderController.text,
+                                address: cityController.text,
+                                email: emailController.text,
+                              );
 
                               LocalDB.saveUser(newUser);
 

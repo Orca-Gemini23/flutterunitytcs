@@ -240,12 +240,14 @@ class DeviceController extends ChangeNotifier {
   }
 
   ////Handles the bluetoothAdapaterStatus and turns it on;
-  Future checkBluetoothAdapterState() async {
+  Future checkBluetoothAdapterState(BuildContext? context) async {
     try {
-      if (await FlutterBluePlus.adapterState.first !=
-              BluetoothAdapterState.on &&
-          homeContext != null) {
-        await turnBluetoothOn(homeContext!);
+      log("Checking the Adapter state ");
+      BluetoothAdapterState currentState =
+          await FlutterBluePlus.adapterState.first;
+      if (currentState != BluetoothAdapterState.on && context != null) {
+        log("Turning on Bluetooth!!");
+        await FlutterBluePlus.turnOn();
       }
     } catch (e) {
       print("Error in checkingBluetoothAdapterState ${e.toString}");
@@ -253,7 +255,9 @@ class DeviceController extends ChangeNotifier {
         msg:
             "Unable to turn on the bluetooth,please turn on bluetooth manually",
       );
+      return false;
     }
+    return true;
   }
 
   /// Turning on Bluetooth from within the app
