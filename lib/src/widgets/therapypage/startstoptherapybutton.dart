@@ -135,6 +135,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
       const Duration(seconds: 6),
       (timer) async {
         int ball = selectRandomBall();
+        dev.log("Selected ball is $ball");
         gameController.changeIncremented(false);
 
         if (ball == 0) {
