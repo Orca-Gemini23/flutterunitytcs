@@ -39,7 +39,7 @@ android:build:
   tags:
     - WalkAndroidRunner
   before_script:
-    - fastlane env --capture_output
+    # - fastlane env --capture_output
     - set FLUTTER_PATH= /Users/lifesparktechnologies/Downloads/flutter/bin
     - set ANDROID_SDK_ROOT=/Users/lifesparktechnologies/Documents/Android
   script:
