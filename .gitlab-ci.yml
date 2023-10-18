@@ -8,7 +8,7 @@ update:
   only:
     - master
   tags:
-    - WalkAndroidRunner
+    - WalkRunner
   script:
    - bundle install 
    - bundle update fastlane
@@ -37,7 +37,7 @@ create_property_files:
 android:build:
   stage: build
   tags:
-    - WalkAndroidRunner
+    - WalkRunner
   before_script:
     - fastlane env --capture_output
     - set FLUTTER_PATH= /Users/lifesparktechnologies/Downloads/flutter/bin
@@ -55,7 +55,7 @@ android:build:
 z:internal:android:deploy:
   stage: deploy
   tags:
-    - WalkAndroidRunner
+    - WalkRunner
   script:
     - cd android
     - fastlane deploy_android track:internal

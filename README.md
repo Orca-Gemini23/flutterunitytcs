@@ -32,7 +32,7 @@ Models are classes that represent a particular object and its properties.
 There are multiple models such as user model , game model etc. These models contains the fields and properties of an object . Further these models also contain the method to convert the user json data to a model object.
 
 
-## Application Flow
+## Application Flow 
 
 The image below presents the flow of the application.
 
@@ -41,9 +41,14 @@ The image below presents the flow of the application.
 This application uses multiple packages , some of which are very crucial and are adviced not to be replaced or changed.Some of those packages are 
 
 flutter_blue_plus => This library is the heart of the bluetooth communication for the project , 
- multiple packages offering ble capabilities were tried before actually settling for this one .
- Also one of the major reasons this library was choosen is the capability of ble operations with foreground services.
+multiple packages offering ble capabilities were tried before actually settling for this one .
+Also one of the major reasons this library was choosen is the capability of ble operations with foreground services.
 
-flutter_background_service => This is the core library used for foreground services in the application , many other packages were tried but this one fits best .
+flutter_background_service => This is the core library used for foreground services in the application , many other packages were tried but this one fits best . A Disadvantage being that , Awesome Notifications plugin does not work with foreground or background service. 
 
 provider => This library also plays a major role in managing the state of the application , though this can be replaced with a bloc , if in future the application's size increases switching to bloc may prove effective.
+
+## CI/CD
+This application is also equipped with CI/CD script . CI/CD script is run with gitlab runners , which are nothing but services that run in the local system (usually in the ones where development happens).The builds and deployement are handled by this script only along with [Fastlane](https://fastlane.tools/)
+The configuration and the stages are defined in the .gitlab-ci.yml .
+Stages are similar to function that have multiple steps defined for that .For more detailed description on Gitlab CICD [Link to Document](https://docs.gitlab.com/runner/). 
