@@ -8,13 +8,15 @@ platform :android do
     ENV["LC_ALL"] = "en_US.UTF-8"
     ENV["LANG"] = "en_US.UTF-8"
     # Clean Project
-    sh "flutter_build_script.sh clean"
+
+    sh "pwd"
+    sh "sh flutter_build_script.sh clean"
     # Get Packages
-    sh "flutter_build_script.sh get"
+    sh "sh flutter_build_script.sh get"
     # Build APK
-    sh "flutter_build_script.sh apk"
+    sh "sh flutter_build_script.sh apk"
     # Build AAB
-    sh "flutter_build_script.sh"
+    sh "sh flutter_build_script.sh"
   end
 
   desc "Deploy (Upload to play store)"
