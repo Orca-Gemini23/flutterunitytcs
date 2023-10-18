@@ -5,8 +5,8 @@ stages:
   - deploy
 update:
   stage: update
-  only:
-    - master
+  # only:
+  #   - master
   tags:
     - WalkRunner
   script:
@@ -18,8 +18,8 @@ create_property_files:
   stage: prepare
   variables: 
     SECURE_FILES_DOWNLOAD_PATH : $pwd
-  only:
-    - master
+  # only:
+  #   - master
   script:
     - curl -s https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer | bash
     - ls  
