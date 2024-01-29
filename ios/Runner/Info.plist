@@ -2,20 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location when in use is required to scan the walking aid using BLE</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Your location always and when in use is required to scan the walking aid using BLE</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Your camera allows you to scan the qr to obtain your unique WALK Id</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Your bluetooth allows you to search and connect to your walking aid WALK</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Your photo library allows you to select your account display picture</string>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<false/>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Your bluetooth allows you to stay connected with your walking aid WALK</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -38,8 +24,22 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Your bluetooth allows you to stay connected with your walking aid WALK</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Your bluetooth allows you to search and connect to your walking aid WALK</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Your camera allows you to scan the qr to obtain your unique WALK Id</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your location always and when in use is required to scan the walking aid using BLE</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location when in use is required to scan the walking aid using BLE</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Your photo library allows you to select your account display picture</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
