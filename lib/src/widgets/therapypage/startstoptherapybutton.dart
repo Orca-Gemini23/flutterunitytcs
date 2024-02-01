@@ -4,6 +4,8 @@ import "dart:async";
 import "dart:math";
 import "dart:developer" as dev;
 import "package:awesome_dialog/awesome_dialog.dart";
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:fluttertoast/fluttertoast.dart";
@@ -15,7 +17,6 @@ import "package:walk/src/controllers/animation_controller.dart";
 import "package:walk/src/controllers/device_controller.dart";
 import "package:walk/src/controllers/game_controller.dart";
 import "package:walk/src/utils/firebasehelper.dart/firebasedb.dart";
-import "package:walk/src/widgets/dialog.dart";
 
 class AnimationControlButton extends StatefulWidget {
   AnimationControlButton({
@@ -40,6 +41,10 @@ class AnimationControlButton extends StatefulWidget {
 class _AnimationControlButtonState extends State<AnimationControlButton> {
   StreamSubscription<List<int>>? animationValues;
   Timer? ballPeriodicTimer;
+  late Timer timer;
+  int isBuzzer = 0;
+  int ball = -1; // 0 => right and 1=> left
+  int ballValue = -1;
 
   Future<void> disposeEssentials() async {
     ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
@@ -50,6 +55,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
   void dispose() {
     ballPeriodicTimer?.cancel();
     animationValues?.cancel();
+    timer.cancel();
     super.dispose();
   }
 
@@ -61,8 +67,61 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
             animationValuesController, child) {
       return ElevatedButton(
         onPressed: () async {
-          onPressed(
-              gameController, deviceController, animationValuesController);
+          ////check if the game is running or not
+          if (gameController.gameStatus == true) {
+            //// stop the game and handle upload to cloud
+            gameController.stopTimer();
+            await animationValues!.cancel();
+            gameController.changeGameStatus(false);
+            ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
+            timer.cancel();
+
+            if (gameController.secondsPlayed > 10) {
+              AwesomeDialog(
+                context: context,
+                dialogType: DialogType.info,
+                title: "Uploading you scores",
+                desc: "Please wait while we upload your data to cloud .",
+                customHeader: const CircularProgressIndicator(
+                  color: AppColor.greenDarkColor,
+                  backgroundColor: Colors.white,
+                ),
+                borderSide:
+                    const BorderSide(color: AppColor.greenDarkColor, width: 4),
+                dismissOnBackKeyPress: false,
+                dismissOnTouchOutside: false,
+              ).show();
+
+              bool result = await FirebaseDB.uploadUserScore(
+                score: gameController.scores,
+                playedOn: DateTime.now(),
+                secondsPlayedFor: gameController.secondsPlayed,
+              );
+              if (result) {
+                Fluttertoast.showToast(msg: "Data uploaded");
+                Navigator.of(context, rootNavigator: true).pop();
+                gameController.resetTimer();
+                gameController.resetGameScore();
+              } else {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
+            }
+          } else {
+            gameController.startTimer();
+            // for logging the
+            timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+              if (kDebugMode) {
+                print("--------->  $ball, $ballValue" +
+                    "busser beeped : $isBuzzer, " +
+                    "RLA: ${animationValuesController.rightAngleValue}, " +
+                    "LLA: ${animationValuesController.leftAngleValue}, " +
+                    "${DateTime.now().millisecondsSinceEpoch}");
+              }
+            });
+            handleGame(
+                deviceController, animationValuesController, gameController);
+            gameController.changeGameStatus(true);
+          }
         },
         style: ElevatedButton.styleFrom(
           minimumSize: Size(double.maxFinite, 80.h),
@@ -86,44 +145,6 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
     });
   }
 
-  void onPressed(
-      GameController gameController,
-      DeviceController deviceController,
-      AnimationValuesController animationValuesController) async {
-    // testBallFalling();
-
-    //check if the game is running or not
-    if (gameController.gameStatus == true) {
-      //// stop the game and handle upload to cloud
-      gameController.stopTimer();
-      await animationValues!.cancel();
-      gameController.changeGameStatus(false);
-      ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
-
-      if (gameController.secondsPlayed > 10) {
-        CustomDialogs.showScoreUplodingDialog(context);
-
-        bool result = await FirebaseDB.uploadUserScore(
-          score: gameController.scores,
-          playedOn: DateTime.now(),
-          secondsPlayedFor: gameController.secondsPlayed,
-        );
-        if (result) {
-          Fluttertoast.showToast(msg: "Data uploaded");
-          Navigator.of(context, rootNavigator: true).pop();
-          gameController.resetTimer();
-          gameController.resetGameScore();
-        } else {
-          Navigator.of(context, rootNavigator: true).pop();
-        }
-      }
-    } else {
-      gameController.startTimer();
-      handleGame(deviceController, animationValuesController, gameController);
-      gameController.changeGameStatus(true);
-    }
-  }
-
   void handleGame(
       DeviceController deviceController,
       AnimationValuesController animationValuesController,
@@ -134,8 +155,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
     ballPeriodicTimer = Timer.periodic(
       const Duration(seconds: 6),
       (timer) async {
-        int ball = selectRandomBall();
-        dev.log("Selected ball is $ball");
+        ball = selectRandomBall();
         gameController.changeIncremented(false);
 
         if (ball == 0) {
@@ -143,6 +163,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
           widget.animationStateController!
               .setInputValue(widget.sendRightBall!.id, true);
           int rightBallValue = 0;
+          ballValue = rightBallValue;
 
           while (true) {
             if (deviceController.rightAngleValue > 30 &&
@@ -168,11 +189,17 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
                   ? await deviceController.sendToDevice(
                       "beepc 4;", WRITECHARACTERISTICS)
                   : null;
+              if (rightBallValue == 25) {
+                isBuzzer = 1;
+              } else {
+                isBuzzer = 0;
+              }
 
               await Future.delayed(
                 const Duration(milliseconds: 30),
               );
               rightBallValue++;
+              ballValue++;
             }
           }
         } else {
@@ -180,6 +207,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
           widget.animationStateController!
               .setInputValue(widget.sendLeftBall!.id, true);
           int leftBallValue = 0;
+          ballValue = leftBallValue;
 
           while (true) {
             if (deviceController.leftAngleValue > 30 &&
@@ -205,9 +233,15 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
                   ? await deviceController.sendToDevice(
                       "beeps 4;", WRITECHARACTERISTICS)
                   : null;
+              if (leftBallValue == 25) {
+                isBuzzer = 1;
+              } else {
+                isBuzzer = 0;
+              }
 
               await Future.delayed(const Duration(milliseconds: 30));
               leftBallValue++;
+              ballValue++;
             }
           }
         }
@@ -217,16 +251,5 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
 
   int selectRandomBall() {
     return Random().nextInt(2);
-  }
-
-  void testGame() {
-    var ballTimer = Timer.periodic(const Duration(seconds: 6), (timer) async {
-      if (true) {
-        for (int i = 0; i <= 100; i++) {
-          await Future.delayed(const Duration(milliseconds: 20));
-          widget.leftballInput!.change(i.toDouble());
-        }
-      }
-    });
   }
 }
