@@ -12,11 +12,21 @@ class GameController extends ChangeNotifier {
   late Timer _gameTimer;
   int _secondsPlayed = 0;
   bool _valueIncremented = false;
+  double _positionToVibrateAt = 25;
 
   void incrementScore() {
     _score++;
 
     notifyListeners();
+  }
+
+  void changeVibrationPostion(double newPostion) {
+    _positionToVibrateAt = newPostion;
+    notifyListeners();
+  }
+
+  double getVibrationPosition() {
+    return _positionToVibrateAt;
   }
 
   void changeGameStatus(bool status) {

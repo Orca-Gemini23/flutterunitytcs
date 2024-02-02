@@ -587,7 +587,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                                MainAxisAlignment.spaceEvenly,
                                             children: [
                                               Column(
                                                 children: [

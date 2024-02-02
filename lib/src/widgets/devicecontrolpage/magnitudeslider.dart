@@ -7,7 +7,7 @@ import '../../constants/app_color.dart';
 
 Widget magSlider(bool isClient, DeviceController controller) {
   return SizedBox(
-    width: 180,
+    width: 160,
     child: SliderTheme(
       data: const SliderThemeData(
         trackHeight: 8,

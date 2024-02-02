@@ -44,6 +44,7 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
   Timer? ballGenTimer;
   DeviceController? deviceController;
   AnimationValuesController? animationValuesController;
+  double sliderValue = 25;
 
   void _onRiveInit(Artboard artboard) {
     var controller =
@@ -235,8 +236,28 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 20,
+                    SizedBox(
+                      child: Consumer<GameController>(
+                          builder: (context, gameController, child) {
+                        return SliderTheme(
+                          data: const SliderThemeData(
+                            trackHeight: 8,
+                            activeTrackColor: AppColor.greenDarkColor,
+                            thumbColor: AppColor.greenDarkColor,
+                          ),
+                          child: Slider(
+                              value: gameController.getVibrationPosition(),
+                              onChanged: (value) {},
+                              min: 0,
+                              max: 40,
+                              label: gameController
+                                  .getVibrationPosition()
+                                  .toString(),
+                              onChangeEnd: (value) {
+                                gameController.changeVibrationPostion(value);
+                              }),
+                        );
+                      }),
                     ),
                     AnimationControlButton(
                       animationStateController: _stateMachineController,
@@ -244,6 +265,8 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                       rightballInput: _rightballInput,
                       sendLeftBall: _sendLeftBall,
                       sendRightBall: _sendRightBall,
+                      rightAngleInput: _rightAngleInput,
+                      leftAngleInput: _leftAngleInput,
                     ),
                   ],
                 );
