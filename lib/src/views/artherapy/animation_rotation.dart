@@ -8,6 +8,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/animation_controller.dart';
 import 'package:walk/src/controllers/device_controller.dart';
@@ -44,7 +45,7 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
   Timer? ballGenTimer;
   DeviceController? deviceController;
   AnimationValuesController? animationValuesController;
-  double sliderValue = 25;
+  double _currentSliderValue = 25;
 
   void _onRiveInit(Artboard artboard) {
     var controller =
@@ -65,7 +66,28 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
   @override
   void initState() {
     super.initState();
+    _loadSlider();
     _riveFile = Animationloader.loadAnimation();
+  }
+
+  void _loadSlider() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _currentSliderValue = (prefs.getDouble('slider') ?? 25);
+    });
+  }
+
+  // change slider value to value
+  void _changeSlider(double value) {
+    setState(() {
+      _currentSliderValue = value;
+    });
+  }
+
+  // store slider value
+  void _storeSlider() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('slider', _currentSliderValue);
   }
 
   @override
@@ -246,7 +268,7 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                             thumbColor: AppColor.greenDarkColor,
                           ),
                           child: Slider(
-                              value: gameController.getVibrationPosition(),
+                              value: _currentSliderValue,
                               onChanged: (value) {},
                               min: 0,
                               max: 40,
@@ -255,6 +277,9 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                                   .toString(),
                               onChangeEnd: (value) {
                                 gameController.changeVibrationPostion(value);
+                                _changeSlider(value);
+                                _storeSlider();
+                                print(_currentSliderValue);
                               }),
                         );
                       }),
