@@ -187,16 +187,16 @@ class _RevisedHomePageState extends State<RevisedHomePage>
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColor.greenDarkColor,
-        onPressed: () {
-          setState(() {});
-        },
-        child: const Icon(
-          Icons.refresh,
-          size: 30,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: AppColor.greenDarkColor,
+      //   onPressed: () {
+      //     setState(() {});
+      //   },
+      //   child: const Icon(
+      //     Icons.refresh,
+      //     size: 30,
+      //   ),
+      // ),
     );
   }
 }

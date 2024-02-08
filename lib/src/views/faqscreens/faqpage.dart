@@ -95,11 +95,11 @@ class _CustomFAQWidgetState extends State<CustomFAQWidget> {
   ];
   List<String> answers = [
     "Parkinson’s disease is a progressive disorder that affects the nervous system and the parts of the body controlled by the nerves causing tremors, stiffness and slowing of movement.",
-    "Parkinson’s is caused by a loss of nerve cells in the part of the brain called the substantia nigra.Nerve cells in this part of the brain are responsible for producing  a chemical called dopamine which helps control body movements.If these nerve cells die, the amount of dopamine in the brain is reduced causing movements to become slow and abnormal.",
-    "Medication and physical therapy can help relieve  the symptoms of Parkinson’s and maintain your quality life.",
+    "Parkinson’s is caused by a loss of nerve cells in the part of the brain called the substantia nigra. Nerve cells in this part of the brain are responsible for producing a chemical called dopamine which helps control body movements. If these nerve cells die, the amount of dopamine in the brain is reduced causing movements to become slow and abnormal.",
+    "Medication and physical therapy can help relieve the symptoms of Parkinson’s and maintain your quality life.",
     "Sudden, sort steps and temporary episodes of inability to move the feet forward despite the intention to walk.",
     "WALK is inspired by the concept of sensory cueing,a scientifically proven & rigorously tested therapy to alleviate gait disturbances in Parkinson’s. It is a non-invasive & easy to use wearable device that provides cueing at home & wherever you go.",
-    "Sensory cueing entails stimulating the patient externally in a rhythmic manner.Rhythmic Auditory Cueing significantly improves mean gait velocity, cadence and stride length.",
+    "Sensory cueing entails stimulating the patient externally in a rhythmic manner. Rhythmic Auditory Cueing significantly improves mean gait velocity, cadence and stride length.",
     "WALK senses abnormal gait and produces cues to help align gait. It records trends in gait parameters and provides data driven personalized insights to improve therapy.",
   ];
 
@@ -126,7 +126,7 @@ class _CustomFAQWidgetState extends State<CustomFAQWidget> {
               child: Text(
                 answers[widget.index],
                 style: TextStyle(fontSize: 14.sp),
-                textAlign: TextAlign.justify,
+                // textAlign: TextAlign.justify,
               ),
             ),
           )

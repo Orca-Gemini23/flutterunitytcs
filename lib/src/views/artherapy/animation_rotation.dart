@@ -279,7 +279,6 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                                 gameController.changeVibrationPostion(value);
                                 _changeSlider(value);
                                 _storeSlider();
-                                print(_currentSliderValue);
                               }),
                         );
                       }),

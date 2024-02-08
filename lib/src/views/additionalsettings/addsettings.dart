@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
@@ -15,6 +16,24 @@ class AdditionalSettings extends StatefulWidget {
 
 class _AdditionalSettingsState extends State<AdditionalSettings> {
   String _selectedMode = "Novib";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMode();
+  }
+
+  void _loadMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedMode = (prefs.getString('mode') ?? 'Novib');
+    });
+  }
+
+  void _storeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('mode', _selectedMode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +99,7 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                         });
                         ////Send Change Mode Command to device
                         log("$MODE $newValue;");
+                        _storeMode();
                         await deviceController.sendToDevice(
                             "$MODE $newValue;", WRITECHARACTERISTICS);
                       },

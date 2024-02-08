@@ -86,10 +86,10 @@ Widget drawerItem(BuildContext context) {
     Icons.tune,
     Icons.group,
     Icons.email,
-    Icons.qr_code,
+    // Icons.qr_code,
     Icons.help,
     Icons.question_answer,
-    Icons.logout_sharp,
+    // Icons.logout_sharp,
   ];
   List<String> drawerTileName = [
     'Home',
@@ -97,10 +97,10 @@ Widget drawerItem(BuildContext context) {
     'Device Control',
     'About Us',
     'Contact Us',
-    'QR-Scanner',
+    // 'QR-Scanner',
     'Tutorial',
     "FAQ's",
-    'Log Out',
+    // 'Log Out',
   ];
   List<Function()?> drawerOnTap = [
     () {
@@ -137,13 +137,13 @@ Widget drawerItem(BuildContext context) {
         push: const ContactUsPage(),
       );
     },
-    () {
-      // Go.to(
-      //   context: context,
-      //   push: const QrScanner(),
-      // );
-      //Goto qr scanner page
-    },
+    // () {
+    // Go.to(
+    //   context: context,
+    //   push: const QrScanner(),
+    // );
+    //Goto qr scanner page
+    // },
     () {
       Go.to(
         context: context,
@@ -156,15 +156,15 @@ Widget drawerItem(BuildContext context) {
         push: const Faqpage(),
       );
     },
-    () {
-      //LogOut
-    },
+    // () {
+    //   //LogOut
+    // },
   ];
 
   return ListView.builder(
     shrinkWrap: true,
     physics:
-        const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        const BouncingScrollPhysics(parent: NeverScrollableScrollPhysics()),
     itemBuilder: (context, index) {
       if (Flavors.prod) {
         return index == 9

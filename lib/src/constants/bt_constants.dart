@@ -52,7 +52,7 @@ final List<String> modesNames = [
   'Swing phase burst',
   'Stance phase continuous',
   'Stance phase burst',
-  'Open loop'
+  'Open loop'
 ];
 
 final Map<String, String> modesDictionary = {
@@ -61,5 +61,5 @@ final Map<String, String> modesDictionary = {
   'Swing phase burst': "1",
   'Stance phase continuous': "0",
   'Stance phase burst': "3",
-  'Open loop': "4"
+  'Open loop': "4"
 };
