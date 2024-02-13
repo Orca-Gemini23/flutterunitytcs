@@ -35,6 +35,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
   final RoundedLoadingButtonController _buttonController =
       RoundedLoadingButtonController();
   File? _image;
+  bool emailValid = false;
 
   // Function to open the image picker and get the selected image
   Future<bool> _pickImage() async {
@@ -285,6 +286,9 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                           height: 40,
                         ),
                         RoundedLoadingButton(
+                          resetAfterDuration: true,
+                          resetDuration:
+                              const Duration(seconds: 2, milliseconds: 500),
                           animateOnTap: true,
                           color: AppColor.greenDarkColor,
                           width: double.maxFinite,
@@ -294,7 +298,11 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                           loaderSize: 25,
                           controller: _buttonController,
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
+                            emailValid = RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(emailController.text);
+                            if (_formKey.currentState!.validate() &&
+                                emailValid) {
                               var newUser = UserModel(
                                 name: nameController.text,
                                 age: ageController.text,
@@ -310,6 +318,10 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                               Timer(const Duration(seconds: 2), () {
                                 _buttonController.success();
                               });
+                            } else {
+                              Fluttertoast.showToast(
+                                msg: "Please enter details correctly",
+                              );
                             }
                           },
                           child: const Text(

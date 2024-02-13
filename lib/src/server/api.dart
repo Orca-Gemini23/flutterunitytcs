@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class API {
   static addData(String score) async {
     print("scores is coming");
-    var url = Uri.parse("http://10.137.51.28:2000/api/push");
+    var url = Uri.parse("http://192.168.178.8:2000/api/push");
 
     try {
       final res = await http.post(url, body: {'score': score});

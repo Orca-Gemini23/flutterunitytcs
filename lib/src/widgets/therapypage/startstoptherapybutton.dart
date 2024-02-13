@@ -14,7 +14,6 @@ import "package:walk/src/constants/bt_constants.dart";
 import "package:walk/src/controllers/animation_controller.dart";
 import "package:walk/src/controllers/device_controller.dart";
 import "package:walk/src/controllers/game_controller.dart";
-import "package:walk/src/server/api.dart";
 import "package:walk/src/utils/firebasehelper.dart/firebasedb.dart";
 import "package:walk/src/widgets/dialog.dart";
 
@@ -247,48 +246,12 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
       handleGame(deviceController, animationValuesController, gameController);
       gameController.changeGameStatus(true);
 
-      // final myData = await rootBundle.loadString("assets/data.csv");
-      // print(myData);
-      // final File file = File("assets/data.csv");
-
-      // Future send(String message) async {
-      //   try {
-      //     await file.writeAsString(message + '\n',
-      //         mode: FileMode.append, flush: true);
-      //   } catch (e) {
-      //     print("Error: $e");
-      //   }
-      //   return await file.length();
-      // }
-
       timer = Timer.periodic(const Duration(milliseconds: 10), (timer) async {
-        // Future<void> writeToFile(String data) async {
-        //   final directory = await getApplicationDocumentsDirectory();
-        //   final file = File('${directory.path}/data.csv');
-        //   print("file updating...");
-        //   // Write data to the file
-        //   await file.writeAsString(data);
-        //   print("file uploading...");
-        // }
+        String score =
+            "$ball, $ballValue, busser beeped : $isBuzzer, RLA: ${widget.leftAngleInput?.value}, LLA: ${widget.rightAngleInput?.value}, ${DateTime.now().millisecondsSinceEpoch}";
 
-        // Future<void> readFile() async {
-        //   try {
-        //     final directory = await getApplicationDocumentsDirectory();
-        //     final file = File('${directory.path}/data.csv');
-        //     String fileContents = await file.readAsString();
-        //     print("File Contents: $fileContents");
-        //   } catch (e) {
-        //     print("Error reading file: $e");
-        //   }
-        // }
+        FirebaseDB.storeGameData(score);
 
-        // await writeToFile("myData");
-        // await readFile();
-        API.addData("$ball, $ballValue, " +
-            "busser beeped : $isBuzzer, " +
-            "RLA: ${widget.leftAngleInput?.value}, " +
-            "LLA: ${widget.rightAngleInput?.value}, " +
-            "${DateTime.now().millisecondsSinceEpoch}");
         if (kDebugMode) {
           // ignore: prefer_interpolation_to_compose_strings
           print("--------->  $ball, $ballValue, " +

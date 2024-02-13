@@ -42,6 +42,23 @@ class FirebaseDB {
     }
   }
 
+  static Future<bool> storeGameData(String moment) async {
+    try {
+      var fireBaseInstance = FirebaseFirestore.instance;
+      String userName = LocalDB.user!.name;
+
+      await fireBaseInstance
+          .collection("user")
+          .doc(userName)
+          .collection("test")
+          .add({"score": moment});
+      return true;
+    } catch (e) {
+      log("error in uploadingUserScore ${e.toString()}");
+      return false;
+    }
+  }
+
   static Future<GameHistory?> getUserGameHistory() async {
     try {
       GameHistory? gameHistory;
