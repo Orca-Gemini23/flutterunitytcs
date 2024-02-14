@@ -1,5 +1,6 @@
 import 'package:awesome_ripple_animation/awesome_ripple_animation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
@@ -30,6 +31,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
       backgroundColor: AppColor.whiteColor,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: !Provider.of<DeviceController>(context,
                 listen: true)
             .isScanning, ////Remove the default back button when scan is running

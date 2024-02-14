@@ -66,6 +66,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
     return Scaffold(
       extendBody: false,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         iconTheme: const IconThemeData(

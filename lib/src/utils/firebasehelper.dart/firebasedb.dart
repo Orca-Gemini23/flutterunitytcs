@@ -42,7 +42,7 @@ class FirebaseDB {
     }
   }
 
-  static Future<bool> storeGameData(String moment) async {
+  static Future<bool> storeGameData(List<dynamic> data) async {
     try {
       var fireBaseInstance = FirebaseFirestore.instance;
       String userName = LocalDB.user!.name;
@@ -51,7 +51,7 @@ class FirebaseDB {
           .collection("user")
           .doc(userName)
           .collection("test")
-          .add({"score": moment});
+          .add({"score": data});
       return true;
     } catch (e) {
       log("error in uploadingUserScore ${e.toString()}");

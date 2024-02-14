@@ -48,6 +48,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
   int isBuzzer = 0;
   int ball = -1; // 0 => right and 1=> left
   int ballValue = -1;
+  List<dynamic> data = [];
 
   Future<void> disposeEssentials() async {
     ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
@@ -225,6 +226,9 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
       gameController.changeGameStatus(false);
       ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
       timer.cancel();
+      FirebaseDB.storeGameData(data);
+      print(data);
+      data = [];
       if (gameController.secondsPlayed > 10) {
         CustomDialogs.showScoreUplodingDialog(context);
         bool result = await FirebaseDB.uploadUserScore(
@@ -250,7 +254,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
         String score =
             "$ball, $ballValue, busser beeped : $isBuzzer, RLA: ${widget.leftAngleInput?.value}, LLA: ${widget.rightAngleInput?.value}, ${DateTime.now().millisecondsSinceEpoch}";
 
-        FirebaseDB.storeGameData(score);
+        data.add(score);
 
         if (kDebugMode) {
           // ignore: prefer_interpolation_to_compose_strings
