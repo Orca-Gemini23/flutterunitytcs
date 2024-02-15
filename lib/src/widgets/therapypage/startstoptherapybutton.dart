@@ -14,6 +14,7 @@ import "package:walk/src/constants/bt_constants.dart";
 import "package:walk/src/controllers/animation_controller.dart";
 import "package:walk/src/controllers/device_controller.dart";
 import "package:walk/src/controllers/game_controller.dart";
+import "package:walk/src/server/api.dart";
 import "package:walk/src/utils/firebasehelper.dart/firebasedb.dart";
 import "package:walk/src/widgets/dialog.dart";
 
@@ -227,7 +228,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
       ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
       timer.cancel();
       FirebaseDB.storeGameData(data);
-      print(data);
+      API.addData(data);
       data = [];
       if (gameController.secondsPlayed > 10) {
         CustomDialogs.showScoreUplodingDialog(context);
@@ -256,14 +257,14 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
 
         data.add(score);
 
-        if (kDebugMode) {
-          // ignore: prefer_interpolation_to_compose_strings
-          print("--------->  $ball, $ballValue, " +
-              "busser beeped : $isBuzzer, " +
-              "RLA: ${widget.leftAngleInput?.value}, " +
-              "LLA: ${widget.rightAngleInput?.value}, " +
-              "${DateTime.now().millisecondsSinceEpoch}");
-        }
+        // if (kDebugMode) {
+        //   // ignore: prefer_interpolation_to_compose_strings
+        //   print("--------->  $ball, $ballValue, " +
+        //       "busser beeped : $isBuzzer, " +
+        //       "RLA: ${widget.leftAngleInput?.value}, " +
+        //       "LLA: ${widget.rightAngleInput?.value}, " +
+        //       "${DateTime.now().millisecondsSinceEpoch}");
+        // }
       });
     }
   }
