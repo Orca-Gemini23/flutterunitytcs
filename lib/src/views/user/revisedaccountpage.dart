@@ -6,9 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
+
+String country = "India";
 
 class Revisedaccountpage extends StatefulWidget {
   const Revisedaccountpage({super.key});
@@ -36,6 +39,8 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
       RoundedLoadingButtonController();
   File? _image;
   bool emailValid = false;
+  late String countryChange;
+  List<String> list = <String>['India', 'England'];
 
   // Function to open the image picker and get the selected image
   Future<bool> _pickImage() async {
@@ -62,6 +67,19 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
     if (LocalDB.user!.image != "NA") {
       _image = File(LocalDB.user!.image);
     }
+    _loadCountry();
+  }
+
+  void _loadCountry() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      country = (prefs.getString('country') ?? 'India');
+    });
+  }
+
+  void _storeCountry(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('country', value);
   }
 
   @override
@@ -249,22 +267,56 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                         const SizedBox(
                           height: 40,
                         ),
-                        TextFormField(
-                          controller: cityController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your city';
-                            }
-                            return null;
-                          },
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(nameRegex),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 150,
+                                  child: TextFormField(
+                                    controller: cityController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your city';
+                                      }
+                                      return null;
+                                    },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          nameRegex),
+                                    ],
+                                    decoration: const InputDecoration(
+                                      labelText: 'City',
+                                      focusColor: AppColor.greenDarkColor,
+                                      contentPadding: EdgeInsets.zero,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 150,
+                                  child: DropdownButton<String>(
+                                    value: country,
+                                    onChanged: (String? newValue) async {
+                                      setState(() {
+                                        country = newValue!;
+                                        countryChange = newValue;
+                                        print(country);
+                                      });
+                                    },
+                                    items: list.map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
-                          decoration: const InputDecoration(
-                            labelText: 'City',
-                            focusColor: AppColor.greenDarkColor,
-                            contentPadding: EdgeInsets.zero,
-                          ),
                         ),
                         const SizedBox(
                           height: 40,
@@ -315,6 +367,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                               );
 
                               LocalDB.saveUser(newUser);
+                              _storeCountry(countryChange);
 
                               Timer(const Duration(seconds: 2), () {
                                 _buttonController.success();

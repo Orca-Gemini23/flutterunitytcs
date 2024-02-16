@@ -3,15 +3,18 @@ import 'package:http/http.dart' as http;
 import 'package:walk/src/db/local_db.dart';
 import 'dart:convert';
 
-class API {
-  static const baseUrl =
-      "https://yxptx2bvl2.execute-api.ap-northeast-1.amazonaws.com/dev/flutter-app-data-s3/";
+import 'package:walk/src/views/user/revisedaccountpage.dart';
 
+class API {
   static addData(List<dynamic> score) async {
+    var baseUrl = (country == "India")
+        ? "https://f02966xlb7.execute-api.ap-south-1.amazonaws.com/flutterdata/flutter-app-s3-ap-south-1-mumbai/"
+        : "https://wcdq86190h.execute-api.eu-west-2.amazonaws.com/DevS/flutter-app-s3-eu-west-2-london/";
+
     print("scores is coming");
 
     var url = Uri.parse(
-        "$baseUrl${LocalDB.user!.name.trimRight()}test-${DateTime.now()}.json");
+        "$baseUrl${LocalDB.user!.name.trimRight()}/test-${DateTime.now()}.json");
     // print(url);
     var jsonData = jsonEncode(score);
 
