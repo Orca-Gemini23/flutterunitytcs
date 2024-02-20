@@ -39,7 +39,6 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
       RoundedLoadingButtonController();
   File? _image;
   bool emailValid = false;
-  late String countryChange;
   List<String> list = <String>['India', 'England'];
 
   // Function to open the image picker and get the selected image
@@ -301,7 +300,6 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                                     onChanged: (String? newValue) async {
                                       setState(() {
                                         country = newValue!;
-                                        countryChange = newValue;
                                         print(country);
                                       });
                                     },
@@ -367,7 +365,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                               );
 
                               LocalDB.saveUser(newUser);
-                              _storeCountry(countryChange);
+                              _storeCountry(country);
 
                               Timer(const Duration(seconds: 2), () {
                                 _buttonController.success();

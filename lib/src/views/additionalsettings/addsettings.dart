@@ -119,32 +119,43 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
               height: 150,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Consumer<DeviceController>(
+                      builder: (context, deviceController, widget) {
+                    return GestureDetector(
+                      onTap: () async {
                         ////Reset the device
+                        debugPrint("Tapped");
+                        await deviceController.sendToDevice(
+                            "$MODE 4;", WRITECHARACTERISTICS);
                       },
                       child: const Text(
                         "Reset",
                         style:
                             TextStyle(color: AppColor.blackColor, fontSize: 16),
                       ),
-                    ),
-                    const Divider(
-                      thickness: 2,
-                      color: AppColor.blackColor,
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Text(
-                        "Restart",
-                        style:
-                            TextStyle(color: AppColor.blackColor, fontSize: 16),
-                      ),
-                    )
-                  ]),
+                    );
+                  }),
+                  const Divider(
+                    thickness: 2,
+                    color: AppColor.blackColor,
+                  ),
+                  Consumer<DeviceController>(
+                    builder: (context, deviceController, widget) {
+                      return GestureDetector(
+                        onTap: () {},
+                        child: const Text(
+                          "Restart",
+                          style: TextStyle(
+                              color: AppColor.blackColor, fontSize: 16),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             )
           ],
         ),

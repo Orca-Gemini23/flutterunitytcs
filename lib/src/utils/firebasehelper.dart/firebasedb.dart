@@ -1,10 +1,10 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/models/game_history_model.dart';
+// import 'package:walk/src/models/game_history_model.dart';
 
 class FirebaseDB {
   static Future<bool> initFirebaseServices() async {
@@ -59,27 +59,27 @@ class FirebaseDB {
     }
   }
 
-  static Future<GameHistory?> getUserGameHistory() async {
-    try {
-      GameHistory? gameHistory;
-      if (LocalDB.user?.name != "Unknown User") {
-        var firebaseInstance = FirebaseFirestore.instance;
-        String userName = LocalDB.user?.name ?? "Unknown User";
-        DocumentReference documentRefrence =
-            firebaseInstance.collection("users").doc(userName);
-        await documentRefrence.get().then((snapshot) {
-          log("Data from firebase ${snapshot.data()}");
+  // static Future<GameHistory?> getUserGameHistory() async {
+  //   try {
+  //     GameHistory? gameHistory;
+  //     if (LocalDB.user?.name != "Unknown User") {
+  //       var firebaseInstance = FirebaseFirestore.instance;
+  //       String userName = LocalDB.user?.name ?? "Unknown User";
+  //       DocumentReference documentRefrence =
+  //           firebaseInstance.collection("users").doc(userName);
+  //       await documentRefrence.get().then((snapshot) {
+  //         log("Data from firebase ${snapshot.data()}");
 
-          gameHistory = gameHistoryFromJson(jsonEncode(snapshot.data()));
-        });
-      }
+  //         gameHistory = gameHistoryFromJson(jsonEncode(snapshot.data()));
+  //       });
+  //     }
 
-      return gameHistory;
-    } catch (e) {
-      log(
-        e.toString(),
-      );
-      throw "Something went wrong";
-    }
-  }
+  //     return gameHistory;
+  //   } catch (e) {
+  //     log(
+  //       e.toString(),
+  //     );
+  //     throw "Something went wrong";
+  //   }
+  // }
 }

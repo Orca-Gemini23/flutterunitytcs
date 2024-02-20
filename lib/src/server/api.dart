@@ -11,7 +11,7 @@ class API {
         ? "https://f02966xlb7.execute-api.ap-south-1.amazonaws.com/flutterdata/flutter-app-s3-ap-south-1-mumbai/"
         : "https://wcdq86190h.execute-api.eu-west-2.amazonaws.com/DevS/flutter-app-s3-eu-west-2-london/";
 
-    print("scores is coming");
+    debugPrint("score is coming");
 
     var url = Uri.parse(
         "$baseUrl${LocalDB.user!.name.trimRight()}/test-${DateTime.now()}.json");
@@ -22,9 +22,9 @@ class API {
       final res = await http.put(url, body: jsonData);
       if (res.statusCode == 200) {
         var data = res.body.toString();
-        print("Data written to file successfully: $data");
+        debugPrint("Data written to file successfully: $data");
       } else {
-        print("Failed to write data to the file");
+        debugPrint("Failed to write data to the file");
       }
     } catch (e) {
       debugPrint("API Error: ${e.toString()}");
