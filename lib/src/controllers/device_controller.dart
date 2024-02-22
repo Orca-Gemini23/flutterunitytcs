@@ -294,10 +294,8 @@ class DeviceController extends ChangeNotifier {
   Future<void> startDiscovery(Function onConnect) async {
     try {
       // ignore: unused_local_variable
-      StreamSubscription<ScanResult>? scanSubscription;
-      final StreamController<ScanResult> scanController =
-          StreamController<ScanResult>();
-
+      FlutterBluePlus.setLogLevel(LogLevel.none);
+      StreamSubscription<List<ScanResult>>? scanSubscription;
       await askForPermission();
       _scannedDevices.clear();
 
@@ -306,31 +304,48 @@ class DeviceController extends ChangeNotifier {
 
       isScanning = true;
       notifyListeners();
-      scanSubscription = FlutterBluePlus.scan(
-        timeout: const Duration(seconds: 10),
+      BluetoothDevice scannedDevice;
+      Timer? scanTimer;
+
+      scanSubscription = FlutterBluePlus.scanResults.listen(
+        (event) async {
+          log("Scan Result is $event ");
+          if (event.isNotEmpty) {
+            scannedDevice = event.elementAt(0).device;
+            scanTimer?.cancel();
+            FlutterBluePlus.stopScan();
+            scanSubscription!.cancel();
+            await connectToDevice(scannedDevice, onConnect);
+          }
+        },
+        onDone: () {
+          log("Scanning Done");
+          isScanning = false;
+          scanSubscription!.cancel();
+          notifyListeners();
+        },
+      );
+
+      await FlutterBluePlus.startScan(
         withServices: [Guid("0000acf0-0000-1000-8000-00805f9b34fb")],
-        allowDuplicates: false,
-      ).listen((scanResult) async {
-        if (!isConnecting) {
-          await connectToDevice(scanResult.device, onConnect);
-        }
-      }, onError: (error) {
-        log('startScan() error: $error');
-      }, onDone: () async {
+      );
+      scanTimer = Timer(const Duration(seconds: 10), () async {
+        await FlutterBluePlus.stopScan();
         isScanning = false;
+        scanSubscription!.cancel();
         notifyListeners();
-        await scanController.close(); // Close the stream when scanning is done
       });
+
+      log("Coming here");
     } catch (e) {
-      log("Error in startDiscovery$e");
+      log("Error in startDiscovery $e");
     }
   }
 
   ///Checks already connected devices and highlights the respective device's tile in the home screen.
   Future checkPrevConnection() async {
-    log("check prev called ");
-    _connectedDevices = await FlutterBluePlus.connectedSystemDevices;
-    // print("conected devices $_connectedDevices");
+    _connectedDevices = await FlutterBluePlus.systemDevices;
+    log("connected devices $_connectedDevices");
     if (_connectedDevices.isNotEmpty) {
       _connectedDevice = _connectedDevices[0];
       await connectToDevice(
@@ -350,7 +365,7 @@ class DeviceController extends ChangeNotifier {
         isConnecting = true;
         notifyListeners();
         showToast
-            ? Fluttertoast.showToast(msg: "Connecting to ${device.localName}")
+            ? Fluttertoast.showToast(msg: "Connecting to ${device.platformName}")
             : null;
         await device.connect(
           autoConnect: false,
@@ -358,7 +373,7 @@ class DeviceController extends ChangeNotifier {
 
         await HapticFeedback.vibrate();
         showToast
-            ? Fluttertoast.showToast(msg: "Connected to ${device.localName}")
+            ? Fluttertoast.showToast(msg: "Connected to ${device.platformName}")
             : null;
         gotServices = await discoverServices(device);
         gotServices ? _connectedDevice = device : null;

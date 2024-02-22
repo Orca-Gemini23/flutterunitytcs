@@ -163,7 +163,7 @@ class _ScannedDevicesListState extends State<ScannedDevicesList>
                         child: Text(
                           deviceController.getScannedDevices
                               .elementAt(0)
-                              .localName,
+                              .platformName,
                           style: const TextStyle(
                               overflow: TextOverflow.ellipsis,
                               fontSize: 20,
@@ -275,7 +275,7 @@ Widget scannedItem(
                 children: [
                   Expanded(
                     child: Text(
-                      controller.getScannedDevices.elementAt(index).localName,
+                      controller.getScannedDevices.elementAt(index).platformName,
                       style: const TextStyle(
                           overflow: TextOverflow.ellipsis,
                           fontSize: 20,

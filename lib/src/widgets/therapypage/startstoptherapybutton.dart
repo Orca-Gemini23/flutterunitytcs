@@ -3,7 +3,6 @@
 import "dart:async";
 import "dart:math";
 import "dart:developer" as dev;
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:fluttertoast/fluttertoast.dart";
@@ -45,7 +44,7 @@ class AnimationControlButton extends StatefulWidget {
 class _AnimationControlButtonState extends State<AnimationControlButton> {
   StreamSubscription<List<int>>? animationValues;
   Timer? ballPeriodicTimer;
-  late Timer timer;
+  Timer timer = Timer(Duration.zero, () {});
   int isBuzzer = 0;
   int ball = -1; // 0 => right and 1=> left
   int ballValue = -1;
