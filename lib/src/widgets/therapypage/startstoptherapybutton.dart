@@ -44,7 +44,7 @@ class AnimationControlButton extends StatefulWidget {
 class _AnimationControlButtonState extends State<AnimationControlButton> {
   StreamSubscription<List<int>>? animationValues;
   Timer? ballPeriodicTimer;
-  Timer timer = Timer(Duration.zero, () {});
+  Timer logTimer = Timer(Duration.zero, () {});
   int isBuzzer = 0;
   int ball = -1; // 0 => right and 1=> left
   int ballValue = -1;
@@ -59,7 +59,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
   void dispose() {
     ballPeriodicTimer?.cancel();
     animationValues?.cancel();
-    timer.cancel();
+    logTimer.cancel();
     super.dispose();
   }
 
@@ -225,7 +225,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
       }
       gameController.changeGameStatus(false);
       ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
-      timer.cancel();
+      logTimer.cancel();
       FirebaseDB.storeGameData(data);
       API.addData(data);
       data = [];
@@ -250,7 +250,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
       handleGame(deviceController, animationValuesController, gameController);
       gameController.changeGameStatus(true);
 
-      timer = Timer.periodic(const Duration(milliseconds: 10), (timer) async {
+      logTimer = Timer.periodic(const Duration(milliseconds: 10), (timer) async {
         String score =
             "$ball, $ballValue, busser beeped : $isBuzzer, RLA: ${widget.leftAngleInput?.value}, LLA: ${widget.rightAngleInput?.value}, ${DateTime.now().millisecondsSinceEpoch}";
 

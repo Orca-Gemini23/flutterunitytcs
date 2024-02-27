@@ -32,15 +32,17 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
           .doc(userName)
           .snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data == null) {
-            return const Center(
-              child: Text("No data to show , please do a therapy sesssion"),
-            );
-          } else {
-            return DetailChart(
-                historyData:
-                    gameHistoryFromJson(jsonEncode(snapshot.data!.data())));
+        if (LocalDB.user?.name != "Unknown User") {
+          if (snapshot.hasData) {
+            if (snapshot.data == null) {
+              return const Center(
+                child: Text("No data to show , please do a therapy sesssion"),
+              );
+            } else {
+              return DetailChart(
+                  historyData:
+                      gameHistoryFromJson(jsonEncode(snapshot.data!.data())));
+            }
           }
         }
         if (snapshot.hasError) {

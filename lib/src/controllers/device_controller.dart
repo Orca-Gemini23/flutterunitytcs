@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_final_fields
+// ignore_for_file: prefer_final_fields, avoid_print
 import 'dart:async';
 import 'dart:developer';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
@@ -34,14 +34,6 @@ class DeviceController extends ChangeNotifier {
     _connectedDevice = device;
     notifyListeners();
   }
-
-  int _score = 0;
-  void incrementScore() {
-    _score++;
-    notifyListeners();
-  }
-
-  int get gameScore => _score;
 
   ////Angle Values for Animation Rotation
   double leftAngleValue = 0;
@@ -110,7 +102,7 @@ class DeviceController extends ChangeNotifier {
   }
 
   double _freqValue = 0.3;
-  double _modeValue = -1;
+  int _modeValue = -1;
   double _magSValue = 0;
   double _magCValue = 0;
 
@@ -118,7 +110,7 @@ class DeviceController extends ChangeNotifier {
     return _freqValue;
   }
 
-  double get modeValue {
+  int get modeValue {
     return _modeValue;
   }
 
@@ -130,7 +122,7 @@ class DeviceController extends ChangeNotifier {
     return _magCValue;
   }
 
-  void setmodeValue(double value) {
+  void setmodeValue(int value) {
     _modeValue = value;
     notifyListeners();
   }
@@ -363,9 +355,11 @@ class DeviceController extends ChangeNotifier {
           BluetoothAdapterState.on) {
         bool gotServices = false;
         isConnecting = true;
+        isScanning = false;
         notifyListeners();
         showToast
-            ? Fluttertoast.showToast(msg: "Connecting to ${device.platformName}")
+            ? Fluttertoast.showToast(
+                msg: "Connecting to ${device.platformName}")
             : null;
         await device.connect(
           autoConnect: false,
@@ -397,7 +391,7 @@ class DeviceController extends ChangeNotifier {
   ///Handles the disconnection procedure
   Future disconnectDevice(BluetoothDevice device) async {
     try {
-      Fluttertoast.showToast(msg: "Disconnecting ");
+      Fluttertoast.showToast(msg: "Disconnecting");
       await device.disconnect();
       await HapticFeedback.mediumImpact();
       Fluttertoast.showToast(msg: "Disconnected successfully");
@@ -471,6 +465,35 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
+  Future<bool> changeDeviceMode(String newMode) async {
+    try {
+      if (await FlutterBluePlus.adapterState.first ==
+          BluetoothAdapterState.on) {
+        BluetoothCharacteristic? writeTarget =
+            _characteristicMap[WRITECHARACTERISTICS];
+        String commandToSend = "$MODE $newMode;";
+        await writeTarget!.write(commandToSend.codeUnits);
+        log("Changing mode to $newMode");
+        bool res = await getDeviceMode();
+
+        //// Check if the mode actually has changed or not
+        if (modeValue.toString() == newMode && res) {
+          Fluttertoast.showToast(msg: "Mode changed !!");
+          return true;
+        }
+        Fluttertoast.showToast(msg: "Failed to change mode");
+        return false;
+      }
+      Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
+      return false;
+    } catch (e) {
+      log(
+        "Error ocurred in changing the device mode ${e.toString()}",
+      );
+      return false;
+    }
+  }
+
   ///Function used to get battery values
   Future<bool> getBatteryPercentageValues() async {
     try {
@@ -480,8 +503,6 @@ class DeviceController extends ChangeNotifier {
           _characteristicMap[BATTERY_PERCENTAGE_SERVER];
 
       var clientResponse = await clientTarget!.read();
-
-      ///divided by 1000
       var serverResponse = await serverTarget!.read();
       String tempBattC = String.fromCharCodes(clientResponse);
       String tempBattS = String.fromCharCodes(serverResponse);
@@ -660,32 +681,70 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  Future<void> getClientStatusStream() async {
-    ////actually this is just wifi provisioned status charac , listening for status here only!
+  Future<bool> getDeviceMode() async {
+    try {
+      BluetoothCharacteristic? targetChar = _characteristicMap[DEVICE_MODE];
+      log("Fetching mode");
 
-    BluetoothCharacteristic? target = _characteristicMap[PROVISIONED_CLIENT];
-    Timer.periodic(
-      const Duration(seconds: 5),
-      (timer) async {
-        try {
-          var devices = getConnectedDevices;
-          if (devices.isNotEmpty) {
-            var response = await target!.read();
-            var result = String.fromCharCodes(response);
-            log("Client Status Result is $result");
-          } else {
-            timer.cancel();
-          }
-        } catch (e) {
-          log("in stream ${e.toString()}");
-          // throw Exception("Reading from the device clashed!! , Retrying");
-        }
-      },
-    );
+      var serverResponse = await targetChar!.read();
+      _modeValue = int.parse(
+        String.fromCharCodes(serverResponse),
+      );
+      notifyListeners();
+
+      log("Mode Value is ${String.fromCharCodes(serverResponse)}");
+      return true;
+    } catch (e) {
+      log(
+        e.toString(),
+      );
+      log("Something went wrong while getting Mode Value.");
+      return false;
+    }
   }
 
+  Future<void> getClientConnectionStream() async {
+    // try {
+    //   BluetoothCharacteristic targetChar = _characteristicMap[DEVICE_MODE]!;
+    //   await targetChar.setNotifyValue(true);
+    //   var response;
+    //   targetChar.onValueReceived.listen((event) {
+    //     response = String.fromCharCodes(event);
+    //     log("Client Status $response .");
+    //     _clientStatus = response;
+    //     notifyListeners();
+    //   });
+    // } catch (e) {
+    //   log("error occurred in getting client status");
+    // }
+  }
+
+  // Future<void> getClientStatusStream() async {
+  //   ////actually this is just wifi provisioned status charac , listening for status here only!
+
+  //   BluetoothCharacteristic? target = _characteristicMap[PROVISIONED_CLIENT];
+  //   Timer.periodic(
+  //     const Duration(seconds: 5),
+  //     (timer) async {
+  //       try {
+  //         var devices = getConnectedDevices;
+  //         if (devices.isNotEmpty) {
+  //           var response = await target!.read();
+  //           var result = String.fromCharCodes(response);
+  //           log("Client Status Result is $result");
+  //         } else {
+  //           timer.cancel();
+  //         }
+  //       } catch (e) {
+  //         log("in stream ${e.toString()}");
+  //         // throw Exception("Reading from the device clashed!! , Retrying");
+  //       }
+  //     },
+  //   );
+  // }
+
   ///ONLY FOR NEWTON'S TESTING NOT TO BE USED IN ACTUAL APPLICATION
-  Future<String> getRawBatteryNewton() async {
+  Future<String> getRawBatteryForNewton() async {
     try {
       BluetoothCharacteristic? target =
           _characteristicMap[RAW_BATTERY_VALUE_SERVER];
@@ -710,7 +769,7 @@ class DeviceController extends ChangeNotifier {
         (event) {
           controller.add(event);
           String data = String.fromCharCodes(event);
-          // print(data);
+          print(data);
           List<String> legData = data.split(" ");
 
           leftAngleValue = double.tryParse(legData[1])!;
