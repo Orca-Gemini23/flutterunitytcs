@@ -125,7 +125,7 @@ class ContactUsPage extends StatelessWidget {
               children: <Widget>[
                 InkWell(
                   onTap: () async {
-                    String contact = '+917666904700';
+                    String contact = '+919324730665';
                     var androidUrl =
                         "whatsapp://send?phone=$contact&text=Hi, [user] here";
                     var iosUrl =
@@ -165,7 +165,7 @@ class ContactUsPage extends StatelessWidget {
                     await launchUrl(launchUri);
                   },
                   child: const Text(
-                    "+91 7666904700",
+                    "+91 919324730665",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16,
