@@ -160,7 +160,7 @@ class ContactUsPage extends StatelessWidget {
                   onPressed: () async {
                     final Uri launchUri = Uri(
                       scheme: 'tel',
-                      path: '+917666904700',
+                      path: '+919324730665',
                     );
                     await launchUrl(launchUri);
                   },
