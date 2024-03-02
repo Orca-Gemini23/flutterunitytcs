@@ -24,6 +24,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def keystoreProperties = new Properties()
@@ -99,8 +100,10 @@ flutter {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:31.2.2')
+    implementation platform('com.google.firebase:firebase-bom:32.7.3')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.core:core:1.6.0"
     implementation 'com.android.support:multidex:2.0.1'
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
 }

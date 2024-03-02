@@ -15,7 +15,7 @@ class AdditionalSettings extends StatefulWidget {
 }
 
 class _AdditionalSettingsState extends State<AdditionalSettings> {
-  String _selectedMode = "Novib";
+  String _selectedMode = "Open loop";
 
   @override
   void initState() {
@@ -130,6 +130,8 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                         debugPrint("Tapped");
                         await deviceController.sendToDevice(
                             "$MODE 4;", WRITECHARACTERISTICS);
+                        _selectedMode = 'Open loop';
+                        _storeMode();
                       },
                       child: const Text(
                         "Reset",

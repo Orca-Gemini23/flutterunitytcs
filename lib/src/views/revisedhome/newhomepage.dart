@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -12,6 +13,7 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/models/game_history_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/custom_notification.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/views/device/chart_details.dart';
 import 'package:walk/src/views/home_page.dart';
@@ -111,6 +113,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         actions: [
           IconButton(
             onPressed: () {
+              // FirebaseCrashlytics.instance.crash();
               Go.to(
                 context: context,
                 push: const Revisedaccountpage(),
