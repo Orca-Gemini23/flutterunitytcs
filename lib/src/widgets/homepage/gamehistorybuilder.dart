@@ -34,7 +34,7 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
       builder: (context, snapshot) {
         if (LocalDB.user?.name != "Unknown User") {
           if (snapshot.hasData) {
-            if (snapshot.data == null) {
+            if (snapshot.data?.data() == null) {
               return const Center(
                 child: Text("No data to show , please do a therapy sesssion"),
               );

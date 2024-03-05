@@ -70,9 +70,9 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                     height: 92.h,
                     child: const Image(
                       fit: BoxFit.contain,
-                      color: AppColor.blackColor,
+                      // color: AppColor.blackColor,
                       image: AssetImage(
-                        "assets/images/therapysession.png",
+                        "assets/images/footballwithshadow.png",
                       ),
                     ),
                   ),

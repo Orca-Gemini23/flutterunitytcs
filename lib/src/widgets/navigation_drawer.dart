@@ -84,6 +84,7 @@ Widget drawerItem(BuildContext context) {
     Icons.home,
     Icons.person,
     Icons.tune,
+    Icons.my_library_books_outlined,
     Icons.group,
     Icons.email,
     // Icons.qr_code,
@@ -95,6 +96,7 @@ Widget drawerItem(BuildContext context) {
     'Home',
     'Account',
     'Device Control',
+    'Report',
     'About Us',
     'Contact Us',
     // 'QR-Scanner',
@@ -124,6 +126,12 @@ Widget drawerItem(BuildContext context) {
         //   push: DeviceControlPage(),
         // );
       }
+    },
+    () {
+      Go.to(
+        context: context,
+        push: const AboutUsPage(),
+      );
     },
     () {
       Go.to(
