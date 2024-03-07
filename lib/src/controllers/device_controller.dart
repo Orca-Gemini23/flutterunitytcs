@@ -183,6 +183,14 @@ class DeviceController extends ChangeNotifier {
     return double.parse(_batteryS);
   }
 
+  /// tells whether client is connect to server or not
+  bool isClientConnected = false;
+
+  /// client connection to server
+  bool get bandC {
+    return isClientConnected;
+  }
+
   bool permissionRequested = false;
   bool get permissionRequestStatus => permissionRequested;
 
@@ -494,6 +502,24 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
+  /// tells whether client is connect to server or not
+  Future<bool> getClientConnectionStatus() async {
+    try {
+      BluetoothCharacteristic? client = _characteristicMap[CLIENT_CONN];
+      var clientResponse = await client!.read();
+      String isClientConn = String.fromCharCodes(clientResponse);
+      isClientConnected = int.parse(isClientConn) == 1 ? true : false;
+      log("is client is connected to server: $isClientConnected");
+      notifyListeners();
+
+      return true;
+    } catch (e) {
+      log(e.toString());
+      log("Something went wrong while getting connecting to client.");
+      return false;
+    }
+  }
+
   ///Function used to get battery values
   Future<bool> getBatteryPercentageValues() async {
     try {
@@ -794,7 +820,8 @@ class DeviceController extends ChangeNotifier {
 
   Future<bool> refreshBatteryValues() async {
     bool refreshed;
-    refreshed = await getBatteryPercentageValues();
+    refreshed =
+        await getBatteryPercentageValues() && await getClientConnectionStatus();
     if (refreshed) {
       return true;
     }

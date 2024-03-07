@@ -41,6 +41,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
 
       await deviceController.getMagnitudeValues();
 
+      await deviceController.getClientConnectionStatus();
+
       return true;
     } catch (e) {
       // print(e);
@@ -137,7 +139,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                             "Some error occurred getting device details. Try again."),
                       );
                     } else if (deviceMetricSnapshot.hasData) {
-                      return Consumer<DeviceController>(
+                                            return Consumer<DeviceController>(
                         builder: (context, deviceController, widget) {
                           return Container(
                             width: double.maxFinite,
@@ -416,15 +418,23 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                     deviceController.battC /
                                                         100,
                                                 radius: 20.w,
-                                                center:
-                                                    deviceController.battC < 30
+                                                center: !deviceController.bandC
+                                                    ? const Icon(
+                                                        Icons.error,
+                                                        color: Colors.grey,
+                                                      )
+                                                    : deviceController.battC <
+                                                            30
                                                         ? const Icon(
                                                             Icons.error,
                                                             color: Colors.red,
                                                           )
                                                         : null,
-                                                progressColor:
-                                                    deviceController.battC < 30
+                                                progressColor: !deviceController
+                                                        .bandC
+                                                    ? Colors.grey
+                                                    : deviceController.battC <
+                                                            30
                                                         ? Colors.red
                                                         : AppColor
                                                             .greenDarkColor,
@@ -494,52 +504,52 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                         right: 0,
                                         top: 20.h,
                                         bottom: 0,
-                                        child: SliderTheme(
-                                          data: const SliderThemeData(
-                                            trackHeight: 8,
-                                            activeTrackColor:
-                                                AppColor.greenDarkColor,
-                                          ),
-                                          child: Slider(
-                                            value:
+                                                                                      child: SliderTheme(
+                                                data: const SliderThemeData(
+                                                  trackHeight: 8,
+                                                  activeTrackColor:
+                                                      AppColor.greenDarkColor,
+                                                ),
+                                                child: Slider(
+                                                  value:
                                                 deviceController.frequencyValue,
-                                            min: 0.3,
-                                            max: 2,
-                                            label: deviceController
+                                                  min: 0.3,
+                                                  max: 2,
+                                                  label: deviceController
                                                 .frequencyValue
                                                 .toString(),
-                                            thumbColor: AppColor.greenDarkColor,
-                                            onChanged: (value) {
-                                              HapticFeedback.lightImpact();
-                                              deviceController
-                                                  .setfreqValue(value);
-                                            },
-                                            onChangeEnd: (value) async {
-                                              String approxFrequency =
-                                                  deviceController
-                                                              .frequencyValue
-                                                              .toString()
-                                                              .length >
-                                                          3
-                                                      ? deviceController
-                                                          .frequencyValue
-                                                          .toString()
-                                                          .substring(0, 4)
-                                                      : deviceController
-                                                          .frequencyValue
-                                                          .toString();
+                                                  thumbColor: AppColor.greenDarkColor,
+                                                  onChanged: (value) {
+                                                    HapticFeedback.lightImpact();
+                                                    deviceController
+                                                        .setfreqValue(value);
+                                                                                                      },
+                                                  onChangeEnd: (value) async {
+                                                    String approxFrequency =
+                                                        deviceController
+                                                                    .frequencyValue
+                                                                    .toString()
+                                                                    .length >
+                                                                3
+                                                            ? deviceController
+                                                                .frequencyValue
+                                                                .toString()
+                                                                .substring(0, 4)
+                                                            : deviceController
+                                                                .frequencyValue
+                                                                .toString();
 
-                                              String command =
-                                                  "$FREQ c $approxFrequency;";
+                                                    String command =
+                                                        "$FREQ c $approxFrequency;";
 
-                                              log(command);
-                                              await deviceController
-                                                  .sendToDevice(command,
-                                                      WRITECHARACTERISTICS);
-                                            },
-                                          ),
-                                        ),
-                                      )
+                                                    log(command);
+                                                    await deviceController
+                                                        .sendToDevice(command,
+                                                            WRITECHARACTERISTICS);
+                                                    },
+                                                ),
+                                              ),
+                                            )
                                     ],
                                   ),
                                 ),
@@ -676,9 +686,15 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             Icons.error,
                                             color: Colors.red,
                                           )
-                                        : const Icon(
-                                            Icons.check_circle_outline_sharp,
-                                          )
+                                        : !deviceController.bandC
+                                            ? const Icon(
+                                                Icons.error,
+                                                color: Colors.grey,
+                                              )
+                                            : const Icon(
+                                                Icons
+                                                    .check_circle_outline_sharp,
+                                              )
                                   ],
                                 ),
                               ],

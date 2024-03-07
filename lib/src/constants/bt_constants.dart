@@ -24,6 +24,7 @@ Guid BATTERY_TIME_REMAINING_SERVER =
     Guid("0000adf2-0000-1000-8000-00805f9b34fb");
 
 Guid RAW_BATTERY_VALUE_SERVER = Guid("0000ae01-0000-1000-8000-00805f9b34fb");
+Guid CLIENT_CONN = Guid("0000ae02-0000-1000-8000-00805f9b34fb"); // characterstic to check client is connected or not
 
 ////CLIENT SIDE CHARACTERISTICS
 
