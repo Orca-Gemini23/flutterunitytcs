@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, unrelated_type_equality_checks, unused_import
 
 import 'dart:developer';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   void initState() {
     super.initState();
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
+
+    NotificationService.notificationPermission(context);
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
@@ -98,6 +101,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
 
   @override
   Widget build(BuildContext context) {
+    NotificationService.sendScheduledTestNotification(); //triggering the scheduled notifications 
     // print(
     //     "------------------------Building Home Page UI--------------------------");
     return Scaffold(

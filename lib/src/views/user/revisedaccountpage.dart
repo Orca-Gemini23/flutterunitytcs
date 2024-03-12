@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -7,11 +8,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/views/calendar/calendar_view.dart';
 
 String country = "India";
+Map<DateTime, List<int>> _kEventSource = {};
 
 class Revisedaccountpage extends StatefulWidget {
   const Revisedaccountpage({super.key});
@@ -99,6 +104,49 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
             fontSize: 19,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              print(_kEventSource);
+              final kToday = DateTime.now();
+              final kTomorrow =
+                  DateTime(kToday.year, kToday.month, kToday.day + 1);
+              final DateTime kFirstDay =
+                  DateTime(kToday.year, kToday.month - 3, kToday.day);
+              final DateTime kLastDay =
+                  DateTime(kToday.year, kToday.month + 3, kToday.day);
+
+              int getHashCode(DateTime key) {
+                return key.day * 1000000 + key.month * 10000 + key.year;
+              }
+
+              if (_kEventSource.containsKey(kToday)) {
+                _kEventSource[kToday]!.add(1);
+              } else {
+                _kEventSource[kToday] = [1];
+                _kEventSource[kToday]!.add(2);
+              }
+
+              final kEvents = LinkedHashMap<DateTime, List<int>>(
+                equals: isSameDay,
+                hashCode: getHashCode,
+              )..addAll(_kEventSource);
+
+              // FirebaseCrashlytics.instance.crash();
+              Go.to(
+                context: context,
+                push: CalendarEvents(
+                  kEvents: kEvents,
+                  kFirstDay: kFirstDay,
+                  kLastDay: kLastDay,
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.calendar_month_outlined,
+            ),
+          ),
+        ],
       ),
       body: Container(
         width: double.maxFinite,
