@@ -1,9 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/db/sqlite_db.dart';
 import 'dart:convert';
 
 import 'package:walk/src/views/user/revisedaccountpage.dart';
+import 'package:connectivity/connectivity.dart';
+
+Future<bool> isNetworkAvailable() async {
+  var connectivityResult = await Connectivity().checkConnectivity();
+  return connectivityResult != ConnectivityResult.none;
+}
+
+void sendDataWhenNetworkAvailable() {
+  Timer.periodic(const Duration(seconds: 30), (timer) async {
+    if (await isNetworkAvailable()) {
+      List localData = await DBHelper.instance.getData();
+      for (var item in localData) {
+        final jsonData = item['data']; // Get the JSON data from the map
+        final decodedData = jsonDecode(jsonData);
+        API.addData(decodedData);
+        await DBHelper.instance.deleteData(item['id']);
+      }
+    }
+  });
+}
 
 class API {
   static addData(List<dynamic> score) async {
@@ -18,16 +41,22 @@ class API {
     // print(url);
     var jsonData = jsonEncode(score);
 
-    try {
-      final res = await http.put(url, body: jsonData);
-      if (res.statusCode == 200) {
-        var data = res.body.toString();
-        debugPrint("Data written to file successfully: $data");
-      } else {
-        debugPrint("Failed to write data to the file");
+    if (await isNetworkAvailable()) {
+      try {
+        final res = await http.put(url, body: jsonData);
+        if (res.statusCode == 200) {
+          var data = res.body.toString();
+          debugPrint("Data written to file successfully: $data");
+        } else {
+          debugPrint("Failed to write data to the file");
+        }
+      } catch (e) {
+        debugPrint("API Error: ${e.toString()}");
       }
-    } catch (e) {
-      debugPrint("API Error: ${e.toString()}");
+    } else {
+      await DBHelper.instance.insertData(score);
+      List localData = await DBHelper.instance.getData();
+      debugPrint('Data stored locally: $localData');
     }
   }
 }

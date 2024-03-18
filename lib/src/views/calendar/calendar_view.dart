@@ -4,7 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:walk/src/constants/app_color.dart';
 
 class CalendarEvents extends StatefulWidget {
-  final Map<DateTime, List<int>> kEvents;
+  final Map<DateTime, dynamic> kEvents;
   final DateTime kFirstDay;
   final DateTime kLastDay;
   const CalendarEvents(
@@ -14,10 +14,10 @@ class CalendarEvents extends StatefulWidget {
       required this.kLastDay}); // Constructor to receive kEvents
 
   @override
-  _TableEventsExampleState createState() => _TableEventsExampleState();
+  State<CalendarEvents> createState() => _CalendarEventsState();
 }
 
-class _TableEventsExampleState extends State<CalendarEvents> {
+class _CalendarEventsState extends State<CalendarEvents> {
   late final ValueNotifier<List<int>> _selectedEvents;
   final CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
@@ -87,7 +87,10 @@ class _TableEventsExampleState extends State<CalendarEvents> {
                 focusedDay: _focusedDay,
                 selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                 calendarFormat: _calendarFormat,
-                headerStyle: const HeaderStyle(formatButtonVisible: false),
+                headerStyle: const HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true,
+                ),
                 eventLoader: _getEventsForDay,
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 calendarStyle: const CalendarStyle(
@@ -101,8 +104,8 @@ class _TableEventsExampleState extends State<CalendarEvents> {
                 onDaySelected: _onDaySelected,
                 onPageChanged: (focusedDay) {
                   setState(() {
-                    _focusedDay = focusedDay; // Update _focusedDay
-                  });
+                      _focusedDay = focusedDay; // Update _focusedDay
+                    });
                 },
               ),
             ),
