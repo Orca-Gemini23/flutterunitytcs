@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/models/game_history_model.dart';
+import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/custom_notification.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
@@ -49,6 +50,12 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
 
     NotificationService.notificationPermission(context);
+
+    // send data to cloud when network is availabe
+    sendDataWhenNetworkAvailable();
+    //triggering the scheduled notifications
+    NotificationService.sendScheduledTestNotification();
+    NotificationService(context).listenToNotificationResults();
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
@@ -101,7 +108,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
 
   @override
   Widget build(BuildContext context) {
-    NotificationService.sendScheduledTestNotification(); //triggering the scheduled notifications 
     // print(
     //     "------------------------Building Home Page UI--------------------------");
     return Scaffold(

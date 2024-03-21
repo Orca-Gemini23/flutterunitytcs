@@ -252,7 +252,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
 
       logTimer = Timer.periodic(const Duration(milliseconds: 10), (timer) async {
         String score =
-            "$ball, $ballValue, busser beeped : $isBuzzer, RLA: ${widget.leftAngleInput?.value}, LLA: ${widget.rightAngleInput?.value}, ${DateTime.now().millisecondsSinceEpoch}";
+            "$ball, $ballValue, busser beeped : $isBuzzer, RLA: ${widget.leftAngleInput?.value}, LLA: ${widget.rightAngleInput?.value}, score: ${gameController.scores}, ${DateTime.now().millisecondsSinceEpoch}";
 
         data.add(score);
 

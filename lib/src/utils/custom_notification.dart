@@ -4,8 +4,12 @@ import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/views/reviseddevicecontrol/connectionscreen.dart';
 
 class NotificationService {
+  final BuildContext context;
+  NotificationService(this.context);
   static int testNotificationChannelId = 100;
   static String testChannelKey = "Test";
   static String testChannelDescription =
@@ -33,14 +37,14 @@ class NotificationService {
 
   static initNotification() async {
     await AwesomeNotifications().initialize(
-      null,
+      // null,
+      'resource://drawable/res_notification_app_icon',
       [
         myTestNotificationChannel,
         myScheduledNotificationChannel,
       ],
       debug: true,
     );
-    await listenToNotificationResults();
   }
 
   static notificationPermission(context) {
@@ -96,20 +100,22 @@ class NotificationService {
 
   static Future<void> sendScheduledTestNotification(
       {String? title, String? body}) async {
+    bool isPermissionGranted =
+        await AwesomeNotifications().isNotificationAllowed();
     int intervalMinutes = 60 ~/ 3;
-    for (int i = 0; i < 3; i++) {
-      try {
+    if (isPermissionGranted) {
+      for (int i = 0; i < 3; i++) {
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
-            id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
-            channelKey: 'scheduled_channel',
-            title: title ?? "Reminder!!! Do Therapy.",
-            body: body ?? "Don't Missout the therapy for better you.",
-            color: Colors.white,
-          ),
+              id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
+              channelKey: 'scheduled_channel',
+              title: title ?? "Reminder!!! Do Therapy.",
+              body: body ?? "Don't Missout the therapy for better you.",
+              color: Colors.white,
+              payload: {'page': 'ConnectionScreen'}),
           actionButtons: [
             NotificationActionButton(key: 'DO_NOW', label: 'Do Now'),
-            NotificationActionButton(key: 'MARK_DONE', label: 'Mark Done')
+            NotificationActionButton(key: 'MARK_DONE', label: 'Mark as Done')
           ],
           schedule: NotificationCalendar(
             weekday: DateTime.now().weekday,
@@ -120,8 +126,6 @@ class NotificationService {
             repeats: true,
           ),
         );
-      } catch (e) {
-        log("notification disabled due to $e");
       }
     }
   }
@@ -151,7 +155,7 @@ class NotificationService {
     );
   }
 
-  static listenToNotificationResults() async {
+  listenToNotificationResults() async {
     bool result = await AwesomeNotifications().setListeners(
       onActionReceivedMethod: onActionReceivedMethod,
       onDismissActionReceivedMethod: onDismissActionReceivedMethod,
@@ -160,22 +164,35 @@ class NotificationService {
   }
 
   @pragma("vm:entry-point")
-  static Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction) async {
+  Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
     if (receivedAction.channelKey == 'scheduled_channel' && Platform.isIOS) {
       AwesomeNotifications().getGlobalBadgeCounter().then(
-            (value) => AwesomeNotifications().setGlobalBadgeCounter(value - 1),
-          );
+        (value) {
+          AwesomeNotifications().setGlobalBadgeCounter(value - 1);
+        },
+      );
     }
-    if (receivedAction.buttonKeyPressed == "true") {
-      //startBackgroundservice
-      log("Attempting to start foreground service");
-      FlutterBackgroundService().invoke("setAsForeground");
+    // if (receivedAction.buttonKeyPressed == "true") {
+    //   //startBackgroundservice
+    //   log("Attempting to start foreground service");
+    //   FlutterBackgroundService().invoke("setAsForeground");
+    // }
+    if (receivedAction.buttonKeyPressed == 'DO_NOW') {
+      await Go.to(context: context, push: const ConnectionScreen());
+    }
+    if (receivedAction.buttonKeyPressed == 'MARK_DONE') {
+      // AwesomeNotifications().cancel(receivedAction.id ?? 0);
     }
     log("coming here");
   }
 
   @pragma("vm:entry-point")
   static Future<void> onDismissActionReceivedMethod(
-      ReceivedAction receivedAction) async {}
+      ReceivedAction receivedAction) async {
+    if (receivedAction.channelKey == 'scheduled_channel' && Platform.isIOS) {
+      AwesomeNotifications().getGlobalBadgeCounter().then(
+            (value) => AwesomeNotifications().setGlobalBadgeCounter(value - 1),
+          );
+    }
+  }
 }

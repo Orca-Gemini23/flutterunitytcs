@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -39,12 +40,16 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
       TextEditingController(text: LocalDB.user!.address);
   final TextEditingController emailController =
       TextEditingController(text: LocalDB.user!.email);
+  final TextEditingController phoneController =
+      TextEditingController(text: LocalDB.user!.phone);
   final _formKey = GlobalKey<FormState>();
   final RoundedLoadingButtonController _buttonController =
       RoundedLoadingButtonController();
   File? _image;
   bool emailValid = false;
   List<String> list = <String>['India', 'England'];
+  String selectedCountryCode = '+91';
+  Map<String, String> selecteCountryCode = {'India': '+91', 'England': '+44'};
 
   // Function to open the image picker and get the selected image
   Future<bool> _pickImage() async {
@@ -72,6 +77,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
       _image = File(LocalDB.user!.image);
     }
     _loadCountry();
+    loadEvents();
   }
 
   void _loadCountry() async {
@@ -84,6 +90,28 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
   void _storeCountry(String value) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('country', value);
+  }
+
+  Future<void> saveEvents(Map<DateTime, List<int>> events) async {
+    final prefs = await SharedPreferences.getInstance();
+    final encodedEvents = events.map((key, value) {
+      return MapEntry(key.toString(), value);
+    });
+    await prefs.setString('kEventSource', jsonEncode(encodedEvents));
+  }
+
+  Future<Map<DateTime, List<int>>> loadEvents() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedData = prefs.getString('kEventSource');
+    if (savedData != null) {
+      final decodedData = jsonDecode(savedData);
+      final formattedData = <DateTime, List<int>>{};
+      decodedData.forEach((key, value) {
+        formattedData[DateTime.parse(key)] = List<int>.from(value);
+      });
+      return formattedData;
+    }
+    return {}; // Return an empty map if no data is found
   }
 
   @override
@@ -106,25 +134,27 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              print(_kEventSource);
-              final kToday = DateTime.now();
-              final kTomorrow =
-                  DateTime(kToday.year, kToday.month, kToday.day + 1);
+            onPressed: () async {
+              final loadedEvents = await loadEvents();
+              if (loadedEvents.isNotEmpty) {
+                _kEventSource.addAll(loadedEvents);
+              }
+              final now = DateTime.now();
+              final kToday = DateTime(now.year, now.month, now.day);
+              // final kTomorrow =
+              //     DateTime(kToday.year, kToday.month, kToday.day + 1);
               final DateTime kFirstDay =
-                  DateTime(kToday.year, kToday.month - 3, kToday.day);
+                  DateTime(kToday.year - 100, kToday.month, kToday.day);
               final DateTime kLastDay =
-                  DateTime(kToday.year, kToday.month + 3, kToday.day);
+                  DateTime(kToday.year, kToday.month + 1, 0);
 
               int getHashCode(DateTime key) {
                 return key.day * 1000000 + key.month * 10000 + key.year;
               }
 
-              if (_kEventSource.containsKey(kToday)) {
-                _kEventSource[kToday]!.add(1);
-              } else {
-                _kEventSource[kToday] = [1];
-                _kEventSource[kToday]!.add(2);
+              if (!_kEventSource.containsKey(kToday)) {
+                _kEventSource[kToday] = [1, 2];
+                await saveEvents(_kEventSource);
               }
 
               final kEvents = LinkedHashMap<DateTime, List<int>>(
@@ -133,6 +163,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
               )..addAll(_kEventSource);
 
               // FirebaseCrashlytics.instance.crash();
+              // ignore: use_build_context_synchronously
               Go.to(
                 context: context,
                 push: CalendarEvents(
@@ -320,8 +351,8 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(
-                                  width: 150,
+                                Expanded(
+                                  flex: 1,
                                   child: TextFormField(
                                     controller: cityController,
                                     validator: (value) {
@@ -341,9 +372,10 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 150,
-                                  child: DropdownButton<String>(
+                                const SizedBox(width: 30),
+                                Expanded(
+                                  flex: 1,
+                                  child: DropdownButtonFormField<String>(
                                     value: country,
                                     onChanged: (String? newValue) async {
                                       setState(() {
@@ -361,6 +393,50 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                                   ),
                                 ),
                               ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: DropdownButtonFormField<String>(
+                                value: selecteCountryCode[country],
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedCountryCode = value!;
+                                  });
+                                },
+                                items: [
+                                  '+91',
+                                  '+44',
+                                  '+1',
+                                  '+611'
+                                ] // Add more country codes as needed
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            const SizedBox(width: 20.0),
+                            Expanded(
+                              flex: 4,
+                              child: TextField(
+                                controller: phoneController,
+                                keyboardType: TextInputType.phone,
+                                decoration: const InputDecoration(
+                                  hintText: 'Enter phone number',
+                                  labelText: 'Phone Number',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
                             ),
                           ],
                         ),

@@ -61,6 +61,8 @@ dependencies:
   connectivity: ^3.0.6
   
   
+dependency_overrides:
+  watcher: ^1.1.0
 
 
 dev_dependencies:
