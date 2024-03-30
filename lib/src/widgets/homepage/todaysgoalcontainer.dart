@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/stepgoal/step_goal_page.dart';
 
@@ -101,18 +102,33 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    "Gait Score : ",
-                    style:
-                        TextStyle(color: AppColor.whiteColor, fontSize: 12.sp),
-                  ),
-                  Text(
-                    "Balance Score : ",
-                    style: TextStyle(
-                      color: AppColor.whiteColor,
-                      fontSize: 12.sp,
-                    ),
-                  )
+                  FutureBuilder(
+                      future: API.getScore(),
+                      builder: ((context, snapshot) {
+                        var gaitScore = snapshot.hasData
+                            ? (snapshot.data as Map)['Gait Score']
+                            : "";
+                        var balanceScore = snapshot.hasData
+                            ? (snapshot.data as Map)['Balance Score']
+                            : "";
+
+                        return Column(
+                          children: [
+                            Text(
+                              "Gait Score : $gaitScore",
+                              style: TextStyle(
+                                  color: AppColor.whiteColor, fontSize: 12.sp),
+                            ),
+                            Text(
+                              "Balance Score : $balanceScore",
+                              style: TextStyle(
+                                color: AppColor.whiteColor,
+                                fontSize: 12.sp,
+                              ),
+                            )
+                          ],
+                        );
+                      }))
                 ],
               ),
             ),

@@ -59,4 +59,27 @@ class API {
       debugPrint('Data stored locally: $localData');
     }
   }
+
+  static getScore() async {
+    var baseUrl =
+      "https://h1obcwd8tj.execute-api.ap-south-1.amazonaws.com/Data_S3/s3-gait-balance-score-data?file=${LocalDB.user!.name.trimRight()}.json";
+
+    debugPrint("score is coming");
+
+    var url = Uri.parse(baseUrl);
+    try {
+      final res = await http.get(url);
+      if (res.statusCode == 200) {
+        var data = jsonDecode(res.body);
+        debugPrint("Data fetched successfully: $data");
+        debugPrint("${data.runtimeType}");
+        return data;
+      } else {
+        debugPrint("Failed to fetch data ");
+        return {'Gait Score': '', 'Balance Score': ''};
+      }
+    } catch (e) {
+      debugPrint("API Error: ${e.toString()}");
+    }
+  }
 }
