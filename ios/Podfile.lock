@@ -1080,7 +1080,7 @@ SPEC CHECKSUMS:
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  rive_common: 8a159d68033a8b073e5853acc50f03aa486a2888
+  rive_common: c537b4eed761e903a9403d93c347b69bd7a4762f
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
   smart_auth: 4bedbc118723912d0e45a07e8ab34039c19e04f2
   soundpool: c7f4422ca206e77f8900ed3c4ee6a6ff5a0e38a9
