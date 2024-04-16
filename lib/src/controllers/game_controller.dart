@@ -16,7 +16,6 @@ class GameController extends ChangeNotifier {
 
   void incrementScore() {
     _score++;
-
     notifyListeners();
   }
 

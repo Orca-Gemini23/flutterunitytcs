@@ -36,10 +36,12 @@ class API {
 
     debugPrint("score is coming");
 
-    var url = Uri.parse(
-        "$baseUrl${LocalDB.user!.name.trimRight()}/test-${DateTime.now()}.json");
-    // print(url);
     var jsonData = jsonEncode(score);
+
+    String game = jsonData[1] == '1' ? "Swing" : "Ball";
+    var url = Uri.parse(
+        "$baseUrl${LocalDB.user!.name.trimRight()}/$game-${DateTime.now()}.json");
+    // print(url);
 
     if (await isNetworkAvailable()) {
       try {
@@ -62,7 +64,7 @@ class API {
 
   static getScore() async {
     var baseUrl =
-      "https://h1obcwd8tj.execute-api.ap-south-1.amazonaws.com/Data_S3/s3-gait-balance-score-data?file=${LocalDB.user!.name.trimRight()}.json";
+        "https://h1obcwd8tj.execute-api.ap-south-1.amazonaws.com/Data_S3/s3-gait-balance-score-data?file=${LocalDB.user!.name.trimRight()}.json";
 
     debugPrint("score is coming");
 

@@ -795,7 +795,7 @@ class DeviceController extends ChangeNotifier {
         (event) {
           controller.add(event);
           String data = String.fromCharCodes(event);
-          print(data);
+          // print(data);
           List<String> legData = data.split(" ");
 
           leftAngleValue = double.tryParse(legData[1])!;
