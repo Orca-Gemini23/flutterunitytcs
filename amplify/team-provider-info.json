@@ -1,0 +1,27 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-walkprimaryapp-dev-4c42b-authRole",
+      "UnauthRoleArn": "arn:aws:iam::533267205771:role/amplify-walkprimaryapp-dev-4c42b-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::533267205771:role/amplify-walkprimaryapp-dev-4c42b-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-walkprimaryapp-dev-4c42b-deployment",
+      "UnauthRoleName": "amplify-walkprimaryapp-dev-4c42b-unauthRole",
+      "StackName": "amplify-walkprimaryapp-dev-4c42b",
+      "StackId": "arn:aws:cloudformation:ap-south-1:533267205771:stack/amplify-walkprimaryapp-dev-4c42b/c57d89d0-0d23-11ef-8598-029bac858cd7",
+      "AmplifyAppId": "d2wo2tyc7saea8",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-walkprimaryapp-dev-4c42b-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "walkprimaryapp": {}
+      },
+      "function": {
+        "walkprimaryappCreateAuthChallenge": {
+          "deploymentBucketName": "amplify-walkprimaryapp-dev-4c42b-deployment",
+          "s3Key": "amplify-builds/walkprimaryappCreateAuthChallenge-49735455384c6b424a59-build.zip"
+        }
+      }
+    }
+  }
+}
