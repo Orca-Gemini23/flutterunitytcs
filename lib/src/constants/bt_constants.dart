@@ -24,7 +24,8 @@ Guid BATTERY_TIME_REMAINING_SERVER =
     Guid("0000adf2-0000-1000-8000-00805f9b34fb");
 
 Guid RAW_BATTERY_VALUE_SERVER = Guid("0000ae01-0000-1000-8000-00805f9b34fb");
-Guid CLIENT_CONN = Guid("0000ae02-0000-1000-8000-00805f9b34fb"); // characterstic to check client is connected or not
+Guid CLIENT_CONN = Guid(
+    "0000ae02-0000-1000-8000-00805f9b34fb"); // characterstic to check client is connected or not
 
 ////CLIENT SIDE CHARACTERISTICS
 
@@ -50,7 +51,7 @@ String RPROV = "rprov;";
 String NOTIFICON = "@mipmap/ic_launcher";
 
 final List<String> modesNames = [
-  'Novib',
+  'High Freq', //'Novib',
   'Swing phase continuous',
   'Swing phase burst',
   'Stance phase continuous',
@@ -59,10 +60,10 @@ final List<String> modesNames = [
 ];
 
 final Map<String, String> modesDictionary = {
-  'Novib': "-1",
+  'High Freq': "-1",
   'Swing phase continuous': "2",
-  'Swing phase burst': "1",
+  'Swing phase burst': "3",
   'Stance phase continuous': "0",
-  'Stance phase burst': "3",
+  'Stance phase burst': "1",
   'Open loop': "4"
 };

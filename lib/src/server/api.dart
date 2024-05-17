@@ -37,10 +37,19 @@ class API {
     debugPrint("score is coming");
 
     var jsonData = jsonEncode(score);
+    String game = '';
 
-    String game = jsonData[1] == '1' ? "Swing" : "Ball";
+    if (jsonData[1] == '2') {
+      game = "Fish";
+    } else if (jsonData[1] == '1') {
+      game = "Swing";
+    } else {
+      game = "Ball";
+    }
+
     var url = Uri.parse(
-        "$baseUrl${LocalDB.user!.name.trimRight()}/$game-${DateTime.now()}.json");
+      "$baseUrl${LocalDB.user!.name.trimRight()}/$game-${DateTime.now()}.json",
+    );
     // print(url);
 
     if (await isNetworkAvailable()) {
