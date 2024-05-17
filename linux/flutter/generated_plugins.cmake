@@ -3,7 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  amplify_db_common
   awesome_notifications
+  rive_common
   smart_auth
   url_launcher_linux
 )
