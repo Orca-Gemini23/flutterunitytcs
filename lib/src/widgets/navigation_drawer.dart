@@ -11,8 +11,10 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
+import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/device/command_page.dart';
 import 'package:walk/src/views/faqscreens/faqpage.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
@@ -25,8 +27,10 @@ import 'package:walk/src/views/user/personal_info.dart';
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/views/user/tutorial.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
+import 'package:walk/walk_app.dart';
 
-Drawer navigationDrawer(BuildContext context) {
+Drawer navigationDrawer(
+    BuildContext context, Function isLoggedIn, Function logOut) {
   return Drawer(
     // backgroundColor: Color(DRAWERCOLOR),
     semanticLabel: "drawer",
@@ -74,36 +78,36 @@ Drawer navigationDrawer(BuildContext context) {
             ],
           ),
         ),
-        drawerItem(context),
+        drawerItem(context, isLoggedIn, logOut),
       ],
     ),
   );
 }
 
-Widget drawerItem(BuildContext context) {
+Widget drawerItem(BuildContext context, Function isLoggedIn, Function logOut) {
   List<IconData> drawerIcon = [
     Icons.home,
     Icons.person,
     Icons.tune,
-    Icons.my_library_books_outlined,
+    // Icons.my_library_books_outlined,
     Icons.group,
     Icons.email,
     // Icons.qr_code,
     Icons.help,
     Icons.question_answer,
-    // Icons.logout_sharp,
+    Icons.logout_sharp,
   ];
   List<String> drawerTileName = [
     'Home',
     'Account',
     'Device Control',
-    'Report',
+    // 'Report',
     'About Us',
     'Contact Us',
     // 'QR-Scanner',
     'Tutorial',
     "FAQ's",
-    // 'Log Out',
+    'Log Out',
   ];
   List<Function()?> drawerOnTap = [
     () {
@@ -128,12 +132,12 @@ Widget drawerItem(BuildContext context) {
         // );
       }
     },
-    () {
-      Go.to(
-        context: context,
-        push: const ReportPage(),
-      );
-    },
+    // () {
+    //   Go.to(
+    //     context: context,
+    //     push: const ReportPage(),
+    //   );
+    // },
     () {
       Go.to(
         context: context,
@@ -165,9 +169,14 @@ Widget drawerItem(BuildContext context) {
         push: const Faqpage(),
       );
     },
-    // () {
-    //   //LogOut
-    // },
+    () {
+      logOut();
+      Go.pushAndRemoveUntil(
+          context: context,
+          pushReplacement:
+              const WalkApp()); //LoginRegister(isLoggedIn: () {}, logOut: () {}));
+      // await AWSAuth.signOutCurrentUser();
+    },
   ];
 
   return ListView.builder(

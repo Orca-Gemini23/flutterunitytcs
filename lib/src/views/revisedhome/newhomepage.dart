@@ -9,11 +9,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/models/game_history_model.dart';
 import 'package:walk/src/server/api.dart';
+import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/custom_notification.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
@@ -29,7 +32,11 @@ import 'package:walk/src/widgets/navigation_drawer.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
 
 class RevisedHomePage extends StatefulWidget {
-  const RevisedHomePage({super.key});
+  const RevisedHomePage(
+      {super.key, required this.isLoggedIn, required this.logOut});
+
+  final Function isLoggedIn;
+  final Function logOut;
 
   @override
   State<RevisedHomePage> createState() => _RevisedHomePageState();
@@ -47,6 +54,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   @override
   void initState() {
     super.initState();
+    widget.isLoggedIn();
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
 
     NotificationService.notificationPermission(context);
@@ -54,7 +62,15 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     // send data to cloud when network is availabe
     sendDataWhenNetworkAvailable();
     //triggering the scheduled notifications
-    NotificationService.sendScheduledTestNotification();
+    // NotificationService.cancelScheduledNotifications();
+    // NotificationService.sendScheduledTestNotification();
+    AwesomeNotifications().getGlobalBadgeCounter().then(
+      (value) {
+        log(value.toString());
+        value = 0;
+        AwesomeNotifications().setGlobalBadgeCounter(0);
+      },
+    );
     NotificationService(context).listenToNotificationResults();
 
     WidgetsBinding.instance.addObserver(this);
@@ -110,6 +126,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   Widget build(BuildContext context) {
     // print(
     //     "------------------------Building Home Page UI--------------------------");
+    // print(AWSAuth.fetchAuthSession());
+
     return Scaffold(
       key: homePagekey,
       extendBodyBehindAppBar: true,
@@ -135,7 +153,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
           ),
         ],
       ),
-      drawer: navigationDrawer(context),
+      drawer: navigationDrawer(context, widget.isLoggedIn, widget.logOut),
       body: Container(
         width: double.infinity,
         height: double.infinity,

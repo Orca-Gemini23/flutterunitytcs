@@ -3,11 +3,14 @@ import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
-import 'package:walk/src/views/auth/login_page.dart';
-import 'package:walk/src/views/auth/signup_page.dart';
+import 'package:walk/src/views/auth/phone_auth.dart';
 
 class LoginRegister extends StatelessWidget {
-  const LoginRegister({super.key});
+  const LoginRegister(
+      {super.key, required this.isLoggedIn, required this.logOut});
+
+  final Function isLoggedIn;
+  final Function logOut;
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +51,13 @@ class LoginRegister extends StatelessWidget {
                       //     builder: (context) => LoginPage(),
                       //   ),
                       // );
-
                       Go.to(
                         context: context,
-                        push: const LoginPage(),
+                        push: PhoneAuthPage(
+                          isSignIn: true,
+                          isLoggedIn: isLoggedIn,
+                          logOut: logOut,
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -101,10 +107,18 @@ class LoginRegister extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignupPage(),
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const SignupPage(),
+                      //   ),
+                      // );
+                      Go.to(
+                        context: context,
+                        push: PhoneAuthPage(
+                          isSignIn: false,
+                          isLoggedIn: isLoggedIn,
+                          logOut: logOut,
                         ),
                       );
                     },

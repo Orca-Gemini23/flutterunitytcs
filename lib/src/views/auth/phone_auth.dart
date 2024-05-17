@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
-
+import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/screen_context.dart';
 
-import 'package:walk/src/widgets/textfields.dart';
+String countryCode = '';
+String phoneNo = '';
 
 class PhoneAuthPage extends StatefulWidget {
-  const PhoneAuthPage({super.key});
-
+  const PhoneAuthPage(
+      {super.key,
+      required this.isSignIn,
+      required this.isLoggedIn,
+      required this.logOut});
+  final bool isSignIn;
+  final Function isLoggedIn;
+  final Function logOut;
   @override
   State<PhoneAuthPage> createState() => _PhoneAuthPageState();
 }
 
 class _PhoneAuthPageState extends State<PhoneAuthPage> {
-  final TextEditingController _phoneController = TextEditingController();
+  String phoneNumber = "";
 
   @override
   Widget build(BuildContext context) {
+    AWSAuth.fetchAuthSession();
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
@@ -51,15 +60,61 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                     SizedBox(
                       height: Screen.height(context: context) * 0.05,
                     ),
-                    getTextfield(
-                        "Enter Number", _phoneController, Icons.phone_android),
+                    IntlPhoneField(
+                      decoration: const InputDecoration(
+                        // labelText: 'Phone Number',
+                        suffixIcon: Icon(Icons.phone_android),
+                      ),
+                      initialCountryCode: 'IN',
+                      showDropdownIcon: false,
+                      showCountryFlag: false,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      onChanged: (phone) {
+                        // print(phone.completeNumber);
+                        phoneNumber = phone.completeNumber;
+                        countryCode = phone.countryCode;
+                        phoneNo = phone.number;
+                      },
+                    ),
+                    // getTextfield(
+                    //     "Enter Number", _phoneController, Icons.phone_android),
                     SizedBox(
                       height: Screen.height(context: context) * 0.1,
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        print(phoneNumber);
                         //add checks and submit details
-                        //Go.to(context: context, push: const OTPPage());
+                        // Go.to(
+                        //   context: context,
+                        //   push: OTPPage(
+                        //     phoneNumber: phoneNumber,
+                        //     isSignIn: widget.isSignIn,
+                        //   ),
+                        // );
+                        widget.isSignIn
+                            ? await AWSAuth.signInWithPhoneVerification(
+                                phoneNumber,
+                                "password",
+                                context,
+                                widget.isSignIn,
+                                widget.isLoggedIn,
+                                widget.logOut)
+                            : await AWSAuth.signUpWithPhoneVerification(
+                                phoneNumber,
+                                "password",
+                                context,
+                                widget.isSignIn,
+                                widget.isLoggedIn,
+                                widget.logOut);
+                        // Go.to(
+                        //   context: context,
+                        //   push: OTPPage(
+                        //     phoneNumber: phoneNumber,
+                        //     isSignIn: widget.isSignIn,
+                        //   ),
+                        // );
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(

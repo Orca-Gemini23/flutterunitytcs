@@ -4,21 +4,25 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
-import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/controllers/auth_controller.dart';
-
-import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/screen_context.dart';
 
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
-
 class OTPPage extends StatefulWidget {
-  const OTPPage({super.key, required this.email});
-  final String email;
+  const OTPPage({
+    super.key,
+    required this.phoneNumber,
+    required this.isSignIn,
+    required this.isLoggedIn,
+    required this.logOut,
+  });
+  final String phoneNumber;
+  final bool isSignIn;
+  final Function isLoggedIn;
+  final Function logOut;
   @override
   State<OTPPage> createState() => _OTPPageState();
 }
@@ -70,7 +74,7 @@ class _OTPPageState extends State<OTPPage> {
                         height: Screen.height(context: context) * 0.01,
                       ),
                       Text(
-                        '${AppString.pleaseEnterOtp}\n${widget.email}',
+                        '${AppString.pleaseEnterOtp}\n${widget.phoneNumber}',
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -87,50 +91,105 @@ class _OTPPageState extends State<OTPPage> {
                       SizedBox(
                         height: Screen.height(context: context) * 0.1,
                       ),
-                      Consumer<AuthController>(
-                          builder: (context, authController, child) {
-                        return RoundedLoadingButton(
-                          controller: _buttonController,
-                          animateOnTap: false,
-                          color: AppColor.greenDarkColor,
-                          successColor: AppColor.greenDarkColor,
-                          onPressed: () async {
-                            if (_otpController.text.length == 6) {
-                              bool otpVerified = await authController.verifyOtp(
-                                  widget.email, _otpController.text);
-                              if (otpVerified) {
-                                _buttonController.success();
-                                // bool result =
-                                //     await PreferenceController.getboolData(
-                                //         showCaseKey);
-                                // bool unboxStatus =
-                                //     await PreferenceController.getboolData(
-                                //         "isUnboxingDone");
+                      RoundedLoadingButton(
+                        controller: _buttonController,
+                        animateOnTap: false,
+                        color: AppColor.greenDarkColor,
+                        successColor: AppColor.greenDarkColor,
+                        onPressed: () async {
+                          if (_otpController.text.length == 6) {
+                            print(_otpController.text);
+                            print(widget.phoneNumber);
+                            widget.isSignIn
+                                ? await AWSAuth.confirmSignInPhoneVerification(
+                                    _otpController.text,
+                                    context,
+                                    widget.isLoggedIn,
+                                    widget.logOut,
+                                  )
+                                : await AWSAuth.confirmSignUpPhoneVerification(
+                                    widget.phoneNumber,
+                                    _otpController.text,
+                                    widget.isLoggedIn,
+                                    widget.logOut,
+                                    context);
 
-                                // ignore: use_build_context_synchronously
-                                Go.pushAndRemoveUntil(
-                                  context: context,
-                                  pushReplacement: const RevisedHomePage(),
-                                );
-                              } else {
-                                _buttonController.error();
-                                Timer(const Duration(seconds: 2), () {
-                                  _buttonController.reset();
-                                });
-                              }
-                            }
-                          },
-                          child: const Text(
-                            AppString.verifyOtp,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2,
-                            ),
+                            // if (otpVerified) {
+                            //   _buttonController.success();
+                            //   // bool result =
+                            //   //     await PreferenceController.getboolData(
+                            //   //         showCaseKey);
+                            //   // bool unboxStatus =
+                            //   //     await PreferenceController.getboolData(
+                            //   //         "isUnboxingDone");
+
+                            //   // ignore: use_build_context_synchronously
+                            //   Go.pushAndRemoveUntil(
+                            //     context: context,
+                            //     pushReplacement: const RevisedHomePage(),
+                            //   );
+                          } else {
+                            _buttonController.error();
+                            Timer(const Duration(seconds: 2), () {
+                              _buttonController.reset();
+                            });
+                          }
+                        },
+                        child: const Text(
+                          AppString.verifyOtp,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
                           ),
-                        );
-                      }),
+                        ),
+                      ),
+                      // Consumer<AuthController>(
+                      //     builder: (context, authController, child) {
+                      //   return RoundedLoadingButton(
+                      //     controller: _buttonController,
+                      //     animateOnTap: false,
+                      //     color: AppColor.greenDarkColor,
+                      //     successColor: AppColor.greenDarkColor,
+                      //     onPressed: () async {
+                      //       if (_otpController.text.length == 6) {
+                      //         print(_otpController.text);
+                      //         bool otpVerified = await authController.verifyOtp(
+                      //             widget.email, _otpController.text);
+                      //         if (otpVerified) {
+                      //           _buttonController.success();
+                      //           // bool result =
+                      //           //     await PreferenceController.getboolData(
+                      //           //         showCaseKey);
+                      //           // bool unboxStatus =
+                      //           //     await PreferenceController.getboolData(
+                      //           //         "isUnboxingDone");
+
+                      //           // ignore: use_build_context_synchronously
+                      //           Go.pushAndRemoveUntil(
+                      //             context: context,
+                      //             pushReplacement: const RevisedHomePage(),
+                      //           );
+                      //         } else {
+                      //           _buttonController.error();
+                      //           Timer(const Duration(seconds: 2), () {
+                      //             _buttonController.reset();
+                      //           });
+                      //         }
+                      //       }
+                      //     },
+                      //     child: const Text(
+                      //       AppString.verifyOtp,
+                      //       style: TextStyle(
+                      //         color: Colors.white,
+                      //         fontSize: 22,
+                      //         fontWeight: FontWeight.bold,
+                      //         letterSpacing: 2,
+                      //       ),
+                      //     ),
+                      //   );
+                      // }),
                       SizedBox(
                         height: Screen.height(context: context) * 0.1,
                       ),
@@ -145,7 +204,23 @@ class _OTPPageState extends State<OTPPage> {
                                 fontWeight: FontWeight.w300),
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              widget.isSignIn
+                                  ? await AWSAuth.signInWithPhoneVerification(
+                                      widget.phoneNumber,
+                                      "password",
+                                      context,
+                                      widget.isSignIn,
+                                      widget.isLoggedIn,
+                                      widget.logOut)
+                                  : await AWSAuth.signUpWithPhoneVerification(
+                                      widget.phoneNumber,
+                                      "password",
+                                      context,
+                                      widget.isSignIn,
+                                      widget.isLoggedIn,
+                                      widget.logOut);
+                            },
                             child: const Text(
                               AppString.resendOtp,
                               style: TextStyle(

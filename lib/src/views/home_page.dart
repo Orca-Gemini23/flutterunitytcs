@@ -8,7 +8,6 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/widgets/navigation_drawer.dart';
 import '../widgets/scanned_item_tile.dart';
 
 GlobalKey homepageKey = GlobalKey();
@@ -36,7 +35,7 @@ class _HomepageState extends State<Homepage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       key: homepageKey,
-      drawer: navigationDrawer(context),
+      // drawer: navigationDrawer(context),
       appBar: AppBar(
         title: const Text(
           AppString.homeTitle,

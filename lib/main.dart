@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_notification.dart';
 
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
@@ -43,6 +44,10 @@ void main() async {
   /// initializes Hive local databased
 
   NotificationService.initNotification();
+  NotificationService.cancelScheduledNotifications();
+  NotificationService.sendScheduledTestNotification();
+
+  AWSAuth.configureAmplify();
 
   /// Core app
   runApp(

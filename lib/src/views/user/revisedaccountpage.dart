@@ -14,7 +14,10 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/calendar/calendar_view.dart';
+import 'package:walk/src/views/physiotherapist/landing_page.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 String country = "India";
 Map<DateTime, List<int>> _kEventSource = {};
@@ -408,6 +411,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                                 onChanged: (value) {
                                   setState(() {
                                     selectedCountryCode = value!;
+                                    print(selectedCountryCode);
                                   });
                                 },
                                 items: [
@@ -440,6 +444,13 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                             ),
                           ],
                         ),
+                        // Container(
+                        //   height: 60,
+                        //   decoration: BoxDecoration(
+                        //     color: Colors.grey,
+                        //     borderRadius: BorderRadius.circular(20),
+                        //   ),
+                        // ),
                         const SizedBox(
                           height: 40,
                         ),
@@ -473,6 +484,8 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                           loaderSize: 25,
                           controller: _buttonController,
                           onPressed: () {
+                            print(
+                                "$selectedCountryCode${phoneController.text}");
                             emailValid = RegExp(
                                     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                 .hasMatch(emailController.text);
@@ -481,7 +494,8 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                               var newUser = UserModel(
                                 name: nameController.text,
                                 age: ageController.text,
-                                phone: "",
+                                phone: phoneNo,
+                                //"$selectedCountryCode ${phoneController.text}",
                                 image: _image?.path ?? "NA",
                                 gender: genderController.text,
                                 address: cityController.text,
@@ -494,6 +508,14 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                               Timer(const Duration(seconds: 2), () {
                                 _buttonController.success();
                               });
+                              // Timer(const Duration(seconds: 4), () {
+                              //   Go.to(
+                              //     context: context,
+                              //     push: const RevisedHomePage(),
+                              //   );
+                              // });
+                              // Go.to(
+                              //     context: context, push: const LandingPage());
                             } else {
                               Fluttertoast.showToast(
                                 msg: "Please enter details correctly",

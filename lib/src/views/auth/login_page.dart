@@ -11,13 +11,15 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/controllers/auth_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
-import 'package:walk/src/views/auth/otp_page.dart';
+// import 'package:walk/src/views/auth/otp_page.dart';
 import 'package:walk/src/views/auth/signup_page.dart';
 
 import 'package:walk/src/widgets/textfields.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key, required this.isSignIn});
+
+  final bool isSignIn;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -99,16 +101,16 @@ class _LoginPageState extends State<LoginPage> {
                                 if (otpSent) {
                                   _buttonController.success();
                                   _buttonController.reset();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return OTPPage(
-                                          email: _emailController.text,
-                                        );
-                                      },
-                                    ),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) {
+                                  //       return OTPPage(
+                                  //         email: _emailController.text,
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // );
                                 } else {
                                   _buttonController.error();
                                   Timer(const Duration(seconds: 2), () {

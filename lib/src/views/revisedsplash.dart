@@ -8,8 +8,10 @@ import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 class Revisedsplash extends StatefulWidget {
-  const Revisedsplash({super.key});
-
+  const Revisedsplash(
+      {super.key, required this.isLoggedIn, required this.logOut});
+  final Function isLoggedIn;
+  final Function logOut;
   @override
   State<Revisedsplash> createState() => _RevisedsplashState();
 }
@@ -70,15 +72,17 @@ class _RevisedsplashState extends State<Revisedsplash>
                 ? Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        settings: const RouteSettings(name: "/"),
-                        builder: (context) =>
-                            const RevisedHomePage() //DeviceCodePage(), ////To be changed back to login page after ensuring that the flask servers are up and running
-                        ),
+                      settings: const RouteSettings(name: "/"),
+                      builder: (context) => RevisedHomePage(
+                          isLoggedIn: widget.isLoggedIn, logOut: widget.logOut),
+                      //DeviceCodePage(), ////To be changed back to login page after ensuring that the flask servers are up and running
+                    ),
                   )
                 : Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const RevisedHomePage(),
+                      builder: (context) => RevisedHomePage(
+                          isLoggedIn: widget.isLoggedIn, logOut: widget.logOut),
                     ),
                   );
           },
