@@ -8,6 +8,7 @@ import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:fluttertoast/fluttertoast.dart";
 import "package:provider/provider.dart";
 import "package:rive/rive.dart";
+import "package:wakelock_plus/wakelock_plus.dart";
 import "package:walk/src/constants/app_color.dart";
 import "package:walk/src/constants/bt_constants.dart";
 import "package:walk/src/controllers/animation_controller.dart";
@@ -15,6 +16,7 @@ import "package:walk/src/controllers/device_controller.dart";
 import "package:walk/src/controllers/game_controller.dart";
 import "package:walk/src/server/api.dart";
 import "package:walk/src/utils/firebasehelper.dart/firebasedb.dart";
+import "package:walk/src/views/artherapy/animation_rotation.dart";
 import "package:walk/src/widgets/dialog.dart";
 
 class AnimationControlButton extends StatefulWidget {
@@ -36,6 +38,7 @@ class AnimationControlButton extends StatefulWidget {
   SMIInput<bool>? sendLeftBall;
   SMIInput<double>? leftAngleInput;
   SMIInput<double>? rightAngleInput;
+  GameController? gameController;
 
   @override
   State<AnimationControlButton> createState() => _AnimationControlButtonState();
@@ -48,7 +51,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
   int isBuzzer = 0;
   int ball = -1; // 0 => right and 1=> left
   int ballValue = -1;
-  List<dynamic> data = [];
+  List<String> data = [];
 
   Future<void> disposeEssentials() async {
     ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
@@ -69,32 +72,43 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
             AnimationValuesController>(
         builder: (context, deviceController, gameController,
             animationValuesController, child) {
-      return ElevatedButton(
-        onPressed: () async {
-          onPressed(
-            gameController,
-            deviceController,
-            animationValuesController,
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(double.maxFinite, 70.h),
-          backgroundColor: gameController.gameStatus == true
-              ? AppColor.batteryindicatorred
-              : AppColor.batteryindicatorgreen,
-          shadowColor: gameController.gameStatus == true
-              ? AppColor.batteryindicatorred.withOpacity(.4)
-              : AppColor.batteryindicatorgreen.withOpacity(.4),
+      return WillPopScope(
+        child: ElevatedButton(
+          onPressed: () async {
+            print(
+                "${gameController.gameStatus},${GameController().gameStatus}");
+            onPressed(
+              gameController,
+              deviceController,
+              animationValuesController,
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(double.maxFinite, 49.h),
+            backgroundColor: gameController.gameStatus == true
+                ? AppColor.batteryindicatorred
+                : AppColor.batteryindicatorgreen,
+            shadowColor: gameController.gameStatus == true
+                ? AppColor.batteryindicatorred.withOpacity(.4)
+                : AppColor.batteryindicatorgreen.withOpacity(.4),
+          ),
+          child: gameController.gameStatus == true
+              ? Text(
+                  "${gameController.secondsPlayed} seconds",
+                  style: TextStyle(color: AppColor.whiteColor, fontSize: 18.sp),
+                ) ////Display a timer if the device
+              : Text(
+                  "Start Game",
+                  style: TextStyle(color: AppColor.whiteColor, fontSize: 18.sp),
+                ),
         ),
-        child: gameController.gameStatus == true
-            ? Text(
-                "${gameController.secondsPlayed} seconds",
-                style: TextStyle(color: AppColor.whiteColor, fontSize: 18.sp),
-              ) ////Display a timer if the device
-            : Text(
-                "Start Game",
-                style: TextStyle(color: AppColor.whiteColor, fontSize: 18.sp),
-              ),
+        onWillPop: () {
+          if (!gameController.gameStatus) {
+            return Future.value(true);
+          } else {
+            return Future.value(false);
+          }
+        },
       );
     });
   }
@@ -107,7 +121,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
     animationValues = deviceController.startStream();
 
     ballPeriodicTimer = Timer.periodic(
-      const Duration(seconds: 6),
+      Duration(seconds: 6), //(ballSpeed / 10).ceil() + 1),
       (timer) async {
         if (deviceController.rightAngleValue == -10 ||
             deviceController.leftAngleValue == -10) {
@@ -147,16 +161,14 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
                     ? await deviceController.sendToDevice(
                         "beepc 4;", WRITECHARACTERISTICS)
                     : null;
+
                 if (rightBallValue ==
                     gameController.getVibrationPosition().toInt()) {
                   isBuzzer = 1;
                 } else {
                   isBuzzer = 0;
                 }
-
-                await Future.delayed(
-                  const Duration(milliseconds: 30),
-                );
+                await Future.delayed(Duration(milliseconds: ballSpeed));
                 rightBallValue++;
                 ballValue++;
               }
@@ -198,8 +210,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
                 } else {
                   isBuzzer = 0;
                 }
-
-                await Future.delayed(const Duration(milliseconds: 30));
+                await Future.delayed(Duration(milliseconds: ballSpeed));
                 leftBallValue++;
                 ballValue++;
               }
@@ -220,6 +231,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
     if (gameController.gameStatus == true) {
       //// stop the game and handle upload to cloud
       gameController.stopTimer();
+      WakelockPlus.disable();
       if (animationValues != null) {
         await animationValues!.cancel();
       }
@@ -247,10 +259,12 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
       }
     } else {
       gameController.startTimer();
+      WakelockPlus.enable();
       handleGame(deviceController, animationValuesController, gameController);
       gameController.changeGameStatus(true);
 
-      logTimer = Timer.periodic(const Duration(milliseconds: 10), (timer) async {
+      logTimer =
+          Timer.periodic(const Duration(milliseconds: 10), (timer) async {
         String score =
             "$ball, $ballValue, busser beeped : $isBuzzer, RLA: ${widget.leftAngleInput?.value}, LLA: ${widget.rightAngleInput?.value}, score: ${gameController.scores}, ${DateTime.now().millisecondsSinceEpoch}";
 

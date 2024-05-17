@@ -21,6 +21,8 @@ import 'dart:developer' as dev;
 
 import 'package:walk/src/widgets/therapypage/startstoptherapybutton.dart';
 
+var ballSpeed = 30;
+
 class RiveAnimationPage extends StatefulWidget {
   const RiveAnimationPage({super.key});
 
@@ -68,7 +70,7 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
   void initState() {
     super.initState();
     _loadSlider();
-    _riveFile = Animationloader.loadAnimation();
+    _riveFile = Animationloader.loadBallAnimation();
   }
 
   void _loadSlider() async {
@@ -219,15 +221,16 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                         },
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    // const SizedBox(
+                    //   height: 5,
+                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           width: 100.w,
                           decoration: const BoxDecoration(
                               shape: BoxShape.circle,
@@ -243,7 +246,8 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           width: 100.w,
                           decoration: const BoxDecoration(
                               shape: BoxShape.circle,
@@ -262,28 +266,51 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
                     ),
                     SizedBox(
                       child: Consumer<GameController>(
-                          builder: (context, gameController, child) {
-                        return SliderTheme(
-                          data: const SliderThemeData(
-                            trackHeight: 8,
-                            activeTrackColor: AppColor.greenDarkColor,
-                            thumbColor: AppColor.greenDarkColor,
-                          ),
-                          child: Slider(
-                              value: _currentSliderValue,
-                              onChanged: (value) {},
-                              min: 0,
-                              max: 40,
-                              label: gameController
-                                  .getVibrationPosition()
-                                  .toString(),
-                              onChangeEnd: (value) {
-                                gameController.changeVibrationPostion(value);
-                                _changeSlider(value);
-                                _storeSlider();
-                              }),
-                        );
-                      }),
+                        builder: (context, gameController, child) {
+                          return SliderTheme(
+                            data: const SliderThemeData(
+                              trackHeight: 8,
+                              activeTrackColor: AppColor.greenDarkColor,
+                              thumbColor: AppColor.greenDarkColor,
+                            ),
+                            child: Slider(
+                                value: _currentSliderValue,
+                                onChanged: (value) {},
+                                min: 0,
+                                max: 40,
+                                label: gameController
+                                    .getVibrationPosition()
+                                    .toString(),
+                                onChangeEnd: (value) {
+                                  gameController.changeVibrationPostion(value);
+                                  _changeSlider(value);
+                                  _storeSlider();
+                                }),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      child: SliderTheme(
+                        data: const SliderThemeData(
+                          trackHeight: 8,
+                          activeTrackColor: AppColor.greenDarkColor,
+                          thumbColor: AppColor.greenDarkColor,
+                        ),
+                        child: Slider(
+                            value: 100 - ballSpeed.toDouble(),
+                            onChanged: (value) {},
+                            min: 15,
+                            max: 90,
+                            divisions: 15,
+                            label: (100 - ballSpeed).toString(),
+                            onChangeEnd: (value) {
+                              setState(() {
+                                ballSpeed = 100 - value.round();
+                                print(ballSpeed);
+                              });
+                            }),
+                      ),
                     ),
                     AnimationControlButton(
                       animationStateController: _stateMachineController,

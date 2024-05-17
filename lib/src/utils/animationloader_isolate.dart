@@ -21,7 +21,7 @@ class Animationloader {
   static Future<RiveFile> loadSwingAnimation() async {
     log("Loading Rive Swing Animation .....");
     String animationAsset =
-        "assets/images/animations/swing_animation_updated_6.riv";
+        "assets/images/animations/swing_animation_latest.riv";
     final ByteData byteData = await rootBundle.load(animationAsset);
     final RiveFile riveFile = RiveFile.import(byteData);
 
@@ -30,9 +30,7 @@ class Animationloader {
 
   static Future<RiveFile> loadFishAnimation() async {
     log("Loading Rive Swing Animation .....");
-    String animationAsset = 
-    "assets/images/animations/fish_game_resized.riv";
-    // "assets/images/animations/fish_game.riv";
+    String animationAsset = "assets/images/animations/fish_game_latest_4.riv";
     final ByteData byteData = await rootBundle.load(animationAsset);
     final RiveFile riveFile = RiveFile.import(byteData);
 
@@ -43,3 +41,10 @@ class Animationloader {
 //"assets/images/animations/swing_animation.riv";
 // "assets/images/animations/swing_animation_without_white_leg.riv";
 // "assets/images/animations/swing_animation_with_white_leg.riv";
+// "assets/images/animations/swing_game_with_left_right_correct.riv";
+// "assets/images/animations/swing_animation_updated_6.riv";
+
+// "assets/images/animations/fish_game_left_leg_number.riv";
+// "assets/images/animations/fish_game_w_left_right.riv";
+// "assets/images/animations/fish_game_resized.riv";
+// "assets/images/animations/fish_game.riv";

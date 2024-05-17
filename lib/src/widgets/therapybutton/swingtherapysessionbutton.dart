@@ -5,19 +5,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/views/therapyentrypage/therapypage.dart';
-import 'package:walk/src/views/user/revisedaccountpage.dart';
+import 'package:walk/src/views/artherapy/animation_swing.dart';
 
-class TherapySessionBtn extends StatefulWidget {
-  const TherapySessionBtn({super.key});
+class SwingTherapySessionBtn extends StatefulWidget {
+  const SwingTherapySessionBtn({super.key});
 
   @override
-  State<TherapySessionBtn> createState() => _TherapySessionBtnState();
+  State<SwingTherapySessionBtn> createState() => _SwingTherapySessionBtnState();
 }
 
-class _TherapySessionBtnState extends State<TherapySessionBtn> {
+class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
   bool _isTherapyButtonTapped = false;
   @override
   Widget build(BuildContext context) {
@@ -69,14 +68,14 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                     height: 92.h,
                     child: const Image(
                       fit: BoxFit.contain,
-                      color: AppColor.blackColor,
+                      // color: AppColor.blackColor,
                       image: AssetImage(
-                        "assets/images/therapysession.png",
+                        "assets/images/swing.png",
                       ),
                     ),
                   ),
                   Text(
-                    "Therapy Session",
+                    "Swing",
                     overflow: TextOverflow.fade,
                     style: TextStyle(
                       fontSize: 14.sp,
@@ -92,22 +91,6 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
     );
   }
 
-  bool checkAccountEligible() {
-    String userName = LocalDB.listenableUser()
-        .value
-        .get(
-          0,
-          defaultValue: LocalDB.defaultUser,
-        )!
-        .name;
-
-    if (userName == "Unknown User") {
-      ////Dont allow user to use the therapy page
-      return false;
-    }
-    return true;
-  }
-
   void therapyButtonOnPressed(DeviceController deviceController) async {
     print("coming here");
     if (deviceController.connectedDevice == null) {
@@ -115,24 +98,18 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
         msg: "Please Connect to the device first",
       );
     } else {
-      bool accountEligible = checkAccountEligible();
-
-      if (accountEligible) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => const TherapyEntryPage()),
-          ),
-        );
-      } else {
-        Fluttertoast.showToast(msg: "Please update the account details first");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Revisedaccountpage(),
-          ),
-        );
-      }
+      bool res =
+          await deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
+      res
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: ((context) => const RiveSwingAnimationPage()),
+              ),
+            )
+          : Fluttertoast.showToast(
+              msg: "Please try again",
+            );
     }
   }
 }

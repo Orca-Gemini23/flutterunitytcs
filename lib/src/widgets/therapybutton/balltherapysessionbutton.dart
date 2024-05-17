@@ -5,19 +5,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/views/therapyentrypage/therapypage.dart';
+import 'package:walk/src/views/artherapy/animation_rotation.dart';
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 
-class TherapySessionBtn extends StatefulWidget {
-  const TherapySessionBtn({super.key});
+class BallTherapySessionBtn extends StatefulWidget {
+  const BallTherapySessionBtn({super.key});
 
   @override
-  State<TherapySessionBtn> createState() => _TherapySessionBtnState();
+  State<BallTherapySessionBtn> createState() => _BallTherapySessionBtnState();
 }
 
-class _TherapySessionBtnState extends State<TherapySessionBtn> {
+class _BallTherapySessionBtnState extends State<BallTherapySessionBtn> {
   bool _isTherapyButtonTapped = false;
   @override
   Widget build(BuildContext context) {
@@ -69,14 +70,15 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                     height: 92.h,
                     child: const Image(
                       fit: BoxFit.contain,
-                      color: AppColor.blackColor,
+                      // color: AppColor.blackColor,
                       image: AssetImage(
-                        "assets/images/therapysession.png",
+                        "assets/images/footballwithshadow.png",
+                      
                       ),
                     ),
                   ),
                   Text(
-                    "Therapy Session",
+                    "ball",
                     overflow: TextOverflow.fade,
                     style: TextStyle(
                       fontSize: 14.sp,
@@ -118,12 +120,18 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
       bool accountEligible = checkAccountEligible();
 
       if (accountEligible) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => const TherapyEntryPage()),
-          ),
-        );
+        bool res = await deviceController.sendToDevice(
+            "mode 9;", WRITECHARACTERISTICS);
+        res
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: ((context) => const RiveAnimationPage()),
+                ),
+              )
+            : Fluttertoast.showToast(
+                msg: "Please try again",
+              );
       } else {
         Fluttertoast.showToast(msg: "Please update the account details first");
         Navigator.push(
