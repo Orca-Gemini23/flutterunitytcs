@@ -63,6 +63,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
       //  numberOfScans = 0;
     } else {
       //// Any time the connect button is pressed , checking the status of the bluetooth adapter(if its on or not), if not then turn on the bluetooth
+      // deviceController.checkLocationPremission();
       await deviceController.checkBluetoothAdapterState(context);
       await deviceController.startDiscovery(
         () {

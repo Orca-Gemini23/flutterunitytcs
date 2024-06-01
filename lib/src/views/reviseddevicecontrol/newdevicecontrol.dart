@@ -142,9 +142,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                       TextEditingController frequencyTextController =
                           TextEditingController(
                               text: (deviceController.frequencyValue * 60)
-                                  .toString());
+                                  .toStringAsFixed(0));
                       return Consumer<DeviceController>(
                         builder: (context, deviceController, widget) {
+                          deviceController.isScanning = false;
                           return Container(
                             width: double.maxFinite,
                             height: double.maxFinite,
@@ -569,7 +570,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                       frequencyTextController
                                                           .text = (value *
                                                               60)
-                                                          .toStringAsFixed(2);
+                                                          .toStringAsFixed(0);
                                                     },
                                                   ),
                                                 ),
@@ -692,35 +693,40 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      "Left",
-                                                      style: TextStyle(
+                                                Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        "Left",
+                                                        style: TextStyle(
+                                                            fontSize: 14.sp,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      magSlider(false,
+                                                          deviceController),
+                                                    ],
+                                                  ),
+                                                ),
+                                                // const Spacer(),
+                                                Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        "Right",
+                                                        style: TextStyle(
                                                           fontSize: 14.sp,
                                                           fontWeight:
                                                               FontWeight.w500,
-                                                          color: Colors.black),
-                                                    ),
-                                                    magSlider(false,
-                                                        deviceController),
-                                                  ],
-                                                ),
-                                                // const Spacer(),
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      "Right",
-                                                      style: TextStyle(
-                                                        fontSize: 14.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: Colors.black,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    magSlider(
-                                                        true, deviceController),
-                                                  ],
+                                                      magSlider(true,
+                                                          deviceController),
+                                                    ],
+                                                  ),
                                                 )
                                               ],
                                             ))

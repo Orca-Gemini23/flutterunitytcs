@@ -62,6 +62,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
           children: [
             Consumer<DeviceController>(
                 builder: (context, deviceController, widget) {
+              deviceController.checkLocationPremission();
               return Positioned(
                 top: 250,
                 left: 0,
