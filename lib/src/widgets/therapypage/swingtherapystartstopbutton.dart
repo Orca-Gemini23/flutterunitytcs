@@ -1,10 +1,8 @@
 // ignore_for_file: must_be_immutable
 
 import "dart:async";
-import "dart:developer";
-// import "dart:math";
-// import "dart:developer" as dev;
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:fluttertoast/fluttertoast.dart";
 import "package:provider/provider.dart";
@@ -66,6 +64,8 @@ class _SwingAnimationControlButtonState
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
     if (data.isNotEmpty) {
       print("testing 1 data uploading");
       print(data);
@@ -156,8 +156,6 @@ class _SwingAnimationControlButtonState
       // print("---->${widget.rightLegInput!.value},${count}");
       if (widget.rightLegInput!.value) {
         if (state == "middle to SbgL" || state == "middle to BbgL") {
-          // print(
-          // "${legDown.toString()},"); // ${deviceController.rightAngleValue}");
           if (deviceController.rightAngleValue > 30 && legDown) {
             widget.animationStateController!
                 .setInputValue(widget.legRaise!.id, true);
@@ -176,10 +174,7 @@ class _SwingAnimationControlButtonState
               .setInputValue(widget.legRaise!.id, false);
         }
       } else {
-        // print(state);
         if (state == "middle to SbgL" || state == "middle to BbgL") {
-          // print(
-          // "${legDown.toString()},"); // ${deviceController.rightAngleValue}");
           if (deviceController.leftAngleValue > 30 && legDown) {
             widget.animationStateController!
                 .setInputValue(widget.legRaise!.id, true);
@@ -190,7 +185,6 @@ class _SwingAnimationControlButtonState
           }
           // legDown = false;
         } else if (state == "middle to BbgR" || state == "middle to SbgR") {
-          // print("$raiseAngle, ${deviceController.rightAngleValue}");
           if (deviceController.leftAngleValue < raiseAngle - 15) {
             legDown = true;
           }
@@ -206,7 +200,7 @@ class _SwingAnimationControlButtonState
         if (state == 'SbgR to middle' || state == 'BbgR to middle') {
           Fluttertoast.showToast(msg: "Raise Your leg !!!!");
           await deviceController.sendToDevice("beepc 4;", WRITECHARACTERISTICS);
-          count++;
+          // count++;
         } else if (state == 'SbgL to middle' || state == 'BbgL to middle') {
           Fluttertoast.showToast(msg: "Drop Your leg !!!!");
           if (widget.legRaise!.value) {
@@ -214,6 +208,7 @@ class _SwingAnimationControlButtonState
           } else {
             if (rhythm > 0) rhythm--;
           }
+          count++;
           // await deviceController.sendToDevice("beepc 4;", WRITECHARACTERISTICS);
         }
       } else if (count >= 4 && count < 8) {
@@ -221,7 +216,7 @@ class _SwingAnimationControlButtonState
         if (state == 'SbgR to middle' || state == 'BbgR to middle') {
           Fluttertoast.showToast(msg: "Raise Your leg !!!!");
           await deviceController.sendToDevice("beeps 4;", WRITECHARACTERISTICS);
-          count++;
+          // count++;
         } else if (state == 'SbgL to middle' || state == 'BbgL to middle') {
           Fluttertoast.showToast(msg: "Drop Your leg !!!!");
           if (widget.legRaise!.value) {
@@ -229,6 +224,7 @@ class _SwingAnimationControlButtonState
           } else {
             if (rhythm > 0) rhythm--;
           }
+          count++;
           // await deviceController.sendToDevice("beepc 4;", WRITECHARACTERISTICS);
         }
       } else if (count == 8) {
@@ -236,48 +232,6 @@ class _SwingAnimationControlButtonState
         count = 0;
       }
     });
-    // } else {
-    //   swingTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-    //     // print(state);
-    //     if (state == "middle to SbgL" || state == "middle to BbgL") {
-    //       // print(
-    //       // "${legDown.toString()},"); // ${deviceController.rightAngleValue}");
-    //       if (deviceController.leftAngleValue > 30 && legDown) {
-    //         widget.animationStateController!
-    //             .setInputValue(widget.legRaise!.id, true);
-    //         gameController.incrementScore();
-
-    //         raiseAngle = deviceController.leftAngleValue;
-    //         legDown = false;
-    //       }
-    //       // legDown = false;
-    //     } else if (state == "middle to BbgR" || state == "middle to SbgR") {
-    //       // print("$raiseAngle, ${deviceController.rightAngleValue}");
-    //       if (deviceController.leftAngleValue < raiseAngle - 15) {
-    //         legDown = true;
-    //       }
-    //       widget.animationStateController!
-    //           .setInputValue(widget.legRaise!.id, false);
-    //     }
-    //   });
-
-    //   /// timer to send buzzer and toast
-    // buzzerTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
-    //   if (state == 'SbgR to middle' || state == 'BbgR to middle') {
-    //     Fluttertoast.showToast(msg: "Raise Your leg !!!!");
-    //     await deviceController.sendToDevice("beeps 4;", WRITECHARACTERISTICS);
-    //     count++;
-    //   } else if (state == 'SbgL to middle' || state == 'BbgL to middle') {
-    //     Fluttertoast.showToast(msg: "Drop Your leg !!!!");
-    //     // await deviceController.sendToDevice("beepc 4;", WRITECHARACTERISTICS);
-    //   }
-    //     print("count2: $count");
-    //     if (count == 3) {
-    //       widget.rightLegInput!.value = true;
-    //       count = 0;
-    //     }
-    //   });
-    // }
   }
 
   void onPressed(
@@ -311,6 +265,7 @@ class _SwingAnimationControlButtonState
       gameController.startTimer();
       WakelockPlus.enable();
       print(data.length);
+      widget.rightLegInput!.value = true;
       handleGame(deviceController, animationValuesController, gameController);
       gameController.changeGameStatus(true);
       logTimer =

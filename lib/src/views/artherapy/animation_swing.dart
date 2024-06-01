@@ -1,8 +1,6 @@
 // // ignore_for_file: unused_field, unused_import
 
 import 'dart:async';
-// import 'dart:math';
-// import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -14,9 +12,7 @@ import 'package:walk/src/controllers/animation_controller.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/controllers/game_controller.dart';
 import 'package:walk/src/utils/animationloader_isolate.dart';
-// import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/widgets/dialog.dart';
-// import 'package:flutter/widgets.dart';
 
 import 'package:walk/src/widgets/therapypage/swingtherapystartstopbutton.dart';
 
@@ -96,6 +92,8 @@ class _RiveSwingAnimationPageState extends State<RiveSwingAnimationPage>
   void initState() {
     super.initState();
     _riveFile = Animationloader.loadSwingAnimation();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
   }
 
   @override
@@ -138,10 +136,7 @@ class _RiveSwingAnimationPageState extends State<RiveSwingAnimationPage>
             _rightAngleInput?.value = animationValuesController.rightAngleValue;
             _bgHeight?.value = gameController.scores * 5.0;
             _rhythmNumber?.value = 90;
-            // print(score);
             score?.text = gameController.scores.toString();
-            // print(score);
-            print(rhythm);
 
             return StreamBuilder<BluetoothConnectionState>(
               stream: deviceController.connectedDevice?.connectionState ??

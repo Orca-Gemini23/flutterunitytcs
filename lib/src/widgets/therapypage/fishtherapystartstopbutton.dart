@@ -2,13 +2,12 @@
 
 import "dart:async";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
-import "package:fluttertoast/fluttertoast.dart";
 import "package:provider/provider.dart";
 import "package:rive/rive.dart";
 import "package:wakelock_plus/wakelock_plus.dart";
 import "package:walk/src/constants/app_color.dart";
-import "package:walk/src/constants/bt_constants.dart";
 import "package:walk/src/controllers/animation_controller.dart";
 import "package:walk/src/controllers/device_controller.dart";
 import "package:walk/src/controllers/game_controller.dart";
@@ -17,8 +16,8 @@ import "package:walk/src/server/api.dart";
 // import "package:walk/src/utils/firebasehelper.dart/firebasedb.dart";
 import "package:walk/src/widgets/dialog.dart";
 
-class SwingAnimationControlButton extends StatefulWidget {
-  SwingAnimationControlButton({
+class FishAnimationControlButton extends StatefulWidget {
+  FishAnimationControlButton({
     super.key,
     required this.animationStateController,
     required this.fish1flag1,
@@ -56,12 +55,12 @@ class SwingAnimationControlButton extends StatefulWidget {
   SMIInput<bool>? rightLegInput;
 
   @override
-  State<SwingAnimationControlButton> createState() =>
-      _SwingAnimationControlButtonState();
+  State<FishAnimationControlButton> createState() =>
+      _FishAnimationControlButtonState();
 }
 
-class _SwingAnimationControlButtonState
-    extends State<SwingAnimationControlButton> {
+class _FishAnimationControlButtonState
+    extends State<FishAnimationControlButton> {
   StreamSubscription<List<int>>? animationValues;
   Timer? swingTimer;
   Timer? buzzerTimer;
@@ -76,6 +75,8 @@ class _SwingAnimationControlButtonState
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
     super.initState();
   }
 

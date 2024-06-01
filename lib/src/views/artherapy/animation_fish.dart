@@ -108,6 +108,8 @@ class _RiveFishAnimationPageState extends State<RiveFishAnimationPage>
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
     _riveFile = Animationloader.loadFishAnimation();
   }
 
@@ -259,7 +261,7 @@ class _RiveFishAnimationPageState extends State<RiveFishAnimationPage>
                         ),
                       ],
                     ),
-                    SwingAnimationControlButton(
+                    FishAnimationControlButton(
                       animationStateController: _stateMachineController,
                       rightAngleInput: _rightAngleInput,
                       leftAngleInput: _leftAngleInput,

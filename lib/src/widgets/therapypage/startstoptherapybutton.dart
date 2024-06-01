@@ -4,6 +4,7 @@ import "dart:async";
 import "dart:math";
 import "dart:developer" as dev;
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:fluttertoast/fluttertoast.dart";
 import "package:provider/provider.dart";
@@ -56,6 +57,13 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
   Future<void> disposeEssentials() async {
     ballPeriodicTimer == null ? null : ballPeriodicTimer!.cancel();
     animationValues == null ? null : await animationValues!.cancel();
+  }
+
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
+    super.initState();
   }
 
   @override
@@ -121,7 +129,7 @@ class _AnimationControlButtonState extends State<AnimationControlButton> {
     animationValues = deviceController.startStream();
 
     ballPeriodicTimer = Timer.periodic(
-      Duration(seconds: 6), //(ballSpeed / 10).ceil() + 1),
+      Duration(seconds: (ballSpeed / 10).ceil() + 3),
       (timer) async {
         if (deviceController.rightAngleValue == -10 ||
             deviceController.leftAngleValue == -10) {

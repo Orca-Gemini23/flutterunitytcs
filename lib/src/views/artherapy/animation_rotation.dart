@@ -71,6 +71,8 @@ class _RiveAnimationPageState extends State<RiveAnimationPage>
     super.initState();
     _loadSlider();
     _riveFile = Animationloader.loadBallAnimation();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
   }
 
   void _loadSlider() async {
