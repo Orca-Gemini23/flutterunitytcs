@@ -218,49 +218,49 @@ class _RiveFishAnimationPageState extends State<RiveFishAnimationPage>
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          width: 100.w,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColor.lightgreen),
-                          child: Center(
-                            child: Text(
-                              "${animationValuesController.leftAngleValue}",
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: AppColor.greenDarkColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          width: 100.w,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColor.lightgreen),
-                          child: Center(
-                            child: Text(
-                              "${animationValuesController.rightAngleValue}",
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: AppColor.greenDarkColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // const SizedBox(
+                    //   height: 5,
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   children: [
+                    //     Container(
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 8, vertical: 4),
+                    //       width: 100.w,
+                    //       decoration: const BoxDecoration(
+                    //           shape: BoxShape.circle,
+                    //           color: AppColor.lightgreen),
+                    //       child: Center(
+                    //         child: Text(
+                    //           "${animationValuesController.leftAngleValue}",
+                    //           style: TextStyle(
+                    //             fontSize: 14.sp,
+                    //             color: AppColor.greenDarkColor,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Container(
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 8, vertical: 4),
+                    //       width: 100.w,
+                    //       decoration: const BoxDecoration(
+                    //           shape: BoxShape.circle,
+                    //           color: AppColor.lightgreen),
+                    //       child: Center(
+                    //         child: Text(
+                    //           "${animationValuesController.rightAngleValue}",
+                    //           style: TextStyle(
+                    //             fontSize: 14.sp,
+                    //             color: AppColor.greenDarkColor,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     FishAnimationControlButton(
                       animationStateController: _stateMachineController,
                       rightAngleInput: _rightAngleInput,
