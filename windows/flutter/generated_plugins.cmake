@@ -4,9 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   amplify_db_common
-  awesome_notifications
   cloud_firestore
   firebase_core
+  flutter_unity_widget
   geolocator_windows
   permission_handler_windows
   rive_common

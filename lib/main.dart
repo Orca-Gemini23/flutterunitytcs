@@ -43,9 +43,9 @@ void main() async {
 
   /// initializes Hive local databased
 
-  NotificationService.initNotification();
-  NotificationService.cancelScheduledNotifications();
-  NotificationService.sendScheduledTestNotification();
+  // NotificationService.initNotification();
+  // NotificationService.cancelScheduledNotifications();
+  // NotificationService.sendScheduledTestNotification();
 
   AWSAuth.configureAmplify();
 

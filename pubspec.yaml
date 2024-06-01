@@ -53,7 +53,7 @@ dependencies:
   flutter_screenutil: ^5.8.4
   rive: ^0.13.1
   flutter_faq: ^1.0.1+1
-  awesome_notifications: ^0.7.4+1
+#  awesome_notifications: ^0.7.4+1
   cloud_firestore: ^4.9.1
   firebase_crashlytics: ^3.4.9
   table_calendar: ^3.0.9
@@ -64,6 +64,8 @@ dependencies:
   intl_phone_field: ^3.2.0
   wakelock_plus: ^1.1.4
   geolocator: ^11.1.0
+  flutter_unity_widget: ^2022.2.1
+
   
   
 dependency_overrides:

@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, unrelated_type_equality_checks, unused_import
 
 import 'dart:developer';
-import 'package:awesome_notifications/awesome_notifications.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -57,21 +57,21 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     widget.isLoggedIn();
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
 
-    NotificationService.notificationPermission(context);
-
-    // send data to cloud when network is availabe
-    sendDataWhenNetworkAvailable();
-    //triggering the scheduled notifications
-    // NotificationService.cancelScheduledNotifications();
-    // NotificationService.sendScheduledTestNotification();
-    AwesomeNotifications().getGlobalBadgeCounter().then(
-      (value) {
-        log(value.toString());
-        value = 0;
-        AwesomeNotifications().setGlobalBadgeCounter(0);
-      },
-    );
-    NotificationService(context).listenToNotificationResults();
+    // NotificationService.notificationPermission(context);
+    //
+    // // send data to cloud when network is availabe
+    // sendDataWhenNetworkAvailable();
+    // //triggering the scheduled notifications
+    // // NotificationService.cancelScheduledNotifications();
+    // // NotificationService.sendScheduledTestNotification();
+    // AwesomeNotifications().getGlobalBadgeCounter().then(
+    //   (value) {
+    //     log(value.toString());
+    //     value = 0;
+    //     AwesomeNotifications().setGlobalBadgeCounter(0);
+    //   },
+    // );
+    // NotificationService(context).listenToNotificationResults();
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
@@ -170,6 +170,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const UsernameText(),
+
               Text(
                 "How are you feeling today?",
                 style: TextStyle(
