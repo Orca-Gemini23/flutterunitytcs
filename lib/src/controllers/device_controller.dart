@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/constants/wifi_enum.dart';
@@ -171,7 +172,7 @@ class DeviceController extends ChangeNotifier {
   BuildContext? homeContext;
 
   ///Intialising Location library
-  Location location = Location();
+  loc.Location location = loc.Location();
 
   /// Battery value for client[R]
   double get battC {
@@ -260,6 +261,45 @@ class DeviceController extends ChangeNotifier {
     return true;
   }
 
+  Future<Position> checkLocationPremission() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (!serviceEnabled) {
+      // do what you want
+    }
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // toast('Please location permission');
+        // logger.w("get User LocationPosition()");
+        await Geolocator.openAppSettings();
+
+        // throw '${language.lblLocationPermissionDenied}';
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      throw "language lbl Location Permission Denied Permanently, please enable it from setting";
+    }
+
+    return await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high)
+        .then((value) {
+      return value;
+    }).catchError((e) async {
+      return await Geolocator.getLastKnownPosition().then((value) async {
+        if (value != null) {
+          return value;
+        } else {
+          throw "lbl Enable Location";
+        }
+      }).catchError((e) {
+        // toast(e.toString());
+      });
+    });
+  }
+
   /// Turning on Bluetooth from within the app
   Future<void> turnBluetoothOn(BuildContext context) async {
     try {
@@ -315,6 +355,7 @@ class DeviceController extends ChangeNotifier {
             scanTimer?.cancel();
             FlutterBluePlus.stopScan();
             scanSubscription!.cancel();
+            // if (scannedDevice.platformName == "")
             await connectToDevice(scannedDevice, onConnect);
           }
         },
@@ -328,6 +369,7 @@ class DeviceController extends ChangeNotifier {
 
       await FlutterBluePlus.startScan(
         withServices: [Guid("0000acf0-0000-1000-8000-00805f9b34fb")],
+        androidUsesFineLocation: true,
       );
       scanTimer = Timer(const Duration(seconds: 10), () async {
         await FlutterBluePlus.stopScan();
@@ -363,7 +405,7 @@ class DeviceController extends ChangeNotifier {
           BluetoothAdapterState.on) {
         bool gotServices = false;
         isConnecting = true;
-        isScanning = false;
+        // isScanning = false;
         notifyListeners();
         showToast
             ? Fluttertoast.showToast(
@@ -389,6 +431,7 @@ class DeviceController extends ChangeNotifier {
       }
     } catch (e) {
       log(e.toString());
+      isScanning = false;
       Fluttertoast.showToast(msg: "Could not connect ");
       device.disconnect();
       _connectedDevice = null;
@@ -800,6 +843,12 @@ class DeviceController extends ChangeNotifier {
 
           leftAngleValue = double.tryParse(legData[1])!;
           rightAngleValue = double.tryParse(legData[3])!;
+
+          // leftAngleValue = double.parse(
+          //     (double.tryParse(legData[1])! * 1.07).toStringAsFixed(2));
+          // rightAngleValue = double.parse(
+          //     (double.tryParse(legData[3])! * 1.07).toStringAsFixed(2));
+          // print("${leftAngleValue * 1.07},${rightAngleValue * 1.07}");
           notifyListeners();
         },
         onError: (error) {
