@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/db/sqlite_db.dart';
+import 'package:walk/src/models/user_model.dart';
+import 'package:walk/src/views/auth/phone_auth.dart';
 import 'dart:convert';
 
 import 'package:walk/src/views/user/revisedaccountpage.dart';
@@ -48,7 +50,7 @@ class API {
     }
 
     var url = Uri.parse(
-      "$baseUrl${LocalDB.user!.name.trimRight()}/$game-${DateTime.now()}.json",
+      "$baseUrl${LocalDB.user!.name.replaceAll(' ', '')}/$game-${DateTime.now().toString().replaceAll(' ', '')}.json",
     );
     // print(url);
 
@@ -88,6 +90,37 @@ class API {
       } else {
         debugPrint("Failed to fetch data ");
         return {'Gait Score': '', 'Balance Score': ''};
+      }
+    } catch (e) {
+      debugPrint("API Error: ${e.toString()}");
+    }
+  }
+
+  static getUserDetails() async {
+    var baseUrl =
+        "https://rd65t5n63j.execute-api.ap-south-1.amazonaws.com/prod/rdsmysql?contact_number=$phoneNo";
+
+    debugPrint("details is coming");
+
+    var url = Uri.parse(baseUrl);
+    try {
+      final res = await http.get(url);
+      if (res.statusCode == 200) {
+        var data = jsonDecode(res.body);
+        debugPrint("Data fetched successfully");
+
+        var newUser = UserModel(
+          name: data[0]["Name"] ?? "Unknown User",
+          age: data[0]["Age"] ?? "XX",
+          phone: "$countryCode $phoneNo",
+          image: "NA",
+          gender: data[0]["Gender"] ?? "XX",
+          address: data[0]["Address"] ?? "XX",
+          email: data[0]["Email"] ?? "XX",
+        );
+        LocalDB.saveUser(newUser);
+      } else {
+        debugPrint("Failed to fetch data ");
       }
     } catch (e) {
       debugPrint("API Error: ${e.toString()}");

@@ -98,8 +98,6 @@ class _OTPPageState extends State<OTPPage> {
                         successColor: AppColor.greenDarkColor,
                         onPressed: () async {
                           if (_otpController.text.length == 6) {
-                            print(_otpController.text);
-                            print(widget.phoneNumber);
                             widget.isSignIn
                                 ? await AWSAuth.confirmSignInPhoneVerification(
                                     _otpController.text,

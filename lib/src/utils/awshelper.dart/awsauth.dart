@@ -5,6 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:walk/amplifyconfiguration.dart';
+import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
@@ -70,6 +71,7 @@ class AWSAuth {
         username: username,
         confirmationCode: otpCode,
       );
+      await API.getUserDetails();
       Go.pushAndRemoveUntil(
           context: context,
           pushReplacement:
@@ -121,7 +123,8 @@ class AWSAuth {
     try {
       await Amplify.Auth.confirmSignIn(
         confirmationValue: otpCode,
-      );
+      ); 
+      await API.getUserDetails();
       Go.pushAndRemoveUntil(
           context: context,
           pushReplacement:

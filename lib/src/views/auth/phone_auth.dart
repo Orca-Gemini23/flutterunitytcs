@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/screen_context.dart';
 
@@ -85,6 +87,17 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                     ElevatedButton(
                       onPressed: () async {
                         print(phoneNumber);
+                        var newUser = UserModel(
+                          name: "Unknown User",
+                          age: "XX",
+                          phone: "$countryCode $phoneNo",
+                          image: "NA",
+                          gender: "XX",
+                          address: "XX",
+                          email: "XX",
+                        );
+
+                        LocalDB.saveUser(newUser);
                         //add checks and submit details
                         // Go.to(
                         //   context: context,
@@ -108,13 +121,6 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                                 widget.isSignIn,
                                 widget.isLoggedIn,
                                 widget.logOut);
-                        // Go.to(
-                        //   context: context,
-                        //   push: OTPPage(
-                        //     phoneNumber: phoneNumber,
-                        //     isSignIn: widget.isSignIn,
-                        //   ),
-                        // );
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(

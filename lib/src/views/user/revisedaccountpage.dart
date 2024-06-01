@@ -53,6 +53,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
   List<String> list = <String>['India', 'England'];
   String selectedCountryCode = '+91';
   Map<String, String> selecteCountryCode = {'India': '+91', 'England': '+44'};
+  //  { '+91':'India', '+44':'England'};
 
   // Function to open the image picker and get the selected image
   Future<bool> _pickImage() async {
@@ -402,54 +403,22 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                         const SizedBox(
                           height: 40,
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: DropdownButtonFormField<String>(
-                                value: selecteCountryCode[country],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedCountryCode = value!;
-                                    print(selectedCountryCode);
-                                  });
-                                },
-                                items: [
-                                  '+91',
-                                  '+44',
-                                  '+1',
-                                  '+611'
-                                ] // Add more country codes as needed
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                            const SizedBox(width: 20.0),
-                            Expanded(
-                              flex: 4,
-                              child: TextField(
-                                controller: phoneController,
-                                keyboardType: TextInputType.phone,
-                                decoration: const InputDecoration(
-                                  hintText: 'Enter phone number',
-                                  labelText: 'Phone Number',
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                          ],
+                        TextFormField(
+                          controller: phoneController,
+                          keyboardType: TextInputType.phone,
+                          readOnly: true,
+                          decoration: const InputDecoration(
+                            hintText: 'Enter phone number',
+                            labelText: 'Phone Number',
+                          ),
                         ),
                         // Container(
                         //   height: 60,
                         //   decoration: BoxDecoration(
-                        //     color: Colors.grey,
+                        //     color: Colors.white,
                         //     borderRadius: BorderRadius.circular(20),
                         //   ),
+                        //   child: Text(phoneNo),
                         // ),
                         const SizedBox(
                           height: 40,
@@ -462,6 +431,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                             }
                             return null;
                           },
+                          keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
                             labelText: 'Email',
                             focusColor: AppColor.greenDarkColor,
@@ -494,8 +464,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                               var newUser = UserModel(
                                 name: nameController.text,
                                 age: ageController.text,
-                                phone: phoneNo,
-                                //"$selectedCountryCode ${phoneController.text}",
+                                phone: "$countryCode $phoneNo",
                                 image: _image?.path ?? "NA",
                                 gender: genderController.text,
                                 address: cityController.text,
