@@ -16,8 +16,8 @@ import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/calendar/calendar_view.dart';
-import 'package:walk/src/views/physiotherapist/landing_page.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
+// import 'package:walk/src/views/physiotherapist/landing_page.dart';
+// import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 String country = "India";
 Map<DateTime, List<int>> _kEventSource = {};
