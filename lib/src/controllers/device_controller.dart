@@ -40,6 +40,7 @@ class DeviceController extends ChangeNotifier {
   double leftAngleValue = 0;
   double rightAngleValue = 0;
 
+
   /// stores characterisitcs of devices
   List<BluetoothCharacteristic> _characteristics = [];
 

@@ -9,6 +9,7 @@ import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/views/artherapy/animation_rotation.dart';
+import 'package:walk/src/views/unity.dart';
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 
 class BallTherapySessionBtn extends StatefulWidget {
@@ -126,7 +127,7 @@ class _BallTherapySessionBtnState extends State<BallTherapySessionBtn> {
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: ((context) => const RiveAnimationPage()),
+                  builder: ((context) => const UnityScreen()),
                 ),
               )
             : Fluttertoast.showToast(
