@@ -9,14 +9,17 @@ class UnityScreen extends StatefulWidget {
   const UnityScreen({Key? key}) : super(key: key);
 
   @override
-  State<UnityScreen> createState() => _UnityDemoScreenState();
+  State<UnityScreen> createState() => UnityScreenState();
 }
 
-class _UnityDemoScreenState extends State<UnityScreen> {
+class UnityScreenState extends State<UnityScreen> {
   static final GlobalKey<ScaffoldState> _scaffoldKey =
   GlobalKey<ScaffoldState>();
-  UnityWidgetController? _unityWidgetController;
-
+  static UnityWidgetController? unityWidgetController;
+  static sendMessage(message)
+  {
+    unityWidgetController?.postMessage("Square", "FlutterToUnityMessage", message);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +38,7 @@ class _UnityDemoScreenState extends State<UnityScreen> {
               onUnityMessage: (message) {
                 // if(message.toString() == "start"){
                   print(message.toString());
-                  startBall();
+
                 // }
               },
 
@@ -51,13 +54,9 @@ class _UnityDemoScreenState extends State<UnityScreen> {
   // Callback that connects the created controller to the unity controller
   void onUnityCreated(controller) {
     print("unityCreated");
-    _unityWidgetController = controller;
-    _unityWidgetController?.postMessage(
-      'Square',
-      'FlutterToUnityMessage',
-      "test message from flutter"
-    );
-    // startBall();
+    unityWidgetController = controller;
+
+    startBall();
   }
   void onUnitySceneLoaded(SceneLoaded? sceneInfo) {
     print('Received scene loaded from unity: ${sceneInfo?.name}');
@@ -65,8 +64,8 @@ class _UnityDemoScreenState extends State<UnityScreen> {
   }
   void flutterToUnityMessage( value) {
     print("FlutterToUnityMessage");
-    if (_unityWidgetController != null) {
-      _unityWidgetController!.postMessage(
+    if (unityWidgetController != null) {
+      unityWidgetController!.postMessage(
         'Square',
         'FlutterToUnityMessage',
         value,
@@ -75,13 +74,15 @@ class _UnityDemoScreenState extends State<UnityScreen> {
   }
 
   void startBall() {
-    // print("startBall");
-    
-    Consumer<DeviceController>(
-      builder: (context, deviceController, child) {
-
-        return Container();
-      },
-    );
+    print("startBall");
+    DeviceController deviceController = Provider.of<DeviceController>(context, listen: false);
+    deviceController.startStream();
+    // print(deviceController.leftAngleValue);
+    // print(deviceController.rightAngleValue);
   }
+
+
+
+
+
 }

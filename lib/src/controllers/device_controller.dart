@@ -13,6 +13,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/constants/wifi_enum.dart';
 
+import '../views/unity.dart';
+
 class DeviceController extends ChangeNotifier {
   /// stores scanned devices
   List<BluetoothDevice> _scannedDevices = [];
@@ -825,7 +827,7 @@ class DeviceController extends ChangeNotifier {
       return "error occurred";
     }
   }
-
+  int count=0;
   StreamSubscription<List<int>> startStream() {
     BluetoothCharacteristic? targetCharacteristic =
         _characteristicMap[THERAPY_CHARACTERISTICS];
@@ -844,6 +846,11 @@ class DeviceController extends ChangeNotifier {
 
           leftAngleValue = double.tryParse(legData[1])!;
           rightAngleValue = double.tryParse(legData[3])!;
+          // print("----->$leftAngleValue,$rightAngleValue}");
+          count++;
+          print("----->$count");
+          UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue}");
+          UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue}");
 
           // leftAngleValue = double.parse(
           //     (double.tryParse(legData[1])! * 1.07).toStringAsFixed(2));
