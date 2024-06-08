@@ -827,7 +827,7 @@ class DeviceController extends ChangeNotifier {
       return "error occurred";
     }
   }
-  int count=0;
+  // int count=0;
   StreamSubscription<List<int>> startStream() {
     BluetoothCharacteristic? targetCharacteristic =
         _characteristicMap[THERAPY_CHARACTERISTICS];
@@ -847,10 +847,10 @@ class DeviceController extends ChangeNotifier {
           leftAngleValue = double.tryParse(legData[1])!;
           rightAngleValue = double.tryParse(legData[3])!;
           // print("----->$leftAngleValue,$rightAngleValue}");
-          count++;
-          print("----->$count");
-          UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue}");
-          UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue}");
+          // count++;
+          // print("----->$count");
+          UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue");
+          // UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue}");
 
           // leftAngleValue = double.parse(
           //     (double.tryParse(legData[1])! * 1.07).toStringAsFixed(2));

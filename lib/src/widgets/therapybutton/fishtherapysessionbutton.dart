@@ -9,6 +9,8 @@ import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/views/artherapy/animation_fish.dart';
 
+import '../../views/unity.dart';
+
 class FishTherapySessionBtn extends StatefulWidget {
   const FishTherapySessionBtn({super.key});
 
@@ -104,7 +106,7 @@ class _FishTherapySessionBtnState extends State<FishTherapySessionBtn> {
           ? Navigator.push(
               context,
               MaterialPageRoute(
-                builder: ((context) => const RiveFishAnimationPage()),
+                builder: ((context) => const UnityScreen(i: 1,)),
               ),
             )
           : Fluttertoast.showToast(

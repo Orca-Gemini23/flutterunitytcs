@@ -6,7 +6,8 @@ import 'package:walk/src/controllers/device_controller.dart';
 
 
 class UnityScreen extends StatefulWidget {
-  const UnityScreen({Key? key}) : super(key: key);
+  const UnityScreen({Key? key, required this.i}) : super(key: key);
+  final int i;
 
   @override
   State<UnityScreen> createState() => UnityScreenState();
@@ -18,8 +19,17 @@ class UnityScreenState extends State<UnityScreen> {
   static UnityWidgetController? unityWidgetController;
   static sendMessage(message)
   {
-    unityWidgetController?.postMessage("Square", "FlutterToUnityMessage", message);
+    unityWidgetController?.postMessage("SceneController", "SetCurrentAngle", message);
   }
+  static loadFishGame(message)
+  {
+    unityWidgetController?.postMessage("SceneController", "FishingGame", message);
+  }
+  static loadBallGame(message)
+  {
+    unityWidgetController?.postMessage("SceneController", "BallGame", message);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,17 +42,21 @@ class UnityScreenState extends State<UnityScreen> {
             return true;
           },
           child: Container(
-            color: Colors.yellow,
+            color: Colors.white,
             child: UnityWidget(
+              // uiLevel: 0,
+
               onUnityCreated: onUnityCreated,
+              onUnityUnloaded: stopStream,
               onUnityMessage: (message) {
                 // if(message.toString() == "start"){
                   print(message.toString());
 
                 // }
               },
+              fullscreen: true,
 
-              onUnitySceneLoaded: onUnitySceneLoaded,
+
 
             ),
           ),
@@ -53,32 +67,29 @@ class UnityScreenState extends State<UnityScreen> {
 
   // Callback that connects the created controller to the unity controller
   void onUnityCreated(controller) {
-    print("unityCreated");
     unityWidgetController = controller;
-
-    startBall();
-  }
-  void onUnitySceneLoaded(SceneLoaded? sceneInfo) {
-    print('Received scene loaded from unity: ${sceneInfo?.name}');
-    print('Received scene loaded from unity buildIndex: ${sceneInfo?.buildIndex}');
-  }
-  void flutterToUnityMessage( value) {
-    print("FlutterToUnityMessage");
-    if (unityWidgetController != null) {
-      unityWidgetController!.postMessage(
-        'Square',
-        'FlutterToUnityMessage',
-        value,
-      );
+    print("Unity Created ${widget.i}");
+    switch(widget.i){
+      case 0:
+        UnityScreenState.loadBallGame("");
+        break;
+      case 1:
+        UnityScreenState.loadFishGame("");
+        startReading();
+        break;
     }
   }
 
-  void startBall() {
-    print("startBall");
+
+  void startReading() {
     DeviceController deviceController = Provider.of<DeviceController>(context, listen: false);
     deviceController.startStream();
-    // print(deviceController.leftAngleValue);
-    // print(deviceController.rightAngleValue);
+
+  }
+  void stopStream() {
+    DeviceController deviceController = Provider.of<DeviceController>(context, listen: false);
+    // deviceController.;
+
   }
 
 

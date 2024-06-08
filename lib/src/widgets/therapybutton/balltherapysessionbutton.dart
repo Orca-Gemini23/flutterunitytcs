@@ -127,7 +127,7 @@ class _BallTherapySessionBtnState extends State<BallTherapySessionBtn> {
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: ((context) => const UnityScreen()),
+                  builder: ((context) => const UnityScreen(i: 0,)),
                 ),
               )
             : Fluttertoast.showToast(

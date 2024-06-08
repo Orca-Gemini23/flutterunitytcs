@@ -52,5 +52,6 @@ void main() async {
   /// Core app
   runApp(
     const WalkApp(),
+
   );
 }
