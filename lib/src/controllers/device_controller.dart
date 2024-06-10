@@ -476,9 +476,20 @@ class DeviceController extends ChangeNotifier {
           .first
           .characteristics;
 
+      var subscriptionElement;
+
       for (var element in _characteristics) {
         characteristicMap.putIfAbsent(element.uuid, () => element);
+        if (element.characteristicUuid ==
+            Guid("0000abf1-0000-1000-8000-00805f9b34fb")) {
+          print(element);
+          subscriptionElement = element;
+        }
       }
+      var subscription = subscriptionElement.onValueReceived.listen((event) {});
+      device.cancelWhenDisconnected(subscription);
+      await subscriptionElement.setNotifyValue(true);
+
       notifyListeners();
       return true;
     } catch (e) {
