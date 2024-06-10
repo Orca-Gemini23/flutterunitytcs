@@ -72,6 +72,8 @@ class UnityScreenState extends State<UnityScreen> {
     switch(widget.i){
       case 0:
         UnityScreenState.loadBallGame("");
+        startReading();
+
         break;
       case 1:
         UnityScreenState.loadFishGame("");
