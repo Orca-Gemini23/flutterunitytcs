@@ -3,7 +3,7 @@ import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 
-
+import '../constants/bt_constants.dart';
 
 class UnityScreen extends StatefulWidget {
   const UnityScreen({Key? key, required this.i}) : super(key: key);
@@ -49,10 +49,14 @@ class UnityScreenState extends State<UnityScreen> {
               onUnityCreated: onUnityCreated,
               onUnityUnloaded: stopStream,
               onUnityMessage: (message) {
-                // if(message.toString() == "start"){
-                  print(message.toString());
-
-                // }
+                switch (message) {
+                  case "VL":
+                    vibrateLeft();
+                    break;
+                  case "VR":
+                    vibrateRight();
+                    break;
+                }
               },
               fullscreen: true,
 
@@ -94,8 +98,17 @@ class UnityScreenState extends State<UnityScreen> {
 
   }
 
+  Future<void> vibrateLeft() async {
+    DeviceController deviceController =
+        Provider.of<DeviceController>(context, listen: false);
+    await deviceController.sendToDevice(
+        "beeps 5;", WRITECHARACTERISTICS); //right
+  }
 
-
-
-
+  Future<void> vibrateRight() async {
+    DeviceController deviceController =
+        Provider.of<DeviceController>(context, listen: false);
+    await deviceController.sendToDevice(
+        "beepc 5;", WRITECHARACTERISTICS); //right
+  }
 }
