@@ -8,7 +8,6 @@ import '../constants/bt_constants.dart';
 class UnityScreen extends StatefulWidget {
   const UnityScreen({Key? key, required this.i}) : super(key: key);
   final int i;
-
   @override
   State<UnityScreen> createState() => UnityScreenState();
 }
@@ -29,10 +28,18 @@ class UnityScreenState extends State<UnityScreen> {
   {
     unityWidgetController?.postMessage("SceneController", "BallGame", message);
   }
+  double _sliderValue = 0.0;
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+      // extendBodyBehindAppBar: true,
+      // appBar: AppBar(
+      //
+      //   backgroundColor: Colors.transparent,
+      //   // title: const Text('First Route'),
+      // ),
       key: _scaffoldKey,
       body: SafeArea(
         bottom: false,
@@ -41,11 +48,10 @@ class UnityScreenState extends State<UnityScreen> {
             // Pop the category page if Android back button is pressed.
             return true;
           },
-          child: Container(
-            color: Colors.white,
-            child: UnityWidget(
+          child: Stack(
+            // color: Colors.white,
+            children:<Widget>[ UnityWidget(
               // uiLevel: 0,
-
               onUnityCreated: onUnityCreated,
               onUnityUnloaded: stopStream,
               onUnityMessage: (message) {
@@ -60,10 +66,26 @@ class UnityScreenState extends State<UnityScreen> {
               },
               fullscreen: true,
 
-
-
             ),
-          ),
+              IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+              )
+
+              // Slider(
+              //   onChanged: (value) {
+              //     setState(() {
+              //       _sliderValue = value;
+              //     });
+              //   },
+              //   value: _sliderValue,
+              //   min: 0,
+              //   max: 20,
+              // ),
+          ])
+
         ),
       ),
     );
@@ -93,12 +115,12 @@ class UnityScreenState extends State<UnityScreen> {
 
   }
   void stopStream() {
-    DeviceController deviceController = Provider.of<DeviceController>(context, listen: false);
-    // deviceController.;
-
+    // DeviceController deviceController = Provider.of<DeviceController>(context, listen: false);
   }
 
   Future<void> vibrateLeft() async {
+    // print("Vibrating Left")
+
     DeviceController deviceController =
         Provider.of<DeviceController>(context, listen: false);
     await deviceController.sendToDevice(

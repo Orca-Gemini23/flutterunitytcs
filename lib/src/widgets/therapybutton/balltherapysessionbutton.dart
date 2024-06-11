@@ -121,18 +121,17 @@ class _BallTherapySessionBtnState extends State<BallTherapySessionBtn> {
       bool accountEligible = checkAccountEligible();
 
       if (accountEligible) {
-        bool res = await deviceController.sendToDevice(
-            "mode 9;", WRITECHARACTERISTICS);
-        res
-            ? Navigator.push(
+        // bool res = await deviceController.sendToDevice(
+        //     "mode 9;", WRITECHARACTERISTICS);
+        // res
+        //     ?
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: ((context) => const UnityScreen(i: 0,)),
                 ),
-              )
-            : Fluttertoast.showToast(
-                msg: "Please try again",
-              );
+            );
+
       } else {
         Fluttertoast.showToast(msg: "Please update the account details first");
         Navigator.push(

@@ -98,18 +98,19 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
         msg: "Please Connect to the device first",
       );
     } else {
-      bool res =
-          await deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
-      res
-          ? Navigator.push(
+      // bool res =
+      //     await deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
+      // res
+      //     ?
+    Navigator.push(
               context,
               MaterialPageRoute(
                 builder: ((context) => const RiveSwingAnimationPage()),
               ),
-            )
-          : Fluttertoast.showToast(
-              msg: "Please try again",
             );
+          // : Fluttertoast.showToast(
+          //     msg: "Please try again",
+          //   );
     }
   }
 }

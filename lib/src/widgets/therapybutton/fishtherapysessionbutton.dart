@@ -100,18 +100,19 @@ class _FishTherapySessionBtnState extends State<FishTherapySessionBtn> {
         msg: "Please Connect to the device first",
       );
     } else {
-      bool res =
-          await deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
-      res
-          ? Navigator.push(
+      // bool res =
+      //     await deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
+      // res
+      //     ?
+      Navigator.push(
               context,
               MaterialPageRoute(
                 builder: ((context) => const UnityScreen(i: 1,)),
-              ),
-            )
-          : Fluttertoast.showToast(
-              msg: "Please try again",
-            );
+              ));
+          //   )
+          // : Fluttertoast.showToast(
+          //     msg: "Please try again",
+          //   );
     }
   }
 }
