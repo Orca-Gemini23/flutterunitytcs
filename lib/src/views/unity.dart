@@ -105,7 +105,12 @@ class UnityScreenState extends State<UnityScreen> {
         UnityScreenState.loadFishGame("");
         startReading();
         break;
+      case 2:
+        UnityScreenState.loadSwingGame("");
+        startReading();
+        break;
     }
+
   }
 
 
@@ -132,5 +137,10 @@ class UnityScreenState extends State<UnityScreen> {
         Provider.of<DeviceController>(context, listen: false);
     await deviceController.sendToDevice(
         "beepc 5;", WRITECHARACTERISTICS); //right
+  }
+
+  static void loadSwingGame(String s) {
+    unityWidgetController?.postMessage("SceneController", "SwingGame", s);
+
   }
 }

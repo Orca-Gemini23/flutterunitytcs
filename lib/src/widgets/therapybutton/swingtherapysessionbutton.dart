@@ -9,6 +9,8 @@ import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/views/artherapy/animation_swing.dart';
 
+import '../../views/unity.dart';
+
 class SwingTherapySessionBtn extends StatefulWidget {
   const SwingTherapySessionBtn({super.key});
 
@@ -98,19 +100,14 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
         msg: "Please Connect to the device first",
       );
     } else {
-      // bool res =
-      //     await deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
-      // res
-      //     ?
-    Navigator.push(
+      Navigator.push(
               context,
               MaterialPageRoute(
-                builder: ((context) => const RiveSwingAnimationPage()),
-              ),
+          builder: ((context) => const UnityScreen(
+                i: 2,
+              )),
+        ),
             );
-          // : Fluttertoast.showToast(
-          //     msg: "Please try again",
-          //   );
     }
   }
 }
