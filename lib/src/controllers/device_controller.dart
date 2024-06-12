@@ -596,7 +596,7 @@ class DeviceController extends ChangeNotifier {
           notifyListeners();
         }
       }
-      if (double.parse(tempBattC) > 100 || double.parse(tempBattC) < 0) {
+      if (double.parse(tempBattC) > 100 || double.parse(tempBattC) < -1) {
         log("Client battery percentage Out of Limit , modifying ....");
         if (double.parse(tempBattC) > 100) {
           _batteryC = "100";

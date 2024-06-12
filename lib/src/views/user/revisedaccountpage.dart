@@ -303,8 +303,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              width: 150,
+                            Expanded(
                               child: TextFormField(
                                 controller: ageController,
                                 validator: (value) {
@@ -324,8 +323,8 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 150,
+                            const Spacer(),
+                            Expanded(
                               child: TextFormField(
                                 controller: genderController,
                                 validator: (value) {
@@ -477,12 +476,9 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                               Timer(const Duration(seconds: 2), () {
                                 _buttonController.success();
                               });
-                              // Timer(const Duration(seconds: 4), () {
-                              //   Go.to(
-                              //     context: context,
-                              //     push: const RevisedHomePage(),
-                              //   );
-                              // });
+                              Timer(const Duration(seconds: 4), () {
+                                Navigator.pop(context);
+                              });
                               // Go.to(
                               //     context: context, push: const LandingPage());
                             } else {

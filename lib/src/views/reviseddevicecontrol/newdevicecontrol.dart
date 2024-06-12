@@ -146,6 +146,25 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                       return Consumer<DeviceController>(
                         builder: (context, deviceController, widget) {
                           deviceController.isScanning = false;
+
+                          // var logTimer = Timer.periodic(
+                          //     const Duration(seconds: 1), (timer) {
+                          //   print("timer");
+                          //   if (!deviceController.bandC) {
+                          //     print("hi ");
+                          //     deviceController.getClientConnectionStatus();
+                          //   }
+                          // });
+
+                          // if (deviceController.bandC) {
+                          //   print('timer cancel');
+                          //   logTimer.cancel();
+                          // }
+
+                          // log("${!deviceController.bandC} ,${deviceController.battC} ,${deviceController.magCValue}");
+
+                          // log("---->${deviceController.battC}");
+                          // print("hi");
                           return Container(
                             width: double.maxFinite,
                             height: double.maxFinite,
@@ -428,24 +447,45 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                 CircularPercentIndicator(
                                                   lineWidth: 7,
                                                   percent:
-                                                      deviceController.battC /
-                                                          100,
+                                                      deviceController.battC < 0
+                                                          ? deviceController
+                                                                  .battC *
+                                                              -1
+                                                          : deviceController
+                                                                  .battC /
+                                                              100,
                                                   radius: 20.w,
-                                                  center: !deviceController
-                                                          .bandC
-                                                      ? const Icon(
-                                                          Icons.error,
-                                                          color: Colors.grey,
-                                                        )
-                                                      : deviceController.battC <
-                                                              30
+                                                  center:
+                                                      (!deviceController
+                                                                  .bandC &&
+                                                              deviceController
+                                                                      .battC <
+                                                                  0 &&
+                                                              deviceController
+                                                                      .magCValue <
+                                                                  0)
                                                           ? const Icon(
                                                               Icons.error,
-                                                              color: Colors.red,
+                                                              color:
+                                                                  Colors.grey,
                                                             )
-                                                          : null,
-                                                  progressColor: !deviceController
-                                                          .bandC
+                                                          : deviceController
+                                                                      .battC <
+                                                                  30
+                                                              ? const Icon(
+                                                                  Icons.error,
+                                                                  color: Colors
+                                                                      .red,
+                                                                )
+                                                              : null,
+                                                  progressColor: (!deviceController
+                                                              .bandC &&
+                                                          deviceController
+                                                                  .battC <
+                                                              0 &&
+                                                          deviceController
+                                                                  .magCValue <
+                                                              0)
                                                       ? Colors.grey
                                                       : deviceController.battC <
                                                               30
@@ -459,7 +499,15 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  "${deviceController.battC}%",
+                                                  (!deviceController.bandC &&
+                                                          deviceController
+                                                                  .battC <
+                                                              0 &&
+                                                          deviceController
+                                                                  .magCValue <
+                                                              0)
+                                                      ? "??"
+                                                      : "${deviceController.battC}%",
                                                   textAlign: TextAlign.center,
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.w600,
@@ -499,123 +547,84 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                     ),
                                     width: double.maxFinite,
                                     height: 107.h,
-                                    child: Stack(
-                                      textDirection: TextDirection.ltr,
-                                      children: [
-                                        Positioned(
-                                          top: 0.h,
-                                          child: Text(
-                                            AppString.frequency,
-                                            style: TextStyle(
-                                              color: AppColor.blackColor,
-                                              fontSize: 16.sp,
-                                              letterSpacing: 1,
+                                    child: AbsorbPointer(
+                                      absorbing: (!deviceController.bandC &&
+                                          deviceController.battC < 0 &&
+                                          deviceController.magCValue < 0),
+                                      child: Stack(
+                                        textDirection: TextDirection.ltr,
+                                        children: [
+                                          Positioned(
+                                            top: 0.h,
+                                            child: Text(
+                                              AppString.frequency,
+                                              style: TextStyle(
+                                                color: AppColor.blackColor,
+                                                fontSize: 16.sp,
+                                                letterSpacing: 1,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Positioned(
-                                          left: 0,
-                                          right: 0,
-                                          top: 20.h,
-                                          bottom: 0,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 3,
-                                                child: SliderTheme(
-                                                  data: const SliderThemeData(
-                                                    trackHeight: 8,
-                                                    activeTrackColor:
-                                                        AppColor.greenDarkColor,
-                                                  ),
-                                                  child: Slider(
-                                                    value: deviceController
-                                                        .frequencyValue,
-                                                    min: 0.3,
-                                                    max: 2,
-                                                    label: deviceController
-                                                        .frequencyValue
-                                                        .toString(),
-                                                    thumbColor:
-                                                        AppColor.greenDarkColor,
-                                                    onChanged: (value) {
-                                                      HapticFeedback
-                                                          .lightImpact();
-                                                      deviceController
-                                                          .setfreqValue(value);
-                                                    },
-                                                    onChangeEnd: (value) async {
-                                                      String approxFrequency =
-                                                          deviceController
-                                                                      .frequencyValue
-                                                                      .toString()
-                                                                      .length >
-                                                                  3
-                                                              ? deviceController
-                                                                  .frequencyValue
-                                                                  .toString()
-                                                                  .substring(
-                                                                      0, 4)
-                                                              : deviceController
-                                                                  .frequencyValue
-                                                                  .toString();
-
-                                                      String command =
-                                                          "$FREQ c $approxFrequency;";
-
-                                                      log(command);
-                                                      await deviceController
-                                                          .sendToDevice(command,
-                                                              WRITECHARACTERISTICS);
-                                                      frequencyTextController
-                                                          .text = (value *
-                                                              60)
-                                                          .toStringAsFixed(0);
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Container(
-                                                  height: 40,
-                                                  // width: 1,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: TextField(
-                                                    textAlign: TextAlign.center,
-                                                    textAlignVertical:
-                                                        TextAlignVertical
-                                                            .center,
-                                                    controller:
-                                                        frequencyTextController,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                            border:
-                                                                OutlineInputBorder(),
-                                                            labelText:
-                                                                'steps/min',
-                                                            labelStyle:
-                                                                TextStyle(
-                                                                    fontSize:
-                                                                        15)),
-                                                    onSubmitted: (value) async {
-                                                      setState(() {
-                                                        try {
+                                          Positioned(
+                                            left: 0,
+                                            right: 0,
+                                            top: 20.h,
+                                            bottom: 0,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: SliderTheme(
+                                                    data: SliderThemeData(
+                                                      trackHeight: 8,
+                                                      activeTrackColor: (!deviceController
+                                                                  .bandC &&
+                                                              deviceController
+                                                                      .battC <
+                                                                  0 &&
+                                                              deviceController
+                                                                      .magCValue <
+                                                                  0)
+                                                          ? Colors.grey
+                                                          : AppColor
+                                                              .greenDarkColor,
+                                                    ),
+                                                    child: Slider(
+                                                      value: deviceController
+                                                          .frequencyValue,
+                                                      min: 0.3,
+                                                      max: 2,
+                                                      label: deviceController
+                                                          .frequencyValue
+                                                          .toString(),
+                                                      thumbColor: (!deviceController
+                                                                  .bandC &&
+                                                              deviceController
+                                                                      .battC <
+                                                                  0 &&
+                                                              deviceController
+                                                                      .magCValue <
+                                                                  0)
+                                                          ? Colors.grey
+                                                          : AppColor
+                                                              .greenDarkColor,
+                                                      onChanged: (value) {
+                                                        if (deviceController
+                                                            .bandC) {
+                                                          HapticFeedback
+                                                              .lightImpact();
                                                           deviceController
                                                               .setfreqValue(
-                                                                  double.parse(
-                                                                          value) /
-                                                                      60);
-                                                        } catch (e) {
-                                                          log('$e');
+                                                                  value);
+                                                        } else {
+                                                          null;
                                                         }
-                                                      });
-                                                      String approxFrequency =
-                                                          deviceController
+                                                      },
+                                                      onChangeEnd:
+                                                          (value) async {
+                                                        if (deviceController
+                                                            .bandC) {
+                                                          String approxFrequency = deviceController
                                                                       .frequencyValue
                                                                       .toString()
                                                                       .length >
@@ -629,21 +638,101 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                   .frequencyValue
                                                                   .toString();
 
-                                                      String command =
-                                                          "$FREQ c $approxFrequency;";
+                                                          String command =
+                                                              "$FREQ c $approxFrequency;";
 
-                                                      log(command);
-                                                      await deviceController
-                                                          .sendToDevice(command,
-                                                              WRITECHARACTERISTICS);
-                                                    },
+                                                          log(command);
+                                                          await deviceController
+                                                              .sendToDevice(
+                                                                  command,
+                                                                  WRITECHARACTERISTICS);
+                                                          frequencyTextController
+                                                              .text = (value *
+                                                                  60)
+                                                              .toStringAsFixed(
+                                                                  0);
+                                                        } else {
+                                                          null;
+                                                        }
+                                                      },
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    height: 40,
+                                                    // width: 1,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    child: TextField(
+                                                        textAlign: TextAlign
+                                                            .center,
+                                                        textAlignVertical:
+                                                            TextAlignVertical
+                                                                .center,
+                                                        controller:
+                                                            frequencyTextController,
+                                                        decoration:
+                                                            const InputDecoration(
+                                                                border:
+                                                                    OutlineInputBorder(),
+                                                                labelText:
+                                                                    'steps/min',
+                                                                labelStyle:
+                                                                    TextStyle(
+                                                                        fontSize:
+                                                                            15)),
+                                                        onSubmitted:
+                                                            (value) async {
+                                                          if (deviceController
+                                                              .bandC) {
+                                                            setState(() {
+                                                              try {
+                                                                deviceController
+                                                                    .setfreqValue(
+                                                                        double.parse(value) /
+                                                                            60);
+                                                              } catch (e) {
+                                                                log('$e');
+                                                              }
+                                                            });
+                                                            String approxFrequency = deviceController
+                                                                        .frequencyValue
+                                                                        .toString()
+                                                                        .length >
+                                                                    3
+                                                                ? deviceController
+                                                                    .frequencyValue
+                                                                    .toString()
+                                                                    .substring(
+                                                                        0, 4)
+                                                                : deviceController
+                                                                    .frequencyValue
+                                                                    .toString();
+
+                                                            String command =
+                                                                "$FREQ c $approxFrequency;";
+
+                                                            log(command);
+                                                            await deviceController
+                                                                .sendToDevice(
+                                                                    command,
+                                                                    WRITECHARACTERISTICS);
+                                                          } else {
+                                                            null;
+                                                          }
+                                                        }),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(
@@ -723,8 +812,19 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                           color: Colors.black,
                                                         ),
                                                       ),
-                                                      magSlider(true,
-                                                          deviceController),
+                                                      AbsorbPointer(
+                                                        absorbing:
+                                                            (!deviceController
+                                                                    .bandC &&
+                                                                deviceController
+                                                                        .battC <
+                                                                    0 &&
+                                                                deviceController
+                                                                        .magCValue <
+                                                                    0),
+                                                        child: magSlider(true,
+                                                            deviceController),
+                                                      ),
                                                     ],
                                                   ),
                                                 )
@@ -784,7 +884,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                               Icons.error,
                                               color: Colors.red,
                                             )
-                                          : !deviceController.bandC
+                                          : (!deviceController.bandC &&
+                                                  deviceController.battC < 0 &&
+                                                  deviceController.magCValue <
+                                                      0)
                                               ? const Icon(
                                                   Icons.error,
                                                   color: Colors.grey,

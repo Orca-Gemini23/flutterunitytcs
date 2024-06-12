@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/game_history_model.dart';
 import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
@@ -58,6 +59,18 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
 
     NotificationService.notificationPermission(context);
+
+    // if (LocalDB.user!.name == "Unknown User") {
+    //   Future.delayed(Duration.zero, () {
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (context) => RevisedHomePage(
+    //             isLoggedIn: widget.isLoggedIn, logOut: widget.logOut),
+    //       ),
+    //     );
+    //   });
+    // }
 
     // send data to cloud when network is availabe
     sendDataWhenNetworkAvailable();
