@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -22,7 +23,7 @@ class OTPPage extends StatefulWidget {
   final String phoneNumber;
   final bool isSignIn;
   final Function isLoggedIn;
-  final Function logOut;
+  final Function logOut; 
   @override
   State<OTPPage> createState() => _OTPPageState();
 }
@@ -31,6 +32,7 @@ class _OTPPageState extends State<OTPPage> {
   final TextEditingController _otpController = TextEditingController();
   final RoundedLoadingButtonController _buttonController =
       RoundedLoadingButtonController();
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +45,15 @@ class _OTPPageState extends State<OTPPage> {
             alignment: Alignment.center,
             children: [
               const Positioned(
-                  top: 50,
-                  child: Image(
-                    height: 120,
-                    width: 120,
-                    image: AssetImage(
-                      "assets/images/walk.png",
-                    ),
-                  )),
+                top: 50,
+                child: Image(
+                  height: 120,
+                  width: 120,
+                  image: AssetImage(
+                    "assets/images/walk.png",
+                  ),
+                ),
+              ),
               Container(
                 height: Screen.height(context: context),
                 width: Screen.width(context: context),
@@ -97,40 +100,37 @@ class _OTPPageState extends State<OTPPage> {
                         color: AppColor.greenDarkColor,
                         successColor: AppColor.greenDarkColor,
                         onPressed: () async {
-                          if (_otpController.text.length == 6) {
-                            widget.isSignIn
-                                ? await AWSAuth.confirmSignInPhoneVerification(
-                                    _otpController.text,
-                                    context,
-                                    widget.isLoggedIn,
-                                    widget.logOut,
-                                  )
-                                : await AWSAuth.confirmSignUpPhoneVerification(
-                                    widget.phoneNumber,
-                                    _otpController.text,
-                                    widget.isLoggedIn,
-                                    widget.logOut,
-                                    context);
-
-                            // if (otpVerified) {
-                            //   _buttonController.success();
-                            //   // bool result =
-                            //   //     await PreferenceController.getboolData(
-                            //   //         showCaseKey);
-                            //   // bool unboxStatus =
-                            //   //     await PreferenceController.getboolData(
-                            //   //         "isUnboxingDone");
-
-                            //   // ignore: use_build_context_synchronously
-                            //   Go.pushAndRemoveUntil(
-                            //     context: context,
-                            //     pushReplacement: const RevisedHomePage(),
-                            //   );
+                          count++;
+                          if (count < 4) {
+                            if (_otpController.text.length == 6) {
+                              widget.isSignIn
+                                  ? await AWSAuth
+                                      .confirmSignInPhoneVerification(
+                                      _otpController.text,
+                                      context,
+                                      widget.isLoggedIn,
+                                      widget.logOut,
+                                    )
+                                  : await AWSAuth
+                                      .confirmSignUpPhoneVerification(
+                                          widget.phoneNumber,
+                                          _otpController.text,
+                                          widget.isLoggedIn,
+                                          widget.logOut,
+                                          context);
+                            } else {
+                              _buttonController.error();
+                              Timer(const Duration(seconds: 2), () {
+                                _buttonController.reset();
+                              });
+                            }
                           } else {
-                            _buttonController.error();
-                            Timer(const Duration(seconds: 2), () {
-                              _buttonController.reset();
-                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Attempt exceeded, Please request new OTP'),
+                              ),
+                            );
                           }
                         },
                         child: const Text(
@@ -143,51 +143,6 @@ class _OTPPageState extends State<OTPPage> {
                           ),
                         ),
                       ),
-                      // Consumer<AuthController>(
-                      //     builder: (context, authController, child) {
-                      //   return RoundedLoadingButton(
-                      //     controller: _buttonController,
-                      //     animateOnTap: false,
-                      //     color: AppColor.greenDarkColor,
-                      //     successColor: AppColor.greenDarkColor,
-                      //     onPressed: () async {
-                      //       if (_otpController.text.length == 6) {
-                      //         print(_otpController.text);
-                      //         bool otpVerified = await authController.verifyOtp(
-                      //             widget.email, _otpController.text);
-                      //         if (otpVerified) {
-                      //           _buttonController.success();
-                      //           // bool result =
-                      //           //     await PreferenceController.getboolData(
-                      //           //         showCaseKey);
-                      //           // bool unboxStatus =
-                      //           //     await PreferenceController.getboolData(
-                      //           //         "isUnboxingDone");
-
-                      //           // ignore: use_build_context_synchronously
-                      //           Go.pushAndRemoveUntil(
-                      //             context: context,
-                      //             pushReplacement: const RevisedHomePage(),
-                      //           );
-                      //         } else {
-                      //           _buttonController.error();
-                      //           Timer(const Duration(seconds: 2), () {
-                      //             _buttonController.reset();
-                      //           });
-                      //         }
-                      //       }
-                      //     },
-                      //     child: const Text(
-                      //       AppString.verifyOtp,
-                      //       style: TextStyle(
-                      //         color: Colors.white,
-                      //         fontSize: 22,
-                      //         fontWeight: FontWeight.bold,
-                      //         letterSpacing: 2,
-                      //       ),
-                      //     ),
-                      //   );
-                      // }),
                       SizedBox(
                         height: Screen.height(context: context) * 0.1,
                       ),
@@ -203,21 +158,27 @@ class _OTPPageState extends State<OTPPage> {
                           ),
                           TextButton(
                             onPressed: () async {
-                              widget.isSignIn
-                                  ? await AWSAuth.signInWithPhoneVerification(
-                                      widget.phoneNumber,
-                                      "password",
-                                      context,
-                                      widget.isSignIn,
-                                      widget.isLoggedIn,
-                                      widget.logOut)
-                                  : await AWSAuth.signUpWithPhoneVerification(
-                                      widget.phoneNumber,
-                                      "password",
-                                      context,
-                                      widget.isSignIn,
-                                      widget.isLoggedIn,
-                                      widget.logOut);
+                              if (count > 3) {
+                                count = 0;
+                                widget.isSignIn
+                                    ? await AWSAuth.signInWithPhoneVerification(
+                                        widget.phoneNumber,
+                                        "password",
+                                        context,
+                                        widget.isSignIn,
+                                        widget.isLoggedIn,
+                                        widget.logOut)
+                                    : await AWSAuth.signUpWithPhoneVerification(
+                                        widget.phoneNumber,
+                                        "password",
+                                        context,
+                                        widget.isSignIn,
+                                        widget.isLoggedIn,
+                                        widget.logOut);
+                                Fluttertoast.showToast(
+                                  msg: "OTP Resent",
+                                );
+                              }
                             },
                             child: const Text(
                               AppString.resendOtp,
