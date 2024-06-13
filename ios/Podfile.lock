@@ -633,9 +633,6 @@ PODS:
     - FlutterMacOS
   - amplify_secure_storage (0.0.1):
     - Flutter
-  - awesome_notifications (0.7.5-dev.3):
-    - Flutter
-    - IosAwnCore (= 0.7.5-dev.3)
   - bluetooth_enable_fork (0.1.4):
     - Flutter
   - BoringSSL-GRPC (0.0.24):
@@ -767,6 +764,8 @@ PODS:
     - Flutter
   - flutter_blue_plus (0.0.1):
     - Flutter
+  - flutter_unity_widget (4.0.0):
+    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -887,7 +886,6 @@ PODS:
   - gRPC-Core/Interface (1.49.1)
   - image_picker_ios (0.0.1):
     - Flutter
-  - IosAwnCore (0.7.5-dev.3)
   - leveldb-library (1.22.4)
   - location (0.0.1):
     - Flutter
@@ -930,6 +928,8 @@ PODS:
     - Flutter
   - wakelock_plus (0.0.1):
     - Flutter
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
   - wifi_iot (0.0.1):
     - Flutter
   - wifi_scan (0.0.1):
@@ -938,7 +938,6 @@ PODS:
 DEPENDENCIES:
   - amplify_auth_cognito (from `.symlinks/plugins/amplify_auth_cognito/darwin`)
   - amplify_secure_storage (from `.symlinks/plugins/amplify_secure_storage/ios`)
-  - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - bluetooth_enable_fork (from `.symlinks/plugins/bluetooth_enable_fork/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
@@ -950,6 +949,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
   - flutter_blue_plus (from `.symlinks/plugins/flutter_blue_plus/ios`)
+  - flutter_unity_widget (from `.symlinks/plugins/flutter_unity_widget/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
@@ -966,6 +966,7 @@ DEPENDENCIES:
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
   - wifi_iot (from `.symlinks/plugins/wifi_iot/ios`)
   - wifi_scan (from `.symlinks/plugins/wifi_scan/ios`)
 
@@ -991,7 +992,6 @@ SPEC REPOS:
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
-    - IosAwnCore
     - leveldb-library
     - MTBBarcodeScanner
     - nanopb
@@ -1005,8 +1005,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/amplify_auth_cognito/darwin"
   amplify_secure_storage:
     :path: ".symlinks/plugins/amplify_secure_storage/ios"
-  awesome_notifications:
-    :path: ".symlinks/plugins/awesome_notifications/ios"
   bluetooth_enable_fork:
     :path: ".symlinks/plugins/bluetooth_enable_fork/ios"
   cloud_firestore:
@@ -1029,6 +1027,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_background_service_ios/ios"
   flutter_blue_plus:
     :path: ".symlinks/plugins/flutter_blue_plus/ios"
+  flutter_unity_widget:
+    :path: ".symlinks/plugins/flutter_unity_widget/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geolocator_apple:
@@ -1061,6 +1061,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player_avfoundation/ios"
   wakelock_plus:
     :path: ".symlinks/plugins/wakelock_plus/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
   wifi_iot:
     :path: ".symlinks/plugins/wifi_iot/ios"
   wifi_scan:
@@ -1070,7 +1072,6 @@ SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
   amplify_auth_cognito: 76b5a54f05f66f69966b468b8121a0dd33a32c70
   amplify_secure_storage: 501cbdac671a050090d48dfcc002d5637d3f4a55
-  awesome_notifications: 1b6393d6ce02878dc50d0ae87baf7bdbc9d802a2
   bluetooth_enable_fork: 73b8ca6e67230a9baa04010cd5c1e824e00d2797
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   cloud_firestore: 73eece22ce25a0565238c283ee9990f1618d8063
@@ -1096,6 +1097,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
   flutter_blue_plus: 4837da7d00cf5d441fdd6635b3a57f936778ea96
+  flutter_unity_widget: e509f3109933aa0c63b1bc149ca3d5b90fb68543
   fluttertoast: 48c57db1b71b0ce9e6bba9f31c940ff4b001293c
   geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
   GoogleAppMeasurement: 70ce9aa438cff1cfb31ea3e660bcc67734cb716e
@@ -1104,7 +1106,6 @@ SPEC CHECKSUMS:
   "gRPC-C++": 2df8cba576898bdacd29f0266d5236fa0e26ba6a
   gRPC-Core: a21a60aefc08c68c247b439a9ef97174b0c54f96
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
-  IosAwnCore: edf31913fd18960ebcde7c05912dc860ca2b63b2
   leveldb-library: 06a69cc7582d64b29424a63e085e683cc188230a
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
@@ -1125,6 +1126,7 @@ SPEC CHECKSUMS:
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   video_player_avfoundation: 81e49bb3d9fb63dccf9fa0f6d877dc3ddbeac126
   wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
+  webview_flutter_wkwebview: 4f3e50f7273d31e5500066ed267e3ae4309c5ae4
   wifi_iot: b5aafd6f9b52f8a357383a1deabab45f31cd602d
   wifi_scan: 6d20b3b4f59bbad1ddcf3e241560f3acd62f6cbe
 
