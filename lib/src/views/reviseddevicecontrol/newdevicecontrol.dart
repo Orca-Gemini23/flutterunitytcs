@@ -165,6 +165,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
 
                           // log("---->${deviceController.battC}");
                           // print("hi");
+
                           return Container(
                             width: double.maxFinite,
                             height: double.maxFinite,
@@ -455,29 +456,27 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                   .battC /
                                                               100,
                                                   radius: 20.w,
-                                                  center:
-                                                      (!deviceController
-                                                                  .bandC &&
-                                                              deviceController
-                                                                      .battC <
-                                                                  0 &&
-                                                              deviceController
-                                                                      .magCValue <
-                                                                  0)
+                                                  center: (!deviceController.bandC &&
+                                                          deviceController
+                                                                  .battC <
+                                                              0 &&
+                                                          deviceController
+                                                                  .magCValue <
+                                                              0 &&
+                                                          deviceController
+                                                                  .frequencyValue <
+                                                              0)
+                                                      ? const Icon(
+                                                          Icons.error,
+                                                          color: Colors.grey,
+                                                        )
+                                                      : deviceController.battC <
+                                                              30
                                                           ? const Icon(
                                                               Icons.error,
-                                                              color:
-                                                                  Colors.grey,
+                                                              color: Colors.red,
                                                             )
-                                                          : deviceController
-                                                                      .battC <
-                                                                  30
-                                                              ? const Icon(
-                                                                  Icons.error,
-                                                                  color: Colors
-                                                                      .red,
-                                                                )
-                                                              : null,
+                                                          : null,
                                                   progressColor: (!deviceController
                                                               .bandC &&
                                                           deviceController
@@ -505,6 +504,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                               0 &&
                                                           deviceController
                                                                   .magCValue <
+                                                              0 &&
+                                                          deviceController
+                                                                  .frequencyValue <
                                                               0)
                                                       ? "??"
                                                       : "${deviceController.battC}%",
@@ -550,7 +552,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                     child: AbsorbPointer(
                                       absorbing: (!deviceController.bandC &&
                                           deviceController.battC < 0 &&
-                                          deviceController.magCValue < 0),
+                                          deviceController.magCValue < 0 &&
+                                          deviceController.frequencyValue < 0),
                                       child: Stack(
                                         textDirection: TextDirection.ltr,
                                         children: [
@@ -584,6 +587,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                   0 &&
                                                               deviceController
                                                                       .magCValue <
+                                                                  0 &&
+                                                              deviceController
+                                                                      .frequencyValue <
                                                                   0)
                                                           ? Colors.grey
                                                           : AppColor
@@ -591,7 +597,11 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                     ),
                                                     child: Slider(
                                                       value: deviceController
-                                                          .frequencyValue,
+                                                                  .frequencyValue ==
+                                                              -1
+                                                          ? 0.3
+                                                          : deviceController
+                                                              .frequencyValue,
                                                       min: 0.3,
                                                       max: 2,
                                                       label: deviceController
@@ -604,6 +614,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                   0 &&
                                                               deviceController
                                                                       .magCValue <
+                                                                  0 &&
+                                                              deviceController
+                                                                      .frequencyValue <
                                                                   0)
                                                           ? Colors.grey
                                                           : AppColor
@@ -821,6 +834,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                     0 &&
                                                                 deviceController
                                                                         .magCValue <
+                                                                    0 &&
+                                                                deviceController
+                                                                        .frequencyValue <
                                                                     0),
                                                         child: magSlider(true,
                                                             deviceController),
@@ -887,6 +903,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                           : (!deviceController.bandC &&
                                                   deviceController.battC < 0 &&
                                                   deviceController.magCValue <
+                                                      0 &&
+                                                  deviceController
+                                                          .frequencyValue <
                                                       0)
                                               ? const Icon(
                                                   Icons.error,
