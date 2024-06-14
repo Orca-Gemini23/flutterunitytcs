@@ -888,8 +888,10 @@ class DeviceController extends ChangeNotifier {
 
   Future<bool> refreshBatteryValues() async {
     bool refreshed;
-    refreshed =
-        await getBatteryPercentageValues() && await getClientConnectionStatus();
+    refreshed = await getBatteryPercentageValues() &&
+        await getClientConnectionStatus() &&
+        await getMagnitudeValues() &&
+        await getFrequencyValues();
     if (refreshed) {
       return true;
     }
