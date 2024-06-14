@@ -16,7 +16,7 @@ Widget magSlider(bool isClient, DeviceController controller) {
         //MAGNITUDE SLIDER
         value: isClient
             ? controller.magCValue < 0
-                ? controller.magSValue
+                ? 0
                 : controller.magCValue
             : controller.magSValue,
         min: 0,
