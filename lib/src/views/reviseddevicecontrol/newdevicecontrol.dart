@@ -162,6 +162,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                           // }
 
                           // log("${!deviceController.bandC} ,${deviceController.battC} ,${deviceController.magCValue}");
+                          // print(
+                          //     "${!deviceController.bandC} ,${deviceController.battC} ,${deviceController.magCValue},${deviceController.frequencyValue}");
 
                           // log("---->${deviceController.battC}");
                           // print("hi");
@@ -456,13 +458,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                   .battC /
                                                               100,
                                                   radius: 20.w,
-                                                  center: (!deviceController.bandC &&
+                                                  center: (!deviceController.bandC ||
                                                           deviceController
                                                                   .battC <
-                                                              0 &&
+                                                              0 ||
                                                           deviceController
                                                                   .magCValue <
-                                                              0 &&
+                                                              0 ||
                                                           deviceController
                                                                   .frequencyValue <
                                                               0)
@@ -478,12 +480,14 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                             )
                                                           : null,
                                                   progressColor: (!deviceController
-                                                              .bandC &&
-                                                          deviceController
-                                                                  .battC <
-                                                              0 &&
+                                                              .bandC ||
+                                                          deviceController.battC <
+                                                              0 ||
                                                           deviceController
                                                                   .magCValue <
+                                                              0 ||
+                                                          deviceController
+                                                                  .frequencyValue <
                                                               0)
                                                       ? Colors.grey
                                                       : deviceController.battC <
@@ -498,13 +502,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  (!deviceController.bandC &&
+                                                  (!deviceController.bandC ||
                                                           deviceController
                                                                   .battC <
-                                                              0 &&
+                                                              0 ||
                                                           deviceController
                                                                   .magCValue <
-                                                              0 &&
+                                                              0 ||
                                                           deviceController
                                                                   .frequencyValue <
                                                               0)
@@ -550,9 +554,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                     width: double.maxFinite,
                                     height: 107.h,
                                     child: AbsorbPointer(
-                                      absorbing: (!deviceController.bandC &&
-                                          deviceController.battC < 0 &&
-                                          deviceController.magCValue < 0 &&
+                                      absorbing: (!deviceController.bandC ||
+                                          deviceController.battC < 0 ||
+                                          deviceController.magCValue < 0 ||
                                           deviceController.frequencyValue < 0),
                                       child: Stack(
                                         textDirection: TextDirection.ltr,
@@ -581,13 +585,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                     data: SliderThemeData(
                                                       trackHeight: 8,
                                                       activeTrackColor: (!deviceController
-                                                                  .bandC &&
+                                                                  .bandC ||
                                                               deviceController
                                                                       .battC <
-                                                                  0 &&
+                                                                  0 ||
                                                               deviceController
                                                                       .magCValue <
-                                                                  0 &&
+                                                                  0 ||
                                                               deviceController
                                                                       .frequencyValue <
                                                                   0)
@@ -608,13 +612,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                           .frequencyValue
                                                           .toString(),
                                                       thumbColor: (!deviceController
-                                                                  .bandC &&
+                                                                  .bandC ||
                                                               deviceController
                                                                       .battC <
-                                                                  0 &&
+                                                                  0 ||
                                                               deviceController
                                                                       .magCValue <
-                                                                  0 &&
+                                                                  0 ||
                                                               deviceController
                                                                       .frequencyValue <
                                                                   0)
@@ -828,13 +832,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                       AbsorbPointer(
                                                         absorbing:
                                                             (!deviceController
-                                                                    .bandC &&
+                                                                    .bandC ||
                                                                 deviceController
                                                                         .battC <
-                                                                    0 &&
+                                                                    0 ||
                                                                 deviceController
                                                                         .magCValue <
-                                                                    0 &&
+                                                                    0 ||
                                                                 deviceController
                                                                         .frequencyValue <
                                                                     0),
@@ -900,10 +904,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                               Icons.error,
                                               color: Colors.red,
                                             )
-                                          : (!deviceController.bandC &&
-                                                  deviceController.battC < 0 &&
+                                          : (!deviceController.bandC ||
+                                                  deviceController.battC < 0 ||
                                                   deviceController.magCValue <
-                                                      0 &&
+                                                      0 ||
                                                   deviceController
                                                           .frequencyValue <
                                                       0)
