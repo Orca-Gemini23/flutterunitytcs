@@ -417,6 +417,7 @@ class DeviceController extends ChangeNotifier {
         await device.connect(
           autoConnect: false,
         );
+        await device.requestConnectionPriority(connectionPriorityRequest: ConnectionPriority.high);
 
         await HapticFeedback.vibrate();
         showToast
@@ -860,7 +861,9 @@ class DeviceController extends ChangeNotifier {
           // print("----->$leftAngleValue,$rightAngleValue}");
           // count++;
           // print("----->$count");
-          UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue");
+
+          // UnityScreenState.sendAccelerometer(data);
+          UnityScreenState.sendAngle("$leftAngleValue,$rightAngleValue");
           // UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue}");
 
           // leftAngleValue = double.parse(

@@ -1,38 +1,51 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 
 import '../constants/bt_constants.dart';
+import '../db/local_db.dart';
 
 class UnityScreen extends StatefulWidget {
   const UnityScreen({Key? key, required this.i}) : super(key: key);
   final int i;
+
   @override
   State<UnityScreen> createState() => UnityScreenState();
 }
 
 class UnityScreenState extends State<UnityScreen> {
+  @override
+  void dispose() {
+
+    super.dispose();
+  }
   static final GlobalKey<ScaffoldState> _scaffoldKey =
-  GlobalKey<ScaffoldState>();
+      GlobalKey<ScaffoldState>();
   static UnityWidgetController? unityWidgetController;
-  static sendMessage(message)
-  {
-    unityWidgetController?.postMessage("SceneController", "SetCurrentAngle", message);
+
+  static sendAngle(message) {
+    unityWidgetController?.postMessage(
+        "SceneController", "SetCurrentAngle", message);
   }
-  static loadFishGame(message)
-  {
-    unityWidgetController?.postMessage("SceneController", "FishingGame", message);
+
+  static loadFishGame() {
+    unityWidgetController?.postMessage("SceneController", "FishingGame", "");
   }
-  static loadBallGame(message)
-  {
-    unityWidgetController?.postMessage("SceneController", "BallGame", message);
+
+  static loadBallGame() {
+    unityWidgetController?.postMessage("SceneController", "BallGame", "");
   }
+
+  static loadTestScene() {
+    unityWidgetController?.postMessage("SceneController", "TestScene", "");
+  }
+
   double _sliderValue = 0.0;
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       // extendBodyBehindAppBar: true,
       // appBar: AppBar(
@@ -44,49 +57,49 @@ class UnityScreenState extends State<UnityScreen> {
       body: SafeArea(
         bottom: false,
         child: WillPopScope(
-          onWillPop: () async {
-            // Pop the category page if Android back button is pressed.
-            return true;
-          },
-          child: Stack(
-            // color: Colors.white,
-            children:<Widget>[ UnityWidget(
-              // uiLevel: 0,
-              onUnityCreated: onUnityCreated,
-              onUnityUnloaded: stopStream,
-              onUnityMessage: (message) {
-                switch (message) {
-                  case "VL":
-                    vibrateLeft();
-                    break;
-                  case "VR":
-                    vibrateRight();
-                    break;
-                }
-              },
-              fullscreen: true,
 
-            ),
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: (){
-                  Navigator.pop(context);
-                },
-              )
+            onWillPop: () async {
+              sendUploadRequest();
+              // Pop the category page if Android back button is pressed.
+              return true;
+            },
+            child: Stack(
+                // color: Colors.white,
+                children: <Widget>[
+                  UnityWidget(
+                    // uiLevel: 0,
+                    onUnityCreated: onUnityCreated,
+                    onUnityUnloaded: stopStream,
+                    onUnityMessage: (message) {
+                      switch (message) {
+                        case "VL":
+                          vibrateLeft();
+                          break;
+                        case "VR":
+                          vibrateRight();
+                          break;
+                      }
+                    },
+                    fullscreen: true,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  )
 
-              // Slider(
-              //   onChanged: (value) {
-              //     setState(() {
-              //       _sliderValue = value;
-              //     });
-              //   },
-              //   value: _sliderValue,
-              //   min: 0,
-              //   max: 20,
-              // ),
-          ])
-
-        ),
+                  // Slider(
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _sliderValue = value;
+                  //     });
+                  //   },
+                  //   value: _sliderValue,
+                  //   min: 0,
+                  //   max: 20,
+                  // ),
+                ])),
       ),
     );
   }
@@ -95,30 +108,33 @@ class UnityScreenState extends State<UnityScreen> {
   void onUnityCreated(controller) {
     unityWidgetController = controller;
     print("Unity Created ${widget.i}");
-    switch(widget.i){
+    switch (widget.i) {
       case 0:
-        UnityScreenState.loadBallGame("");
+        UnityScreenState.loadBallGame();
         startReading();
 
         break;
       case 1:
-        UnityScreenState.loadFishGame("");
+        UnityScreenState.loadFishGame();
         startReading();
         break;
       case 2:
-        UnityScreenState.loadSwingGame("");
+        UnityScreenState.loadSwingGame();
+        startReading();
+        break;
+      case 3:
+        UnityScreenState.loadTestScene();
         startReading();
         break;
     }
-
   }
-
 
   void startReading() {
-    DeviceController deviceController = Provider.of<DeviceController>(context, listen: false);
+    DeviceController deviceController =
+        Provider.of<DeviceController>(context, listen: false);
     deviceController.startStream();
-
   }
+
   void stopStream() {
     // DeviceController deviceController = Provider.of<DeviceController>(context, listen: false);
   }
@@ -139,8 +155,19 @@ class UnityScreenState extends State<UnityScreen> {
         "beepc 5;", WRITECHARACTERISTICS); //right
   }
 
-  static void loadSwingGame(String s) {
-    unityWidgetController?.postMessage("SceneController", "SwingGame", s);
+  static void loadSwingGame() {
+    unityWidgetController?.postMessage("SceneController", "SwingGame", "");
+  }
 
+  static void sendAccelerometer(String legData) {
+    unityWidgetController?.postMessage(
+        "SceneController", "AccelerometerValue", legData);
+  }
+  static void sendUploadRequest()
+  {
+    print("upload request send");
+    unityWidgetController?.postMessage(
+        // "SceneController", "UploadRequest", "${LocalDB.user!.phone}");
+        "SceneController", "UploadRequest", "9967");
   }
 }
