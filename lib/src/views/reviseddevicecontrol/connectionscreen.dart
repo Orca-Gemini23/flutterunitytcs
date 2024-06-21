@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_ripple_animation/awesome_ripple_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,7 +64,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
           children: [
             Consumer<DeviceController>(
                 builder: (context, deviceController, widget) {
-              deviceController.checkLocationPremission();
+              if (Platform.isAndroid) {
+                deviceController.checkLocationPremission();
+              }
               return Positioned(
                 top: 250,
                 left: 0,

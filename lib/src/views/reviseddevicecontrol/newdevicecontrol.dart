@@ -921,6 +921,33 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                 )
                                     ],
                                   ),
+                                  const Divider(
+                                    thickness: 4,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Disconnect Device",
+                                        style: TextStyle(
+                                          color: AppColor.greenDarkColor,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16.sp,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      IconButton(
+                                          onPressed: () {
+                                            deviceController.disconnectDevice(
+                                                deviceController
+                                                    .connectedDevice);
+                                          },
+                                          icon: const Icon(
+                                              Icons.bluetooth_disabled)),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
                                 ],
                               ),
                             ),
