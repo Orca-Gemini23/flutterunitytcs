@@ -42,7 +42,6 @@ class DeviceController extends ChangeNotifier {
   double leftAngleValue = 0;
   double rightAngleValue = 0;
 
-
   /// stores characterisitcs of devices
   List<BluetoothCharacteristic> _characteristics = [];
 
@@ -417,7 +416,8 @@ class DeviceController extends ChangeNotifier {
         await device.connect(
           autoConnect: false,
         );
-        await device.requestConnectionPriority(connectionPriorityRequest: ConnectionPriority.high);
+        await device.requestConnectionPriority(
+            connectionPriorityRequest: ConnectionPriority.high);
 
         await HapticFeedback.vibrate();
         showToast
@@ -444,10 +444,10 @@ class DeviceController extends ChangeNotifier {
   }
 
   ///Handles the disconnection procedure
-  Future disconnectDevice(BluetoothDevice device) async {
+  Future disconnectDevice(BluetoothDevice? device) async {
     try {
       Fluttertoast.showToast(msg: "Disconnecting");
-      await device.disconnect();
+      await device!.disconnect();
       await HapticFeedback.mediumImpact();
       Fluttertoast.showToast(msg: "Disconnected successfully");
       _connectedDevice = null;
@@ -483,7 +483,7 @@ class DeviceController extends ChangeNotifier {
         characteristicMap.putIfAbsent(element.uuid, () => element);
         if (element.characteristicUuid ==
             Guid("0000abf1-0000-1000-8000-00805f9b34fb")) {
-          print(element);
+          // print(element);
           subscriptionElement = element;
         }
       }
@@ -839,6 +839,7 @@ class DeviceController extends ChangeNotifier {
       return "error occurred";
     }
   }
+
   // int count=0;
   StreamSubscription<List<int>> startStream() {
     BluetoothCharacteristic? targetCharacteristic =
