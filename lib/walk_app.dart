@@ -11,7 +11,6 @@ import 'package:walk/src/controllers/game_history_controller.dart';
 import 'package:walk/src/controllers/help_controller.dart';
 import 'package:walk/src/controllers/user_controller.dart';
 import 'package:walk/src/controllers/wifi_controller.dart';
-import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/revisedsplash.dart';
 
 bool _isLoggedIn = false;
@@ -100,10 +99,10 @@ class _WalkAppState extends State<WalkApp> {
           designSize: const Size(360, 800),
           builder: (context, child) {
             return MaterialApp(
-              home: //RevisedHomePage(isLoggedIn: _login),
-                  _isLoggedIn
-                      ? Revisedsplash(isLoggedIn: _login, logOut: _logout)
-                      : LoginRegister(isLoggedIn: _login, logOut: _logout),
+              home:Revisedsplash(isLoggedIn: _login, logOut: _logout),
+                  // _isLoggedIn
+                  //     ? Revisedsplash(isLoggedIn: _login, logOut: _logout)
+                  //     : LoginRegister(isLoggedIn: _login, logOut: _logout),
               theme: ThemeData(fontFamily: "Poppins"),
               debugShowCheckedModeBanner: false,
             );
