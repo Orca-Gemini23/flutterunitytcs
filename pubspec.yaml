@@ -65,6 +65,7 @@ dependencies:
   wakelock_plus: ^1.1.4
   geolocator: ^11.1.0
   flutter_unity_widget: ^2022.2.1
+  tutorial_coach_mark: ^1.2.11
 
   
   
