@@ -199,7 +199,7 @@
 		AEF8BD422C19A22700E35599 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AEF8BD492C19A22700E35599 /* Unity-Target-New.app */,
+				AEF8BD492C19A22700E35599 /* walkprimaryunityapp.app */,
 				AEF8BD4B2C19A22700E35599 /* Unity-iPhone Tests.xctest */,
 				AEF8BD4D2C19A22700E35599 /* UnityFramework.framework */,
 				AEF8BD4F2C19A22700E35599 /* libGameAssembly.a */,
@@ -307,7 +307,7 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		AEF8BD492C19A22700E35599 /* Unity-Target-New.app */ = {
+		AEF8BD492C19A22700E35599 /* walkprimaryunityapp.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = walkprimaryunityapp.app;
