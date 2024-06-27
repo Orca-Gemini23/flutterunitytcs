@@ -418,8 +418,9 @@ class DeviceController extends ChangeNotifier {
         );
         await device.requestConnectionPriority(
             connectionPriorityRequest: ConnectionPriority.high);
-
         await HapticFeedback.vibrate();
+
+
         showToast
             ? Fluttertoast.showToast(msg: "Connected to ${device.platformName}")
             : null;
@@ -850,21 +851,22 @@ class DeviceController extends ChangeNotifier {
     late StreamSubscription<List<int>> angleValuesSubscription;
 
     try {
+
       angleValuesSubscription = targetCharacteristic!.onValueReceived.listen(
         (event) {
           controller.add(event);
           String data = String.fromCharCodes(event);
           // print(data);
-          List<String> legData = data.split(" ");
+          // List<String> legData = data.split(" ");
 
-          leftAngleValue = double.tryParse(legData[1])!;
-          rightAngleValue = double.tryParse(legData[3])!;
+          // leftAngleValue = double.tryParse(legData[1])!;
+          // rightAngleValue = double.tryParse(legData[3])!;
           // print("----->$leftAngleValue,$rightAngleValue}");
           // count++;
           // print("----->$count");
-
-          // UnityScreenState.sendAccelerometer(data);
-          UnityScreenState.sendAngle("$leftAngleValue,$rightAngleValue");
+          // print(data);
+          UnityScreenState.sendAccelerometer(data);
+          // UnityScreenState.sendAngle("");
           // UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue}");
 
           // leftAngleValue = double.parse(
