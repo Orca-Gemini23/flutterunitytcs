@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -129,7 +131,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                           verificationCompleted:
                               (PhoneAuthCredential credential) async {},
                           verificationFailed: (FirebaseAuthException e) {
-                            print(e);
+                            log(e.toString());
                           },
                           codeSent: (String verificationId, int? resendToken) {
                             print("hello");

@@ -1,8 +1,10 @@
 // ignore_for_file: unnecessary_string_interpolations
 
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
@@ -13,6 +15,7 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 class OTPPage extends StatefulWidget {
@@ -41,6 +44,14 @@ class _OTPPageState extends State<OTPPage> {
   final RoundedLoadingButtonController _buttonController =
       RoundedLoadingButtonController();
   int count = 0;
+
+  Future<void> getFruit() async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('helloWorld');
+    final results = await callable();
+    log(results
+        .toString()); // ["Apple", "Banana", "Cherry", "Date", "Fig", "Grapes"]
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,13 +126,35 @@ class _OTPPageState extends State<OTPPage> {
                                   PhoneAuthProvider.credential(
                                       verificationId: widget.verificationId,
                                       smsCode: _otpController.text);
+
+                              // HttpsCallable callable =
+                              //     FirebaseFunctions.instanceFor(
+                              //             region: 'us-central1')
+                              //         .httpsCallable('helloWorld');
+                              // try {
+                              //   getFruit();
+                              // } catch (e) {
+                              //   log(e.toString());
+                              // }
+                              try {
+                                final result = await FirebaseFunctions.instance
+                                    .httpsCallable('helloWorld')
+                                    .call();
+                                log(result.data);
+                              } on FirebaseFunctionsException catch (error) {
+                                log("1 ${error.code}");
+                                log("2 ${error.details}");
+                                log("3 ${error.message.toString()}");
+                              }
+
                               await FirebaseAuth.instance
                                   .signInWithCredential(credential);
+
                               // ignore: use_build_context_synchronously
                               Go.pushAndRemoveUntil(
                                   context: context,
                                   pushReplacement: RevisedHomePage(
-                                      isLoggedIn: (){}, logOut: (){}));
+                                      isLoggedIn: () {}, logOut: () {}));
                               // widget.isSignIn
                               //     ? await AWSAuth
                               //         .confirmSignInPhoneVerification(
