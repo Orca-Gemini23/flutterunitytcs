@@ -33,6 +33,16 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
   Widget build(BuildContext context) {
     // AWSAuth.fetchAuthSession();
     return Scaffold(
+      // body: 
+      // SafeArea(
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Text("Let’s get started.\n what’s your number?"),
+      //       Text("We’ll send you a code to verify your phone."),
+      //     ],
+      //   ),
+      // ),
       body: SizedBox(
         width: double.infinity,
         height: double.infinity,
