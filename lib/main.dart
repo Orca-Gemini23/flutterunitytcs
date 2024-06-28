@@ -41,7 +41,8 @@ void main() async {
   await initializeLocalDatabase();
 
   await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug,
+    //Tried with enum 'debug' in emulator and 'playIntegrity' in real device
+    androidProvider: AndroidProvider.debug,//AndroidProvider.playIntegrity
     appleProvider: AppleProvider.appAttest,
   );
 
