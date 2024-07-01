@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   amplify_db_common
   cloud_firestore
+  firebase_auth
   firebase_core
   flutter_unity_widget
   geolocator_windows

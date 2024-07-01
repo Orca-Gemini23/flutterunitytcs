@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,39 +29,48 @@ class _WalkAppState extends State<WalkApp> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
-  }
-
-  void _checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    if (isLoggedIn) {
-      setState(() {
-        _isLoggedIn = true;
-      });
-    } else {
-      setState(() {
-        _isLoggedIn = false;
-      });
-    }
-  }
-
-  void _login() async {
-    // Perform login logic here
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLoggedIn', true);
-    setState(() {
-      _isLoggedIn = true;
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        log(user.toString());
+        log(_isLoggedIn.toString());
+        setState(() {
+          _isLoggedIn = true;
+        });
+      }
     });
+    // _checkLoginStatus();
   }
 
-  void _logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('isLoggedIn');
-    setState(() {
-      _isLoggedIn = false;
-    });
-  }
+  // void _checkLoginStatus() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  //   if (isLoggedIn) {
+  //     setState(() {
+  //       _isLoggedIn = true;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _isLoggedIn = false;
+  //     });
+  //   }
+  // }
+
+  // void _login() async {
+  //   // Perform login logic here
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setBool('isLoggedIn', true);
+  //   setState(() {
+  //     _isLoggedIn = true;
+  //   });
+  // }
+
+  // void _logout() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.remove('isLoggedIn');
+  //   setState(() {
+  //     _isLoggedIn = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +111,10 @@ class _WalkAppState extends State<WalkApp> {
           designSize: const Size(360, 800),
           builder: (context, child) {
             return MaterialApp(
-              home:Revisedsplash(isLoggedIn: _login, logOut: _logout),
-                  // _isLoggedIn
-                  //     ? Revisedsplash(isLoggedIn: _login, logOut: _logout)
-                  //     : LoginRegister(isLoggedIn: _login, logOut: _logout),
+              home: //RevisedHomePage(isLoggedIn: _login),
+                  _isLoggedIn
+                      ? Revisedsplash(isLoggedIn: () {}, logOut: () {})
+                      : LoginRegister(isLoggedIn: () {}, logOut: () {}),
               theme: ThemeData(fontFamily: "Poppins"),
               debugShowCheckedModeBanner: false,
             );
