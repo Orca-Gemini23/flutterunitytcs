@@ -34,6 +34,9 @@ import 'package:walk/src/widgets/homepage/usernametext.dart';
 
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
+GlobalKey keyGoalBox = GlobalKey();
+GlobalKey keyMenu = GlobalKey();
+
 class RevisedHomePage extends StatefulWidget {
   const RevisedHomePage(
       {super.key, required this.isLoggedIn, required this.logOut});
@@ -59,7 +62,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
 
   //global keys for each widget
   GlobalKey keyPage = GlobalKey();
-  GlobalKey keyGoalBox = GlobalKey();
   GlobalKey keyGames = GlobalKey();
   GlobalKey keyControl = GlobalKey();
   GlobalKey keyScore = GlobalKey();
@@ -67,7 +69,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   //keys for app bar
   GlobalKey keyAccount = GlobalKey();
   GlobalKey keyBattery = GlobalKey();
-  GlobalKey keyMenu = GlobalKey();
 
   ////Also add the option for adding the app shortcut icon in the homescreen
   @override
@@ -77,22 +78,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     super.initState();
     widget.isLoggedIn();
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
-
-    // NotificationService.notificationPermission(context);
-    //
-    // // send data to cloud when network is availabe
-    // sendDataWhenNetworkAvailable();
-    // //triggering the scheduled notifications
-    // // NotificationService.cancelScheduledNotifications();
-    // // NotificationService.sendScheduledTestNotification();
-    // AwesomeNotifications().getGlobalBadgeCounter().then(
-    //   (value) {
-    //     log(value.toString());
-    //     value = 0;
-    //     AwesomeNotifications().setGlobalBadgeCounter(0);
-    //   },
-    // );
-    // NotificationService(context).listenToNotificationResults();
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
@@ -147,7 +132,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   Widget build(BuildContext context) {
     // print(
     //     "------------------------Building Home Page UI--------------------------");
-    // print(AWSAuth.fetchAuthSession());
 
     return Scaffold(
       key: homePagekey,
@@ -273,23 +257,23 @@ class _RevisedHomePageState extends State<RevisedHomePage>
       textSkip: "SKIP",
       paddingFocus: 10,
       opacityShadow: 0.5,
+      pulseEnable: false,
       imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
       onFinish: () {
-        print("finish");
+        log("finish");
       },
       onClickTarget: (target) {
-        print('onClickTarget: $target');
+        log('onClickTarget: $target');
       },
       onClickTargetWithTapPosition: (target, tapDetails) {
-        print("target: $target");
-        print(
-            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
+        log("target: $target");
+        log("clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
       },
       onClickOverlay: (target) {
-        print('onClickOverlay: $target');
+        log('onClickOverlay: $target');
       },
       onSkip: () {
-        print("skip");
+        log("skip");
         return true;
       },
     );
@@ -297,359 +281,103 @@ class _RevisedHomePageState extends State<RevisedHomePage>
 
   List<TargetFocus> _createTargets() {
     List<TargetFocus> targets = [];
-    // targets.add(
-    //   TargetFocus(
-    //     identify: "keyBottomNavigation1",
-    //     keyTarget: homePagekey,
-    //     alignSkip: Alignment.topRight,
-    //     enableOverlayTab: true,
-    //     contents: [
-    //       TargetContent(
-    //         align: ContentAlign.top,
-    //         builder: (context, controller) {
-    //           return const Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             crossAxisAlignment: CrossAxisAlignment.start,
-    //             children: <Widget>[
-    //               Text(
-    //                 "Titulo lorem ipsum",
-    //                 style: TextStyle(
-    //                   color: Colors.white,
-    //                 ),
-    //               ),
-    //             ],
-    //           );
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
-
-    // targets.add(
-    //   TargetFocus(
-    //     identify: "keyBottomNavigation2",
-    //     // keyTarget: keyBottomNavigation2,
-    //     alignSkip: Alignment.topRight,
-    //     contents: [
-    //       TargetContent(
-    //         align: ContentAlign.top,
-    //         builder: (context, controller) {
-    //           return const Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             crossAxisAlignment: CrossAxisAlignment.start,
-    //             children: <Widget>[
-    //               Text(
-    //                 "Titulo lorem ipsum",
-    //                 style: TextStyle(
-    //                   color: Colors.white,
-    //                 ),
-    //               ),
-    //             ],
-    //           );
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
-
-    // targets.add(
-    //   TargetFocus(
-    //     identify: "keyBottomNavigation3",
-    //     // keyTarget: keyBottomNavigation3,
-    //     alignSkip: Alignment.topRight,
-    //     contents: [
-    //       TargetContent(
-    //         align: ContentAlign.top,
-    //         builder: (context, controller) {
-    //           return Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             crossAxisAlignment: CrossAxisAlignment.start,
-    //             children: <Widget>[
-    //               const Text(
-    //                 "Titulo lorem ipsum",
-    //                 style: TextStyle(
-    //                   color: Colors.white,
-    //                 ),
-    //               ),
-    //               const SizedBox(
-    //                 height: 10,
-    //               ),
-    //               ElevatedButton(
-    //                 onPressed: () {
-    //                   tutorialCoachMark.goTo(0);
-    //                 },
-    //                 child: const Text('Go to index 0'),
-    //               ),
-    //             ],
-    //           );
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
     targets.add(
       TargetFocus(
         identify: "Target 0",
         keyTarget: keyAccount,
+        enableOverlayTab: true,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(left: 0),
             builder: (context, controller) {
-              return const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Titulo lorem ipsum",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20.0),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              );
+              return Image.asset('assets/images/tour/profile.png');
             },
           ),
         ],
       ),
     );
-    // targets.add(
-    //   TargetFocus(
-    //     identify: "Target 1",
-    //     // keyTarget: keyButton,
-    //     color: Colors.purple,
-    //     contents: [
-    //       TargetContent(
-    //         align: ContentAlign.bottom,
-    //         builder: (context, controller) {
-    //           return Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             crossAxisAlignment: CrossAxisAlignment.start,
-    //             children: <Widget>[
-    //               const Text(
-    //                 "Titulo lorem ipsum",
-    //                 style: TextStyle(
-    //                   fontWeight: FontWeight.bold,
-    //                   color: Colors.white,
-    //                   fontSize: 20.0,
-    //                 ),
-    //               ),
-    //               const Padding(
-    //                 padding: EdgeInsets.only(top: 10.0),
-    //                 child: Text(
-    //                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-    //                   style: TextStyle(color: Colors.white),
-    //                 ),
-    //               ),
-    //               ElevatedButton(
-    //                 onPressed: () {
-    //                   controller.previous();
-    //                 },
-    //                 child: const Icon(Icons.chevron_left),
-    //               ),
-    //             ],
-    //           );
-    //         },
-    //       )
-    //     ],
-    //     shape: ShapeLightFocus.RRect,
-    //     radius: 5,
-    //   ),
-    // );
     targets.add(
       TargetFocus(
-        identify: "Target 2",
-        keyTarget: keyControl,
+        identify: "Target 6",
+        keyTarget: keyMenu,
+        enableOverlayTab: true,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
+            align: ContentAlign.right,
+            // customPosition: CustomTargetContentPosition(top: 425, right: 70),
             builder: (context, controller) {
-              return const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Titulo lorem ipsum",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20.0),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              );
+              return Image.asset('assets/images/tour/menu.png');
             },
           ),
         ],
         shape: ShapeLightFocus.RRect,
       ),
     );
-    targets.add(TargetFocus(
-      identify: "Target 3",
-      keyTarget: keyGames,
-      contents: [
-        TargetContent(
-            align: ContentAlign.top,
-            // customPosition: CustomTargetContentPosition(
-            //   top: 200,
-            //   left: 50,
-            // ),
-            child: Stack(
-              children: [
-                Container(
-                  color: const Color.fromRGBO(0, 0, 0, 0.5),
-                  child: Container(
-                    color: Colors.white,
-                    child: const Column(
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const Align(
-                  alignment: Alignment.topCenter,
-                  child: Icon(
-                    Icons.settings,
-                  ),
-                ),
-              ],
-            )
-
-            // Column(
-            //   mainAxisSize: MainAxisSize.min,
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: <Widget>[
-            //     Text(
-            //       "Title lorem ipsum",
-            //       style: TextStyle(
-            //           fontWeight: FontWeight.bold,
-            //           color: Colors.white,
-            //           fontSize: 20.0),
-            //     ),
-            //     Padding(
-            //       padding: EdgeInsets.only(top: 10.0),
-            //       child: Text(
-            //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-            //         style: TextStyle(color: Colors.white),
-            //       ),
-            //     )
-            //   ],
-            // ),
-            ),
-      ],
-      shape: ShapeLightFocus.RRect,
-    ));
-    targets.add(TargetFocus(
-      identify: "Target 4",
-      keyTarget: keyScore,
-      contents: [
-        TargetContent(
-          align: ContentAlign.top,
-          child: Column(
-            children: <Widget>[
-              InkWell(
-                onTap: () {
-                  tutorialCoachMark.previous();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.network(
-                    "https://juststickers.in/wp-content/uploads/2019/01/flutter.png",
-                    height: 200,
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 20.0),
-                child: Text(
-                  "Image Load network",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0),
-                ),
-              ),
-              const Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
+    targets.add(
+      TargetFocus(
+        identify: "Target 1",
+        keyTarget: keyGoalBox,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            // customPosition: CustomTargetContentPosition(top: 425, right: 70),
+            builder: (context, controller) {
+              return Image.asset('assets/images/tour/stepcount.png');
+            },
           ),
-        ),
-      ],
-      shape: ShapeLightFocus.Circle,
-    ));
-    // targets.add(
-    //   TargetFocus(
-    //     identify: "Target 5",
-    //     // keyTarget: keyButton2,
-    //     shape: ShapeLightFocus.Circle,
-    //     contents: [
-    //       TargetContent(
-    //         align: ContentAlign.top,
-    //         child: const Column(
-    //           mainAxisSize: MainAxisSize.min,
-    //           children: <Widget>[
-    //             Padding(
-    //               padding: EdgeInsets.only(bottom: 20.0),
-    //               child: Text(
-    //                 "Multiples contents",
-    //                 style: TextStyle(
-    //                     color: Colors.white,
-    //                     fontWeight: FontWeight.bold,
-    //                     fontSize: 20.0),
-    //               ),
-    //             ),
-    //             Text(
-    //               "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-    //               style: TextStyle(color: Colors.white),
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //       TargetContent(
-    //           align: ContentAlign.bottom,
-    //           child: const Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             children: <Widget>[
-    //               Padding(
-    //                 padding: EdgeInsets.only(bottom: 20.0),
-    //                 child: Text(
-    //                   "Multiples contents",
-    //                   style: TextStyle(
-    //                       color: Colors.white,
-    //                       fontWeight: FontWeight.bold,
-    //                       fontSize: 20.0),
-    //                 ),
-    //               ),
-    //               Text(
-    //                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-    //                 style: TextStyle(color: Colors.white),
-    //               ),
-    //             ],
-    //           ))
-    //     ],
-    //   ),
-    // );
+        ],
+        shape: ShapeLightFocus.RRect,
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 2",
+        keyTarget: keyControl,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(top: 425, right: 70),
+            builder: (context, controller) {
+              return Image.asset('assets/images/tour/settings.png');
+            },
+          ),
+        ],
+        shape: ShapeLightFocus.RRect,
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 3",
+        keyTarget: keyGames,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(top: 425, left: 70),
+            child: Image.asset('assets/images/tour/therapy.png'),
+          ),
+        ],
+        shape: ShapeLightFocus.RRect,
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 4",
+        keyTarget: keyScore,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(top: 350),
+            child: Image.asset('assets/images/tour/report.png'),
+          ),
+        ],
+        shape: ShapeLightFocus.RRect,
+      ),
+    );
 
     return targets;
   }

@@ -97,6 +97,7 @@ flutter:
     - assets/sounds/
     - assets/images/tutorial/
     - assets/images/animations/
+    - assets/images/tour/
   fonts:
     - family: Poppins
       fonts:

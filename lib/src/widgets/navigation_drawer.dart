@@ -21,6 +21,7 @@ import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
 import 'package:walk/src/views/reports/report.dart';
 import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/views/user/account_page.dart';
 import 'package:walk/src/views/user/help_section/help.dart';
 import 'package:walk/src/views/user/personal_info.dart';
@@ -32,6 +33,7 @@ import 'package:walk/walk_app.dart';
 Drawer navigationDrawer(
     BuildContext context, Function isLoggedIn, Function logOut) {
   return Drawer(
+    key: keyMenu,
     // backgroundColor: Color(DRAWERCOLOR),
     semanticLabel: "drawer",
     shape: const RoundedRectangleBorder(
