@@ -152,9 +152,9 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                         print(e);
                       },
                       codeSent: (String verificationId, int? resendToken) {
-                        Go.pushReplacement(
+                        Go.to(
                           context: context,
-                          pushReplacement: OTPPage(
+                          push: OTPPage(
                             verificationId: verificationId,
                             resendToken: resendToken,
                           ),
