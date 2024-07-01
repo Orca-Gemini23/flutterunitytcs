@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
+import 'package:walk/src/views/newscreens/onboardingpage.dart';
 
 class Revisedsplash extends StatefulWidget {
   const Revisedsplash(
@@ -68,23 +68,10 @@ class _RevisedsplashState extends State<Revisedsplash>
       () {
         setState(
           () {
-            userToken == ""
-                ? Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      settings: const RouteSettings(name: "/"),
-                      builder: (context) => RevisedHomePage(
-                          isLoggedIn: widget.isLoggedIn, logOut: widget.logOut),
-                      //DeviceCodePage(), ////To be changed back to login page after ensuring that the flask servers are up and running
-                    ),
-                  )
-                : Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RevisedHomePage(
-                          isLoggedIn: widget.isLoggedIn, logOut: widget.logOut),
-                    ),
-                  );
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const OnBoardingPage()));
           },
         );
       },
@@ -103,7 +90,8 @@ class _RevisedsplashState extends State<Revisedsplash>
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: AppColor.whiteColor,
+      ///change here
+      backgroundColor: AppColor.greenDarkColor,
       body: Stack(
         children: [
           Column(
@@ -117,6 +105,7 @@ class _RevisedsplashState extends State<Revisedsplash>
                 duration: const Duration(milliseconds: 1000),
                 opacity: _textOpacity,
                 child: const Image(
+                  color: AppColor.whiteColor,
                   image: AssetImage("assets/images/group43.png"),
                 ),
               ),
@@ -134,14 +123,16 @@ class _RevisedsplashState extends State<Revisedsplash>
                 width: (width / _containerSize).w,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: AppColor.whiteColor,
+                  ///change here
+                  // color: AppColor.whiteColor,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 // child: Image.asset('assets/images/file_name.png')
                 child: Text(
                   "WALK",
                   style: TextStyle(
-                    color: AppColor.greenDarkColor,
+                    ///change here
+                    color: AppColor.whiteColor,
                     letterSpacing: 2,
                     fontSize: 55.sp,
                     fontWeight: FontWeight.w500,
