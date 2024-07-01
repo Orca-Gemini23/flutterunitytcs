@@ -14,7 +14,6 @@ import 'package:walk/src/controllers/game_history_controller.dart';
 import 'package:walk/src/controllers/help_controller.dart';
 import 'package:walk/src/controllers/user_controller.dart';
 import 'package:walk/src/controllers/wifi_controller.dart';
-import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/revisedsplash.dart';
 
 bool _isLoggedIn = false;
