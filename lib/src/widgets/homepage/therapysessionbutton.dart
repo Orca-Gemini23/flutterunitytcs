@@ -11,7 +11,9 @@ import 'package:walk/src/views/therapyentrypage/therapypage.dart';
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 
 class TherapySessionBtn extends StatefulWidget {
-  const TherapySessionBtn({super.key});
+  const TherapySessionBtn({super.key, required this.pKey});
+
+  final GlobalKey pKey;
 
   @override
   State<TherapySessionBtn> createState() => _TherapySessionBtnState();
@@ -22,6 +24,7 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DeviceController>(
+      key: widget.pKey,
       builder: (context, deviceController, widget) {
         return InkWell(
           highlightColor: Colors.transparent,
