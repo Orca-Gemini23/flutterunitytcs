@@ -136,19 +136,27 @@ class _OTPPageState extends State<OTPPage> {
                               // } catch (e) {
                               //   log(e.toString());
                               // }
+
+                              await FirebaseAuth.instance
+                                  .signInWithCredential(credential);
+
                               try {
                                 final result = await FirebaseFunctions.instance
-                                    .httpsCallable('helloWorld')
+                                    .httpsCallable(
+                                      'helloWorld',
+                                      // options: HttpsCallableOptions(
+                                      //     timeout: const Duration(seconds: 60),
+                                      //     limitedUseAppCheckToken: true),
+                                    )
                                     .call();
-                                log(result.data);
+                                print("object");
+                                print(result);
                               } on FirebaseFunctionsException catch (error) {
+                                print("123456");
                                 log("1 ${error.code}");
                                 log("2 ${error.details}");
                                 log("3 ${error.message.toString()}");
                               }
-
-                              await FirebaseAuth.instance
-                                  .signInWithCredential(credential);
 
                               // ignore: use_build_context_synchronously
                               Go.pushAndRemoveUntil(
