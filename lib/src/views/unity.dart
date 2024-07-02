@@ -168,6 +168,6 @@ class UnityScreenState extends State<UnityScreen> {
     print("upload request send");
     unityWidgetController?.postMessage(
         // "SceneController", "UploadRequest", "${LocalDB.user!.phone}");
-        "SceneController", "UploadRequest", "9967");
+        "SceneController", "UploadRequest", "${LocalDB.user!.phone}");
   }
 }

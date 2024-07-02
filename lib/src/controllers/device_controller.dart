@@ -370,6 +370,7 @@ class DeviceController extends ChangeNotifier {
       );
 
       await FlutterBluePlus.startScan(
+        // withNames: ["14022024TEST"],
         withServices: [Guid("0000acf0-0000-1000-8000-00805f9b34fb")],
         androidUsesFineLocation: true,
       );
@@ -857,23 +858,8 @@ class DeviceController extends ChangeNotifier {
           controller.add(event);
           String data = String.fromCharCodes(event);
           // print(data);
-          // List<String> legData = data.split(" ");
-
-          // leftAngleValue = double.tryParse(legData[1])!;
-          // rightAngleValue = double.tryParse(legData[3])!;
-          // print("----->$leftAngleValue,$rightAngleValue}");
-          // count++;
-          // print("----->$count");
-          // print(data);
           UnityScreenState.sendAccelerometer(data);
-          // UnityScreenState.sendAngle("");
-          // UnityScreenState.sendMessage("$leftAngleValue,$rightAngleValue}");
 
-          // leftAngleValue = double.parse(
-          //     (double.tryParse(legData[1])! * 1.07).toStringAsFixed(2));
-          // rightAngleValue = double.parse(
-          //     (double.tryParse(legData[3])! * 1.07).toStringAsFixed(2));
-          // print("${leftAngleValue * 1.07},${rightAngleValue * 1.07}");
           notifyListeners();
         },
         onError: (error) {
