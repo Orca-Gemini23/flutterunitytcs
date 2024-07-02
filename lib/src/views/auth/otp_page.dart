@@ -1,7 +1,10 @@
 // ignore_for_file: unnecessary_string_interpolations
 
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
@@ -10,20 +13,28 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/phone_auth.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 class OTPPage extends StatefulWidget {
   const OTPPage({
     super.key,
-    required this.phoneNumber,
-    required this.isSignIn,
-    required this.isLoggedIn,
-    required this.logOut,
+    required this.verificationId,
+    this.resendToken,
+    // required this.phoneNumber,
+    // required this.isSignIn,
+    // required this.isLoggedIn,
+    // required this.logOut,
   });
-  final String phoneNumber;
-  final bool isSignIn;
-  final Function isLoggedIn;
-  final Function logOut; 
+
+  final String verificationId;
+  final int? resendToken;
+  // final String phoneNumber;
+  // final bool isSignIn;
+  // final Function isLoggedIn;
+  // final Function logOut;
   @override
   State<OTPPage> createState() => _OTPPageState();
 }
@@ -33,6 +44,14 @@ class _OTPPageState extends State<OTPPage> {
   final RoundedLoadingButtonController _buttonController =
       RoundedLoadingButtonController();
   int count = 0;
+
+  Future<void> getFruit() async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('helloWorld');
+    final results = await callable();
+    log(results
+        .toString()); // ["Apple", "Banana", "Cherry", "Date", "Fig", "Grapes"]
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,14 +95,14 @@ class _OTPPageState extends State<OTPPage> {
                       SizedBox(
                         height: Screen.height(context: context) * 0.01,
                       ),
-                      Text(
-                        '${AppString.pleaseEnterOtp}\n${widget.phoneNumber}',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      // Text(
+                      //   '${AppString.pleaseEnterOtp}\n${widget.phoneNumber}',
+                      //   style: const TextStyle(
+                      //     color: Colors.black,
+                      //     fontSize: 18,
+                      //   ),
+                      //   textAlign: TextAlign.center,
+                      // ),
                       SizedBox(
                         height: Screen.height(context: context) * 0.05,
                       ),
@@ -103,21 +122,62 @@ class _OTPPageState extends State<OTPPage> {
                           count++;
                           if (count < 4) {
                             if (_otpController.text.length == 6) {
-                              widget.isSignIn
-                                  ? await AWSAuth
-                                      .confirmSignInPhoneVerification(
-                                      _otpController.text,
-                                      context,
-                                      widget.isLoggedIn,
-                                      widget.logOut,
+                              PhoneAuthCredential credential =
+                                  PhoneAuthProvider.credential(
+                                      verificationId: widget.verificationId,
+                                      smsCode: _otpController.text);
+
+                              // HttpsCallable callable =
+                              //     FirebaseFunctions.instanceFor(
+                              //             region: 'us-central1')
+                              //         .httpsCallable('helloWorld');
+                              // try {
+                              //   getFruit();
+                              // } catch (e) {
+                              //   log(e.toString());
+                              // }
+
+                              await FirebaseAuth.instance
+                                  .signInWithCredential(credential);
+
+                              try {
+                                final result = await FirebaseFunctions.instance
+                                    .httpsCallable(
+                                      'helloWorld',
+                                      // options: HttpsCallableOptions(
+                                      //     timeout: const Duration(seconds: 60),
+                                      //     limitedUseAppCheckToken: true),
                                     )
-                                  : await AWSAuth
-                                      .confirmSignUpPhoneVerification(
-                                          widget.phoneNumber,
-                                          _otpController.text,
-                                          widget.isLoggedIn,
-                                          widget.logOut,
-                                          context);
+                                    .call();
+                                print("object");
+                                print(result);
+                              } on FirebaseFunctionsException catch (error) {
+                                print("123456");
+                                log("1 ${error.code}");
+                                log("2 ${error.details}");
+                                log("3 ${error.message.toString()}");
+                              }
+
+                              // ignore: use_build_context_synchronously
+                              Go.pushAndRemoveUntil(
+                                  context: context,
+                                  pushReplacement: RevisedHomePage(
+                                      isLoggedIn: () {}, logOut: () {}));
+                              // widget.isSignIn
+                              //     ? await AWSAuth
+                              //         .confirmSignInPhoneVerification(
+                              //         _otpController.text,
+                              //         context,
+                              //         widget.isLoggedIn,
+                              //         widget.logOut,
+                              //       )
+                              //     : await AWSAuth
+                              //         .confirmSignUpPhoneVerification(
+                              //             widget.phoneNumber,
+                              //             _otpController.text,
+                              //             widget.isLoggedIn,
+                              //             widget.logOut,
+                              //             context);
                             } else {
                               _buttonController.error();
                               Timer(const Duration(seconds: 2), () {
@@ -159,25 +219,25 @@ class _OTPPageState extends State<OTPPage> {
                           TextButton(
                             onPressed: () async {
                               if (count > 3) {
-                                count = 0;
-                                widget.isSignIn
-                                    ? await AWSAuth.signInWithPhoneVerification(
-                                        widget.phoneNumber,
-                                        "password",
-                                        context,
-                                        widget.isSignIn,
-                                        widget.isLoggedIn,
-                                        widget.logOut)
-                                    : await AWSAuth.signUpWithPhoneVerification(
-                                        widget.phoneNumber,
-                                        "password",
-                                        context,
-                                        widget.isSignIn,
-                                        widget.isLoggedIn,
-                                        widget.logOut);
-                                Fluttertoast.showToast(
-                                  msg: "OTP Resent",
-                                );
+                                // count = 0;
+                                // widget.isSignIn
+                                //     ? await AWSAuth.signInWithPhoneVerification(
+                                //         widget.phoneNumber,
+                                //         "password",
+                                //         context,
+                                //         widget.isSignIn,
+                                //         widget.isLoggedIn,
+                                //         widget.logOut)
+                                //     : await AWSAuth.signUpWithPhoneVerification(
+                                //         widget.phoneNumber,
+                                //         "password",
+                                //         context,
+                                //         widget.isSignIn,
+                                //         widget.isLoggedIn,
+                                //         widget.logOut);
+                                // Fluttertoast.showToast(
+                                //   msg: "OTP Resent",
+                                // );
                               }
                             },
                             child: const Text(

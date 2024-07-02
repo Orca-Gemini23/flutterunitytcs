@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:walk/src/constants/app_assets.dart';
@@ -5,7 +8,9 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/views/auth/otp_page.dart';
 
 String countryCode = '';
 String phoneNo = '';
@@ -28,7 +33,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    AWSAuth.fetchAuthSession();
+    // AWSAuth.fetchAuthSession();
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
@@ -106,21 +111,40 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                         //     isSignIn: widget.isSignIn,
                         //   ),
                         // );
-                        widget.isSignIn
-                            ? await AWSAuth.signInWithPhoneVerification(
-                                phoneNumber,
-                                "password",
-                                context,
-                                widget.isSignIn,
-                                widget.isLoggedIn,
-                                widget.logOut)
-                            : await AWSAuth.signUpWithPhoneVerification(
-                                phoneNumber,
-                                "password",
-                                context,
-                                widget.isSignIn,
-                                widget.isLoggedIn,
-                                widget.logOut);
+                        // widget.isSignIn
+                        //     ? await AWSAuth.signInWithPhoneVerification(
+                        //         phoneNumber,
+                        //         "password",
+                        //         context,
+                        //         widget.isSignIn,
+                        //         widget.isLoggedIn,
+                        //         widget.logOut)
+                        //     : await AWSAuth.signUpWithPhoneVerification(
+                        //         phoneNumber,
+                        //         "password",
+                        //         context,
+                        //         widget.isSignIn,
+                        //         widget.isLoggedIn,
+                        //         widget.logOut);
+                        await FirebaseAuth.instance.verifyPhoneNumber(
+                          phoneNumber: phoneNumber,
+                          verificationCompleted:
+                              (PhoneAuthCredential credential) async {},
+                          verificationFailed: (FirebaseAuthException e) {
+                            log(e.toString());
+                          },
+                          codeSent: (String verificationId, int? resendToken) {
+                            print("hello");
+                            Go.pushReplacement(
+                              context: context,
+                              pushReplacement: OTPPage(
+                                verificationId: verificationId,
+                                resendToken: resendToken,
+                              ),
+                            );
+                          },
+                          codeAutoRetrievalTimeout: (String verificationId) {},
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
