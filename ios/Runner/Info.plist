@@ -22,6 +22,21 @@
 	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+    </array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app-1-205623995747-ios-4330aaee35f5ff8cbeb756</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>

@@ -1,15 +1,14 @@
 import 'dart:developer';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
-import 'package:walk/src/utils/custom_notification.dart';
 
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/walk_app.dart';
@@ -41,17 +40,23 @@ void main() async {
 
   await initializeLocalDatabase();
 
+  await FirebaseAppCheck.instance.activate(
+    //Tried with enum 'debug' in emulator and 'playIntegrity' in real device
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    androidProvider: AndroidProvider.playIntegrity,//AndroidProvider.playIntegrity
+    appleProvider: AppleProvider.appAttest,
+  );
+
   /// initializes Hive local databased
 
   // NotificationService.initNotification();
   // NotificationService.cancelScheduledNotifications();
   // NotificationService.sendScheduledTestNotification();
 
-  AWSAuth.configureAmplify();
+  // AWSAuth.configureAmplify();
 
   /// Core app
   runApp(
     const WalkApp(),
-
   );
 }
