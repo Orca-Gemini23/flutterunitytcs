@@ -129,7 +129,9 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                         await FirebaseAuth.instance.verifyPhoneNumber(
                           phoneNumber: phoneNumber,
                           verificationCompleted:
-                              (PhoneAuthCredential credential) async {},
+                              (PhoneAuthCredential credential) async {
+                                await FirebaseAuth.instance.signInWithCredential(credential);
+                              },
                           verificationFailed: (FirebaseAuthException e) {
                             log(e.toString());
                           },
