@@ -2,22 +2,22 @@
 // import 'dart:developer';
 // import 'dart:io';
 // import 'dart:ui';
-
+//
 // import 'package:flutter_background_service/flutter_background_service.dart';
 // // import 'package:flutter_blue/flutter_blue.dart';
 // import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 // // ignore: depend_on_referenced_packages
 // import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 // import 'package:path_provider/path_provider.dart';
-
+//
 // import 'package:walk/src/constants/bt_constants.dart';
-
+//
 // int walkServiceNotificationChannelId = 101;
 // String walkServiceNotificationChannelKey = "WALKFGS";
 // String walkServiceNotificationChannelName = "WALK Service Notification Channel";
 // String walkServiceNotificationChannelDescription =
 //     "This is the primary notification channel used by WALK to display foreground service notifications";
-
+//
 // Future<void> initServices() async {
 //   final service = FlutterBackgroundService();
 //   // NotificationChannel walkServiceNotificationChannel = NotificationChannel(
@@ -26,7 +26,7 @@
 //   //   channelDescription: walkServiceNotificationChannelDescription,
 //   //   defaultColor: const Color(0XFFCBE2D2),
 //   // );
-
+//
 //   await service.configure(
 //     iosConfiguration: IosConfiguration(),
 //     androidConfiguration: AndroidConfiguration(
@@ -37,24 +37,24 @@
 //         initialNotificationTitle: "WALK",
 //         initialNotificationContent: "Keep WALK - inggg !!!"),
 //   );
-
+//
 //   service.startService();
 // }
-
+//
 // @pragma('vm:entry-point')
 // void onStart(ServiceInstance service) async {
 //   DartPluginRegistrant.ensureInitialized();
-
+//
 //   List<BluetoothDevice> connDevices = [];
 //   List<BluetoothService> services = [];
 //   List<String> battValues = [];
 //   List<BluetoothCharacteristic> characteristics = [];
 //   Map<Guid, BluetoothCharacteristic> characteristicMap = {};
 //   Timer? timer;
-
+//
 //   //// Fix this issue
 //   ///When the service is running and the user puts the service in the background(ie when the app is opened) after which if the user closes the application another timer starts which results in concurrent scans;
-
+//
 //   if (service is AndroidServiceInstance) {
 //     service.on('setAsForeground').listen(
 //       (event) async {
@@ -98,7 +98,7 @@
 //                           element.uuid == BATTERY_PERCENTAGE_SERVER);
 //                   battValues = await getBatteryPercentageValues(
 //                       clientTarget, serverTarget);
-
+//
 //                   ////Display a notification showing the left and right battery values
 //                   await service.setForegroundNotificationInfo(
 //                       title: "WALK Connected !!!!! 😎😎😎😎",
@@ -122,7 +122,7 @@
 //                       (element) => element.uuid == BATTERY_PERCENTAGE_SERVER);
 //               battValues =
 //                   await getBatteryPercentageValues(clientTarget, serverTarget);
-
+//
 //               ////Display a notification showing the left and right battery values
 //               await service.setForegroundNotificationInfo(
 //                   title: "WALK Connected !!!!! 😎😎😎😎",
@@ -151,7 +151,7 @@
 //     },
 //   );
 // }
-
+//
 // Future<List<String>> getBatteryPercentageValues(
 //     BluetoothCharacteristic? clientTarget,
 //     BluetoothCharacteristic? serverTarget) async {
@@ -191,13 +191,13 @@
 //     return [batteryC, batteryS];
 //   }
 // }
-
+//
 // write(String text) async {
 //   final Directory? directory = await getExternalStorageDirectory();
 //   final File file = File('${directory!.path}/counterfile.txt');
 //   await file.writeAsString(text, mode: FileMode.writeOnlyAppend);
 // }
-
+//
 // ///   Background Service How its supposed to work
 // ///1. When the app closes or pauses a notification should pop up asking whether to start the connection and scanning or not.
 // ///2. If yes then check whether WALK is connected or not ,
