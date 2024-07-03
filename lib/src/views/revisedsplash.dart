@@ -66,27 +66,28 @@ class _RevisedsplashState extends State<Revisedsplash>
     Timer(
       const Duration(seconds: 4),
       () {
-        
-        setState(
-          () {
-            FirebaseAuth.instance.idTokenChanges().listen(
-              (User? user) {
-                if (user == null) {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PhoneAuthPage()));
-                } else {
-                  tour = true;
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RevisedHomePage()));
-                }
-              },
-            );
+        // setState(
+        //   () {
+        FirebaseAuth.instance.idTokenChanges().listen(
+          (User? user) {
+            if (user == null) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PhoneAuthPage()));
+            } else {
+              setState(() {
+                tour = true;
+              });
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RevisedHomePage()));
+            }
           },
         );
+        //   },
+        // );
       },
     );
   }

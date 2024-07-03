@@ -67,11 +67,10 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   GlobalKey keyAccount = GlobalKey();
   GlobalKey keyBattery = GlobalKey();
 
-  
-
   ////Also add the option for adding the app shortcut icon in the homescreen
   @override
   void initState() {
+    print(tour);
     if (!tour) {
       createTutorial();
       Future.delayed(Duration.zero, showTutorial);
