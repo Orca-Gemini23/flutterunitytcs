@@ -65,10 +65,11 @@ dependencies:
   wakelock_plus: ^1.1.4
   geolocator: ^11.1.0
   flutter_unity_widget: ^2022.2.1
+  tutorial_coach_mark: ^1.2.11
   firebase_auth: ^4.16.0
   firebase_app_check: ^0.2.1+8
+  introduction_screen: ^3.1.12
   cloud_functions: ^4.6.0
-
   
   
 dependency_overrides:
@@ -96,6 +97,7 @@ flutter:
     - assets/sounds/
     - assets/images/tutorial/
     - assets/images/animations/
+    - assets/images/tour/
   fonts:
     - family: Poppins
       fonts:
