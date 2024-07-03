@@ -36,13 +36,10 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 GlobalKey keyGoalBox = GlobalKey();
 GlobalKey keyMenu = GlobalKey();
+bool tour = false;
 
 class RevisedHomePage extends StatefulWidget {
-  const RevisedHomePage(
-      {super.key, required this.isLoggedIn, required this.logOut});
-
-  final Function isLoggedIn;
-  final Function logOut;
+  const RevisedHomePage({super.key});
 
   @override
   State<RevisedHomePage> createState() => _RevisedHomePageState();
@@ -70,18 +67,20 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   GlobalKey keyAccount = GlobalKey();
   GlobalKey keyBattery = GlobalKey();
 
+  
+
   ////Also add the option for adding the app shortcut icon in the homescreen
   @override
   void initState() {
-    createTutorial();
-    Future.delayed(Duration.zero, showTutorial);
+    if (!tour) {
+      createTutorial();
+      Future.delayed(Duration.zero, showTutorial);
+    }
     super.initState();
-    widget.isLoggedIn();
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
-    // deviceController = DeviceController();
     context.read<DeviceController>().homeContext = homepageKey.currentContext;
 
     // NotificationService.listenToNotificationResults();
@@ -159,7 +158,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
           ),
         ],
       ),
-      drawer: navigationDrawer(context, widget.isLoggedIn, widget.logOut),
+      drawer: navigationDrawer(context),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -297,23 +296,23 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         ],
       ),
     );
-    targets.add(
-      TargetFocus(
-        identify: "Target 6",
-        keyTarget: keyMenu,
-        enableOverlayTab: true,
-        contents: [
-          TargetContent(
-            align: ContentAlign.right,
-            // customPosition: CustomTargetContentPosition(top: 425, right: 70),
-            builder: (context, controller) {
-              return Image.asset('assets/images/tour/menu.png');
-            },
-          ),
-        ],
-        shape: ShapeLightFocus.RRect,
-      ),
-    );
+    // targets.add(
+    //   TargetFocus(
+    //     identify: "Target 6",
+    //     keyTarget: keyMenu,
+    //     enableOverlayTab: true,
+    //     contents: [
+    //       TargetContent(
+    //         align: ContentAlign.right,
+    //         // customPosition: CustomTargetContentPosition(top: 425, right: 70),
+    //         builder: (context, controller) {
+    //           return Image.asset('assets/images/tour/menu.png');
+    //         },
+    //       ),
+    //     ],
+    //     shape: ShapeLightFocus.RRect,
+    //   ),
+    // );
     targets.add(
       TargetFocus(
         identify: "Target 1",

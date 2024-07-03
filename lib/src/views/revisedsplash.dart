@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
-import 'package:walk/src/views/newscreens/onboardingpage.dart';
+import 'package:walk/src/views/auth/phone_auth.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 class Revisedsplash extends StatefulWidget {
-  const Revisedsplash(
-      {super.key, required this.isLoggedIn, required this.logOut});
-  final Function isLoggedIn;
-  final Function logOut;
+  const Revisedsplash({super.key});
+
   @override
   State<Revisedsplash> createState() => _RevisedsplashState();
 }
@@ -66,12 +66,25 @@ class _RevisedsplashState extends State<Revisedsplash>
     Timer(
       const Duration(seconds: 4),
       () {
+        
         setState(
           () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const OnBoardingPage()));
+            FirebaseAuth.instance.idTokenChanges().listen(
+              (User? user) {
+                if (user == null) {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PhoneAuthPage()));
+                } else {
+                  tour = true;
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RevisedHomePage()));
+                }
+              },
+            );
           },
         );
       },

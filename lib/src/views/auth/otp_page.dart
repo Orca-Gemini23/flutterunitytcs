@@ -5,15 +5,15 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
+// import 'package:walk/src/constants/app_strings.dart';
+// import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/utils/screen_context.dart';
+// import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
@@ -148,8 +148,7 @@ class _OTPPageState extends State<OTPPage> {
                       // ignore: use_build_context_synchronously
                       Go.pushAndRemoveUntil(
                         context: context,
-                        pushReplacement:
-                            RevisedHomePage(isLoggedIn: () {}, logOut: () {}),
+                        pushReplacement: const RevisedHomePage(),
                       );
                     }
                   },

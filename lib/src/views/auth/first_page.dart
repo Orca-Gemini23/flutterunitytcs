@@ -6,11 +6,7 @@ import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 
 class LoginRegister extends StatelessWidget {
-  const LoginRegister(
-      {super.key, required this.isLoggedIn, required this.logOut});
-
-  final Function isLoggedIn;
-  final Function logOut;
+  const LoginRegister({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +49,7 @@ class LoginRegister extends StatelessWidget {
                       // );
                       Go.to(
                         context: context,
-                        push: PhoneAuthPage(
-                          isSignIn: true,
-                          isLoggedIn: isLoggedIn,
-                          logOut: logOut,
-                        ),
+                        push: const PhoneAuthPage(),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -115,11 +107,7 @@ class LoginRegister extends StatelessWidget {
                       // );
                       Go.to(
                         context: context,
-                        push: PhoneAuthPage(
-                          isSignIn: false,
-                          isLoggedIn: isLoggedIn,
-                          logOut: logOut,
-                        ),
+                        push: const PhoneAuthPage(),
                       );
                     },
                     style: ElevatedButton.styleFrom(

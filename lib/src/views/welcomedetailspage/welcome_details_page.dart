@@ -256,8 +256,7 @@ class _WelcomeDetailsPageState extends State<WelcomeDetailsPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => RevisedHomePage(
-                                      isLoggedIn: () {}, logOut: () {}),
+                                  builder: (context) => const RevisedHomePage(),
                                 ),
                               );
 

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:walk/src/constants/app_assets.dart';
-import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/models/user_model.dart';
-import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
+// import 'package:walk/src/constants/app_assets.dart';
+// import 'package:walk/src/constants/app_strings.dart';
+// import 'package:walk/src/db/local_db.dart';
+// import 'package:walk/src/models/user_model.dart';
+// import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/utils/screen_context.dart';
+// import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
 
 import '../../constants/app_color.dart';
@@ -18,14 +18,10 @@ String countryCode = '';
 String phoneNo = '';
 
 class PhoneAuthPage extends StatefulWidget {
-  const PhoneAuthPage(
-      {super.key,
-      required this.isSignIn,
-      required this.isLoggedIn,
-      required this.logOut});
-  final bool isSignIn;
-  final Function isLoggedIn;
-  final Function logOut;
+  const PhoneAuthPage({
+    super.key,
+  });
+
   @override
   State<PhoneAuthPage> createState() => _PhoneAuthPageState();
 }
@@ -37,9 +33,9 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
   Widget build(BuildContext context) {
     final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
       disabledBackgroundColor: Colors.grey,
-      backgroundColor: Color.fromRGBO(0, 87, 73, 1),
-      minimumSize: Size(double.maxFinite, 60),
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      backgroundColor: const Color.fromRGBO(0, 87, 73, 1),
+      minimumSize: const Size(double.maxFinite, 60),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(30)),
       ),
@@ -94,14 +90,14 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 51,
             ),
-            Text(
+            const Text(
               "Phone Number",
               style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             IntlPhoneField(
@@ -131,9 +127,9 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
               },
               onCountryChanged: (country) => _country = country,
             ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+            const Spacer(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 'By signing up you accept our terms of service and privacy policy',
                 style: TextStyle(fontWeight: FontWeight.w400, fontSize: 9),
@@ -149,7 +145,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                       verificationCompleted:
                           (PhoneAuthCredential credential) async {},
                       verificationFailed: (FirebaseAuthException e) {
-                        print(e);
+                        debugPrint(e.toString());
                       },
                       codeSent: (String verificationId, int? resendToken) {
                         Go.to(
@@ -163,7 +159,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                       codeAutoRetrievalTimeout: (String verificationId) {},
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'Continue',
                     style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
                   )),

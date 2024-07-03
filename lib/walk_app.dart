@@ -16,7 +16,6 @@ import 'package:walk/src/controllers/wifi_controller.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/views/revisedsplash.dart';
 
-bool _isLoggedIn = false;
 
 class WalkApp extends StatefulWidget {
   const WalkApp({super.key});
@@ -70,10 +69,12 @@ class _WalkAppState extends State<WalkApp> {
           designSize: const Size(360, 800),
           builder: (context, child) {
             return MaterialApp(
-              home: RevisedHomePage(
-                isLoggedIn: () {},
-                logOut: () {},
-              ), //Revisedsplash(isLoggedIn: () {}, logOut: () {}),
+              home: 
+              // RevisedHomePage(
+              //   isLoggedIn: () {},
+              //   logOut: () {},
+              // ),
+               const Revisedsplash(),
               // _isLoggedIn
               //     ? Revisedsplash(isLoggedIn: () {}, logOut: () {})
               //     : LoginRegister(isLoggedIn: () {}, logOut: () {}),

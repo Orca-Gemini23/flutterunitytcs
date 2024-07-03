@@ -17,11 +17,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => PhoneAuthPage(
-          isSignIn: false,
-          isLoggedIn: () {},
-          logOut: () {},
-        ),
+        builder: (_) => const PhoneAuthPage(),
       ),
     );
   }
