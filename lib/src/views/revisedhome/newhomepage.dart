@@ -2,7 +2,6 @@
 
 import 'dart:developer';
 import 'dart:ui';
-// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +22,7 @@ import 'package:walk/src/utils/custom_notification.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/views/device/chart_details.dart';
 import 'package:walk/src/views/home_page.dart';
+import 'package:walk/src/views/revisedsplash.dart';
 
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
@@ -36,7 +36,6 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 GlobalKey keyGoalBox = GlobalKey();
 GlobalKey keyMenu = GlobalKey();
-bool tour = false;
 
 class RevisedHomePage extends StatefulWidget {
   const RevisedHomePage({super.key});
@@ -70,7 +69,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   ////Also add the option for adding the app shortcut icon in the homescreen
   @override
   void initState() {
-    print(tour);
+    debugPrint(tour.toString());
     if (!tour) {
       createTutorial();
       Future.delayed(Duration.zero, showTutorial);
@@ -322,7 +321,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
             align: ContentAlign.bottom,
             // customPosition: CustomTargetContentPosition(top: 425, right: 70),
             builder: (context, controller) {
-              return Image.asset('assets/images/tour/stepcount.png');
+              return Image.asset('assets/images/tour/step.png');
             },
           ),
         ],

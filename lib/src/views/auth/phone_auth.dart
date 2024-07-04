@@ -5,16 +5,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:walk/src/constants/app_color.dart';
 // import 'package:walk/src/constants/app_assets.dart';
 // import 'package:walk/src/constants/app_strings.dart';
-// import 'package:walk/src/db/local_db.dart';
-// import 'package:walk/src/models/user_model.dart';
+import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/models/user_model.dart';
 // import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 // import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
-
-import '../../constants/app_color.dart';
 
 String countryCode = '';
 String phoneNo = '';
@@ -146,6 +145,17 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                   setState(() {
                     loading = true;
                   });
+                  var newUser = UserModel(
+                    name: "Unknown User",
+                    age: "XX",
+                    phone: "$countryCode $phoneNo",
+                    image: "NA",
+                    gender: "XX",
+                    address: "XX",
+                    email: "XX",
+                  );
+
+                  LocalDB.saveUser(newUser);
                   await FirebaseAuth.instance.verifyPhoneNumber(
                     phoneNumber: phoneNumber,
                     verificationCompleted:

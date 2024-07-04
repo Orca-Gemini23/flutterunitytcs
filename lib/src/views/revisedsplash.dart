@@ -9,6 +9,8 @@ import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
+bool tour = false;
+
 class Revisedsplash extends StatefulWidget {
   const Revisedsplash({super.key});
 
@@ -71,6 +73,9 @@ class _RevisedsplashState extends State<Revisedsplash>
         FirebaseAuth.instance.idTokenChanges().listen(
           (User? user) {
             if (user == null) {
+              setState(() {
+                tour = false;
+              });
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
