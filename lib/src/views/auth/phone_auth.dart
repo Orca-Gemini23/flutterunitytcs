@@ -1,10 +1,10 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl_phone_field/countries.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 // import 'package:walk/src/constants/app_assets.dart';
 // import 'package:walk/src/constants/app_strings.dart';
 // import 'package:walk/src/db/local_db.dart';
@@ -30,6 +30,7 @@ class PhoneAuthPage extends StatefulWidget {
 
 class _PhoneAuthPageState extends State<PhoneAuthPage> {
   String phoneNumber = "";
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +44,11 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
       ),
     );
 
-    const _initialCountryCode = 'IN';
-    var _country =
-        countries.firstWhere((element) => element.code == _initialCountryCode);
+    // const _initialCountryCode = 'IN';
+    // var _country =
+    //     countries.firstWhere((element) => element.code == _initialCountryCode);
 
-    bool isButton = false;
+    // bool isButton = false;
 
     // AWSAuth.fetchAuthSession();
     return Scaffold(
@@ -127,7 +128,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                 countryCode = phone.countryCode;
                 phoneNo = phone.number;
               },
-              onCountryChanged: (country) => _country = country,
+              // onCountryChanged: (country) => _country = country,
             ),
             const Spacer(),
             const Padding(
@@ -140,31 +141,48 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: ElevatedButton(
-                  style: raisedButtonStyle,
-                  onPressed: () async {
-                    await FirebaseAuth.instance.verifyPhoneNumber(
-                      phoneNumber: phoneNumber,
-                      verificationCompleted:
-                          (PhoneAuthCredential credential) async {},
-                      verificationFailed: (FirebaseAuthException e) {
-                        debugPrint(e.toString());
-                      },
-                      codeSent: (String verificationId, int? resendToken) {
-                        Go.to(
-                          context: context,
-                          push: OTPPage(
-                            verificationId: verificationId,
-                            resendToken: resendToken,
-                          ),
-                        );
-                      },
-                      codeAutoRetrievalTimeout: (String verificationId) {},
-                    );
-                  },
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
-                  )),
+                style: raisedButtonStyle,
+                onPressed: () async {
+                  setState(() {
+                    loading = true;
+                  });
+                  await FirebaseAuth.instance.verifyPhoneNumber(
+                    phoneNumber: phoneNumber,
+                    verificationCompleted:
+                        (PhoneAuthCredential credential) async {},
+                    verificationFailed: (FirebaseAuthException e) {
+                      debugPrint(e.toString());
+                      Fluttertoast.showToast(msg: e.toString());
+                      setState(() {
+                        loading = false;
+                      });
+                    },
+                    codeSent: (String verificationId, int? resendToken) {
+                      setState(() {
+                        loading = false;
+                      });
+                      Go.to(
+                        context: context,
+                        push: OTPPage(
+                          verificationId: verificationId,
+                          resendToken: resendToken,
+                        ),
+                      );
+                    },
+                    codeAutoRetrievalTimeout: (String verificationId) {},
+                  );
+                },
+                child: !loading
+                    ? const Text(
+                        'Continue',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400, fontSize: 16),
+                      )
+                    : LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.white,
+                        size: 30,
+                      ),
+              ),
             )
           ],
         ),

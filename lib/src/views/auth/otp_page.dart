@@ -1,17 +1,18 @@
 // ignore_for_file: unnecessary_string_interpolations
 
-import 'dart:async';
-import 'dart:developer';
+// import 'dart:async';
+// import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_functions/cloud_functions.dart';
+// import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
+// import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/server/api.dart';
 // import 'package:walk/src/constants/app_strings.dart';
 // import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
@@ -42,8 +43,8 @@ class OTPPage extends StatefulWidget {
 
 class _OTPPageState extends State<OTPPage> {
   final TextEditingController _otpController = TextEditingController();
-  final RoundedLoadingButtonController _buttonController =
-      RoundedLoadingButtonController();
+  // final RoundedLoadingButtonController _buttonController =
+  //     RoundedLoadingButtonController();
   int count = 0;
 
   final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
@@ -147,6 +148,7 @@ class _OTPPageState extends State<OTPPage> {
                               smsCode: _otpController.text);
                       await FirebaseAuth.instance
                           .signInWithCredential(credential);
+                      await API.getUserDetails();
                       // ignore: use_build_context_synchronously
                       Go.pushAndRemoveUntil(
                         context: context,
