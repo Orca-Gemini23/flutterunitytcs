@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/views/stepgoal/step_goal_page.dart';
 
 class TodaysGoalBox extends StatefulWidget {
@@ -18,6 +19,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      key: keyGoalBox,
       onTap: () {
         Go.to(
           context: context,

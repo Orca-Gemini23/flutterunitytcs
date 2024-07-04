@@ -73,10 +73,10 @@ class UnityScreenState extends State<UnityScreen> {
                     onUnityMessage: (message) {
                       switch (message) {
                         case "VL":
-                          // vibrateLeft();
+                          vibrateLeft();
                           break;
                         case "VR":
-                          // vibrateRight();
+                          vibrateRight();
                           break;
                       }
                     },

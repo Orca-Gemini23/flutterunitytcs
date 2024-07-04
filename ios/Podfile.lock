@@ -810,6 +810,8 @@ PODS:
     - Flutter
   - flutter_blue_plus (0.0.1):
     - Flutter
+  - flutter_keyboard_visibility (0.0.1):
+    - Flutter
   - flutter_unity_widget (4.0.0):
     - Flutter
   - fluttertoast (0.0.2):
@@ -1000,6 +1002,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
   - flutter_blue_plus (from `.symlinks/plugins/flutter_blue_plus/ios`)
+  - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_unity_widget (from `.symlinks/plugins/flutter_unity_widget/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
@@ -1092,6 +1095,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_background_service_ios/ios"
   flutter_blue_plus:
     :path: ".symlinks/plugins/flutter_blue_plus/ios"
+  flutter_keyboard_visibility:
+    :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_unity_widget:
     :path: ".symlinks/plugins/flutter_unity_widget/ios"
   fluttertoast:
@@ -1171,6 +1176,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
   flutter_blue_plus: 4837da7d00cf5d441fdd6635b3a57f936778ea96
+  flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_unity_widget: e509f3109933aa0c63b1bc149ca3d5b90fb68543
   fluttertoast: 48c57db1b71b0ce9e6bba9f31c940ff4b001293c
   geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450

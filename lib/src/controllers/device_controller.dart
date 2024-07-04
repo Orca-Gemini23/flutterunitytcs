@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_final_fields, avoid_print
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -417,10 +418,12 @@ class DeviceController extends ChangeNotifier {
         await device.connect(
           autoConnect: false,
         );
-        await device.requestConnectionPriority(
-            connectionPriorityRequest: ConnectionPriority.high);
-        await HapticFeedback.vibrate();
+        if (Platform.isAndroid) {
+          await device.requestConnectionPriority(
+              connectionPriorityRequest: ConnectionPriority.high);
+        }
 
+        await HapticFeedback.vibrate();
 
         showToast
             ? Fluttertoast.showToast(msg: "Connected to ${device.platformName}")
@@ -852,7 +855,6 @@ class DeviceController extends ChangeNotifier {
     late StreamSubscription<List<int>> angleValuesSubscription;
 
     try {
-
       angleValuesSubscription = targetCharacteristic!.onValueReceived.listen(
         (event) {
           controller.add(event);

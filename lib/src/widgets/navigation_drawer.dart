@@ -1,6 +1,7 @@
 // ignore_for_file: unused_import
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -21,6 +22,7 @@ import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
 import 'package:walk/src/views/reports/report.dart';
 import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
+import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/views/user/account_page.dart';
 import 'package:walk/src/views/user/help_section/help.dart';
 import 'package:walk/src/views/user/personal_info.dart';
@@ -29,9 +31,9 @@ import 'package:walk/src/views/user/tutorial.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
 import 'package:walk/walk_app.dart';
 
-Drawer navigationDrawer(
-    BuildContext context, Function isLoggedIn, Function logOut) {
+Drawer navigationDrawer(BuildContext context) {
   return Drawer(
+    key: keyMenu,
     // backgroundColor: Color(DRAWERCOLOR),
     semanticLabel: "drawer",
     shape: const RoundedRectangleBorder(
@@ -78,13 +80,13 @@ Drawer navigationDrawer(
             ],
           ),
         ),
-        drawerItem(context, isLoggedIn, logOut),
+        drawerItem(context),
       ],
     ),
   );
 }
 
-Widget drawerItem(BuildContext context, Function isLoggedIn, Function logOut) {
+Widget drawerItem(BuildContext context) {
   List<IconData> drawerIcon = [
     Icons.home,
     Icons.person,
@@ -170,7 +172,7 @@ Widget drawerItem(BuildContext context, Function isLoggedIn, Function logOut) {
       );
     },
     () {
-      logOut();
+      FirebaseAuth.instance.signOut();
       Go.pushAndRemoveUntil(
           context: context,
           pushReplacement:

@@ -4,7 +4,7 @@ description: A new Flutter project.
 
 publish_to: 'none' 
 
-version: 1.0.4+22
+version: 1.1.0+28
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
@@ -65,10 +65,12 @@ dependencies:
   wakelock_plus: ^1.1.4
   geolocator: ^11.1.0
   flutter_unity_widget: ^2022.2.1
+  tutorial_coach_mark: ^1.2.11
   firebase_auth: ^4.16.0
   firebase_app_check: ^0.2.1+8
+  introduction_screen: ^3.1.12
   cloud_functions: ^4.6.0
-
+  loading_animation_widget: ^1.2.1
   
   
 dependency_overrides:
@@ -96,6 +98,7 @@ flutter:
     - assets/sounds/
     - assets/images/tutorial/
     - assets/images/animations/
+    - assets/images/tour/
   fonts:
     - family: Poppins
       fonts:

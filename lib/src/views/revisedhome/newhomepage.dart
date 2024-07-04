@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, unrelated_type_equality_checks, unused_import
 
 import 'dart:developer';
+import 'dart:ui';
 // import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -31,12 +32,14 @@ import 'package:walk/src/widgets/homepage/todaysgoalcontainer.dart';
 import 'package:walk/src/widgets/navigation_drawer.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
 
-class RevisedHomePage extends StatefulWidget {
-  const RevisedHomePage(
-      {super.key, required this.isLoggedIn, required this.logOut});
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-  final Function isLoggedIn;
-  final Function logOut;
+GlobalKey keyGoalBox = GlobalKey();
+GlobalKey keyMenu = GlobalKey();
+bool tour = false;
+
+class RevisedHomePage extends StatefulWidget {
+  const RevisedHomePage({super.key});
 
   @override
   State<RevisedHomePage> createState() => _RevisedHomePageState();
@@ -50,32 +53,33 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   // late DeviceController deviceController;
   GlobalKey homePagekey = GlobalKey();
 
+  // homepage tour
+
+  late TutorialCoachMark tutorialCoachMark;
+
+  //global keys for each widget
+  GlobalKey keyPage = GlobalKey();
+  GlobalKey keyGames = GlobalKey();
+  GlobalKey keyControl = GlobalKey();
+  GlobalKey keyScore = GlobalKey();
+
+  //keys for app bar
+  GlobalKey keyAccount = GlobalKey();
+  GlobalKey keyBattery = GlobalKey();
+
   ////Also add the option for adding the app shortcut icon in the homescreen
   @override
   void initState() {
+    print(tour);
+    if (!tour) {
+      createTutorial();
+      Future.delayed(Duration.zero, showTutorial);
+    }
     super.initState();
-    widget.isLoggedIn();
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
-
-    // NotificationService.notificationPermission(context);
-    //
-    // // send data to cloud when network is availabe
-    // sendDataWhenNetworkAvailable();
-    // //triggering the scheduled notifications
-    // // NotificationService.cancelScheduledNotifications();
-    // // NotificationService.sendScheduledTestNotification();
-    // AwesomeNotifications().getGlobalBadgeCounter().then(
-    //   (value) {
-    //     log(value.toString());
-    //     value = 0;
-    //     AwesomeNotifications().setGlobalBadgeCounter(0);
-    //   },
-    // );
-    // NotificationService(context).listenToNotificationResults();
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
-    // deviceController = DeviceController();
     context.read<DeviceController>().homeContext = homepageKey.currentContext;
 
     // NotificationService.listenToNotificationResults();
@@ -126,7 +130,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   Widget build(BuildContext context) {
     // print(
     //     "------------------------Building Home Page UI--------------------------");
-    // print(AWSAuth.fetchAuthSession());
 
     return Scaffold(
       key: homePagekey,
@@ -140,6 +143,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         ),
         actions: [
           IconButton(
+            key: keyAccount,
             onPressed: () {
               // FirebaseCrashlytics.instance.crash();
               Go.to(
@@ -153,7 +157,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
           ),
         ],
       ),
-      drawer: navigationDrawer(context, widget.isLoggedIn, widget.logOut),
+      drawer: navigationDrawer(context),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -165,60 +169,66 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         decoration: const BoxDecoration(
           color: AppColor.whiteColor,
         ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const UsernameText(),
-
-              Text(
-                "How are you feeling today?",
-                style: TextStyle(
-                    color: AppColor.greenDarkColor,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w400),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const TodaysGoalBox(),
-              const SizedBox(
-                height: 20,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
+          children: [
+            SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ////Device Control and AI therapy session control buttons
-                  DeviceControlBtn(),
-                  TherapySessionBtn(),
+                  const UsernameText(),
+                  Text(
+                    "How are you feeling today?",
+                    style: TextStyle(
+                        color: AppColor.greenDarkColor,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const TodaysGoalBox(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ////Device Control and AI therapy session control buttons
+                      DeviceControlBtn(
+                        pKey: keyControl,
+                      ),
+                      TherapySessionBtn(pKey: keyGames),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Monthly Statistics",
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    ////Report And Charts
+                    child: Container(
+                      key: keyScore,
+                      padding: const EdgeInsets.all(0),
+                      decoration: BoxDecoration(
+                        color: AppColor.black12,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const GameHistoryBuilder(),
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "Monthly Statistics",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                ////Report And Charts
-                child: Container(
-                  padding: const EdgeInsets.all(0),
-                  decoration: BoxDecoration(
-                    color: AppColor.black12,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const GameHistoryBuilder(),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       // floatingActionButton: FloatingActionButton(
@@ -232,5 +242,141 @@ class _RevisedHomePageState extends State<RevisedHomePage>
       //   ),
       // ),
     );
+  }
+
+  void showTutorial() {
+    tutorialCoachMark.show(context: context);
+  }
+
+  void createTutorial() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: _createTargets(),
+      colorShadow: const Color.fromRGBO(0, 0, 0, 0.5),
+      textSkip: "SKIP",
+      paddingFocus: 10,
+      opacityShadow: 0.5,
+      pulseEnable: false,
+      imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+      onFinish: () {
+        log("finish");
+      },
+      onClickTarget: (target) {
+        log('onClickTarget: $target');
+      },
+      onClickTargetWithTapPosition: (target, tapDetails) {
+        log("target: $target");
+        log("clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
+      },
+      onClickOverlay: (target) {
+        log('onClickOverlay: $target');
+      },
+      onSkip: () {
+        log("skip");
+        return true;
+      },
+    );
+  }
+
+  List<TargetFocus> _createTargets() {
+    List<TargetFocus> targets = [];
+    targets.add(
+      TargetFocus(
+        identify: "Target 0",
+        keyTarget: keyAccount,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(left: 0),
+            builder: (context, controller) {
+              return Image.asset('assets/images/tour/profile.png');
+            },
+          ),
+        ],
+      ),
+    );
+    // targets.add(
+    //   TargetFocus(
+    //     identify: "Target 6",
+    //     keyTarget: keyMenu,
+    //     enableOverlayTab: true,
+    //     contents: [
+    //       TargetContent(
+    //         align: ContentAlign.right,
+    //         // customPosition: CustomTargetContentPosition(top: 425, right: 70),
+    //         builder: (context, controller) {
+    //           return Image.asset('assets/images/tour/menu.png');
+    //         },
+    //       ),
+    //     ],
+    //     shape: ShapeLightFocus.RRect,
+    //   ),
+    // );
+    targets.add(
+      TargetFocus(
+        identify: "Target 1",
+        keyTarget: keyGoalBox,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            // customPosition: CustomTargetContentPosition(top: 425, right: 70),
+            builder: (context, controller) {
+              return Image.asset('assets/images/tour/stepcount.png');
+            },
+          ),
+        ],
+        shape: ShapeLightFocus.RRect,
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 2",
+        keyTarget: keyControl,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(top: 425, right: 70),
+            builder: (context, controller) {
+              return Image.asset('assets/images/tour/settings.png');
+            },
+          ),
+        ],
+        shape: ShapeLightFocus.RRect,
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 3",
+        keyTarget: keyGames,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(top: 425, left: 70),
+            child: Image.asset('assets/images/tour/therapy.png'),
+          ),
+        ],
+        shape: ShapeLightFocus.RRect,
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 4",
+        keyTarget: keyScore,
+        enableOverlayTab: true,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(top: 350),
+            child: Image.asset('assets/images/tour/report.png'),
+          ),
+        ],
+        shape: ShapeLightFocus.RRect,
+      ),
+    );
+
+    return targets;
   }
 }
