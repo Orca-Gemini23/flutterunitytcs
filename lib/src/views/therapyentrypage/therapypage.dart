@@ -17,22 +17,22 @@ class TherapyEntryPage extends StatefulWidget {
 }
 
 class _TherapyEntryPageState extends State<TherapyEntryPage> {
-
-  var mode=0;
-  late DeviceController deviceController ;
+  var mode = 0;
+  late DeviceController deviceController;
 
   @override
   void initState() {
     super.initState();
     deviceController = Provider.of<DeviceController>(context, listen: false);
 
-    mode=deviceController.modeValue;
+    mode = deviceController.modeValue;
     deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
   }
+
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
-    deviceController.sendToDevice("mode $mode;", WRITECHARACTERISTICS);
+    deviceController.sendToDevice("mode 4;", WRITECHARACTERISTICS);
   }
 
   @override
