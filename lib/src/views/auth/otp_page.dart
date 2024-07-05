@@ -76,93 +76,97 @@ class _OTPPageState extends State<OTPPage> {
             color: AppColor.blackColor,
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'OTP Verification',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                  ),
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'OTP Verification',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(height: 46),
-                Text("Enter 6 digit code sent to $phoneNo"),
-                const SizedBox(height: 25),
-                Pinput(
-                  length: 6,
-                  controller: _otpController,
-                ),
-                const SizedBox(height: 86),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Text(
-                          "Didn’t Receive Code?",
+              ),
+              // const SizedBox(height: 46),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+              ),
+              Text("Enter 6 digit code sent to $phoneNo"),
+              const SizedBox(height: 25),
+              Pinput(
+                length: 6,
+                controller: _otpController,
+              ),
+              // const SizedBox(height: 86),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+              ),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text(
+                        "Didn’t Receive Code?",
+                        style: TextStyle(
+                            color: Color(0xFF475569),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      ),
+                      TextButton(
+                        onPressed: () async {},
+                        child: const Text(
+                          "Resend Code",
                           style: TextStyle(
-                              color: Color(0xFF475569),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        TextButton(
-                          onPressed: () async {},
-                          child: const Text(
-                            "Resend Code",
-                            style: TextStyle(
-                              color: Color(0xFF94A3B8),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              decoration: TextDecoration.underline,
-                            ),
+                            color: Color(0xFF94A3B8),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      "Resend code in 00:59",
-                      style: TextStyle(
-                          color: Color(0xFF475569),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-                // const Spacer(),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                ),
-                ElevatedButton(
-                  style: raisedButtonStyle,
-                  onPressed: () async {
-                    if (_otpController.text.length == 6) {
-                      PhoneAuthCredential credential =
-                          PhoneAuthProvider.credential(
-                              verificationId: widget.verificationId,
-                              smsCode: _otpController.text);
-                      await FirebaseAuth.instance
-                          .signInWithCredential(credential);
-                      await API.getUserDetails();
-                      // ignore: use_build_context_synchronously
-                      Go.pushAndRemoveUntil(
-                        context: context,
-                        pushReplacement: const RevisedHomePage(),
-                      );
-                    }
-                  },
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Resend code in 00:59",
+                    style: TextStyle(
+                        color: Color(0xFF475569),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.height * 0.3,
+              // ),
+              ElevatedButton(
+                style: raisedButtonStyle,
+                onPressed: () async {
+                  if (_otpController.text.length == 6) {
+                    PhoneAuthCredential credential =
+                        PhoneAuthProvider.credential(
+                            verificationId: widget.verificationId,
+                            smsCode: _otpController.text);
+                    await FirebaseAuth.instance
+                        .signInWithCredential(credential);
+                    await API.getUserDetails();
+                    // ignore: use_build_context_synchronously
+                    Go.pushAndRemoveUntil(
+                      context: context,
+                      pushReplacement: const RevisedHomePage(),
+                    );
+                  }
+                },
+                child: const Text(
+                  'Continue',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

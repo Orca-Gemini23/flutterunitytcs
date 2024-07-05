@@ -628,11 +628,6 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - amplify_auth_cognito (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - amplify_secure_storage (0.0.1):
-    - Flutter
   - AppCheckCore (10.19.2):
     - GoogleUtilities/Environment (~> 7.13)
     - GoogleUtilities/UserDefaults (~> 7.13)
@@ -657,8 +652,6 @@ PODS:
   - connectivity (0.0.1):
     - Flutter
     - Reachability
-  - device_info_plus (0.0.1):
-    - Flutter
   - Firebase/Analytics (10.18.0):
     - Firebase/Core
   - Firebase/Auth (10.18.0):
@@ -986,13 +979,10 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - amplify_auth_cognito (from `.symlinks/plugins/amplify_auth_cognito/darwin`)
-  - amplify_secure_storage (from `.symlinks/plugins/amplify_secure_storage/ios`)
   - bluetooth_enable_fork (from `.symlinks/plugins/bluetooth_enable_fork/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
-  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_app_check (from `.symlinks/plugins/firebase_app_check/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -1063,10 +1053,6 @@ SPEC REPOS:
     - Toast
 
 EXTERNAL SOURCES:
-  amplify_auth_cognito:
-    :path: ".symlinks/plugins/amplify_auth_cognito/darwin"
-  amplify_secure_storage:
-    :path: ".symlinks/plugins/amplify_secure_storage/ios"
   bluetooth_enable_fork:
     :path: ".symlinks/plugins/bluetooth_enable_fork/ios"
   cloud_firestore:
@@ -1075,8 +1061,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/cloud_functions/ios"
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
-  device_info_plus:
-    :path: ".symlinks/plugins/device_info_plus/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_app_check:
@@ -1140,15 +1124,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
-  amplify_auth_cognito: 76b5a54f05f66f69966b468b8121a0dd33a32c70
-  amplify_secure_storage: 501cbdac671a050090d48dfcc002d5637d3f4a55
   AppCheckCore: 9feb4300caa596a36416cde10674dc5bec1e022e
   bluetooth_enable_fork: 73b8ca6e67230a9baa04010cd5c1e824e00d2797
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   cloud_firestore: 73eece22ce25a0565238c283ee9990f1618d8063
   cloud_functions: ac380580bd5eae13e242c2107512e2fe43cd8e1e
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
-  device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
   firebase_analytics: b3d6dd14c61549a29abb10e9843446a4d8bb53eb
   firebase_app_check: 375d2482bc2219ef06df67f2ad659c377b2c1075
