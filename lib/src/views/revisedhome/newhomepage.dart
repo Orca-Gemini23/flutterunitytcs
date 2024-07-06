@@ -288,7 +288,10 @@ class _RevisedHomePageState extends State<RevisedHomePage>
             align: ContentAlign.custom,
             customPosition: CustomTargetContentPosition(left: 0),
             builder: (context, controller) {
-              return Image.asset('assets/images/tour/profile.png');
+              return Image.asset(
+                'assets/images/tour/2.png',
+                scale: 3,
+              );
             },
           ),
         ],
@@ -321,7 +324,10 @@ class _RevisedHomePageState extends State<RevisedHomePage>
             align: ContentAlign.bottom,
             // customPosition: CustomTargetContentPosition(top: 425, right: 70),
             builder: (context, controller) {
-              return Image.asset('assets/images/tour/step.png');
+              return Image.asset(
+                'assets/images/tour/step.png',
+                scale: 3,
+              );
             },
           ),
         ],
@@ -338,7 +344,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
             align: ContentAlign.custom,
             customPosition: CustomTargetContentPosition(top: 425, right: 70),
             builder: (context, controller) {
-              return Image.asset('assets/images/tour/settings.png');
+              return Image.asset('assets/images/tour/1.png', scale: 3);
             },
           ),
         ],
@@ -352,9 +358,12 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         enableOverlayTab: true,
         contents: [
           TargetContent(
-            align: ContentAlign.custom,
-            customPosition: CustomTargetContentPosition(top: 425, left: 70),
-            child: Image.asset('assets/images/tour/therapy.png'),
+            align: ContentAlign.bottom,
+            // customPosition: CustomTargetContentPosition(top: 425, left: 70),
+            child: Image.asset(
+              'assets/images/tour/7.png',
+              scale: 3,
+            ),
           ),
         ],
         shape: ShapeLightFocus.RRect,
@@ -367,9 +376,12 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         enableOverlayTab: true,
         contents: [
           TargetContent(
-            align: ContentAlign.custom,
-            customPosition: CustomTargetContentPosition(top: 350),
-            child: Image.asset('assets/images/tour/report.png'),
+            align: ContentAlign.top,
+            // customPosition: CustomTargetContentPosition(top: 350),
+            child: Image.asset(
+              'assets/images/tour/5.png',
+              scale: 3,
+            ),
           ),
         ],
         shape: ShapeLightFocus.RRect,
