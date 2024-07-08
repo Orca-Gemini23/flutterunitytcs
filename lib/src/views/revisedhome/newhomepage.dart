@@ -273,6 +273,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         log("skip");
         return true;
       },
+      // focusAnimationDuration: const Duration(milliseconds: 200),
+      // unFocusAnimationDuration: const Duration(milliseconds: 200),
     );
   }
 
@@ -325,7 +327,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
             // customPosition: CustomTargetContentPosition(top: 425, right: 70),
             builder: (context, controller) {
               return Image.asset(
-                'assets/images/tour/step.png',
+                'assets/images/tour/6.png',
                 scale: 3,
               );
             },
@@ -341,8 +343,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         enableOverlayTab: true,
         contents: [
           TargetContent(
-            align: ContentAlign.custom,
-            customPosition: CustomTargetContentPosition(top: 425, right: 70),
+            align: ContentAlign.bottom,
+            // customPosition: CustomTargetContentPosition(top: 425, right: 70),
             builder: (context, controller) {
               return Image.asset('assets/images/tour/1.png', scale: 3);
             },

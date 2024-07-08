@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/views/user/revisedaccountpage.dart';
 
 import '../constants/bt_constants.dart';
 import '../db/local_db.dart';
@@ -17,9 +18,9 @@ class UnityScreen extends StatefulWidget {
 class UnityScreenState extends State<UnityScreen> {
   @override
   void dispose() {
-
     super.dispose();
   }
+
   static final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>();
   static UnityWidgetController? unityWidgetController;
@@ -56,7 +57,6 @@ class UnityScreenState extends State<UnityScreen> {
       body: SafeArea(
         bottom: false,
         child: WillPopScope(
-
             onWillPop: () async {
               sendUploadRequest();
               // Pop the category page if Android back button is pressed.
@@ -162,11 +162,16 @@ class UnityScreenState extends State<UnityScreen> {
     unityWidgetController?.postMessage(
         "SceneController", "AccelerometerValue", legData);
   }
-  static void sendUploadRequest()
-  {
+
+  static void sendUploadRequest() {
     print("upload request send");
+    var baseUrl = (country == "India")
+        ? "https://f02966xlb7.execute-api.ap-south-1.amazonaws.com/flutterdata/flutter-app-s3-ap-south-1-mumbai/"
+        : "https://wcdq86190h.execute-api.eu-west-2.amazonaws.com/DevS/flutter-app-s3-eu-west-2-london/";
     unityWidgetController?.postMessage(
         // "SceneController", "UploadRequest", "${LocalDB.user!.phone}");
-        "SceneController", "UploadRequest", "${LocalDB.user!.phone}");
+        "SceneController",
+        "UploadRequest",
+        "$baseUrl${LocalDB.user!.phone}");
   }
 }
