@@ -193,9 +193,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ////Device Control and AI therapy session control buttons
-                      DeviceControlBtn(
-                        pKey: keyControl,
-                      ),
+                      DeviceControlBtn(pKey: keyControl),
                       TherapySessionBtn(pKey: keyGames),
                     ],
                   ),

@@ -33,6 +33,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
   bool isDialogup = true;
   late Future<bool> metricsFuture;
 
+  // String s = "eyJraWQiOiJNbjVDS1EiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxOjIwNTYyMzk5NTc0NzphbmRyb2lkOjUzNjA0NzllMTdiMzNhYmZiZWI3NTYiLCJhdWQiOlsicHJvamVjdHNcLzIwNTYyMzk5NTc0NyIsInByb2plY3RzXC93YWxrLTkwZGJmIl0sInByb3ZpZGVyIjoiZGVidWciLCJpc3MiOiJodHRwczpcL1wvZmlyZWJhc2VhcHBjaGVjay5nb29nbGVhcGlzLmNvbVwvMjA1NjIzOTk1NzQ3IiwiZXhwIjoxNzIwNTA2MDMxLCJpYXQiOjE3MjA1MDI0MzEsImp0aSI6IkhfMDVSVXNqQ1RLdTlzZC05cWNCUGJuQ242UVZiNTNzTVlJejZZV2tIc3cifQ.R4h_eNPGQztZ10IgscYU9ybcpVkagV8LVIbm8lwOncIwxNTf2Eruo1EME4IJTxlOWX_kEIc5HlC13PVUzwWyBIQb5Qp_u-NmE5mZSSxRb3b4rRVzMUAxoSofldZpq_6Ou2q9xWlm-5BGt6DRpE2T3cT0CS5TA0UDMnV4G8Jiynvrx1twb6pOCLPduIYfymZfECyguSjgJXvY1YzLRbXrVl2FDjuY30Jp69JLzlGbuhfd1UJN_iG0OncCspn7_lst4U7WH9GzIKB7JXh1-MLJmwXWy-PWLWbkvWSYDSkobt6-eCUkEpz-_v6BQWqDvyPlLQ_Vv9W0mMb-jMjCaY8XI84BqsopjmK2gG8OAwl-fgA0zIvUnxvJpFjiUBxChjlX1jboah3MRHCLoIf9Xf96M1BYTMVRhyJjsGv1-6PzR9hXtFGX-hG7sjQrQ9oq5rWx7JLNZRA2A2f-Q0TU9Kiv5rHegUUBJH0b1zjd1Q2xvhWNOykh6Q9U0hL4nyzGfEHo";
+
   Future<bool> getDeviceMetrics() async {
     try {
       await deviceController.getBatteryPercentageValues();
@@ -167,6 +169,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
 
                           // log("---->${deviceController.battC}");
                           // print("hi");
+
+                          // deviceController.sendToDevice(
+                          //     s, WRITECHARACTERISTICS);
 
                           return Container(
                             width: double.maxFinite,

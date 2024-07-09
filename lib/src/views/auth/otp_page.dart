@@ -3,6 +3,7 @@
 // import 'dart:async';
 // import 'dart:developer';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
@@ -153,6 +154,23 @@ class _OTPPageState extends State<OTPPage> {
                             smsCode: _otpController.text);
                     await FirebaseAuth.instance
                         .signInWithCredential(credential);
+
+                    // var token =
+                    //      await FirebaseAppCheck.instance.getLimitedUseToken().then((value) => print("${value.length}\n$value"));
+
+
+                    try {
+                      final result = await FirebaseFunctions.instanceFor(
+                              region: "us-central1")
+                          .httpsCallable('yourV2CallableFunction')
+                          .call();
+                      print("----------->${result.data}");
+                    } on FirebaseFunctionsException catch (error) {
+                      print(error.code);
+                      print(error.details);
+                      print(error.message);
+                    }
+
                     await API.getUserDetails();
                     // ignore: use_build_context_synchronously
                     Go.pushAndRemoveUntil(
