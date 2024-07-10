@@ -55,13 +55,13 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(
-              Icons.arrow_back_ios), // Different icon for back button
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(
+        //       Icons.arrow_back_ios), // Different icon for back button
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        // ),
         elevation: 0.0,
         iconTheme: const IconThemeData(
           color: AppColor.blackColor,
@@ -72,26 +72,30 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "Let’s get started.",
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
-                ),
-                Text(
-                  "what’s your number?",
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  "We’ll send you a code to verify your phone.",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
-                ),
-              ],
-            ),
+            const Align(
+                alignment: Alignment.topCenter,
+                child: Column(
+                  children: [
+                    Text(
+                      "Let’s get started.",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
+                    ),
+                    Text(
+                      "what’s your number?",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      "We’ll send you a code to verify your phone.",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+                    ),
+                  ],
+                )),
             const SizedBox(
               height: 51,
             ),
