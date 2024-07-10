@@ -32,40 +32,58 @@ class OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 
-  Widget _buildImage(String assetName, [double width = 350]) {
-    return Image.asset('assets/images/$assetName', width: width);
-  }
+  final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
+    backgroundColor: const Color.fromRGBO(0, 87, 73, 1),
+    minimumSize: const Size(double.maxFinite, 60),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(30)),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
-    const bodyStyle = TextStyle(fontSize: 19.0);
+    const bodyStyle = TextStyle(
+        fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white);
 
     const pageDecoration = PageDecoration(
-      titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
       bodyTextStyle: bodyStyle,
       bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-      imagePadding: EdgeInsets.zero,
     );
 
     final ButtonStyle style =
         ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/tour/Group 164.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: newMethod(context, pageDecoration),
+    );
+  }
+
+  IntroductionScreen newMethod(
+      BuildContext context, PageDecoration pageDecoration) {
     return IntroductionScreen(
       key: introKey,
-      globalBackgroundColor: Colors.white,
+      globalBackgroundColor: Colors.transparent,
       allowImplicitScrolling: true,
       autoScrollDuration: 3000,
       infiniteAutoScroll: true,
       globalFooter: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
         child: Column(
           children: [
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
+                style: raisedButtonStyle,
                 child: const Text(
                   'Get started',
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
                 ),
                 onPressed: () => _onIntroEnd(context),
               ),
@@ -74,9 +92,19 @@ class OnBoardingPageState extends State<OnBoardingPage> {
             Text.rich(
               TextSpan(
                 children: [
-                  const TextSpan(text: "Already have a account ? "),
+                  const TextSpan(
+                    text: "Already have a account ? ",
+                    style: TextStyle(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white),
+                  ),
                   TextSpan(
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w400,
+                    ),
                     text: "Sign in",
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
@@ -92,33 +120,33 @@ class OnBoardingPageState extends State<OnBoardingPage> {
       pages: [
         PageViewModel(
           title: "",
-          body:
-              "Instead of having to buy an entire share, invest any amount you want.",
-          image: _buildFullscreenImage(),
-          // _buildImage('img1.jpg'),
-          // decoration: pageDecoration,
+          body: "Get moving and Beat freezing",
           decoration: pageDecoration.copyWith(
-            contentMargin: const EdgeInsets.symmetric(horizontal: 16),
             fullScreen: true,
-            bodyFlex: 2,
+            bodyFlex: 1,
             imageFlex: 3,
             safeArea: 100,
           ),
         ),
         PageViewModel(
-          title: "Learn as you go",
-          body:
-              "Download the Stockpile app and master the market with our mini-lesson.",
-          image: _buildImage('img2.jpg'),
-          decoration: pageDecoration,
+          title: "",
+          body: "Beat Parkinson's one step at a time",
+          decoration: pageDecoration.copyWith(
+            fullScreen: true,
+            bodyFlex: 1,
+            imageFlex: 3,
+            safeArea: 100,
+          ),
         ),
         PageViewModel(
-          title: "Kids and teens",
-          body:
-              "Kids and teens can track their stocks 24/7 and place trades that you approve.",
-          image: _buildImage('img3.jpg'),
-          decoration: pageDecoration,
-          reverse: true,
+          title: "",
+          body: "Better balance and coordination",
+          decoration: pageDecoration.copyWith(
+            fullScreen: true,
+            bodyFlex: 1,
+            imageFlex: 3,
+            safeArea: 100,
+          ),
         ),
       ],
       showSkipButton: false,
