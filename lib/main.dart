@@ -43,8 +43,8 @@ void main() async {
   await FirebaseAppCheck.instance.activate(
     //Tried with enum 'debug' in emulator and 'playIntegrity' in real device
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.playIntegrity, //AndroidProvider.playIntegrity
-    appleProvider: AppleProvider.appAttest,
+    androidProvider: AndroidProvider.debug, //AndroidProvider.playIntegrity
+    appleProvider: AppleProvider.debug,
   );
 
   /// initializes Hive local databased

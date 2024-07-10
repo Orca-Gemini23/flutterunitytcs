@@ -162,7 +162,7 @@ class _OTPPageState extends State<OTPPage> {
                     try {
                       final result = await FirebaseFunctions.instanceFor(
                               region: "us-central1")
-                          .httpsCallable('yourV2CallableFunction')
+                          .httpsCallable('user_data')
                           .call();
                       print("----------->${result.data}");
                     } on FirebaseFunctionsException catch (error) {

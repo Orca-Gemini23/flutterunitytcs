@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:walk/src/db/local_db.dart';
@@ -74,25 +75,35 @@ class API {
   }
 
   static getScore() async {
-    var baseUrl =
-        "https://h1obcwd8tj.execute-api.ap-south-1.amazonaws.com/Data_S3/s3-gait-balance-score-data?file=${LocalDB.user!.name.trimRight()}.json";
+    // var baseUrl =
+    //     "https://h1obcwd8tj.execute-api.ap-south-1.amazonaws.com/Data_S3/s3-gait-balance-score-data?file=${LocalDB.user!.name.trimRight()}.json";
 
-    debugPrint("score is coming");
+    // debugPrint("score is coming");
 
-    var url = Uri.parse(baseUrl);
+    // var url = Uri.parse(baseUrl);
+    // try {
+    //   final res = await http.get(url);
+    //   if (res.statusCode == 200) {
+    //     var data = jsonDecode(res.body);
+    //     debugPrint("Data fetched successfully: $data");
+    //     debugPrint("${data.runtimeType}");
+    //     return data;
+    //   } else {
+    //     debugPrint("Failed to fetch data ");
+    //     return {'Gait Score': '', 'Balance Score': ''};
+    //   }
+    // } catch (e) {
+    //   debugPrint("API Error: ${e.toString()}");
+    // }
     try {
-      final res = await http.get(url);
-      if (res.statusCode == 200) {
-        var data = jsonDecode(res.body);
-        debugPrint("Data fetched successfully: $data");
-        debugPrint("${data.runtimeType}");
-        return data;
-      } else {
-        debugPrint("Failed to fetch data ");
-        return {'Gait Score': '', 'Balance Score': ''};
-      }
-    } catch (e) {
-      debugPrint("API Error: ${e.toString()}");
+      final result = await FirebaseFunctions.instanceFor(region: "us-central1")
+          .httpsCallable('user_gaitscore')
+          .call();
+      return result.data;
+    } on FirebaseFunctionsException catch (error) {
+      print(error.code);
+      print(error.details);
+      print(error.message);
     }
   }
 
