@@ -108,33 +108,53 @@ class API {
   }
 
   static getUserDetails() async {
-    var baseUrl =
-        "https://rd65t5n63j.execute-api.ap-south-1.amazonaws.com/prod/rdsmysql?contact_number=$phoneNo";
+    // var baseUrl =
+    //     "https://rd65t5n63j.execute-api.ap-south-1.amazonaws.com/prod/rdsmysql?contact_number=$phoneNo";
 
-    debugPrint("details is coming");
+    // debugPrint("details is coming");
 
-    var url = Uri.parse(baseUrl);
+    // var url = Uri.parse(baseUrl);
+    // try {
+    //   final res = await http.get(url);
+    //   if (res.statusCode == 200) {
+    //     var data = jsonDecode(res.body);
+    //     debugPrint("Data fetched successfully");
+
+    //     var newUser = UserModel(
+    //       name: data[0]["Name"] ?? "Unknown User",
+    //       age: data[0]["Age"] ?? "XX",
+    //       phone: "$countryCode $phoneNo",
+    //       image: "NA",
+    //       gender: data[0]["Gender"] ?? "XX",
+    //       address: data[0]["Address"] ?? "XX",
+    //       email: data[0]["Email"] ?? "XX",
+    //     );
+    //     LocalDB.saveUser(newUser);
+    //   } else {
+    //     debugPrint("Failed to fetch data ");
+    //   }
+    // } catch (e) {
+    //   debugPrint("API Error: ${e.toString()}");
+    // }
     try {
-      final res = await http.get(url);
-      if (res.statusCode == 200) {
-        var data = jsonDecode(res.body);
-        debugPrint("Data fetched successfully");
-
-        var newUser = UserModel(
-          name: data[0]["Name"] ?? "Unknown User",
-          age: data[0]["Age"] ?? "XX",
-          phone: "$countryCode $phoneNo",
-          image: "NA",
-          gender: data[0]["Gender"] ?? "XX",
-          address: data[0]["Address"] ?? "XX",
-          email: data[0]["Email"] ?? "XX",
-        );
-        LocalDB.saveUser(newUser);
-      } else {
-        debugPrint("Failed to fetch data ");
-      }
-    } catch (e) {
-      debugPrint("API Error: ${e.toString()}");
+      final result = await FirebaseFunctions.instanceFor(region: "us-central1")
+          .httpsCallable('user_data')
+          .call();
+      var newUser = UserModel(
+        name: result.data[0]["Name"] ?? "Unknown User",
+        age: result.data[0]["Age"] ?? "XX",
+        phone: "$countryCode $phoneNo",
+        image: "NA",
+        gender: result.data[0]["Gender"] ?? "XX",
+        address: result.data[0]["Address"] ?? "XX",
+        email: result.data[0]["Email"] ?? "XX",
+      );
+      LocalDB.saveUser(newUser);
+      // print("----------->${result.data}");
+    } on FirebaseFunctionsException catch (error) {
+      print(error.code);
+      print(error.details);
+      print(error.message);
     }
   }
 }
