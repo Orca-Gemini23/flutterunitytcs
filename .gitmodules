@@ -1,0 +1,3 @@
+[submodule "unity"]
+    path = unity
+    url = git@gitlab.com:lifespark-technologies/walk_unity.git

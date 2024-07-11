@@ -69,5 +69,3 @@ amplifytools.xcconfig
 **.sample
 #amplify-do-not-edit-end
 unityLibrary/
-unity/
-
