@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/views/reviseddevicecontrol/connectionscreen.dart';
 
 class CustomDialogs {
   static showBleDisconnectedDialog(
@@ -13,7 +14,8 @@ class CustomDialogs {
       dismissOnTouchOutside: false,
       desc: "Oops , lost bluetooth connection please try and connect again.",
       btnOkOnPress: () {
-        Go.back(context: context);
+        Go.pushReplacement(
+            context: context, pushReplacement: const ConnectionScreen());
       },
       btnOkText: "Take me to home",
       btnOkColor: AppColor.greenDarkColor,
