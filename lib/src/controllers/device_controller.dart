@@ -514,7 +514,7 @@ class DeviceController extends ChangeNotifier {
         log("Sending$command");
 
         BluetoothCharacteristic? writeTarget =
-            _characteristicMap[WRITECHARACTERISTICS];
+            _characteristicMap[characteristic];
 
         ///Searching for the actual characteristic by the GUID of the characteristic known
         await writeTarget!.write(command.codeUnits);

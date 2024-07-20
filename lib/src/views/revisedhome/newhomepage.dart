@@ -1,26 +1,13 @@
-// ignore_for_file: use_build_context_synchronously, unrelated_type_equality_checks, unused_import
-
 import 'dart:developer';
 import 'dart:ui';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/models/game_history_model.dart';
-import 'package:walk/src/server/api.dart';
-import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/utils/custom_notification.dart';
-import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
-import 'package:walk/src/views/device/chart_details.dart';
 import 'package:walk/src/views/home_page.dart';
 import 'package:walk/src/views/revisedsplash.dart';
 
