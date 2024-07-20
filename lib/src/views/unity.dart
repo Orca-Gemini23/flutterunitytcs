@@ -172,6 +172,7 @@ class UnityScreenState extends State<UnityScreen> {
         // "SceneController", "UploadRequest", "${LocalDB.user!.phone}");
         "SceneController",
         "UploadRequest",
-        "$baseUrl${LocalDB.user!.phone}");
+        (("$baseUrl${LocalDB.user!.phone}").replaceAll(" ", ""))
+            .replaceAll("+", ""));
   }
 }
