@@ -171,7 +171,9 @@ class _CustomClientBatteryValueIndicatorState
             right: 0,
             top: 36.h,
             child: CircularPercentIndicator(
-              percent: deviceController.battC / 100,
+              percent: deviceController.battC < 0
+                  ? 0 / 100
+                  : deviceController.battC / 100,
               lineWidth: 10,
               radius: 100.w,
               progressColor: deviceController.battC > 25
@@ -212,7 +214,9 @@ class _CustomClientBatteryValueIndicatorState
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${deviceController.battC.floor()}%",
+                          deviceController.battC < 0
+                              ? "0%"
+                              : "${deviceController.battC.floor()}%",
                           style: TextStyle(
                               color: deviceController.battC > 25
                                   ? AppColor.batteryindicatortextgreen
@@ -234,7 +238,9 @@ class _CustomClientBatteryValueIndicatorState
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "${deviceController.battC.floor()}%",
+                              deviceController.battC < 0
+                                  ? "0%"
+                                  : "${deviceController.battC.floor()}%",
                               style: TextStyle(
                                   color: deviceController.battC > 25
                                       ? AppColor.batteryindicatortextgreen
@@ -253,7 +259,9 @@ class _CustomClientBatteryValueIndicatorState
                         )
                       : Center(
                           child: Text(
-                            "${deviceController.battC.floor()}%",
+                            deviceController.battC < 0
+                                ? "0%"
+                                : "${deviceController.battC.floor()}%",
                             style: TextStyle(
                                 color: deviceController.battC > 25
                                     ? AppColor.batteryindicatortextgreen

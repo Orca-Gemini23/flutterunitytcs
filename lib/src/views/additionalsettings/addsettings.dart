@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/additionalsettings/update.dart';
+// import 'package:walk/src/utils/custom_navigation.dart';
+// import 'package:walk/src/views/additionalsettings/update.dart';
 
 class AdditionalSettings extends StatefulWidget {
   const AdditionalSettings({super.key});
@@ -159,24 +159,24 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                       );
                     },
                   ),
-                  const Divider(
-                    thickness: 2,
-                    color: AppColor.blackColor,
-                  ),
-                  Consumer<DeviceController>(
-                    builder: (context, deviceController, widget) {
-                      return GestureDetector(
-                        onTap: () {
-                          Go.to(context: context, push: const DeviceUpdate());
-                        },
-                        child: const Text(
-                          "Check for update",
-                          style: TextStyle(
-                              color: AppColor.blackColor, fontSize: 16),
-                        ),
-                      );
-                    },
-                  ),
+                  // const Divider(
+                  //   thickness: 2,
+                  //   color: AppColor.blackColor,
+                  // ),
+                  // Consumer<DeviceController>(
+                  //   builder: (context, deviceController, widget) {
+                  //     return GestureDetector(
+                  //       onTap: () {
+                  //         Go.to(context: context, push: const DeviceUpdate());
+                  //       },
+                  //       child: const Text(
+                  //         "Check for update",
+                  //         style: TextStyle(
+                  //             color: AppColor.blackColor, fontSize: 16),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             )

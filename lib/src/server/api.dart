@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
@@ -103,9 +102,9 @@ class API {
       // log(result.data);
       return result.data;
     } on FirebaseFunctionsException catch (error) {
-      print(error.code);
-      print(error.details);
-      print(error.message);
+      debugPrint(error.code);
+      debugPrint(error.details);
+      debugPrint(error.message);
     }
   }
 
@@ -156,9 +155,9 @@ class API {
       }
       // print("----------->${result.data}");
     } on FirebaseFunctionsException catch (error) {
-      print(error.code);
-      print(error.details);
-      print(error.message);
+      debugPrint(error.code);
+      debugPrint(error.details);
+      debugPrint(error.message);
     }
   }
 }

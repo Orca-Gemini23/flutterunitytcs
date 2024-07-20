@@ -142,9 +142,11 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                       );
                     } else if (deviceMetricSnapshot.hasData) {
                       TextEditingController frequencyTextController =
-                          TextEditingController(
-                              text: (deviceController.frequencyValue * 60)
-                                  .toStringAsFixed(0));
+                          deviceController.frequencyValue < 0
+                              ? TextEditingController(text: " ")
+                              : TextEditingController(
+                                  text: (deviceController.frequencyValue * 60)
+                                      .toStringAsFixed(0));
                       return Consumer<DeviceController>(
                         builder: (context, deviceController, widget) {
                           deviceController.isScanning = false;

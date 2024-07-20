@@ -33,7 +33,7 @@ Widget magSlider(bool isClient, DeviceController controller) {
         },
         onChangeEnd: (value) async {
           String command = "";
-          command = isClient ? "$MAG c $value" : "$MAG s $value";
+          command = isClient ? "$MAG c $value;" : "$MAG s $value;";
           await controller.sendToDevice(command, WRITECHARACTERISTICS);
         }),
   );

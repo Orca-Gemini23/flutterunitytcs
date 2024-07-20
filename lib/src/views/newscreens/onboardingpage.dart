@@ -51,8 +51,8 @@ class OnBoardingPageState extends State<OnBoardingPage> {
       bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
     );
 
-    final ButtonStyle style =
-        ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+    // final ButtonStyle style =
+    //     ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
     return Container(
       decoration: const BoxDecoration(
