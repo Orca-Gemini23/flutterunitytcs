@@ -30,8 +30,6 @@ class PhoneAuthPage extends StatefulWidget {
 class _PhoneAuthPageState extends State<PhoneAuthPage> {
   String phoneNumber = "";
   bool loading = false;
-  String _verificationId = "";
-  int? _resendToken;
 
   @override
   Widget build(BuildContext context) {
@@ -176,8 +174,6 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                     codeSent: (String verificationId, int? resendToken) {
                       setState(() {
                         loading = false;
-                        _verificationId = verificationId;
-                        _resendToken = resendToken;
                       });
                       Go.to(
                         context: context,
@@ -187,10 +183,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                         ),
                       );
                     },
-                    forceResendingToken: _resendToken,
-                    codeAutoRetrievalTimeout: (String verificationId) {
-                      verificationId = _verificationId;
-                    },
+                    codeAutoRetrievalTimeout: (String verificationId) {},
                   );
                 },
                 child: !loading
