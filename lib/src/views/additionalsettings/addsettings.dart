@@ -6,8 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/additionalsettings/update.dart';
 
 class AdditionalSettings extends StatefulWidget {
   const AdditionalSettings({super.key});
@@ -125,24 +123,23 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Consumer<DeviceController>(
-                    builder: (context, deviceController, widget) {
-                      return GestureDetector(
-                        onTap: () async {
-                          ////Reset the device
-                          debugPrint("Tapped");
-                          await deviceController.sendToDevice(
-                              "$MODE 4;", WRITECHARACTERISTICS);
-                          _selectedMode = 'Open loop';
-                          _storeMode();
-                        },
-                        child: const Text(
-                          "Reset",
-                          style: TextStyle(
-                              color: AppColor.blackColor, fontSize: 16),
-                        ),
-                      );
-                    },
-                  ),
+                      builder: (context, deviceController, widget) {
+                    return GestureDetector(
+                      onTap: () async {
+                        ////Reset the device
+                        debugPrint("Tapped");
+                        await deviceController.sendToDevice(
+                            "$MODE 4;", WRITECHARACTERISTICS);
+                        _selectedMode = 'Open loop';
+                        _storeMode();
+                      },
+                      child: const Text(
+                        "Reset",
+                        style:
+                            TextStyle(color: AppColor.blackColor, fontSize: 16),
+                      ),
+                    );
+                  }),
                   const Divider(
                     thickness: 2,
                     color: AppColor.blackColor,
@@ -153,24 +150,6 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                         onTap: () {},
                         child: const Text(
                           "Restart",
-                          style: TextStyle(
-                              color: AppColor.blackColor, fontSize: 16),
-                        ),
-                      );
-                    },
-                  ),
-                  const Divider(
-                    thickness: 2,
-                    color: AppColor.blackColor,
-                  ),
-                  Consumer<DeviceController>(
-                    builder: (context, deviceController, widget) {
-                      return GestureDetector(
-                        onTap: () {
-                          Go.to(context: context, push: const DeviceUpdate());
-                        },
-                        child: const Text(
-                          "Check for update",
                           style: TextStyle(
                               color: AppColor.blackColor, fontSize: 16),
                         ),

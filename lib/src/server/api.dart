@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
@@ -100,7 +99,6 @@ class API {
       final result = await FirebaseFunctions.instanceFor(region: "us-central1")
           .httpsCallable('user_gaitscore')
           .call();
-      log(result.data);
       return result.data;
     } on FirebaseFunctionsException catch (error) {
       print(error.code);
@@ -142,20 +140,16 @@ class API {
       final result = await FirebaseFunctions.instanceFor(region: "us-central1")
           .httpsCallable('user_data')
           .call();
-      print(result.data["data"]);
-      if (result.data["data"][0] != null) {
-        print(result.data["data"][0]);
-        var newUser = UserModel(
-          name: result.data["data"][0]["Name"] ?? "Unknown User",
-          age: result.data["data"][0]["Age"] ?? "XX",
-          phone: "$countryCode $phoneNo",
-          image: "NA",
-          gender: result.data["data"][0]["Gender"] ?? "XX",
-          address: result.data["data"][0]["Address"] ?? "XX",
-          email: result.data["data"][0]["Email"] ?? "XX",
-        );
-        LocalDB.saveUser(newUser);
-      }
+      var newUser = UserModel(
+        name: result.data[0]["Name"] ?? "Unknown User",
+        age: result.data[0]["Age"] ?? "XX",
+        phone: "$countryCode $phoneNo",
+        image: "NA",
+        gender: result.data[0]["Gender"] ?? "XX",
+        address: result.data[0]["Address"] ?? "XX",
+        email: result.data[0]["Email"] ?? "XX",
+      );
+      LocalDB.saveUser(newUser);
       // print("----------->${result.data}");
     } on FirebaseFunctionsException catch (error) {
       print(error.code);
