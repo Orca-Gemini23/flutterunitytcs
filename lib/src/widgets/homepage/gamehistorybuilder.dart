@@ -51,7 +51,10 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
           );
         } else {
           return const Center(
-            child: Text("please give details"),
+            child: CircularProgressIndicator(
+              color: AppColor.greenDarkColor,
+              strokeWidth: 5,
+            ),
           );
         }
       },
