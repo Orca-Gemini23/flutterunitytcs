@@ -183,7 +183,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                         context: context,
                         push: OTPPage(
                           verificationId: verificationId,
-                          resendToken: resendToken,
+                          resendToken: resendToken, phoneNumber: phoneNumber,
                         ),
                       );
                     },

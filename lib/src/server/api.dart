@@ -144,7 +144,7 @@ class API {
       if (result.data["data"][0] != null) {
         var newUser = UserModel(
           name: result.data["data"][0]["Name"] ?? "Unknown User",
-          age: result.data["data"][0]["Age"] ?? "XX",
+          age: result.data["data"][0]["Age"].toString(),
           phone: "$countryCode $phoneNo",
           image: "NA",
           gender: result.data["data"][0]["Gender"] ?? "XX",

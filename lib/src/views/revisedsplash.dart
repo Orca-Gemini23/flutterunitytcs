@@ -70,27 +70,23 @@ class _RevisedsplashState extends State<Revisedsplash>
       () {
         // setState(
         //   () {
-        FirebaseAuth.instance.idTokenChanges().listen(
-          (User? user) {
-            if (user == null) {
-              setState(() {
-                tour = false;
-              });
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PhoneAuthPage()));
-            } else {
-              setState(() {
-                tour = true;
-              });
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RevisedHomePage()));
-            }
-          },
-        );
+        // FirebaseAuth.instance.idTokenChanges().listen(
+        // (User? user) {
+        if (FirebaseAuth.instance.currentUser == null) {
+          setState(() {
+            tour = false;
+          });
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const PhoneAuthPage()));
+        } else {
+          setState(() {
+            tour = true;
+          });
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const RevisedHomePage()));
+        }
+        // },
+        // );
         //   },
         // );
       },

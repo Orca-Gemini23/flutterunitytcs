@@ -71,6 +71,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   void initState() {
     debugPrint(tour.toString());
     if (!tour) {
+      tour = !tour;
       createTutorial();
       Future.delayed(Duration.zero, showTutorial);
     }

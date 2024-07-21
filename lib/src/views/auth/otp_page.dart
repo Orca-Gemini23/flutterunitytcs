@@ -3,10 +3,13 @@
 // import 'dart:async';
 // import 'dart:developer';
 
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 // import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -25,7 +28,7 @@ class OTPPage extends StatefulWidget {
     super.key,
     required this.verificationId,
     this.resendToken,
-    // required this.phoneNumber,
+    required this.phoneNumber,
     // required this.isSignIn,
     // required this.isLoggedIn,
     // required this.logOut,
@@ -33,7 +36,7 @@ class OTPPage extends StatefulWidget {
 
   final String verificationId;
   final int? resendToken;
-  // final String phoneNumber;
+  final String phoneNumber;
   // final bool isSignIn;
   // final Function isLoggedIn;
   // final Function logOut;
@@ -45,7 +48,25 @@ class _OTPPageState extends State<OTPPage> {
   final TextEditingController _otpController = TextEditingController();
   // final RoundedLoadingButtonController _buttonController =
   //     RoundedLoadingButtonController();
+
   int count = 0;
+  int t = 30;
+  bool loading = false;
+  String _verificationId = "";
+  int? _resendToken;
+
+  @override
+  void initState() {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        t--;
+      });
+      if (t == 0) {
+        timer.cancel();
+      }
+    });
+    super.initState();
+  }
 
   final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: const Color.fromRGBO(0, 87, 73, 1),
@@ -109,34 +130,74 @@ class _OTPPageState extends State<OTPPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       const Text(
-                        "Didn’t Receive Code?",
+                        "Didn't Receive OTP? ",
                         style: TextStyle(
                             color: Color(0xFF475569),
                             fontSize: 14,
                             fontWeight: FontWeight.w400),
                       ),
-                      TextButton(
-                        onPressed: () async {},
-                        child: const Text(
-                          "Resend Code",
-                          style: TextStyle(
-                            color: Color(0xFF94A3B8),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
+                      t == 0
+                          ? TextButton(
+                              onPressed: () async {
+                                setState(() {
+                                  t = 30;
+                                });
+                                Timer.periodic(const Duration(seconds: 1),
+                                    (timer) {
+                                  setState(() {
+                                    t--;
+                                  });
+                                  if (t == 0) {
+                                    timer.cancel();
+                                  }
+                                });
+                                await FirebaseAuth.instance.verifyPhoneNumber(
+                                  phoneNumber: widget.phoneNumber,
+                                  verificationCompleted:
+                                      (PhoneAuthCredential credential) async {},
+                                  verificationFailed:
+                                      (FirebaseAuthException e) {
+                                    debugPrint(e.toString());
+                                    Fluttertoast.showToast(msg: e.toString());
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  codeSent: (String verificationId,
+                                      int? resendToken) {
+                                    setState(() {
+                                      loading = false;
+                                      _verificationId = verificationId;
+                                      _resendToken = resendToken;
+                                    });
+                                  },
+                                  forceResendingToken: _resendToken,
+                                  codeAutoRetrievalTimeout:
+                                      (String verificationId) {
+                                    verificationId = _verificationId;
+                                  },
+                                );
+                              },
+                              child: const Text(
+                                "Resend OTP",
+                                style: TextStyle(
+                                  color: Color(0xFF94A3B8),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              "Resend in $t sec",
+                              style: const TextStyle(
+                                  color: Color(0xFF475569),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400),
+                            ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Resend code in 00:59",
-                    style: TextStyle(
-                        color: Color(0xFF475569),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400),
-                  ),
+                  // const SizedBox(height: 8),
                 ],
               ),
               const Spacer(),
