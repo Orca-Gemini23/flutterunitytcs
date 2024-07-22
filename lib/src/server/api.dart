@@ -101,10 +101,8 @@ class API {
           .call();
       // log(result.data);
       return result.data;
-    } on FirebaseFunctionsException catch (error) {
-      debugPrint(error.code);
-      debugPrint(error.details);
-      debugPrint(error.message);
+    } catch (error) {
+      debugPrint(error.toString());
     }
   }
 
@@ -141,10 +139,10 @@ class API {
       final result = await FirebaseFunctions.instanceFor(region: "us-central1")
           .httpsCallable('user_data')
           .call();
-      if (result.data["data"][0] != null) {
-        var newUser = UserModel(
+      if (result.data!["data"]![0] != null) {
+        UserModel newUser = UserModel(
           name: result.data["data"][0]["Name"] ?? "Unknown User",
-          age: result.data["data"][0]["Age"].toString(),
+          age: result.data["data"][0]["Age"] ?? "xx",
           phone: "$countryCode $phoneNo",
           image: "NA",
           gender: result.data["data"][0]["Gender"] ?? "XX",
@@ -154,10 +152,8 @@ class API {
         LocalDB.saveUser(newUser);
       }
       // print("----------->${result.data}");
-    } on FirebaseFunctionsException catch (error) {
-      debugPrint(error.code);
-      debugPrint(error.details);
-      debugPrint(error.message);
+    } catch (error) {
+      debugPrint(error.toString());
     }
   }
 }
