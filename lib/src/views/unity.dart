@@ -48,7 +48,7 @@ class UnityScreenState extends State<UnityScreen> {
 
   double _sliderValue = 0.0;
   int finalScore = 0;
-  double secondPlayed = 0;
+  int secondPlayed = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,8 @@ class UnityScreenState extends State<UnityScreen> {
                         log(score[1]);
                         setState(() {
                           finalScore = int.parse(score[1]);
-                          secondPlayed = double.parse(score[2]);
+                          secondPlayed = int.parse(double.parse(score[2])
+                              .toStringAsFixed(0)); 
                         });
                       }
                       switch (message) {

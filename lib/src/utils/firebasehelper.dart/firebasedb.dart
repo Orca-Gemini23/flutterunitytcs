@@ -18,7 +18,7 @@ class FirebaseDB {
   }
 
   static Future<bool> uploadUserScore(
-      {int? score, double? secondsPlayedFor, DateTime? playedOn}) async {
+      {int? score, int? secondsPlayedFor, DateTime? playedOn}) async {
     try {
       var fireBaseInstance = FirebaseFirestore.instance;
       String userName = LocalDB.user!.name;
