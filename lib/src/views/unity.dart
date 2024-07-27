@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
@@ -65,18 +64,17 @@ class UnityScreenState extends State<UnityScreen> {
         child: WillPopScope(
             onWillPop: () async {
               sendUploadRequest();
-              bool result = await FirebaseDB.uploadUserScore(
+              await FirebaseDB.uploadUserScore(
                 score: finalScore,
                 playedOn: DateTime.now(),
                 secondsPlayedFor: secondPlayed,
               );
-              log("hgdyghgcgcftf");
-              if (result) {
-                Fluttertoast.showToast(msg: "Data uploaded");
-                Navigator.of(context, rootNavigator: true).pop();
-              } else {
-                Navigator.of(context, rootNavigator: true).pop();
-              }
+              // if (result) {
+              //   Fluttertoast.showToast(msg: "Data uploaded");
+              //   Navigator.of(context, rootNavigator: true).pop();
+              // } else {
+              //   Navigator.of(context, rootNavigator: true).pop();
+              // }
               // Pop the category page if Android back button is pressed.
               return true;
             },
@@ -93,8 +91,8 @@ class UnityScreenState extends State<UnityScreen> {
                         log(score[1]);
                         setState(() {
                           finalScore = int.parse(score[1]);
-                          secondPlayed = int.parse(double.parse(score[2])
-                              .toStringAsFixed(0)); 
+                          secondPlayed = int.parse(
+                              double.parse(score[2]).toStringAsFixed(0));
                         });
                       }
                       switch (message) {
@@ -117,13 +115,12 @@ class UnityScreenState extends State<UnityScreen> {
                         playedOn: DateTime.now(),
                         secondsPlayedFor: secondPlayed,
                       );
-                      log("hgdyghgcgcftf");
-                      if (result) {
-                        Fluttertoast.showToast(msg: "Data uploaded");
-                        Navigator.of(context, rootNavigator: true).pop();
-                      } else {
-                        Navigator.of(context, rootNavigator: true).pop();
-                      }
+                      // if (result) {
+                      //   Fluttertoast.showToast(msg: "Data uploaded");
+                      //   Navigator.of(context, rootNavigator: true).pop();
+                      // } else {
+                      //   Navigator.of(context, rootNavigator: true).pop();
+                      // }
                       Navigator.pop(context);
                     },
                   )
