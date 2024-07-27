@@ -70,6 +70,12 @@ class UnityScreenState extends State<UnityScreen> {
                     onUnityCreated: onUnityCreated,
                     onUnityUnloaded: stopStream,
                     onUnityMessage: (message) {
+                      if(message.toString().contains("sc"))
+                        {
+                          var score= message.toString().split("c");
+                          print(score[1]);
+                          //TODO call firebase upload function
+                        }
                       switch (message) {
                         case "VL":
                           vibrateLeft();
