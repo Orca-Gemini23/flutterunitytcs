@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 
 import '../constants/bt_constants.dart';
@@ -43,6 +47,8 @@ class UnityScreenState extends State<UnityScreen> {
   }
 
   double _sliderValue = 0.0;
+  int finalScore = 0;
+  double secondPlayed = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +65,18 @@ class UnityScreenState extends State<UnityScreen> {
         child: WillPopScope(
             onWillPop: () async {
               sendUploadRequest();
+              bool result = await FirebaseDB.uploadUserScore(
+                score: finalScore,
+                playedOn: DateTime.now(),
+                secondsPlayedFor: secondPlayed,
+              );
+              log("hgdyghgcgcftf");
+              if (result) {
+                Fluttertoast.showToast(msg: "Data uploaded");
+                Navigator.of(context, rootNavigator: true).pop();
+              } else {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
               // Pop the category page if Android back button is pressed.
               return true;
             },
@@ -69,13 +87,15 @@ class UnityScreenState extends State<UnityScreen> {
                     // uiLevel: 0,
                     onUnityCreated: onUnityCreated,
                     onUnityUnloaded: stopStream,
-                    onUnityMessage: (message) {
-                      if(message.toString().contains("sc"))
-                        {
-                          var score= message.toString().split("c");
-                          print(score[1]);
-                          //TODO call firebase upload function
-                        }
+                    onUnityMessage: (message) async {
+                      if (message.toString().contains("sc")) {
+                        var score = message.toString().split("c");
+                        log(score[1]);
+                        setState(() {
+                          finalScore = int.parse(score[1]);
+                          secondPlayed = double.parse(score[2]);
+                        });
+                      }
                       switch (message) {
                         case "VL":
                           vibrateLeft();
@@ -88,8 +108,21 @@ class UnityScreenState extends State<UnityScreen> {
                     fullscreen: true,
                   ),
                   IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () async {
+                      sendUploadRequest();
+                      bool result = await FirebaseDB.uploadUserScore(
+                        score: finalScore,
+                        playedOn: DateTime.now(),
+                        secondsPlayedFor: secondPlayed,
+                      );
+                      log("hgdyghgcgcftf");
+                      if (result) {
+                        Fluttertoast.showToast(msg: "Data uploaded");
+                        Navigator.of(context, rootNavigator: true).pop();
+                      } else {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      }
                       Navigator.pop(context);
                     },
                   )
@@ -171,9 +204,10 @@ class UnityScreenState extends State<UnityScreen> {
 
   static void sendUploadRequest() {
     print("upload request send");
-    var baseUrl = (country == "India")
-        ? "https://f02966xlb7.execute-api.ap-south-1.amazonaws.com/flutterdata/flutter-app-s3-ap-south-1-mumbai/"
-        : "https://wcdq86190h.execute-api.eu-west-2.amazonaws.com/DevS/flutter-app-s3-eu-west-2-london/";
+    var baseUrl = (country == "England")
+        ? "https://wcdq86190h.execute-api.eu-west-2.amazonaws.com/DevS/flutter-app-s3-eu-west-2-london/"
+        : "https://f02966xlb7.execute-api.ap-south-1.amazonaws.com/flutterdata/flutter-app-s3-ap-south-1-mumbai/";
+
     unityWidgetController?.postMessage(
         // "SceneController", "UploadRequest", "${LocalDB.user!.phone}");
         "SceneController",
