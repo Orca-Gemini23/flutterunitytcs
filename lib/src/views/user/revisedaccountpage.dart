@@ -463,7 +463,7 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                               var newUser = UserModel(
                                 name: nameController.text,
                                 age: ageController.text,
-                                phone: "$countryCode $phoneNo",
+                                phone: LocalDB.user!.phone,
                                 image: _image?.path ?? "NA",
                                 gender: genderController.text,
                                 address: cityController.text,

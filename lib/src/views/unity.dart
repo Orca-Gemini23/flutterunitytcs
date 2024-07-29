@@ -110,7 +110,7 @@ class UnityScreenState extends State<UnityScreen> {
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () async {
                       sendUploadRequest();
-                      bool result = await FirebaseDB.uploadUserScore(
+                      await FirebaseDB.uploadUserScore(
                         score: finalScore,
                         playedOn: DateTime.now(),
                         secondsPlayedFor: secondPlayed,

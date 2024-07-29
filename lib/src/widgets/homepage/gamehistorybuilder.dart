@@ -25,7 +25,7 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
   @override
   Widget build(BuildContext context) {
     // print("--------------------Building Game History Ui-------------------");
-    String userName = LocalDB.user?.name ?? "Unknown User";
+    String userName = LocalDB.user?.phone ?? "Unknown User";
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
           .collection("users")

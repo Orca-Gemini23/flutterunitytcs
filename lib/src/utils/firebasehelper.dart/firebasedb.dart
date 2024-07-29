@@ -21,7 +21,7 @@ class FirebaseDB {
       {int? score, int? secondsPlayedFor, DateTime? playedOn}) async {
     try {
       var fireBaseInstance = FirebaseFirestore.instance;
-      String userName = LocalDB.user!.name;
+      String userName = LocalDB.user!.phone;
       String gamePlayedString = playedOn?.toLocal().toString() ?? "NA";
       Map<String, dynamic> gameDetails = {
         "score": score,
