@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:developer';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -54,6 +55,11 @@ class _DeviceControlPageState extends State<DeviceControlPage>
 
   @override
   void initState() {
+    FirebaseAnalytics.instance
+        .setCurrentScreen(screenName: 'Device Control Page')
+        .then(
+          (value) => debugPrint("Analytics stated"),
+        );
     super.initState();
     deviceController = Provider.of<DeviceController>(context, listen: false);
     metricsFuture = getDeviceMetrics();

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:awesome_ripple_animation/awesome_ripple_animation.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,11 @@ class ConnectionScreen extends StatefulWidget {
 class _ConnectionScreenState extends State<ConnectionScreen> {
   @override
   void initState() {
+    FirebaseAnalytics.instance
+        .setCurrentScreen(screenName: 'Connection Page')
+        .then(
+          (value) => debugPrint("Analytics stated"),
+        );
     super.initState();
   }
 

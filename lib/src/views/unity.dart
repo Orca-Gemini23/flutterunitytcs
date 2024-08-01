@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,16 @@ class UnityScreen extends StatefulWidget {
 }
 
 class UnityScreenState extends State<UnityScreen> {
+  @override
+  void initState() {
+    FirebaseAnalytics.instance
+        .setCurrentScreen(screenName: 'Game Page ${widget.i} ')
+        .then(
+          (value) => debugPrint("Analytics stated"),
+        );
+    super.initState();
+  }
+
   @override
   void dispose() {
     super.dispose();
