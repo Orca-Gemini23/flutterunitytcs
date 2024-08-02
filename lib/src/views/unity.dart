@@ -86,7 +86,7 @@ class UnityScreenState extends State<UnityScreen> {
                     onUnityCreated: onUnityCreated,
                     onUnityUnloaded: stopStream,
                     onUnityMessage: (message) async {
-                      if (message.toString().contains("sc")) {
+                      if (message.toString().contains("xc")) {
                         var score = message.toString().split("c");
                         log(score[1]);
                         setState(() {
@@ -95,6 +95,19 @@ class UnityScreenState extends State<UnityScreen> {
                               double.parse(score[2]).toStringAsFixed(0));
                         });
                       }
+                      else if(message.toString().contains("ball"))
+                        {
+                          await FirebaseDB.uploadBallData(ballData: message.toString().replaceAll("ball", ""));
+                        }
+                      else if(message.toString().contains("swing"))
+                        {
+                          await FirebaseDB.uploadSwingData(swingData: message.toString().replaceAll("swing", ""));
+                        }
+                      else if(message.toString().contains("fish"))
+                        {
+                          await FirebaseDB.uploadFishData(fishData: message.toString().replaceAll("fish", ""));
+                        }
+                      else{
                       switch (message) {
                         case "VL":
                           vibrateLeft();
@@ -102,7 +115,8 @@ class UnityScreenState extends State<UnityScreen> {
                         case "VR":
                           vibrateRight();
                           break;
-                      }
+
+                      }}
                     },
                     fullscreen: true,
                   ),
