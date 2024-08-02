@@ -1,4 +1,5 @@
 // ignore_for_file: unused_import
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +16,7 @@ import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/screen_context.dart';
+import 'package:walk/src/utils/version_number.dart';
 import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/device/command_page.dart';
 import 'package:walk/src/views/faqscreens/faqpage.dart';
@@ -81,6 +83,17 @@ Drawer navigationDrawer(BuildContext context) {
           ),
         ),
         drawerItem(context),
+        // const SizedBox(
+        //   height: 20,
+        // ),
+        // Text(
+        //   "App Version - v${VersionNumber.versionNumber}",
+        //   style: const TextStyle(
+        //     color: AppColor.blackColor,
+        //     fontSize: 16,
+        //     fontWeight: FontWeight.w300,
+        //   ),
+        // ),
       ],
     ),
   );
@@ -98,6 +111,8 @@ Widget drawerItem(BuildContext context) {
     Icons.help,
     Icons.question_answer,
     Icons.logout_sharp,
+    Icons.info_outline
+    // Icons.autorenew,
   ];
   List<String> drawerTileName = [
     'Home',
@@ -110,6 +125,7 @@ Widget drawerItem(BuildContext context) {
     'Tutorial',
     "FAQ's",
     'Log Out',
+    "App Version - v${VersionNumber.versionNumber}",
   ];
   List<Function()?> drawerOnTap = [
     () {
@@ -179,6 +195,7 @@ Widget drawerItem(BuildContext context) {
               const WalkApp()); //LoginRegister(isLoggedIn: () {}, logOut: () {}));
       // await AWSAuth.signOutCurrentUser();
     },
+    (){},
   ];
 
   return ListView.builder(
