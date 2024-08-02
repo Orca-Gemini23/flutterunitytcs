@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -17,11 +18,16 @@ class TherapyEntryPage extends StatefulWidget {
 }
 
 class _TherapyEntryPageState extends State<TherapyEntryPage> {
-  var mode = 0;
+  var mode = 4;
   late DeviceController deviceController;
 
   @override
   void initState() {
+    FirebaseAnalytics.instance
+        .setCurrentScreen(screenName: 'Therapy Entry Page')
+        .then(
+          (value) => debugPrint("Analytics stated"),
+        );
     super.initState();
     deviceController = Provider.of<DeviceController>(context, listen: false);
 
@@ -32,7 +38,7 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
   @override
   void dispose() {
     super.dispose();
-    deviceController.sendToDevice("mode 4;", WRITECHARACTERISTICS);
+    deviceController.sendToDevice("mode $mode;", WRITECHARACTERISTICS);
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,6 +33,16 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
   bool loading = false;
   String _verificationId = "";
   int? _resendToken;
+
+  @override
+  void initState() {
+    FirebaseAnalytics.instance
+        .setCurrentScreen(screenName: 'Phone AuthPage')
+        .then(
+          (value) => debugPrint("Analytics stated"),
+        );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +194,8 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                         context: context,
                         push: OTPPage(
                           verificationId: verificationId,
-                          resendToken: resendToken, phoneNumber: phoneNumber,
+                          resendToken: resendToken,
+                          phoneNumber: phoneNumber,
                         ),
                       );
                     },

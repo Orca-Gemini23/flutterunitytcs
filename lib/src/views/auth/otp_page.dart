@@ -5,6 +5,7 @@
 
 import 'dart:async';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,9 @@ class _OTPPageState extends State<OTPPage> {
 
   @override
   void initState() {
+    FirebaseAnalytics.instance.setCurrentScreen(screenName: 'OTP Page').then(
+          (value) => debugPrint("Analytics stated"),
+        );
     Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         t--;

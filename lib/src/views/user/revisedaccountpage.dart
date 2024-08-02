@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -76,6 +77,11 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
 
   @override
   void initState() {
+    FirebaseAnalytics.instance
+        .setCurrentScreen(screenName: 'Revised Account Page')
+        .then(
+          (value) => debugPrint("Analytics stated"),
+        );
     super.initState();
     if (LocalDB.user!.image != "NA") {
       _image = File(LocalDB.user!.image);

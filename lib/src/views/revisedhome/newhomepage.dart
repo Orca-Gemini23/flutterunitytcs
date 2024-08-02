@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 import 'dart:ui';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +71,9 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   @override
   void initState() {
     debugPrint(tour.toString());
+    FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Homepage').then(
+          (value) => debugPrint("Analytics stated"),
+        );
     if (!tour) {
       tour = !tour;
       createTutorial();
