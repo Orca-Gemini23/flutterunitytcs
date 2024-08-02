@@ -16,6 +16,20 @@ class FirebaseDB {
       return false;
     }
   }
+  static Future<bool> uploadBallData({String? ballData})async{
+    FirebaseFirestore.instance.collection("GameData").doc(LocalDB.user!.phone.toString() ).collection("BallData").add({"data":ballData});
+    return true;
+}
+  static Future<bool> uploadSwingData({required String swingData}) async{
+    FirebaseFirestore.instance.collection("GameData").doc(LocalDB.user!.phone.toString()).collection("SwingData").add({"data":swingData});
+    return true;
+  }
+  static Future<bool> uploadFishData({required String fishData}) async{
+    FirebaseFirestore.instance.collection("GameData").doc(LocalDB.user!.phone.toString()).collection("FishData").add({"data":fishData});
+    return true;
+
+  }
+
 
   static Future<bool> uploadUserScore(
       {int? score, int? secondsPlayedFor, DateTime? playedOn}) async {
@@ -58,6 +72,7 @@ class FirebaseDB {
       return false;
     }
   }
+
 
   // static Future<GameHistory?> getUserGameHistory() async {
   //   try {
