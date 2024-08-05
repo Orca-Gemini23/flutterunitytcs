@@ -4,30 +4,45 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/views/user/revisedaccountpage.dart';
 // import 'package:walk/src/models/game_history_model.dart';
 
 class FirebaseDB {
+  static FirebaseFirestore currentDb=FirebaseFirestore.instance;
+
   static Future<bool> initFirebaseServices() async {
     try {
       await Firebase.initializeApp();
+      FirebaseFirestore.instance.settings = const Settings(
+        persistenceEnabled: true,
+        cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+      );
+      print(country);
+
+      if(country=="England")
+        {
+          currentDb=FirebaseFirestore.instanceFor(app: Firebase.app(),databaseURL: "walkeu");
+        }
+      else {
+        currentDb= FirebaseFirestore.instance;
+      }
+      // FirebaseFirestore.instanceFor(app: Firebase.app(),databaseURL: "walkeu");
+      currentDb.collection("collectionPath").add({"test":"test"});
+
       return true;
     } catch (e) {
       log("error in initFirebaseServices ${e.toString()}");
       return false;
     }
   }
-  static Future<bool> uploadBallData({String? ballData})async{
-    FirebaseFirestore.instance.collection("GameData").doc(LocalDB.user!.phone.toString() ).collection("BallData").add({"data":ballData});
-    return true;
+  static void uploadBallData({String? ballData}){
+    currentDb.collection("GameData").doc(LocalDB.user!.phone.toString() ).collection("BallData").add({"data":ballData});
 }
-  static Future<bool> uploadSwingData({required String swingData}) async{
-    FirebaseFirestore.instance.collection("GameData").doc(LocalDB.user!.phone.toString()).collection("SwingData").add({"data":swingData});
-    return true;
+  static void uploadSwingData({required String swingData}) {
+     currentDb.collection("GameData").doc(LocalDB.user!.phone.toString()).collection("SwingData").add({"data":swingData});
   }
-  static Future<bool> uploadFishData({required String fishData}) async{
-    FirebaseFirestore.instance.collection("GameData").doc(LocalDB.user!.phone.toString()).collection("FishData").add({"data":fishData});
-    return true;
-
+  static void uploadFishData({required String fishData}) {
+    currentDb.collection("GameData").doc(LocalDB.user!.phone.toString()).collection("FishData").add({"data":fishData});
   }
 
 
@@ -45,7 +60,7 @@ class FirebaseDB {
 
       List gameHistory = [gameDetails];
 
-      await fireBaseInstance.collection("users").doc(userName).set(
+       fireBaseInstance.collection("users").doc(userName).set(
           {"gameHistory": FieldValue.arrayUnion(gameHistory)},
           SetOptions(merge: true));
 
