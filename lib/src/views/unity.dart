@@ -95,8 +95,9 @@ class UnityScreenState extends State<UnityScreen> {
                     onUnityCreated: onUnityCreated,
                     onUnityUnloaded: stopStream,
                     onUnityMessage: (message) async {
-                      if (message.toString().contains("xc")) {
-                        var score = message.toString().split("c");
+                      var msg = message.toString();
+                      if (msg.toString().contains("xc")) {
+                        var score = msg.toString().split("c");
                         log(score[1]);
                         setState(() {
                           finalScore = int.parse(score[1]);
@@ -104,20 +105,30 @@ class UnityScreenState extends State<UnityScreen> {
                               double.parse(score[2]).toStringAsFixed(0));
                         });
                       }
-                      else if(message.toString().contains("ball"))
+                      else if(msg.toString()=="Exit")
                         {
-                            FirebaseDB.uploadBallData(ballData: message.toString().replaceAll("ball", ""));
+                          // sendUploadRequest();
+                          FirebaseDB.uploadUserScore(
+                            score: finalScore,
+                            playedOn: DateTime.now(),
+                            secondsPlayedFor: secondPlayed,
+                          );
+                          Navigator.pop(context);
                         }
-                      else if(message.toString().contains("swing"))
-                        {
-                            FirebaseDB.uploadSwingData(swingData: message.toString().replaceAll("swing", ""));
-                        }
-                      else if(message.toString().contains("fish"))
-                        {
-                            FirebaseDB.uploadFishData(fishData: message.toString().replaceAll("fish", ""));
-                        }
+                      // else if(msg.toString().contains("ball"))
+                      //   {
+                      //       // FirebaseDB.uploadBallData(ballData: msg.toString().replaceFirst("ball", ""));
+                      //   }
+                      // else if(msg.toString().contains("swing"))
+                      //   {
+                      //       // FirebaseDB.uploadSwingData(swingData: msg.toString().replaceFirst("swing", ""));
+                      //   }
+                      // else if(msg.toString().contains("fish"))
+                      //   {
+                      //       // FirebaseDB.uploadFishData(fishData: msg.toString().replaceFirst("fish", ""));
+                      //   }
                       else{
-                      switch (message) {
+                      switch (msg) {
                         case "VL":
                           vibrateLeft();
                           break;
@@ -138,12 +149,7 @@ class UnityScreenState extends State<UnityScreen> {
                         playedOn: DateTime.now(),
                         secondsPlayedFor: secondPlayed,
                       );
-                      // if (result) {
-                      //   Fluttertoast.showToast(msg: "Data uploaded");
-                      //   Navigator.of(context, rootNavigator: true).pop();
-                      // } else {
-                      //   Navigator.of(context, rootNavigator: true).pop();
-                      // }
+
                       Navigator.pop(context);
                     },
                   )
@@ -226,16 +232,5 @@ class UnityScreenState extends State<UnityScreen> {
   static void sendUploadRequest() {
     // back=true;
   }
-  //   print("upload request send");
-  //   var baseUrl = (country == "England")
-  //       ? "https://wcdq86190h.execute-api.eu-west-2.amazonaws.com/DevS/flutter-app-s3-eu-west-2-london/"
-  //       : "https://f02966xlb7.execute-api.ap-south-1.amazonaws.com/flutterdata/flutter-app-s3-ap-south-1-mumbai/";
-  //
-  //   unityWidgetController?.postMessage(
-  //       // "SceneController", "UploadRequest", "${LocalDB.user!.phone}");
-  //       "SceneController",
-  //       "UploadRequest",
-  //       (("$baseUrl${LocalDB.user!.phone}").replaceAll(" ", ""))
-  //           .replaceAll("+", ""));
-  // }
+
 }

@@ -13,10 +13,7 @@ class FirebaseDB {
   static Future<bool> initFirebaseServices() async {
     try {
       await Firebase.initializeApp();
-      FirebaseFirestore.instance.settings = const Settings(
-        persistenceEnabled: true,
-        cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-      );
+
       print(country);
 
       if(country=="England")
@@ -26,26 +23,55 @@ class FirebaseDB {
       else {
         currentDb= FirebaseFirestore.instance;
       }
-      // FirebaseFirestore.instanceFor(app: Firebase.app(),databaseURL: "walkeu");
-      currentDb.collection("collectionPath").add({"test":"test"});
-
+      currentDb.settings=const Settings(
+        persistenceEnabled: true,
+        cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+      );
       return true;
     } catch (e) {
       log("error in initFirebaseServices ${e.toString()}");
       return false;
     }
   }
-  static void uploadBallData({String? ballData}){
-    currentDb.collection("GameData").doc(LocalDB.user!.phone.toString() ).collection("BallData").add({"data":ballData});
-}
+  static void uploadBallData({required String ballData}){
+    var data=ballData.split(",");
+    var dataMap = {for (var i = 0; i < data.length; i++) i.toString(): data[i]};
+    DateTime now = DateTime.now();
+    String date = "${now.year}, ${now.month}, ${now.day}";
+    try {
+      currentDb.collection("GameData").doc(LocalDB.user!.phone.toString())
+          .collection("BallData").doc(date.toString()).collection(data[22])
+          .add(dataMap);
+    }catch(e){
+      log("error in uploadingBallData ${e.toString()}");
+    }
+  }
   static void uploadSwingData({required String swingData}) {
-     currentDb.collection("GameData").doc(LocalDB.user!.phone.toString()).collection("SwingData").add({"data":swingData});
+    DateTime now = DateTime.now();
+    String date = "${now.year}, ${now.month}, ${now.day}";
+    var data=swingData.split(",");
+    var dataMap = {for (var i = 0; i < data.length; i++) i.toString(): data[i]};
+    try {
+      currentDb.collection("GameData").doc(LocalDB.user!.phone.toString())
+          .collection("SwingData").doc(date.toString()).collection(data[30])
+          .add(dataMap);
+    }catch(e){
+    log("error in uploadingBallData ${e.toString()}");
+    }
   }
   static void uploadFishData({required String fishData}) {
-    currentDb.collection("GameData").doc(LocalDB.user!.phone.toString()).collection("FishData").add({"data":fishData});
+    DateTime now = DateTime.now();
+    String date = "${now.year}, ${now.month}, ${now.day}";
+    var data=fishData.split(",");
+    var dataMap = {for (var i = 0; i < data.length; i++) i.toString(): data[i]};
+    try {
+      currentDb.collection("GameData").doc(LocalDB.user!.phone.toString())
+          .collection("FishData").doc(date.toString()).collection(data[18])
+          .add(dataMap);
+    }catch(e){
+      log("error in uploadingBallData ${e.toString()}");
+    }
   }
-
-
   static Future<bool> uploadUserScore(
       {int? score, int? secondsPlayedFor, DateTime? playedOn}) async {
     try {
@@ -70,7 +96,6 @@ class FirebaseDB {
       return false;
     }
   }
-
   static Future<bool> storeGameData(List<dynamic> data) async {
     try {
       var fireBaseInstance = FirebaseFirestore.instance;
@@ -87,29 +112,4 @@ class FirebaseDB {
       return false;
     }
   }
-
-
-  // static Future<GameHistory?> getUserGameHistory() async {
-  //   try {
-  //     GameHistory? gameHistory;
-  //     if (LocalDB.user?.name != "Unknown User") {
-  //       var firebaseInstance = FirebaseFirestore.instance;
-  //       String userName = LocalDB.user?.name ?? "Unknown User";
-  //       DocumentReference documentRefrence =
-  //           firebaseInstance.collection("users").doc(userName);
-  //       await documentRefrence.get().then((snapshot) {
-  //         log("Data from firebase ${snapshot.data()}");
-
-  //         gameHistory = gameHistoryFromJson(jsonEncode(snapshot.data()));
-  //       });
-  //     }
-
-  //     return gameHistory;
-  //   } catch (e) {
-  //     log(
-  //       e.toString(),
-  //     );
-  //     throw "Something went wrong";
-  //   }
-  // }
 }

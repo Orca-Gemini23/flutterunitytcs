@@ -72,3 +72,6 @@ unityLibrary/
 
 todo.txt
 android/key.properties
+/linux/
+/windows/
+/macos/
