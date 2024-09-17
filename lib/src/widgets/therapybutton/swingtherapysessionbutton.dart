@@ -5,9 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/views/artherapy/animation_swing.dart';
 
 import '../../views/unity.dart';
 
@@ -59,7 +57,7 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
                 ],
                 color: deviceController.connectedDevice == null
                     ? AppColor.greyLight
-                    : AppColor.lightgreen,
+                    : AppColor.gameEntryTileColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -68,20 +66,21 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
                   SizedBox(
                     width: 92.w,
                     height: 92.h,
-                    child: const Image(
-                      fit: BoxFit.contain,
-                      // color: AppColor.blackColor,
-                      image: AssetImage(
-                        "assets/images/swing.png",
-                      ),
+                    child: Image.asset(
+                      "assets/images/swing.png",
+                      scale: 3.5,
+                      // fit: BoxFit.fill,
                     ),
                   ),
+                  const SizedBox(height: 10),
                   Text(
-                    "Swing",
+                    "Swing Game",
                     overflow: TextOverflow.fade,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: "Helvetica",
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -101,13 +100,11 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
       );
     } else {
       Navigator.push(
-              context,
-              MaterialPageRoute(
-          builder: ((context) => const UnityScreen(
-                i: 2,
-              )),
+        context,
+        MaterialPageRoute(
+          builder: ((context) => const UnityScreen(i: 2)),
         ),
-            );
+      );
     }
   }
 }

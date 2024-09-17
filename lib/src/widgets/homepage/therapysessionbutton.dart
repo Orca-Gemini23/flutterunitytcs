@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,7 +6,7 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/views/therapyentrypage/therapypage.dart';
-import 'package:walk/src/views/user/revisedaccountpage.dart';
+import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 
 class TherapySessionBtn extends StatefulWidget {
   const TherapySessionBtn({super.key, required this.pKey});
@@ -59,9 +57,10 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                       blurRadius: 4,
                       spreadRadius: 2)
                 ],
-                color: deviceController.connectedDevice == null
-                    ? AppColor.greyLight
-                    : AppColor.lightgreen,
+                color: AppColor.greenDarkColor,
+                // deviceController.connectedDevice == null
+                //     ? AppColor.greyLight
+                //     : AppColor.lightgreen,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -70,20 +69,20 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                   SizedBox(
                     width: 92.w,
                     height: 92.h,
-                    child: const Image(
-                      fit: BoxFit.contain,
-                      color: AppColor.blackColor,
-                      image: AssetImage(
-                        "assets/images/therapysession.png",
-                      ),
+                    child: Image.asset(
+                      "assets/images/therapysession.png",
+                      scale: 3,
+                      // fit: BoxFit.contain,
                     ),
                   ),
                   Text(
-                    "Therapy Session",
+                    "Therapy games",
                     overflow: TextOverflow.fade,
                     style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Helvetica',
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -96,15 +95,14 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
   }
 
   bool checkAccountEligible() {
-    String userName = LocalDB.listenableUser()
+    String phoneNumber = LocalDB.listenableUser()
         .value
-        .get(
-          0,
-          defaultValue: LocalDB.defaultUser,
-        )!
-        .name;
+        .get(0, defaultValue: LocalDB.defaultUser)!
+        .phone;
 
-    if (userName == "Unknown User") {
+    if (!RegExp(
+            r"^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$")
+        .hasMatch(phoneNumber)) {
       ////Dont allow user to use the therapy page
       return false;
     }
@@ -132,7 +130,7 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const Revisedaccountpage(),
+            builder: (context) => const NewRevisedAccountPage(),
           ),
         );
       }

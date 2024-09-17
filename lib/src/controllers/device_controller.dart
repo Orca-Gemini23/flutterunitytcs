@@ -354,12 +354,17 @@ class DeviceController extends ChangeNotifier {
         (event) async {
           log("Scan Result is $event ");
           if (event.isNotEmpty) {
-            scannedDevice = event.elementAt(0).device;
+          for (var element in event){
+          //  if (element.device.platformName == "Test2402") {
+            scannedDevice = element.device; 
             scanTimer?.cancel();
             FlutterBluePlus.stopScan();
             scanSubscription!.cancel();
             // if (scannedDevice.platformName == "")
             await connectToDevice(scannedDevice, onConnect);
+            break;
+          //  }
+          }
           }
         },
         onDone: () {
@@ -375,7 +380,7 @@ class DeviceController extends ChangeNotifier {
         withServices: [Guid("0000acf0-0000-1000-8000-00805f9b34fb")],
         androidUsesFineLocation: true,
       );
-      scanTimer = Timer(const Duration(seconds: 10), () async {
+      scanTimer = Timer(const Duration(seconds: 15), () async {
         await FlutterBluePlus.stopScan();
         isScanning = false;
         scanSubscription!.cancel();
@@ -393,11 +398,17 @@ class DeviceController extends ChangeNotifier {
     _connectedDevices = await FlutterBluePlus.systemDevices;
     log("connected devices $_connectedDevices");
     if (_connectedDevices.isNotEmpty) {
-      _connectedDevice = _connectedDevices[0];
-      await connectToDevice(
-        _connectedDevice!,
-        () {},
-      );
+      for (var device in _connectedDevices) {
+        if (RegExp(r"^[a-zA-Z]\d{6}[a-zA-Z]\d{1,3}$")
+                .hasMatch(device.platformName) ||
+            RegExp(r"^TEST\d{4}$").hasMatch(device.platformName) ||
+            RegExp(r"^TRAIL\d{4}$").hasMatch(device.platformName)) {
+          await connectToDevice(device, () {});
+        }
+        break;
+      }
+
+      // _connectedDevice = _connectedDevices[0];
     }
   }
 

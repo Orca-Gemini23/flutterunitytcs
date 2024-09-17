@@ -14,6 +14,15 @@ class AboutUsPage extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: AppColor.blackColor,
         ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColor.blackColor,
+          ),
+          onPressed: (() {
+            Navigator.pop(context);
+          }),
+        ),
         title: const Text(
           AppString.aboutUsTitle,
           style: TextStyle(
@@ -32,13 +41,15 @@ class AboutUsPage extends StatelessWidget {
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
+                    const Text(
                       AppString.org,
                       style: TextStyle(
-                        fontSize: 32.sp,
-                        letterSpacing: 4,
+                        fontSize: 42,
+                        // letterSpacing: 4,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Helvetica",
                         color: AppColor.greenDarkColor,
                       ),
                     ),
@@ -49,18 +60,19 @@ class AboutUsPage extends StatelessWidget {
                       color: AppColor.greenDarkColor,
                     ),
                     const SizedBox(width: 10),
-                    Text(
+                    const Text(
                       "Lifespark\nTechnologies",
                       style: TextStyle(
                           color: AppColor.greenDarkColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w300),
+                          fontSize: 18,
+                          fontFamily: "Helvetica",
+                          fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Text(
@@ -110,7 +122,7 @@ class AboutUsPage extends StatelessWidget {
                       top: 25.h,
                       right: 0,
                       child: Text(
-                        "We are based at the \nIndian Institute of Technology \n,Bombay ,India",
+                        "We are based at the \nIndian Institute of Technology, \nBombay ,India",
                         style: TextStyle(
                           color: AppColor.blackColor,
                           fontSize: 12.sp,

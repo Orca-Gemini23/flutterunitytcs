@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:provider/provider.dart';
@@ -27,6 +28,9 @@ class _WalkAppState extends State<WalkApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -65,7 +69,7 @@ class _WalkAppState extends State<WalkApp> {
           builder: (context, child) {
             return MaterialApp(
               home: const Revisedsplash(),
-              theme: ThemeData(fontFamily: "Poppins"),
+              theme: ThemeData(fontFamily: "Poppins"), //Helvetica
               debugShowCheckedModeBanner: false,
             );
           }),

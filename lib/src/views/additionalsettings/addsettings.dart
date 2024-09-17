@@ -28,7 +28,7 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
   void _loadMode() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedMode = (prefs.getString('mode') ?? 'Novib');
+      _selectedMode = (prefs.getString('mode') ?? 'Open loop');
     });
   }
 
@@ -84,6 +84,8 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                   const Spacer(),
                   Consumer<DeviceController>(
                       builder: (context, deviceController, widget) {
+                    print("----->$_selectedMode");
+                    print(modesDictionary[_selectedMode]);
                     return DropdownButton<String>(
                       value: modesDictionary[_selectedMode],
                       items: modesDictionary.keys.map((String modeName) {
@@ -126,9 +128,8 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                 children: [
                   Consumer<DeviceController>(
                     builder: (context, deviceController, widget) {
-                      return GestureDetector(
-                        onTap: () async {
-                          ////Reset the device
+                      return TextButton(
+                        onPressed: () async {
                           debugPrint("Tapped");
                           await deviceController.sendToDevice(
                               "$MODE 4;", WRITECHARACTERISTICS);
@@ -141,6 +142,22 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                               color: AppColor.blackColor, fontSize: 16),
                         ),
                       );
+
+                      // GestureDetector(
+                      //   onTap: () async {
+                      //     ////Reset the device
+                      //     debugPrint("Tapped");
+                      //     await deviceController.sendToDevice(
+                      //         "$MODE 4;", WRITECHARACTERISTICS);
+                      //     _selectedMode = 'Open loop';
+                      //     _storeMode();
+                      //   },
+                      //   child: const Text(
+                      //     "Reset",
+                      //     style: TextStyle(
+                      //         color: AppColor.blackColor, fontSize: 16),
+                      //   ),
+                      // );
                     },
                   ),
                   const Divider(
@@ -149,8 +166,8 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                   ),
                   Consumer<DeviceController>(
                     builder: (context, deviceController, widget) {
-                      return GestureDetector(
-                        onTap: () {},
+                      return TextButton(
+                        onPressed: () {},
                         child: const Text(
                           "Restart",
                           style: TextStyle(

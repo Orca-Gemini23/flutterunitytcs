@@ -49,21 +49,26 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
         backgroundColor: Colors.transparent,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         elevation: 0.0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context),
+        ),
         iconTheme: const IconThemeData(
           color: AppColor.blackColor,
         ),
-        title: const Text(
-          "Therapy Session",
-          style: TextStyle(
-            color: AppColor.blackColor,
-            fontSize: 16,
-          ),
-        ),
+        // title: const Text(
+        //   "Therapy Session",
+        //   style: TextStyle(
+        //     color: AppColor.blackColor,
+        //     fontSize: 16,
+        //   ),
+        // ),
       ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
         padding: const EdgeInsets.only(
+          top: 28,
           left: 15,
           right: 15,
           bottom: 15,
@@ -84,7 +89,7 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
                   SwingTherapySessionBtn(),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

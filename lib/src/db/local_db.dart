@@ -34,7 +34,7 @@ class LocalDB {
   static UserModel defaultUser = UserModel(
     name: "Unknown User",
     age: "XX",
-    phone: "XXXXXXXXXX",
+    phone: "",
     image: "NA",
     gender: "X",
     address: "x",

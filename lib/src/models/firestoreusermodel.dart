@@ -1,18 +1,24 @@
 class FirestoreUserModel {
   final String userName;
-  final int userAge;
+  final String userAge;
   final String userGender;
   final String userPhone;
-  final List<int> userScores;
-  final DateTime updatedOn;
+  final String userAddress;
+  final String userEmail;
+  final String userHeight;
+  final String userWeight;
+  // final List<int> userScores;
+  // final DateTime updatedOn;
 
   FirestoreUserModel({
     required this.userName,
     required this.userPhone,
     required this.userGender,
     required this.userAge,
-    required this.userScores,
-    required this.updatedOn,
+    required this.userEmail,
+    required this.userAddress,
+    required this.userHeight,
+    required this.userWeight,
   });
 
   Map<String, dynamic> toJson() => {
@@ -20,7 +26,11 @@ class FirestoreUserModel {
         "userPhone": userPhone,
         "userAge": userAge,
         "userGender": userGender,
-        "userScores": userScores,
-        "updatedOn": updatedOn,
+        "userEmail": userEmail,
+        "userAddress": userAddress,
+        "userHeight": userHeight,
+        "userWeight": userWeight,
+        // "userScores": userScores,
+        // "updatedOn": updatedOn,
       };
 }

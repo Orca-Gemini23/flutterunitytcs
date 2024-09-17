@@ -18,15 +18,26 @@ class UsernameText extends StatelessWidget {
     return ValueListenableBuilder<Box<UserModel>>(
       valueListenable: LocalDB.listenableUser(),
       builder: (contex, userBox, child) {
-        return Text(
-          "Hello ${userBox.get(
-                0,
-                defaultValue: LocalDB.defaultUser,
-              )!.name} ",
-          style: TextStyle(
-            color: AppColor.greenDarkColor,
-            fontSize: 21.sp,
-            fontWeight: FontWeight.w400,
+        return RichText(
+          text: TextSpan(
+            style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w700),
+            children: <TextSpan>[
+              const TextSpan(
+                text: 'Hello, ',
+                style: TextStyle(
+                  color: AppColor.greenDarkColor,
+                ),
+              ),
+              TextSpan(
+                text: userBox.get(0, defaultValue: LocalDB.defaultUser)!.name ==
+                        "Unknown User"
+                    ? ""
+                    : '${userBox.get(0, defaultValue: LocalDB.defaultUser)!.name}!',
+                style: const TextStyle(
+                  color: AppColor.gameEntryTileColor,
+                ),
+              ),
+            ],
           ),
         );
       },

@@ -21,10 +21,10 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
     return InkWell(
       key: keyGoalBox,
       onTap: () {
-        Go.to(
-          context: context,
-          push: const StepGoalPage(),
-        );
+        // Go.to(
+        //   context: context,
+        //   push: const StepGoalPage(),
+        // );
       },
       child: Container(
         ////Todays's goal Container
@@ -38,7 +38,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
         width: double.maxFinite,
         height: 158.h,
         decoration: BoxDecoration(
-          color: AppColor.greenDarkColor,
+          color: AppColor.lightbluegrey,
           boxShadow: const [
             BoxShadow(
               blurRadius: 2,
@@ -69,10 +69,11 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                   Text(
                     "Today's Goal",
                     style: TextStyle(
-                      color: AppColor.whiteColor,
-                      fontSize: 16.sp,
-                      letterSpacing: 1,
-                      fontWeight: FontWeight.w800,
+                      color: AppColor.greenDarkColor,
+                      fontFamily: 'Helvetica',
+                      fontSize: 20.sp,
+                      // letterSpacing: 1,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   Text.rich(
@@ -81,10 +82,11 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                         TextSpan(
                           text: 'Completed',
                           style: TextStyle(
-                            color: AppColor.whiteColor,
-                            fontSize: 16.sp,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.w800,
+                            color: AppColor.greenDarkColor,
+                            fontFamily: 'Helvetica',
+                            fontSize: 20.sp,
+                            // letterSpacing: 1,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         const WidgetSpan(
@@ -102,7 +104,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   FutureBuilder(
                       future: API.getScore(),
@@ -115,17 +117,24 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                             : "";
 
                         return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               "Gait Score : $gaitScore",
                               style: TextStyle(
-                                  color: AppColor.whiteColor, fontSize: 12.sp),
+                                color: AppColor.greenDarkColor,
+                                fontFamily: 'Helvetica',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             Text(
                               "Balance Score : $balanceScore",
                               style: TextStyle(
-                                color: AppColor.whiteColor,
-                                fontSize: 12.sp,
+                                color: AppColor.greenDarkColor,
+                                fontSize: 16.sp,
+                                fontFamily: 'Helvetica',
+                                fontWeight: FontWeight.w400,
                               ),
                             )
                           ],

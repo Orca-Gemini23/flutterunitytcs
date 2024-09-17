@@ -22,7 +22,7 @@ class ContactUsPage extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(
-            Icons.arrow_back,
+            Icons.arrow_back_ios,
             color: AppColor.blackColor,
           ),
           onPressed: (() {
@@ -46,10 +46,11 @@ class ContactUsPage extends StatelessWidget {
                 const Text(
                   AppString.org,
                   style: TextStyle(
-                    fontSize: 42,
-                    letterSpacing: 8,
-                    color: AppColor.greenDarkColor,
-                  ),
+                      fontSize: 42,
+                      // letterSpacing: 4,
+                      fontFamily: "Helvetica",
+                      color: AppColor.greenDarkColor,
+                      fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(width: 10),
                 Container(
@@ -63,7 +64,8 @@ class ContactUsPage extends StatelessWidget {
                   style: TextStyle(
                       color: AppColor.greenDarkColor,
                       fontSize: 18,
-                      fontWeight: FontWeight.w300),
+                      fontFamily: "Helvetica",
+                      fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -126,10 +128,8 @@ class ContactUsPage extends StatelessWidget {
                 InkWell(
                   onTap: () async {
                     String contact = '+919324730665';
-                    var androidUrl =
-                        "whatsapp://send?phone=$contact&text=Hi, [user] here";
-                    var iosUrl =
-                        "https://wa.me/$contact?text=${Uri.parse('Hi, [user] here')}";
+                    var androidUrl = "whatsapp://send?phone=$contact&text=";
+                    var iosUrl = "https://wa.me/$contact?text=${Uri.parse('')}";
 
                     try {
                       if (Platform.isIOS) {
@@ -197,18 +197,18 @@ class ContactUsPage extends StatelessWidget {
                   ];
                   List<Function()?> logoOnTap = [
                     () async {
-                      final Uri launchUri =
-                          Uri.parse('https://instagram.com/username');
+                      final Uri launchUri = Uri.parse(
+                          'https://www.instagram.com/lifesparktechnologies/?hl=en');
                       await launchUrl(launchUri);
                     },
                     () async {
                       final Uri launchUri =
-                          Uri.parse('https://facebook.com/username');
+                          Uri.parse('https://www.facebook.com/lifesparktech/');
                       await launchUrl(launchUri);
                     },
                     () async {
-                      final Uri launchUri =
-                          Uri.parse('https://twitter.com/username');
+                      final Uri launchUri = Uri.parse(
+                          'https://x.com/i/flow/login?redirect_after_login=%2Flifesparktech');
                       await launchUrl(launchUri);
                     },
                   ];
