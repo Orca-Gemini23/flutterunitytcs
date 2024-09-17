@@ -19,6 +19,7 @@ import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/utils/version_number.dart';
 import 'package:walk/src/views/auth/first_page.dart';
 import 'package:walk/src/views/device/command_page.dart';
+import 'package:walk/src/views/dialogs/confirmationbox.dart';
 import 'package:walk/src/views/faqscreens/faqpage.dart';
 import 'package:walk/src/views/org_info/about_us.dart';
 import 'package:walk/src/views/org_info/contact_us.dart';
@@ -27,8 +28,8 @@ import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/views/user/account_page.dart';
 import 'package:walk/src/views/user/help_section/help.dart';
+import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 import 'package:walk/src/views/user/personal_info.dart';
-import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/views/user/tutorial.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
 import 'package:walk/walk_app.dart';
@@ -83,17 +84,6 @@ Drawer navigationDrawer(BuildContext context) {
           ),
         ),
         drawerItem(context),
-        // const SizedBox(
-        //   height: 20,
-        // ),
-        // Text(
-        //   "App Version - v${VersionNumber.versionNumber}",
-        //   style: const TextStyle(
-        //     color: AppColor.blackColor,
-        //     fontSize: 16,
-        //     fontWeight: FontWeight.w300,
-        //   ),
-        // ),
       ],
     ),
   );
@@ -135,7 +125,7 @@ Widget drawerItem(BuildContext context) {
     () {
       Go.to(
         context: context,
-        push: const Revisedaccountpage(),
+        push: const NewRevisedAccountPage(),
       );
     },
     () {
@@ -144,10 +134,10 @@ Widget drawerItem(BuildContext context) {
           null) {
         Fluttertoast.showToast(msg: 'No device connected!');
       } else {
-        // Go.to(
-        //   context: context,
-        //   push: DeviceControlPage(),
-        // );
+        Go.to(
+          context: context,
+          push: const DeviceControlPage(),
+        );
       }
     },
     // () {
@@ -188,14 +178,25 @@ Widget drawerItem(BuildContext context) {
       );
     },
     () {
-      FirebaseAuth.instance.signOut();
-      Go.pushAndRemoveUntil(
-          context: context,
-          pushReplacement:
-              const WalkApp()); //LoginRegister(isLoggedIn: () {}, logOut: () {}));
+      showDialog(
+        context: context,
+        builder: (context) => ConfirmationBox(
+          title: 'Logout',
+          content: 'Are sure want to Logout?',
+          btnText: 'Logout',
+          onConfirm: () {
+            FirebaseAuth.instance.signOut();
+            Go.pushAndRemoveUntil(
+                context: context,
+                pushReplacement:
+                    const WalkApp()); 
+          },
+        ),
+      );
+      //LoginRegister(isLoggedIn: () {}, logOut: () {}));
       // await AWSAuth.signOutCurrentUser();
     },
-    (){},
+    null,
   ];
 
   return ListView.builder(

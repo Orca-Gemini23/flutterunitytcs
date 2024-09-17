@@ -8,7 +8,7 @@ import 'package:walk/src/views/user/revisedaccountpage.dart';
 // import 'package:walk/src/models/game_history_model.dart';
 
 class FirebaseDB {
-  static FirebaseFirestore currentDb=FirebaseFirestore.instance;
+  static FirebaseFirestore currentDb = FirebaseFirestore.instance;
 
   static Future<bool> initFirebaseServices() async {
     try {
@@ -16,14 +16,13 @@ class FirebaseDB {
 
       print(country);
 
-      if(country=="England")
-        {
-          currentDb=FirebaseFirestore.instanceFor(app: Firebase.app(),databaseURL: "walkeu");
-        }
-      else {
-        currentDb= FirebaseFirestore.instance;
+      if (country == "England") {
+        currentDb = FirebaseFirestore.instanceFor(
+            app: Firebase.app(), databaseURL: "walkeu");
+      } else {
+        currentDb = FirebaseFirestore.instance;
       }
-      currentDb.settings=const Settings(
+      currentDb.settings = const Settings(
         persistenceEnabled: true,
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
       );
@@ -33,45 +32,61 @@ class FirebaseDB {
       return false;
     }
   }
-  static void uploadBallData({required String ballData}){
-    var data=ballData.split(",");
+
+  static void uploadBallData({required String ballData}) {
+    var data = ballData.split(",");
     var dataMap = {for (var i = 0; i < data.length; i++) i.toString(): data[i]};
     DateTime now = DateTime.now();
     String date = "${now.year}, ${now.month}, ${now.day}";
     try {
-      currentDb.collection("GameData").doc(LocalDB.user!.phone.toString())
-          .collection("BallData").doc(date.toString()).collection(data[22])
+      currentDb
+          .collection("GameData")
+          .doc(LocalDB.user!.phone.toString())
+          .collection("BallData")
+          .doc(date.toString())
+          .collection(data[22])
           .add(dataMap);
-    }catch(e){
+    } catch (e) {
       log("error in uploadingBallData ${e.toString()}");
     }
   }
+
   static void uploadSwingData({required String swingData}) {
     DateTime now = DateTime.now();
     String date = "${now.year}, ${now.month}, ${now.day}";
-    var data=swingData.split(",");
+    var data = swingData.split(",");
     var dataMap = {for (var i = 0; i < data.length; i++) i.toString(): data[i]};
     try {
-      currentDb.collection("GameData").doc(LocalDB.user!.phone.toString())
-          .collection("SwingData").doc(date.toString()).collection(data[30])
+      currentDb
+          .collection("GameData")
+          .doc(LocalDB.user!.phone.toString())
+          .collection("SwingData")
+          .doc(date.toString())
+          .collection(data[30])
           .add(dataMap);
-    }catch(e){
-    log("error in uploadingBallData ${e.toString()}");
-    }
-  }
-  static void uploadFishData({required String fishData}) {
-    DateTime now = DateTime.now();
-    String date = "${now.year}, ${now.month}, ${now.day}";
-    var data=fishData.split(",");
-    var dataMap = {for (var i = 0; i < data.length; i++) i.toString(): data[i]};
-    try {
-      currentDb.collection("GameData").doc(LocalDB.user!.phone.toString())
-          .collection("FishData").doc(date.toString()).collection(data[18])
-          .add(dataMap);
-    }catch(e){
+    } catch (e) {
       log("error in uploadingBallData ${e.toString()}");
     }
   }
+
+  static void uploadFishData({required String fishData}) {
+    DateTime now = DateTime.now();
+    String date = "${now.year}, ${now.month}, ${now.day}";
+    var data = fishData.split(",");
+    var dataMap = {for (var i = 0; i < data.length; i++) i.toString(): data[i]};
+    try {
+      currentDb
+          .collection("GameData")
+          .doc(LocalDB.user!.phone.toString())
+          .collection("FishData")
+          .doc(date.toString())
+          .collection(data[18])
+          .add(dataMap);
+    } catch (e) {
+      log("error in uploadingBallData ${e.toString()}");
+    }
+  }
+
   static Future<bool> uploadUserScore(
       {int? score, int? secondsPlayedFor, DateTime? playedOn}) async {
     try {
@@ -86,7 +101,7 @@ class FirebaseDB {
 
       List gameHistory = [gameDetails];
 
-       fireBaseInstance.collection("users").doc(userName).set(
+      fireBaseInstance.collection("users").doc(userName).set(
           {"gameHistory": FieldValue.arrayUnion(gameHistory)},
           SetOptions(merge: true));
 
@@ -96,6 +111,7 @@ class FirebaseDB {
       return false;
     }
   }
+
   static Future<bool> storeGameData(List<dynamic> data) async {
     try {
       var fireBaseInstance = FirebaseFirestore.instance;

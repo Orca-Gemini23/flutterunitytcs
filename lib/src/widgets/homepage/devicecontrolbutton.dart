@@ -50,7 +50,7 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
             vertical: 5,
           ),
           decoration: BoxDecoration(
-            color: AppColor.lightgreen,
+            color: AppColor.greenDarkColor,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               deviceController?.connectedDevice != null
@@ -71,13 +71,17 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
               SizedBox(
                 width: 92.w,
                 height: 92.h,
-                child: const Image(
-                  fit: BoxFit.contain,
-                  color: AppColor.blackColor,
-                  image: AssetImage(
-                    "assets/images/devicecontrol.png",
-                  ),
+                child: Image.asset(
+                  "assets/images/devicecontrol.png",
+                  scale: 3,
                 ),
+                // const Image(
+                //   fit: BoxFit.contain,
+                //   color: AppColor.blackColor,
+                //   image: AssetImage(
+                //     "assets/images/devicecontrol.png",
+                //   ),
+                // ),
               ),
               Text(
                 "Device Control",
@@ -85,8 +89,10 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
                 maxLines: 1,
                 style: TextStyle(
                   overflow: TextOverflow.ellipsis,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Helvetica',
+                  color: Colors.white,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],

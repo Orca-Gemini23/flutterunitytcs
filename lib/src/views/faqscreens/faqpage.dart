@@ -34,12 +34,13 @@ class _FaqpageState extends State<Faqpage> {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+          // symmetric(horizontal: 15, vertical: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Frequently Asked\nQuestions",
+                "Frequently Asked Questions",
                 style: TextStyle(
                   fontSize: 21.sp,
                   color: AppColor.greenDarkColor,

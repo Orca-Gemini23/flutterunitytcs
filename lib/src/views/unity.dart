@@ -22,7 +22,7 @@ class UnityScreenState extends State<UnityScreen> {
   @override
   void initState() {
     FirebaseAnalytics.instance
-        .setCurrentScreen(screenName: 'Game Page ${widget.i} ')
+        .setCurrentScreen(screenName: 'Game Page ${widget.i}')
         .then(
           (value) => debugPrint("Analytics stated"),
         );

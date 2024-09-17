@@ -5,12 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/views/artherapy/animation_rotation.dart';
 import 'package:walk/src/views/unity.dart';
-import 'package:walk/src/views/user/revisedaccountpage.dart';
 
 class BallTherapySessionBtn extends StatefulWidget {
   const BallTherapySessionBtn({super.key});
@@ -60,7 +56,7 @@ class _BallTherapySessionBtnState extends State<BallTherapySessionBtn> {
                 ],
                 color: deviceController.connectedDevice == null
                     ? AppColor.greyLight
-                    : AppColor.lightgreen,
+                    : AppColor.gameEntryTileColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -69,21 +65,21 @@ class _BallTherapySessionBtnState extends State<BallTherapySessionBtn> {
                   SizedBox(
                     width: 92.w,
                     height: 92.h,
-                    child: const Image(
-                      fit: BoxFit.contain,
-                      // color: AppColor.blackColor,
-                      image: AssetImage(
-                        "assets/images/footballwithshadow.png",
-                      
-                      ),
+                    child: Image.asset(
+                      "assets/images/ball.png",
+                      scale: 3.5,
+                      // fit: BoxFit.fill,
                     ),
                   ),
+                  const SizedBox(height: 10),
                   Text(
-                    "ball",
+                    "Ball Game",
                     overflow: TextOverflow.fade,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: "Helvetica",
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -95,22 +91,6 @@ class _BallTherapySessionBtnState extends State<BallTherapySessionBtn> {
     );
   }
 
-  bool checkAccountEligible() {
-    String userName = LocalDB.listenableUser()
-        .value
-        .get(
-          0,
-          defaultValue: LocalDB.defaultUser,
-        )!
-        .name;
-
-    if (userName == "Unknown User") {
-      ////Dont allow user to use the therapy page
-      return false;
-    }
-    return true;
-  }
-
   void therapyButtonOnPressed(DeviceController deviceController) async {
     print("coming here");
     if (deviceController.connectedDevice == null) {
@@ -118,29 +98,12 @@ class _BallTherapySessionBtnState extends State<BallTherapySessionBtn> {
         msg: "Please Connect to the device first",
       );
     } else {
-      bool accountEligible = checkAccountEligible();
-
-      if (accountEligible) {
-        // bool res = await deviceController.sendToDevice(
-        //     "mode 9;", WRITECHARACTERISTICS);
-        // res
-        //     ?
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: ((context) => const UnityScreen(i: 0,)),
-                ),
-            );
-
-      } else {
-        Fluttertoast.showToast(msg: "Please update the account details first");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Revisedaccountpage(),
-          ),
-        );
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: ((context) => const UnityScreen(i: 0)),
+        ),
+      );
     }
   }
 }
