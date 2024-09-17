@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
+import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
@@ -26,6 +28,8 @@ class _RevisedsplashState extends State<Revisedsplash>
   double _containerOpacity = 0.0;
   String userToken = "";
 
+  double imageSize = 4;
+
   late AnimationController _controller;
   late Animation<double> animation1;
 
@@ -38,6 +42,10 @@ class _RevisedsplashState extends State<Revisedsplash>
   void initState() {
     super.initState();
     getUserToken();
+
+    if (Platform.isIOS && LocalDB.user!.name == "Unknown User") {
+      FirebaseAuth.instance.signOut();
+    }
 
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 3));
@@ -55,6 +63,7 @@ class _RevisedsplashState extends State<Revisedsplash>
     Timer(const Duration(seconds: 2), () {
       setState(() {
         _fontSize = 1.06;
+        imageSize = 5;
       });
     });
 
@@ -119,9 +128,9 @@ class _RevisedsplashState extends State<Revisedsplash>
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 1000),
                 opacity: _textOpacity,
-                child: const Image(
-                  color: AppColor.whiteColor,
-                  image: AssetImage("assets/images/group43.png"),
+                child: Image.asset(
+                  "assets/images/group89.png",
+                  scale: imageSize,
                 ),
               ),
             ],

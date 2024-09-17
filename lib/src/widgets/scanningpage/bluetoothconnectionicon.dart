@@ -6,7 +6,7 @@ Widget bluetoothIcon() {
     width: 80,
     height: 80,
     decoration: const BoxDecoration(
-      color: AppColor.blackColor,
+      color: AppColor.greenDarkColor,
       shape: BoxShape.circle,
     ),
     child: const Icon(

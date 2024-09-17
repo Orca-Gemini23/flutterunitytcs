@@ -142,7 +142,7 @@ class API {
       if (result.data!["data"]![0] != null) {
         UserModel newUser = UserModel(
           name: result.data["data"][0]["Name"] ?? "Unknown User",
-          age: result.data["data"][0]["Age"] ?? "xx",
+          age: "${result.data["data"][0]["Age"]}" ?? "xx",
           phone: "$countryCode $phoneNo",
           image: "NA",
           gender: result.data["data"][0]["Gender"] ?? "XX",

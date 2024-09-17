@@ -15,6 +15,7 @@ import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/additionalsettings/addsettings.dart';
+import 'package:walk/src/views/dialogs/confirmationbox.dart';
 import 'package:walk/src/views/reviseddevicecontrol/batterydetailscreen.dart';
 import 'package:walk/src/widgets/devicecontrolpage/magnitudeslider.dart';
 import 'package:walk/src/widgets/dialog.dart';
@@ -194,52 +195,51 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                      width: 120,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: AppColor.lightgreen),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "SOS",
-                                            style: TextStyle(
-                                              color: AppColor.blackColor,
-                                              fontSize: 14.sp,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          Switch(
-                                            activeColor:
-                                                AppColor.greenDarkColor,
-                                            activeTrackColor:
-                                                AppColor.greenDarkColor,
-                                            value: sosMode,
-                                            onChanged: (value) async {
-                                              sosMode = value;
-                                              setState(() {});
-                                              if (sosMode) {
-                                                String modeCommand = "mode 4;";
-                                                await deviceController
-                                                    .sendToDevice(
-                                                  modeCommand,
-                                                  WRITECHARACTERISTICS,
-                                                );
-                                              } else {
-                                                String modeCommand = "mode 4;";
-                                                await deviceController
-                                                    .sendToDevice(
-                                                  modeCommand,
-                                                  WRITECHARACTERISTICS,
-                                                );
-                                              }
-                                            },
-                                          )
-                                        ],
-                                      )),
+                                  // Container(
+                                  //   width: 120,
+                                  //   padding: const EdgeInsets.symmetric(
+                                  //       horizontal: 10),
+                                  //   decoration: BoxDecoration(
+                                  //       borderRadius: BorderRadius.circular(10),
+                                  //       color: AppColor.lightgreen),
+                                  //   child: Row(
+                                  //     children: [
+                                  //       Text(
+                                  //         "SOS",
+                                  //         style: TextStyle(
+                                  //           color: AppColor.blackColor,
+                                  //           fontSize: 14.sp,
+                                  //         ),
+                                  //       ),
+                                  //       const Spacer(),
+                                  //       Switch(
+                                  //         activeColor: AppColor.greenDarkColor,
+                                  //         activeTrackColor:
+                                  //             AppColor.greenDarkColor,
+                                  //         value: sosMode,
+                                  //         onChanged: (value) async {
+                                  //           sosMode = value;
+                                  //           setState(() {});
+                                  //           if (sosMode) {
+                                  //             String modeCommand = "mode 4;";
+                                  //             await deviceController
+                                  //                 .sendToDevice(
+                                  //               modeCommand,
+                                  //               WRITECHARACTERISTICS,
+                                  //             );
+                                  //           } else {
+                                  //             String modeCommand = "mode 4;";
+                                  //             await deviceController
+                                  //                 .sendToDevice(
+                                  //               modeCommand,
+                                  //               WRITECHARACTERISTICS,
+                                  //             );
+                                  //           }
+                                  //         },
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   const SizedBox(
                                     height: 10,
                                   ),
@@ -271,7 +271,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             ////Implement Battery Refresh
                                             Go.to(
                                               context: context,
-                                              push: const BatteryDetails(),
+                                              push: const BatteryDetails(
+                                                initalPage: 0,
+                                              ),
                                             );
                                           },
                                           onVerticalDragDown: (_) async {
@@ -394,7 +396,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                           onTap: () async {
                                             Go.to(
                                                 context: context,
-                                                push: const BatteryDetails());
+                                                push: const BatteryDetails(
+                                                  initalPage: 1,
+                                                ));
                                           },
                                           onVerticalDragDown: (details) async {
                                             await deviceController
@@ -716,8 +720,28 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                     TextStyle(
                                                                         fontSize:
                                                                             15)),
+                                                        inputFormatters: <TextInputFormatter>[
+                                                          FilteringTextInputFormatter
+                                                              .digitsOnly,
+                                                          LengthLimitingTextInputFormatter(3),    
+                                                        ],
+                                                        keyboardType:
+                                                            const TextInputType
+                                                                .numberWithOptions(
+                                                                signed: true,
+                                                                decimal: true),
                                                         onSubmitted:
                                                             (value) async {
+                                                          if (double.parse(
+                                                                  value) >
+                                                              120) {
+                                                            value = "120";
+                                                          }
+                                                          if (double.parse(
+                                                                  value) <
+                                                              18) {
+                                                            value = "18";
+                                                          }
                                                           if (deviceController
                                                               .bandC) {
                                                             setState(() {
@@ -950,9 +974,19 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                       const Spacer(),
                                       IconButton(
                                           onPressed: () {
-                                            deviceController.disconnectDevice(
-                                                deviceController
-                                                    .connectedDevice);
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  ConfirmationBox(
+                                                title: 'Disconnect device',
+                                                content: 'Are sure want to disconnect device?',
+                                                btnText: 'Disconnect',
+                                                onConfirm: () {
+                                                  deviceController.disconnectDevice(deviceController.connectedDevice);
+                                                },
+                                              ),
+                                            );
+                                            // 
                                           },
                                           icon: const Icon(
                                               Icons.bluetooth_disabled)),

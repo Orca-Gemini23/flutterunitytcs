@@ -17,6 +17,7 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/models/game_history_model.dart';
 import 'package:walk/src/server/api.dart';
+import 'package:walk/src/server/upload.dart';
 import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/custom_notification.dart';
@@ -24,6 +25,7 @@ import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/views/device/chart_details.dart';
 import 'package:walk/src/views/home_page.dart';
 import 'package:walk/src/views/revisedsplash.dart';
+import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 
 import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
@@ -35,8 +37,8 @@ import 'package:walk/src/widgets/homepage/usernametext.dart';
 
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-GlobalKey keyGoalBox = GlobalKey();
-GlobalKey keyMenu = GlobalKey();
+final GlobalKey keyGoalBox = GlobalKey();
+final GlobalKey keyMenu = GlobalKey();
 
 class RevisedHomePage extends StatefulWidget {
   const RevisedHomePage({super.key});
@@ -51,21 +53,21 @@ class RevisedHomePage extends StatefulWidget {
 class _RevisedHomePageState extends State<RevisedHomePage>
     with WidgetsBindingObserver {
   // late DeviceController deviceController;
-  GlobalKey homePagekey = GlobalKey();
+  final GlobalKey homePagekey = GlobalKey();
 
   // homepage tour
 
   late TutorialCoachMark tutorialCoachMark;
 
   //global keys for each widget
-  GlobalKey keyPage = GlobalKey();
-  GlobalKey keyGames = GlobalKey();
-  GlobalKey keyControl = GlobalKey();
-  GlobalKey keyScore = GlobalKey();
+  final GlobalKey keyPage = GlobalKey();
+  final GlobalKey keyGames = GlobalKey();
+  final GlobalKey keyControl = GlobalKey();
+  final GlobalKey keyScore = GlobalKey();
 
   //keys for app bar
-  GlobalKey keyAccount = GlobalKey();
-  GlobalKey keyBattery = GlobalKey();
+  final GlobalKey keyAccount = GlobalKey();
+  final GlobalKey keyBattery = GlobalKey();
 
   ////Also add the option for adding the app shortcut icon in the homescreen
   @override
@@ -84,8 +86,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
-    context.read<DeviceController>().homeContext = homepageKey.currentContext;
-
+    context.read<DeviceController>().homeContext = homePagekey.currentContext;
+    UploadData.uplaod();
     // NotificationService.listenToNotificationResults();
   }
 
@@ -136,6 +138,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     //     "------------------------Building Home Page UI--------------------------");
 
     return Scaffold(
+      backgroundColor: Colors.white,
       key: homePagekey,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -152,7 +155,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
               // FirebaseCrashlytics.instance.crash();
               Go.to(
                 context: context,
-                push: const Revisedaccountpage(),
+                push: const NewRevisedAccountPage(),
               );
             },
             icon: const Icon(

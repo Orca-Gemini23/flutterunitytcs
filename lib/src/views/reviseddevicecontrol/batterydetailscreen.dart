@@ -5,7 +5,9 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/widgets/batterydetailindicator.dart';
 
 class BatteryDetails extends StatefulWidget {
-  const BatteryDetails({super.key});
+  const BatteryDetails({super.key, required this.initalPage});
+
+  final int initalPage;
 
   @override
   State<BatteryDetails> createState() => _BatteryDetailsState();
@@ -54,6 +56,7 @@ class _BatteryDetailsState extends State<BatteryDetails> {
                 ],
                 options: CarouselOptions(
                     viewportFraction: 1,
+                    initialPage: widget.initalPage,
                     height: 260.h,
                     onPageChanged: (index, reason) {
                       _current = index;

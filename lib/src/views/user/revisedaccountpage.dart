@@ -10,7 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:table_calendar/table_calendar.dart';
+// import 'package:table_calendar/table_calendar.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
@@ -124,6 +124,52 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
     return {}; // Return an empty map if no data is found
   }
 
+  void _showGenderDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Gender'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                title: const Text('Male'),
+                onTap: () {
+                  setState(() {
+                    genderController.text = 'Male';
+                  });
+
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: const Text('Female'),
+                onTap: () {
+                  setState(() {
+                    genderController.text = 'Female';
+                  });
+
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: const Text('Other'),
+                onTap: () {
+                  setState(() {
+                    genderController.text = 'Other';
+                  });
+
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,58 +182,58 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
           color: AppColor.blackColor,
         ),
         title: const Text(
-          'My Account',
+          'My Accounts',
           style: TextStyle(
             color: AppColor.blackColor,
             fontSize: 19,
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              final loadedEvents = await loadEvents();
-              if (loadedEvents.isNotEmpty) {
-                _kEventSource.addAll(loadedEvents);
-              }
-              final now = DateTime.now();
-              final kToday = DateTime(now.year, now.month, now.day);
-              // final kTomorrow =
-              //     DateTime(kToday.year, kToday.month, kToday.day + 1);
-              final DateTime kFirstDay =
-                  DateTime(kToday.year - 100, kToday.month, kToday.day);
-              final DateTime kLastDay =
-                  DateTime(kToday.year, kToday.month + 1, 0);
+        // actions: [
+        // IconButton(
+        //   onPressed: () async {
+        //     final loadedEvents = await loadEvents();
+        //     if (loadedEvents.isNotEmpty) {
+        //       _kEventSource.addAll(loadedEvents);
+        //     }
+        //     final now = DateTime.now();
+        //     final kToday = DateTime(now.year, now.month, now.day);
+        //     // final kTomorrow =
+        //     //     DateTime(kToday.year, kToday.month, kToday.day + 1);
+        //     final DateTime kFirstDay =
+        //         DateTime(kToday.year - 100, kToday.month, kToday.day);
+        //     final DateTime kLastDay =
+        //         DateTime(kToday.year, kToday.month + 1, 0);
 
-              int getHashCode(DateTime key) {
-                return key.day * 1000000 + key.month * 10000 + key.year;
-              }
+        //     int getHashCode(DateTime key) {
+        //       return key.day * 1000000 + key.month * 10000 + key.year;
+        //     }
 
-              if (!_kEventSource.containsKey(kToday)) {
-                _kEventSource[kToday] = [1, 2];
-                await saveEvents(_kEventSource);
-              }
+        //     if (!_kEventSource.containsKey(kToday)) {
+        //       _kEventSource[kToday] = [1, 2];
+        //       await saveEvents(_kEventSource);
+        //     }
 
-              final kEvents = LinkedHashMap<DateTime, List<int>>(
-                equals: isSameDay,
-                hashCode: getHashCode,
-              )..addAll(_kEventSource);
+        //     final kEvents = LinkedHashMap<DateTime, List<int>>(
+        //       equals: isSameDay,
+        //       hashCode: getHashCode,
+        //     )..addAll(_kEventSource);
 
-              // FirebaseCrashlytics.instance.crash();
-              // ignore: use_build_context_synchronously
-              Go.to(
-                context: context,
-                push: CalendarEvents(
-                  kEvents: kEvents,
-                  kFirstDay: kFirstDay,
-                  kLastDay: kLastDay,
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.calendar_month_outlined,
-            ),
-          ),
-        ],
+        //     // FirebaseCrashlytics.instance.crash();
+        //     // ignore: use_build_context_synchronously
+        //     Go.to(
+        //       context: context,
+        //       push: CalendarEvents(
+        //         kEvents: kEvents,
+        //         kFirstDay: kFirstDay,
+        //         kLastDay: kLastDay,
+        //       ),
+        //     );
+        //   },
+        //   icon: const Icon(
+        //     Icons.calendar_month_outlined,
+        //   ),
+        // ),
+        // ],
       ),
       body: Container(
         width: double.maxFinite,
@@ -318,10 +364,15 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                                   }
                                   return null;
                                 },
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      numberRegex),
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(
+                                      2), // Limit input to 3 digits only
                                 ],
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                  signed: true,
+                                ),
                                 decoration: const InputDecoration(
                                   labelText: 'Age',
                                   focusColor: AppColor.greenDarkColor,
@@ -329,23 +380,19 @@ class _RevisedaccountpageState extends State<Revisedaccountpage> {
                                 ),
                               ),
                             ),
-                            const Spacer(),
+                            const SizedBox(width: 30),
                             Expanded(
-                              child: TextFormField(
-                                controller: genderController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your gender ';
-                                  }
-                                  return null;
-                                },
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(nameRegex),
-                                ],
-                                decoration: const InputDecoration(
-                                  labelText: 'Gender',
-                                  focusColor: AppColor.greenDarkColor,
-                                  contentPadding: EdgeInsets.zero,
+                              child: GestureDetector(
+                                onTap: () => _showGenderDialog(context),
+                                child: AbsorbPointer(
+                                  child: TextFormField(
+                                    controller: genderController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Gender',
+                                      focusColor: AppColor.greenDarkColor,
+                                      contentPadding: EdgeInsets.zero,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
