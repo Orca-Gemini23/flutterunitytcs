@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/utils/version_number.dart';
+import 'package:walk/src/views/newscreens/updatepage.dart';
 // import 'package:walk/src/utils/custom_navigation.dart';
 // import 'package:walk/src/views/additionalsettings/update.dart';
 
@@ -68,7 +70,7 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppColor.greyLight,
+                color: AppColor.lightgreen,
                 borderRadius: BorderRadius.circular(10),
               ),
               padding: const EdgeInsets.all(16.0),
@@ -86,6 +88,7 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                       builder: (context, deviceController, widget) {
                     print("----->$_selectedMode");
                     print(modesDictionary[_selectedMode]);
+
                     return DropdownButton<String>(
                       value: modesDictionary[_selectedMode],
                       items: modesDictionary.keys.map((String modeName) {
@@ -96,13 +99,20 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                       }).toList(),
                       onChanged: (String? newValue) async {
                         log(newValue!);
+                        // deviceController.setmodeValue(newValue as int);
                         setState(() {
                           _selectedMode = modesDictionary.keys.firstWhere(
                               (element) =>
                                   modesDictionary[element] == newValue);
+                          if (_selectedMode == "Advanced") {
+                            AdvancedMode.modevisiable = true;
+                          } else {
+                            AdvancedMode.modevisiable = false;
+                          }
                         });
                         ////Send Change Mode Command to device
                         log("$MODE $newValue;");
+
                         _storeMode();
                         await deviceController.sendToDevice(
                             "$MODE $newValue;", WRITECHARACTERISTICS);
@@ -117,7 +127,7 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: AppColor.greyLight,
+                color: AppColor.lightgreen,
                 borderRadius: BorderRadius.circular(10),
               ),
               height: 150,
@@ -196,6 +206,73 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                   // ),
                 ],
               ),
+            ),
+            const SizedBox(height: 20.0),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const UpdateScreen(),
+                  ),
+                );
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: AppColor.lightgreen,
+                      borderRadius: BorderRadius.circular(12.0)),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+                  // height: 200,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                RichText(
+                                  text: const TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Update', // "Update" text
+                                        style: TextStyle(
+                                            color: Colors
+                                                .black, // Black color for "Update"
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.w800),
+                                      ),
+                                      TextSpan(
+                                        text: ' WALK Band\'\s', // "Band" text
+                                        style: TextStyle(
+                                            color: AppColor
+                                                .greenDarkColor, // Green color for "Band"
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.w800),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Spacer(),
+                                const Icon(Icons.arrow_forward)
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Keep your device up-to-date & \n enhance your device\'s preformance',
+                              style: TextStyle(
+                                  color:
+                                      const Color.fromARGB(255, 124, 124, 124),
+                                  fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )),
             )
           ],
         ),

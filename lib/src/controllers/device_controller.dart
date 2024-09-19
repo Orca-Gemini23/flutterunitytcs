@@ -98,7 +98,7 @@ class DeviceController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isScanning = false;
+  bool isScanning = false; 
   bool get scanStatus => isScanning;
   void changeScanStatus(bool status) {
     isScanning = status;
@@ -333,15 +333,16 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
+  List<BluetoothDevice> _scannedDeviceNames = [];
   //// Used to scan the devices and add the scanned devices to the scannedDevices list;
-  Future<void> startDiscovery(Function onConnect) async {
+  Future<void> startDiscovery(Function onConnect, BuildContext context) async {
     try {
       // ignore: unused_local_variable
       FlutterBluePlus.setLogLevel(LogLevel.none);
       StreamSubscription<List<ScanResult>>? scanSubscription;
       await askForPermission();
       _scannedDevices.clear();
-
+      _scannedDeviceNames.clear();
       isConnecting =
           false; ////Reset the connecting flag so that when the scan results come up they can be connected to if needed
 
@@ -354,17 +355,18 @@ class DeviceController extends ChangeNotifier {
         (event) async {
           log("Scan Result is $event ");
           if (event.isNotEmpty) {
-          for (var element in event){
-          //  if (element.device.platformName == "Test2402") {
-            scannedDevice = element.device; 
-            scanTimer?.cancel();
-            FlutterBluePlus.stopScan();
-            scanSubscription!.cancel();
-            // if (scannedDevice.platformName == "")
-            await connectToDevice(scannedDevice, onConnect);
-            break;
+            for (var element in event) {
+              // if (element.device.platformName == "Test24022") {
+              print('this is element devices: ${element}');
+              BluetoothDevice deviceName = element.device;
+              if (!_scannedDeviceNames.contains(deviceName)) {
+                _scannedDeviceNames.add(element.device);
+              }
+              print('this is _scannedDeviceNames $_scannedDeviceNames');
+            }
+            // break;
           //  }
-          }
+          
           }
         },
         onDone: () {
@@ -380,10 +382,19 @@ class DeviceController extends ChangeNotifier {
         withServices: [Guid("0000acf0-0000-1000-8000-00805f9b34fb")],
         androidUsesFineLocation: true,
       );
-      scanTimer = Timer(const Duration(seconds: 15), () async {
+      void onDeviceSelected(BluetoothDevice deviceName) async{
+        BluetoothDevice scannedDevice = deviceName;
+        scanTimer?.cancel();
+        FlutterBluePlus.stopScan();
+        scanSubscription!.cancel();
+        await connectToDevice(scannedDevice, onConnect);
+      }
+      scanTimer = Timer(const Duration(seconds: 10), () async {
         await FlutterBluePlus.stopScan();
         isScanning = false;
+        isConnecting = false;
         scanSubscription!.cancel();
+        showScannedDevicesDialog(context, _scannedDeviceNames, onDeviceSelected);
         notifyListeners();
       });
 
@@ -391,6 +402,42 @@ class DeviceController extends ChangeNotifier {
     } catch (e) {
       log("Error in startDiscovery $e");
     }
+  }
+
+  void showScannedDevicesDialog(
+      BuildContext context, List<BluetoothDevice> deviceNames, Function(BluetoothDevice) onDeviceSelected) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Scanned Devices'),
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: deviceNames.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(deviceNames[index].platformName),
+                  onTap: () {
+                    onDeviceSelected(deviceNames[index]);
+                    Navigator.of(context).pop(); 
+                  },
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   ///Checks already connected devices and highlights the respective device's tile in the home screen.
@@ -467,7 +514,7 @@ class DeviceController extends ChangeNotifier {
       await HapticFeedback.mediumImpact();
       Fluttertoast.showToast(msg: "Disconnected successfully");
       _connectedDevice = null;
-
+      isConnecting = false;
       ///Removing the device for the connectedDevices list
       _services.clear();
 
@@ -535,6 +582,7 @@ class DeviceController extends ChangeNotifier {
         if (command.contains(RegExp(r"mode"))) {
           Fluttertoast.showToast(msg: "Mode changed ! ");
         }
+        notifyListeners();
         return true;
       } else {
         Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
