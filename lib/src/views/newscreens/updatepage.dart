@@ -12,7 +12,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
   final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: const Color.fromRGBO(0, 87, 73, 1),
     disabledBackgroundColor: Colors.grey,
-    maximumSize: const Size(180, 60),
+    maximumSize: const Size(200, 60),
     padding: const EdgeInsets.symmetric(horizontal: 16),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -112,7 +112,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 35),
+              const SizedBox(height: 25),
             ],
           ),
         ),
