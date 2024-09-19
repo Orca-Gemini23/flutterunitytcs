@@ -7,7 +7,6 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/version_number.dart';
-import 'package:walk/src/views/newscreens/updatepage.dart';
 // import 'package:walk/src/utils/custom_navigation.dart';
 // import 'package:walk/src/views/additionalsettings/update.dart';
 
@@ -88,6 +87,7 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                       builder: (context, deviceController, widget) {
                     print("----->$_selectedMode");
                     print(modesDictionary[_selectedMode]);
+                       
 
                     return DropdownButton<String>(
                       value: modesDictionary[_selectedMode],
@@ -104,9 +104,10 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                           _selectedMode = modesDictionary.keys.firstWhere(
                               (element) =>
                                   modesDictionary[element] == newValue);
-                          if (_selectedMode == "Advanced") {
+                          if(_selectedMode == "Advanced"){          
                             AdvancedMode.modevisiable = true;
-                          } else {
+                          }
+                          else{
                             AdvancedMode.modevisiable = false;
                           }
                         });

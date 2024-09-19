@@ -364,9 +364,6 @@ class DeviceController extends ChangeNotifier {
               }
               print('this is _scannedDeviceNames $_scannedDeviceNames');
             }
-            // break;
-          //  }
-          
           }
         },
         onDone: () {
