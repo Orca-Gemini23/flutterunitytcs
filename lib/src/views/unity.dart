@@ -6,11 +6,10 @@ import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
-
 import '../constants/bt_constants.dart';
 
 class UnityScreen extends StatefulWidget {
-  const UnityScreen({Key? key, required this.i}) : super(key: key);
+  const UnityScreen({super.key, required this.i});
   final int i;
 
   @override
@@ -18,11 +17,11 @@ class UnityScreen extends StatefulWidget {
 }
 
 class UnityScreenState extends State<UnityScreen> {
-  static bool back=false;
+  static bool back = false;
   @override
   void initState() {
     FirebaseAnalytics.instance
-        .setCurrentScreen(screenName: 'Game Page ${widget.i}')
+        .logScreenView(screenName: 'Game Page ${widget.i}')
         .then(
           (value) => debugPrint("Analytics stated"),
         );
@@ -51,8 +50,8 @@ class UnityScreenState extends State<UnityScreen> {
     unityWidgetController?.postMessage("SceneController", "BallGame", "");
   }
 
-  static loadTestScene() {
-    unityWidgetController?.postMessage("SceneController", "TestScene", "");
+  static loadTaxiGame() {
+    unityWidgetController?.postMessage("SceneController", "TaxiGame", "");
   }
 
   int finalScore = 0;
@@ -70,22 +69,14 @@ class UnityScreenState extends State<UnityScreen> {
       key: _scaffoldKey,
       body: SafeArea(
         bottom: false,
-        child: WillPopScope(
-            onWillPop: () async {
+        child: PopScope(
+            onPopInvokedWithResult: (bool didPop, Object? result) async {
               sendUploadRequest();
-               FirebaseDB.uploadUserScore(
+              FirebaseDB.uploadUserScore(
                 score: finalScore,
                 playedOn: DateTime.now(),
                 secondsPlayedFor: secondPlayed,
               );
-              // if (result) {
-              //   Fluttertoast.showToast(msg: "Data uploaded");
-              //   Navigator.of(context, rootNavigator: true).pop();
-              // } else {
-              //   Navigator.of(context, rootNavigator: true).pop();
-              // }
-              // Pop the category page if Android back button is pressed.
-              return true;
             },
             child: Stack(
                 // color: Colors.white,
@@ -104,39 +95,24 @@ class UnityScreenState extends State<UnityScreen> {
                           secondPlayed = int.parse(
                               double.parse(score[2]).toStringAsFixed(0));
                         });
-                      }
-                      else if(msg.toString()=="Exit")
-                        {
-                          // sendUploadRequest();
-                          FirebaseDB.uploadUserScore(
-                            score: finalScore,
-                            playedOn: DateTime.now(),
-                            secondsPlayedFor: secondPlayed,
-                          );
-                          Navigator.pop(context);
+                      } else if (msg.toString() == "Exit") {
+                        // sendUploadRequest();
+                        FirebaseDB.uploadUserScore(
+                          score: finalScore,
+                          playedOn: DateTime.now(),
+                          secondsPlayedFor: secondPlayed,
+                        );
+                        Navigator.pop(context);
+                      } else {
+                        switch (msg) {
+                          case "VL":
+                            vibrateLeft();
+                            break;
+                          case "VR":
+                            vibrateRight();
+                            break;
                         }
-                      // else if(msg.toString().contains("ball"))
-                      //   {
-                      //       // FirebaseDB.uploadBallData(ballData: msg.toString().replaceFirst("ball", ""));
-                      //   }
-                      // else if(msg.toString().contains("swing"))
-                      //   {
-                      //       // FirebaseDB.uploadSwingData(swingData: msg.toString().replaceFirst("swing", ""));
-                      //   }
-                      // else if(msg.toString().contains("fish"))
-                      //   {
-                      //       // FirebaseDB.uploadFishData(fishData: msg.toString().replaceFirst("fish", ""));
-                      //   }
-                      else{
-                      switch (msg) {
-                        case "VL":
-                          vibrateLeft();
-                          break;
-                        case "VR":
-                          vibrateRight();
-                          break;
-
-                      }}
+                      }
                     },
                     fullscreen: true,
                   ),
@@ -144,7 +120,7 @@ class UnityScreenState extends State<UnityScreen> {
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () async {
                       sendUploadRequest();
-                       FirebaseDB.uploadUserScore(
+                      FirebaseDB.uploadUserScore(
                         score: finalScore,
                         playedOn: DateTime.now(),
                         secondsPlayedFor: secondPlayed,
@@ -153,17 +129,6 @@ class UnityScreenState extends State<UnityScreen> {
                       Navigator.pop(context);
                     },
                   )
-
-                  // Slider(
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       _sliderValue = value;
-                  //     });
-                  //   },
-                  //   value: _sliderValue,
-                  //   min: 0,
-                  //   max: 20,
-                  // ),
                 ])),
       ),
     );
@@ -172,7 +137,6 @@ class UnityScreenState extends State<UnityScreen> {
   // Callback that connects the created controller to the unity controller
   void onUnityCreated(controller) {
     unityWidgetController = controller;
-    print("Unity Created ${widget.i}");
     switch (widget.i) {
       case 0:
         UnityScreenState.loadBallGame();
@@ -188,7 +152,7 @@ class UnityScreenState extends State<UnityScreen> {
         startReading();
         break;
       case 3:
-        UnityScreenState.loadTestScene();
+        UnityScreenState.loadTaxiGame();
         startReading();
         break;
     }
@@ -226,11 +190,10 @@ class UnityScreenState extends State<UnityScreen> {
 
   static void sendAccelerometer(String legData) {
     unityWidgetController?.postMessage(
-        "SceneController", "AccelerometerValue", legData);
+        "SceneController", "SetAccelerometerValue", legData);
   }
 
   static void sendUploadRequest() {
     // back=true;
   }
-
 }

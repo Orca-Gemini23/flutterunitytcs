@@ -7,15 +7,19 @@ import '../../constants/app_color.dart';
 
 Widget magSlider(bool isClient, DeviceController controller) {
   return SliderTheme(
-    data: const SliderThemeData(
+    data: SliderThemeData(
       trackHeight: 8,
       activeTrackColor: AppColor.greenDarkColor,
-      thumbColor: AppColor.greenDarkColor,
+      thumbColor: isClient
+          ? (controller.magCValue < 0 || !controller.bandC)
+              ? Colors.grey
+              : AppColor.greenDarkColor
+          : AppColor.greenDarkColor,
     ),
     child: Slider(
         //MAGNITUDE SLIDER
         value: isClient
-            ? controller.magCValue < 0
+            ? (controller.magCValue < 0 || !controller.bandC)
                 ? 0
                 : controller.magCValue
             : controller.magSValue,

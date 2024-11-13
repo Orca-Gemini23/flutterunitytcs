@@ -1,8 +1,7 @@
-import UIKit
 import Flutter
 import Firebase
 import flutter_unity_widget
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,

@@ -29,25 +29,9 @@ class _DeviceUpdateState extends State<DeviceUpdate> {
           return Center(
             child: TextButton(
               onPressed: () async {
-                // deviceController.sendToDevice(
-                //     "s", Guid("0000AE03-0000-1000-8000-00805f9b34fb"));
 
-                // try {
-                //   final result =
-                //       await FirebaseFunctions.instanceFor(region: "us-central1")
-                //           .httpsCallable('checkForUpdates')
-                //           .call();
-                //   print(result.data);
-                // } on FirebaseFunctionsException catch (error) {
-                //   if (kDebugMode) {
-                //     print(error.code);
-                //     print(error.details);
-                //     print(error.message);
-                //   }
-                // }
                 String token = "";
-                // List<String> partialTokens = [];
-                // String partialToken = "";
+
 
                 await FirebaseAppCheck.instance.getLimitedUseToken().then(
                       (value) => {
@@ -57,35 +41,9 @@ class _DeviceUpdateState extends State<DeviceUpdate> {
                       },
                     );
 
-                print("------->$token");
 
-                // for (int i = 0; i < token.length; i++) {
-                //   partialToken += token[i];
-                //   if (i % 200 == 0 && i > 0) {
-                //     partialTokens.add(partialToken);
-                //     partialToken = "";
-                //   }
-                // }
 
-                // partialTokens.add(partialToken);
-                // print(partialTokens);
-                // print(partialTokens.length);
 
-                // for (int i = 0; i < 5; i++) {
-                //   deviceController.sendToDevice(partialTokens[i], guidList[i]);
-                // }
-
-                // print(partialTokens[0].length);
-                // print(partialTokens[1].length);
-                // print(partialTokens[2].length);
-                // print(partialTokens[3].length);
-                // print(partialTokens[4].length);
-
-                print(token.substring(0, 200).length);
-                print(token.substring(200, 400).length);
-                print(token.substring(400, 600).length);
-                print(token.substring(600, 800).length);
-                print(token.substring(800).length);
 
                 await deviceController.sendToDevice(
                     token.substring(0, 195), guidList[0]);
@@ -106,7 +64,6 @@ class _DeviceUpdateState extends State<DeviceUpdate> {
                   },
                 );
 
-                print("------->$token");
                 await deviceController.sendToDevice(
                     "tkn c 1 ${token.substring(0, 195)}",WRITECHARACTERISTICS);
                 await deviceController.sendToDevice(

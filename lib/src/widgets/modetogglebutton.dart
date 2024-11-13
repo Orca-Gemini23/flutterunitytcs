@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
 
 class ActiveInactiveButtons extends StatefulWidget {
+  const ActiveInactiveButtons({super.key});
+
   @override
-  _ActiveInactiveButtonsState createState() => _ActiveInactiveButtonsState();
+  State<ActiveInactiveButtons> createState() => _ActiveInactiveButtonsState();
 }
 
 class _ActiveInactiveButtonsState extends State<ActiveInactiveButtons> {
@@ -46,9 +48,9 @@ class _ActiveInactiveButtonsState extends State<ActiveInactiveButtons> {
         });
       },
       style: ElevatedButton.styleFrom(
-        minimumSize: Size(120, 50), // Set standard width to 70
+        minimumSize: const Size(120, 50), // Set standard width to 70
         backgroundColor: _activeButtonIndex == index
-            ? Color(0xFF005749)
+            ? const Color(0xFF005749)
             : Colors.transparent, // Active button has green background
         elevation: 0, // Remove elevation
         shadowColor: Colors.transparent,
@@ -63,7 +65,7 @@ class _ActiveInactiveButtonsState extends State<ActiveInactiveButtons> {
       child: Text(
         text,
         style: TextStyle(
-          color: _activeButtonIndex == index ? Colors.white : Color(0xFF005749),
+          color: _activeButtonIndex == index ? Colors.white : const Color(0xFF005749),
         ),
       ),
     );

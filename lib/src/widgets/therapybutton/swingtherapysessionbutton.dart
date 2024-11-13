@@ -93,7 +93,6 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
   }
 
   void therapyButtonOnPressed(DeviceController deviceController) async {
-    print("coming here");
     if (deviceController.connectedDevice == null) {
       Fluttertoast.showToast(
         msg: "Please Connect to the device first",
