@@ -13,35 +13,6 @@ class DetailChart extends StatefulWidget {
 }
 
 class _DetailChartState extends State<DetailChart> {
-  Map<int, DateTime> testGameDataMap = {};
-  Map<int, GameHistoryElement> gameDataMap = {};
-
-  void processData() {
-    widget.historyData.gameHistory?.forEach((element) {
-      gameDataMap.containsValue(element.playedOn)
-          ? null
-          : gameDataMap.addAll({
-              element.score!: element,
-            });
-
-      testGameDataMap.containsValue(element.playedOn)
-          ? null
-          : testGameDataMap.addAll(
-              {
-                element.score ?? 0: DateTime.parse(
-                  element.playedOn!,
-                ),
-              },
-            );
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    processData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,7 +37,7 @@ class _DetailChartState extends State<DetailChart> {
           ),
           zoomPanBehavior:
               ZoomPanBehavior(enablePinching: true, enablePanning: true),
-          series: <ChartSeries<GameHistoryElement, DateTime>>[
+          series: <CartesianSeries<GameHistoryElement, DateTime>>[
             LineSeries<GameHistoryElement, DateTime>(
               dataSource: widget.historyData.gameHistory!,
               xValueMapper: (GameHistoryElement element, _) =>
@@ -93,58 +64,6 @@ class _DetailChartState extends State<DetailChart> {
               ),
             ),
           ],
-        )
-        // child: LineChart(
-        //   LineChartData(
-        //     titlesData: FlTitlesData(
-        //       leftTitles: AxisTitles(
-        //         sideTitles: SideTitles(
-        //           showTitles: true,
-        //           getTitlesWidget: (value, meta) => Text(
-        //             value.toString(),
-        //             style: TextStyle(
-        //               color: const Color(0XFF6B6B6B),
-        //               fontSize: 12.sp,
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //       rightTitles: AxisTitles(
-        //         sideTitles: SideTitles(showTitles: false),
-        //       ),
-        //       topTitles: AxisTitles(
-        //         sideTitles: SideTitles(showTitles: false),
-        //       ),
-        //       bottomTitles: AxisTitles(
-        //         sideTitles: SideTitles(
-        //           showTitles: true,
-        //           getTitlesWidget: (value, meta) => Text(
-        //             value.toString(),
-        //             style: TextStyle(
-        //               color: const Color(0XFF6B6B6B),
-        //               fontSize: 12.sp,
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //     borderData: FlBorderData(
-        //       show: false,
-        //       border: Border.all(),
-        //     ),
-        //     lineBarsData: [
-        //       LineChartBarData(
-        //         spots: chartData,
-        //         dotData: FlDotData(show: false),
-        //       ),
-        //     ],
-        //     gridData: FlGridData(
-        //       show: true,
-        //       drawHorizontalLine: true,
-        //       drawVerticalLine: false,
-        //     ),
-        //   ),
-        // ),
-        );
+        ));
   }
 }

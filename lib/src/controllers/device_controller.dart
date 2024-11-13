@@ -2,8 +2,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -12,7 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
-import 'package:walk/src/constants/wifi_enum.dart';
+import 'package:walk/src/widgets/therapybutton/fileread.dart';
 
 import '../views/unity.dart';
 
@@ -98,7 +96,7 @@ class DeviceController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isScanning = false; 
+  bool isScanning = false;
   bool get scanStatus => isScanning;
   void changeScanStatus(bool status) {
     isScanning = status;
@@ -234,7 +232,7 @@ class DeviceController extends ChangeNotifier {
         } else {
           await Permission.location.request();
           await Permission.bluetooth.request();
-          print("Permissions were not granted.");
+          // print("Permissions were not granted.");
         }
       }
       return;
@@ -286,9 +284,7 @@ class DeviceController extends ChangeNotifier {
       throw "language lbl Location Permission Denied Permanently, please enable it from setting";
     }
 
-    return await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high)
-        .then((value) {
+    return await Geolocator.getCurrentPosition().then((value) {
       return value;
     }).catchError((e) async {
       return await Geolocator.getLastKnownPosition().then((value) async {
@@ -299,6 +295,18 @@ class DeviceController extends ChangeNotifier {
         }
       }).catchError((e) {
         // toast(e.toString());
+        return Position(
+          latitude: 0.0,
+          longitude: 0.0,
+          timestamp: DateTime.now(),
+          accuracy: 0.0,
+          altitude: 0.0,
+          heading: 0.0,
+          speed: 0.0,
+          speedAccuracy: 0.0,
+          altitudeAccuracy: 0.0,
+          headingAccuracy: 0.0,
+        );
       });
     });
   }
@@ -306,28 +314,7 @@ class DeviceController extends ChangeNotifier {
   /// Turning on Bluetooth from within the app
   Future<void> turnBluetoothOn(BuildContext context) async {
     try {
-      String dialogTitle = "Turn on Bluetooth and location?";
-      bool displayDialogContent = true;
-      String dialogContent =
-          "This app requires Bluetooth and Location turned on to connect to a device.";
-      String cancelBtnText = "Nope";
-      String acceptBtnText = "Sure";
-      double dialogRadius = 10.0;
-      bool barrierDismissible = true; //
-
       // // Custom Dialog box for turning On Bluetooth
-      await BluetoothEnable.customBluetoothRequest(
-              context,
-              dialogTitle,
-              displayDialogContent,
-              dialogContent,
-              cancelBtnText,
-              acceptBtnText,
-              dialogRadius,
-              barrierDismissible)
-          .then((value) {
-        log('customBT request: $value');
-      });
     } catch (e) {
       log(' error: $e');
     }
@@ -348,7 +335,6 @@ class DeviceController extends ChangeNotifier {
 
       isScanning = true;
       notifyListeners();
-      BluetoothDevice scannedDevice;
       Timer? scanTimer;
 
       scanSubscription = FlutterBluePlus.scanResults.listen(
@@ -357,7 +343,7 @@ class DeviceController extends ChangeNotifier {
           if (event.isNotEmpty) {
             for (var element in event) {
               // if (element.device.platformName == "Test24022") {
-              print('this is element devices: ${element}');
+              // print('this is element devices: $element');
               BluetoothDevice deviceName = element.device;
               if (!_scannedDeviceNames.contains(deviceName)) {
                 _scannedDeviceNames.add(element.device);
@@ -379,19 +365,21 @@ class DeviceController extends ChangeNotifier {
         withServices: [Guid("0000acf0-0000-1000-8000-00805f9b34fb")],
         androidUsesFineLocation: true,
       );
-      void onDeviceSelected(BluetoothDevice deviceName) async{
+      void onDeviceSelected(BluetoothDevice deviceName) async {
         BluetoothDevice scannedDevice = deviceName;
         scanTimer?.cancel();
         FlutterBluePlus.stopScan();
         scanSubscription!.cancel();
         await connectToDevice(scannedDevice, onConnect);
       }
+
       scanTimer = Timer(const Duration(seconds: 10), () async {
         await FlutterBluePlus.stopScan();
         isScanning = false;
         isConnecting = false;
         scanSubscription!.cancel();
-        showScannedDevicesDialog(context, _scannedDeviceNames, onDeviceSelected);
+        showScannedDevicesDialog(
+            context, _scannedDeviceNames, onDeviceSelected);
         notifyListeners();
       });
 
@@ -402,13 +390,15 @@ class DeviceController extends ChangeNotifier {
   }
 
   void showScannedDevicesDialog(
-      BuildContext context, List<BluetoothDevice> deviceNames, Function(BluetoothDevice) onDeviceSelected) {
+      BuildContext context,
+      List<BluetoothDevice> deviceNames,
+      Function(BluetoothDevice) onDeviceSelected) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Scanned Devices'),
-          content: Container(
+          title: const Text('Scanned Devices'),
+          content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
               shrinkWrap: true,
@@ -418,7 +408,7 @@ class DeviceController extends ChangeNotifier {
                   title: Text(deviceNames[index].platformName),
                   onTap: () {
                     onDeviceSelected(deviceNames[index]);
-                    Navigator.of(context).pop(); 
+                    Navigator.of(context).pop();
                   },
                 );
               },
@@ -429,7 +419,7 @@ class DeviceController extends ChangeNotifier {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -446,7 +436,8 @@ class DeviceController extends ChangeNotifier {
         if (RegExp(r"^[a-zA-Z]\d{6}[a-zA-Z]\d{1,3}$")
                 .hasMatch(device.platformName) ||
             RegExp(r"^TEST\d{4}$").hasMatch(device.platformName) ||
-            RegExp(r"^TRAIL\d{4}$").hasMatch(device.platformName)) {
+            RegExp(r"^TRAIL\d{4}$").hasMatch(device.platformName) ||
+            device.platformName == "14022024TEST") {
           await connectToDevice(device, () {});
         }
         break;
@@ -466,10 +457,7 @@ class DeviceController extends ChangeNotifier {
         isConnecting = true;
         // isScanning = false;
         notifyListeners();
-        showToast
-            ? Fluttertoast.showToast(
-                msg: "Connecting to ${device.platformName}")
-            : null;
+
         await device.connect(
           autoConnect: false,
         );
@@ -480,9 +468,6 @@ class DeviceController extends ChangeNotifier {
 
         await HapticFeedback.vibrate();
 
-        showToast
-            ? Fluttertoast.showToast(msg: "Connected to ${device.platformName}")
-            : null;
         gotServices = await discoverServices(device);
         gotServices ? _connectedDevice = device : null;
         notifyListeners();
@@ -496,7 +481,8 @@ class DeviceController extends ChangeNotifier {
     } catch (e) {
       log(e.toString());
       isScanning = false;
-      Fluttertoast.showToast(msg: "Could not connect ");
+      isConnecting = false;
+      // Fluttertoast.showToast(msg: "Could not connect ");
       device.disconnect();
       _connectedDevice = null;
       notifyListeners();
@@ -506,12 +492,13 @@ class DeviceController extends ChangeNotifier {
   ///Handles the disconnection procedure
   Future disconnectDevice(BluetoothDevice? device) async {
     try {
-      Fluttertoast.showToast(msg: "Disconnecting");
+      // Fluttertoast.showToast(msg: "Disconnecting");
       await device!.disconnect();
       await HapticFeedback.mediumImpact();
-      Fluttertoast.showToast(msg: "Disconnected successfully");
+      // Fluttertoast.showToast(msg: "Disconnected successfully");
       _connectedDevice = null;
       isConnecting = false;
+
       ///Removing the device for the connectedDevices list
       _services.clear();
 
@@ -522,7 +509,7 @@ class DeviceController extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       log("Error in disconnecting ${e.toString()}");
-      Fluttertoast.showToast(msg: "Could not disconnect :$e");
+      // Fluttertoast.showToast(msg: "Could not disconnect :$e");
     }
   }
 
@@ -554,7 +541,7 @@ class DeviceController extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      Fluttertoast.showToast(msg: "Unexpected error in getting the services");
+      // Fluttertoast.showToast(msg: "Unexpected error in getting the services");
       log("Discover services $e");
       return false;
     }
@@ -576,18 +563,18 @@ class DeviceController extends ChangeNotifier {
 
         ///Converting the command to ASCII then sending
         await HapticFeedback.mediumImpact();
-        if (command.contains(RegExp(r"mode"))) {
-          Fluttertoast.showToast(msg: "Mode changed ! ");
-        }
+        // if (command.contains(RegExp(r"mode"))) {
+        //   Fluttertoast.showToast(msg: "Mode changed ! ");
+        // }
         notifyListeners();
         return true;
       } else {
-        Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
+        // Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
         return false;
       }
     } catch (e) {
       log("error in sending message $e");
-      Fluttertoast.showToast(msg: "Unexpected error in sending command ");
+      // Fluttertoast.showToast(msg: "Unexpected error in sending command ");
       return false;
     }
   }
@@ -605,13 +592,13 @@ class DeviceController extends ChangeNotifier {
 
         //// Check if the mode actually has changed or not
         if (modeValue.toString() == newMode && res) {
-          Fluttertoast.showToast(msg: "Mode changed !!");
+          // Fluttertoast.showToast(msg: "Mode changed !!");
           return true;
         }
-        Fluttertoast.showToast(msg: "Failed to change mode");
+        // Fluttertoast.showToast(msg: "Failed to change mode");
         return false;
       }
-      Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
+      // Fluttertoast.showToast(msg: "Seems like bluetooth is turned off ");
       return false;
     } catch (e) {
       log(
@@ -766,44 +753,6 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  ///Function to get the wifiProvisioned Status
-  Future<int> getWifiProvisionedStatus() async {
-    try {
-      BluetoothCharacteristic? clientTarget =
-          _characteristicMap[PROVISIONED_CLIENT];
-      BluetoothCharacteristic? serverTarget =
-          _characteristicMap[PROVISIONED_SERVER];
-
-      var clientResponse = await clientTarget!.read();
-      var serverResponse = await serverTarget!.read();
-
-      if (String.fromCharCodes(clientResponse) == "1" &&
-          String.fromCharCodes(serverResponse) == "1") {
-        _wifiProvisioned = WifiStatus.PROVISIONED.index;
-        notifyListeners();
-      }
-      if (String.fromCharCodes(clientResponse) == "-1" ||
-          String.fromCharCodes(serverResponse) == "-1") {
-        _wifiProvisioned = WifiStatus.PROCESSING.index;
-        notifyListeners();
-      }
-      if (String.fromCharCodes(clientResponse) == "0" ||
-          String.fromCharCodes(serverResponse) == "0") {
-        _wifiProvisioned = WifiStatus.NOTPROVISONED.index;
-        notifyListeners();
-      }
-
-      log("Client provisioned status is ${String.fromCharCodes(clientResponse)}");
-      log("Server provisioned status is ${String.fromCharCodes(serverResponse)}");
-      log("Wifi provisioned $_wifiProvisioned");
-      return _wifiProvisioned;
-    } catch (e) {
-      log(e.toString());
-      log("Something went wrong while getting wifi provisioned status");
-      return _wifiProvisioned;
-    }
-  }
-
   Future<void> getBatteryRemaining() async {
     try {
       BluetoothCharacteristic? clientTarget =
@@ -901,8 +850,7 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
-  // int count=0;
-  StreamSubscription<List<int>> startStream() {
+  Future<StreamSubscription<List<int>>> startStream() async {
     BluetoothCharacteristic? targetCharacteristic =
         _characteristicMap[THERAPY_CHARACTERISTICS];
 
@@ -915,8 +863,23 @@ class DeviceController extends ChangeNotifier {
         (event) {
           controller.add(event);
           String data = String.fromCharCodes(event);
-          // print(data);
-          UnityScreenState.sendAccelerometer(data);
+          // if (DoStream.yes) log(data);
+
+          try {
+            UnityScreenState.sendAccelerometer(data);
+            // ignore: empty_catches
+          } catch (e) {}
+          if (DoStream.yes) {
+            // log(data);
+            StreamControllerClass.fun(data);
+            List<String> l = data.split(' ');
+            l.removeAt(1);
+            l.insert(0, DateTime.now().millisecondsSinceEpoch.toString());
+            String s = l.join(',');
+            // log(FileClass.name);
+            File(FileClass.name)
+                .writeAsStringSync(s, mode: FileMode.append, flush: true);
+          }
 
           notifyListeners();
         },

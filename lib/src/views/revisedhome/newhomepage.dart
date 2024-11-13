@@ -1,33 +1,18 @@
-// ignore_for_file: use_build_context_synchronously, unrelated_type_equality_checks, unused_import
-
 import 'dart:developer';
 import 'dart:ui';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/models/game_history_model.dart';
-import 'package:walk/src/server/api.dart';
-import 'package:walk/src/server/upload.dart';
-import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/utils/custom_notification.dart';
-import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
-import 'package:walk/src/views/device/chart_details.dart';
-import 'package:walk/src/views/home_page.dart';
+import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/revisedsplash.dart';
 import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 
-import 'package:walk/src/views/user/revisedaccountpage.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
 import 'package:walk/src/widgets/homepage/gamehistorybuilder.dart';
 import 'package:walk/src/widgets/homepage/therapysessionbutton.dart';
@@ -37,7 +22,6 @@ import 'package:walk/src/widgets/homepage/usernametext.dart';
 
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-final GlobalKey keyGoalBox = GlobalKey();
 final GlobalKey keyMenu = GlobalKey();
 
 class RevisedHomePage extends StatefulWidget {
@@ -64,6 +48,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   final GlobalKey keyGames = GlobalKey();
   final GlobalKey keyControl = GlobalKey();
   final GlobalKey keyScore = GlobalKey();
+  final GlobalKey keyGoalBox = GlobalKey();
 
   //keys for app bar
   final GlobalKey keyAccount = GlobalKey();
@@ -73,9 +58,10 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   @override
   void initState() {
     debugPrint(tour.toString());
-    FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Homepage').then(
+    FirebaseAnalytics.instance.logScreenView(screenName: 'Homepage').then(
           (value) => debugPrint("Analytics stated"),
         );
+    UserDetails.unavailable = false;
     if (!tour) {
       tour = !tour;
       createTutorial();
@@ -87,8 +73,9 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
     context.read<DeviceController>().homeContext = homePagekey.currentContext;
-    UploadData.uplaod();
-    // NotificationService.listenToNotificationResults();
+    // UploadData.uplaod();
+    // FirebaseStorageDB.getData();
+    // FilePathChange.getExternalFiles();
   }
 
   @override
@@ -136,7 +123,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   Widget build(BuildContext context) {
     // print(
     //     "------------------------Building Home Page UI--------------------------");
-
+    final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       backgroundColor: Colors.white,
       key: homePagekey,
@@ -193,7 +180,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
                   const SizedBox(
                     height: 10,
                   ),
-                  const TodaysGoalBox(),
+                  TodaysGoalBox(goalBoxKey: keyGoalBox),
                   const SizedBox(
                     height: 20,
                   ),
@@ -201,8 +188,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ////Device Control and AI therapy session control buttons
-                      DeviceControlBtn(pKey: keyControl),
-                      TherapySessionBtn(pKey: keyGames),
+                      DeviceControlBtn(deviceControlKey: keyControl),
+                      TherapySessionBtn(therapySessionKey: keyGames),
                     ],
                   ),
                   const SizedBox(
@@ -230,6 +217,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
                       child: const GameHistoryBuilder(),
                     ),
                   ),
+                  SizedBox(height: bottomPadding),
                 ],
               ),
             ),
@@ -276,7 +264,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         log('onClickOverlay: $target');
       },
       onSkip: () {
-        log("skip");
         return true;
       },
       // focusAnimationDuration: const Duration(milliseconds: 200),

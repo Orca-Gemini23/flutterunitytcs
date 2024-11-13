@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:awesome_ripple_animation/awesome_ripple_animation.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
@@ -22,10 +21,8 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   @override
   void initState() {
     FirebaseAnalytics.instance
-        .setCurrentScreen(screenName: 'Connection Page')
-        .then(
-          (value) => debugPrint("Analytics stated"),
-        );
+        .logScreenView(screenName: 'Connection Page')
+        .then((value) => debugPrint("Analytics stated in Connection Page"));
     super.initState();
   }
 
@@ -37,36 +34,43 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     if (deviceController.scanStatus == true) {
       message = "Are you sure you want to stop the scanning?";
     }
-    if(deviceController.isConnecting == true){
+    if (deviceController.isConnecting == true) {
       message = "Are you sure you want to stop the Connecting?";
     }
 
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Device Control', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('No', style: TextStyle(color: AppColor.greenDarkColor),),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text(
+              'Device Control',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            content: Text(message),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text(
+                  'No',
+                  style: TextStyle(color: AppColor.greenDarkColor),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  if (deviceController.scanStatus == true ||
+                      deviceController.isConnecting == true) {
+                    await FlutterBluePlus.stopScan();
+                    deviceController.isScanning = false;
+                    deviceController.isConnecting = false;
+                    deviceController.notifyListeners();
+                  }
+                  Navigator.of(context).pop(true);
+                },
+                child: const Text('Yes'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              if (deviceController.scanStatus == true || deviceController.isConnecting == true) {
-                await FlutterBluePlus.stopScan();
-                deviceController.isScanning = false;
-                deviceController.isConnecting = false;
-                deviceController.notifyListeners();
-              }
-              Navigator.of(context).pop(true);
-            },
-            child: const Text('Yes'),
-          ),
-        ],
-      ),
-    ) ??
-    false;
+        ) ??
+        false;
   }
 
   @override
@@ -76,8 +80,18 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
+        }
+        final navigator = Navigator.of(context);
+        bool value = await _onWillPop();
+        if (value) {
+          navigator.pop(result);
+        }
+      },
       child: Scaffold(
         backgroundColor: AppColor.whiteColor,
         extendBodyBehindAppBar: true,
@@ -120,11 +134,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   top: 250,
                   left: 0,
                   right: 0,
-                  child: deviceController.scanStatus
+                  child: (deviceController.scanStatus ||
+                          deviceController.isConnecting)
                       ? RippleAnimation(
                           ripplesCount: 2,
                           repeat: true,
-                          delay: const Duration(seconds: 2),
                           color: AppColor.greyLight,
                           size: const Size.fromRadius(40),
                           minRadius: 180,

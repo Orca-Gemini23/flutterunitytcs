@@ -14,7 +14,7 @@ class TutorialPage extends StatefulWidget {
 }
 
 class _TutorialPageState extends State<TutorialPage> {
-  final CarouselController _controller = CarouselController();
+  // final CarouselController _controller = CarouselController();
   int _current = 0;
 
   @override
@@ -70,7 +70,7 @@ class _TutorialPageState extends State<TutorialPage> {
                 children: List.generate(
                   imageItems.length + 1,
                   (index) => GestureDetector(
-                    onTap: () => _controller.animateToPage(index),
+                    // onTap: () => _controller.animateToPage(index),
                     child: Container(
                       width: 12.0,
                       height: 12.0,

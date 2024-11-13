@@ -55,4 +55,14 @@ class PreferenceController {
     _prefs = await SharedPreferences.getInstance();
     return _prefs.getString(key) ?? "";
   }
+
+  static clearSpecificData(String key) async {
+    _prefs = await SharedPreferences.getInstance();
+    await _prefs.remove('key');
+  }
+
+  static clearAllData() async {
+    _prefs = await SharedPreferences.getInstance();
+    await _prefs.clear();
+  }
 }

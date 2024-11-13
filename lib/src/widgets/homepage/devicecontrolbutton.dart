@@ -9,9 +9,9 @@ import 'package:walk/src/views/reviseddevicecontrol/connectionscreen.dart';
 import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
 
 class DeviceControlBtn extends StatefulWidget {
-  const DeviceControlBtn({super.key, required this.pKey});
+  const DeviceControlBtn({super.key, required this.deviceControlKey});
 
-  final GlobalKey pKey;
+  final GlobalKey deviceControlKey;
 
   @override
   State<DeviceControlBtn> createState() => _DeviceControlBtnState();
@@ -26,7 +26,7 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
   Widget build(BuildContext context) {
     deviceController = Provider.of<DeviceController>(context);
     return InkWell(
-      key: widget.pKey,
+      key: widget.deviceControlKey,
       highlightColor: Colors.transparent,
       splashColor: AppColor.greenDarkColor,
       onHighlightChanged: (value) {

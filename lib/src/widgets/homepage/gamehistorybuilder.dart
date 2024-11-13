@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/game_history_model.dart';
 import 'package:walk/src/views/device/chart_details.dart';
-// import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 
 class GameHistoryBuilder extends StatefulWidget {
   const GameHistoryBuilder({super.key});
@@ -15,24 +13,17 @@ class GameHistoryBuilder extends StatefulWidget {
 }
 
 class GameHistoryBuilderState extends State<GameHistoryBuilder> {
-  // late Future<GameHistory?> userGameHistoryFuture;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   userGameHistoryFuture = FirebaseDB.getUserGameHistory();
-  // }
-
   @override
   Widget build(BuildContext context) {
     // print("--------------------Building Game History Ui-------------------");
-    String userName = LocalDB.user?.phone ?? "Unknown User";
+    String? userName = FirebaseAuth.instance.currentUser!.uid;
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
           .collection("users")
           .doc(userName)
           .snapshots(),
       builder: (context, snapshot) {
-        if (LocalDB.user?.name != "Unknown User") {
+        if (userName.isNotEmpty) {
           if (snapshot.hasData) {
             if (snapshot.data?.data() == null) {
               return const Center(
@@ -44,6 +35,13 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
                       gameHistoryFromJson(jsonEncode(snapshot.data!.data())));
             }
           }
+        } else {
+          return const Center(
+            child: Text(
+              "The report is not available.",
+              style: TextStyle(fontSize: 16),
+            ),
+          );
         }
         if (snapshot.hasError) {
           return const Center(
@@ -51,9 +49,9 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
           );
         } else {
           return const Center(
-            child: CircularProgressIndicator(
-              color: AppColor.greenDarkColor,
-              strokeWidth: 5,
+            child: Text(
+              "The report is not yet available.",
+              style: TextStyle(fontSize: 16),
             ),
           );
         }
@@ -61,31 +59,3 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
     );
   }
 }
-//     FutureBuilder<GameHistory?>(
-//       future: userGameHistoryFuture,
-//       builder: (context, snapshot) {
-//         if (snapshot.hasData) {
-//           if (snapshot.data == null) {
-//             return const Center(
-//               child: Text("No data to show , please do a therapy sesssion"),
-//             );
-//           } else {
-//             return DetailChart(historyData: snapshot.data!);
-//           }
-//         }
-//         if (snapshot.hasError) {
-//           return const Center(
-//             child: Text("Coming Soon"),
-//           );
-//         } else {
-//           return const Center(
-//             child: CircularProgressIndicator(
-//               color: AppColor.greenDarkColor,
-//               strokeWidth: 5,
-//             ),
-//           );
-//         }
-//       },
-//     );
-//   }
-// }

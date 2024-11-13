@@ -26,7 +26,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
                 ? "Connecting to device"
                 : "Searching for device",
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColor.greenDarkColor,
               fontSize: 19,
             ),
@@ -45,6 +45,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
               "Connect Device",
               style: TextStyle(
                 fontSize: 19,
+                color: Colors.white
               ),
             ),
           ),

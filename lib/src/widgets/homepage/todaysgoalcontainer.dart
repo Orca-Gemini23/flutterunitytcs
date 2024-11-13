@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/server/api.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
-import 'package:walk/src/views/stepgoal/step_goal_page.dart';
 
 class TodaysGoalBox extends StatefulWidget {
   const TodaysGoalBox({
-    super.key,
+    super.key, required this.goalBoxKey,
   });
+
+  final GlobalKey goalBoxKey;
 
   @override
   State<TodaysGoalBox> createState() => _TodaysGoalBoxState();
@@ -19,7 +18,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      key: keyGoalBox,
+      key: widget.goalBoxKey,
       onTap: () {
         // Go.to(
         //   context: context,
@@ -110,10 +109,10 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                       future: API.getScore(),
                       builder: ((context, snapshot) {
                         var gaitScore = snapshot.hasData
-                            ? (snapshot.data as Map)['Gait Score']
+                            ? (snapshot.data as Map)["data"]['Gait Score']
                             : "";
                         var balanceScore = snapshot.hasData
-                            ? (snapshot.data as Map)['Balance Score']
+                            ? (snapshot.data as Map)["data"]['Balance Score']
                             : "";
 
                         return Column(

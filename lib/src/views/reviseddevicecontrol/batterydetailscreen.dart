@@ -42,21 +42,33 @@ class _BatteryDetailsState extends State<BatteryDetails> {
           child: Column(
             children: [
               CarouselSlider(
-                items: [
-                  SizedBox(
-                    height: 260.h,
-                    width: 200.w,
-                    child: const CustomServerBatteryValueIndicator(),
-                  ),
-                  SizedBox(
-                    height: 260.h,
-                    width: 200.w,
-                    child: const CustomClientBatteryValueIndicator(),
-                  ),
-                ],
+                items: widget.initalPage == 0
+                    ? [
+                        SizedBox(
+                          height: 260.h,
+                          width: 200.w,
+                          child: const CustomServerBatteryValueIndicator(),
+                        ),
+                        SizedBox(
+                          height: 260.h,
+                          width: 200.w,
+                          child: const CustomClientBatteryValueIndicator(),
+                        ),
+                      ]
+                    : [
+                        SizedBox(
+                          height: 260.h,
+                          width: 200.w,
+                          child: const CustomClientBatteryValueIndicator(),
+                        ),
+                        SizedBox(
+                          height: 260.h,
+                          width: 200.w,
+                          child: const CustomServerBatteryValueIndicator(),
+                        ),
+                      ],
                 options: CarouselOptions(
                     viewportFraction: 1,
-                    initialPage: widget.initalPage,
                     height: 260.h,
                     onPageChanged: (index, reason) {
                       _current = index;

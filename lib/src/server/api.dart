@@ -1,34 +1,25 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/db/sqlite_db.dart';
+import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/models/user_model.dart';
+import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'dart:convert';
 
-import 'package:walk/src/views/user/revisedaccountpage.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 
 Future<bool> isNetworkAvailable() async {
-  var connectivityResult = await Connectivity().checkConnectivity();
-  return connectivityResult != ConnectivityResult.none;
-}
-
-void sendDataWhenNetworkAvailable() {
-  Timer.periodic(const Duration(seconds: 30), (timer) async {
-    if (await isNetworkAvailable()) {
-      List localData = await DBHelper.instance.getData();
-      for (var item in localData) {
-        final jsonData = item['data']; // Get the JSON data from the map
-        final decodedData = jsonDecode(jsonData);
-        API.addData(decodedData);
-        await DBHelper.instance.deleteData(item['id']);
-      }
-    }
-  });
+  // var connectivityResult = await Connectivity().checkConnectivity();
+  // return connectivityResult != ConnectivityResult.none;
+  return true;
 }
 
 class API {
@@ -53,53 +44,25 @@ class API {
     var url = Uri.parse(
       "$baseUrl${LocalDB.user!.name.replaceAll(' ', '')}/$game-${DateTime.now().toString().replaceAll(' ', '')}.json",
     );
-    // print(url);
 
-    if (await isNetworkAvailable()) {
-      try {
-        final res = await http.put(url, body: jsonData);
-        if (res.statusCode == 200) {
-          var data = res.body.toString();
-          debugPrint("Data written to file successfully: $data");
-        } else {
-          debugPrint("Failed to write data to the file");
-        }
-      } catch (e) {
-        debugPrint("API Error: ${e.toString()}");
+    try {
+      final res = await http.put(url, body: jsonData);
+      if (res.statusCode == 200) {
+        var data = res.body.toString();
+        debugPrint("Data written to file successfully: $data");
+      } else {
+        debugPrint("Failed to write data to the file");
       }
-    } else {
-      await DBHelper.instance.insertData(score);
-      List localData = await DBHelper.instance.getData();
-      debugPrint('Data stored locally: $localData');
+    } catch (e) {
+      debugPrint("API Error: ${e.toString()}");
     }
   }
 
   static getScore() async {
-    // var baseUrl =
-    //     "https://h1obcwd8tj.execute-api.ap-south-1.amazonaws.com/Data_S3/s3-gait-balance-score-data?file=${LocalDB.user!.name.trimRight()}.json";
-
-    // debugPrint("score is coming");
-
-    // var url = Uri.parse(baseUrl);
-    // try {
-    //   final res = await http.get(url);
-    //   if (res.statusCode == 200) {
-    //     var data = jsonDecode(res.body);
-    //     debugPrint("Data fetched successfully: $data");
-    //     debugPrint("${data.runtimeType}");
-    //     return data;
-    //   } else {
-    //     debugPrint("Failed to fetch data ");
-    //     return {'Gait Score': '', 'Balance Score': ''};
-    //   }
-    // } catch (e) {
-    //   debugPrint("API Error: ${e.toString()}");
-    // }
     try {
       final result = await FirebaseFunctions.instanceFor(region: "us-central1")
           .httpsCallable('user_gaitscore')
           .call();
-      // log(result.data);
       return result.data;
     } catch (error) {
       debugPrint(error.toString());
@@ -107,53 +70,86 @@ class API {
   }
 
   static getUserDetails() async {
-    // var baseUrl =
-    //     "https://rd65t5n63j.execute-api.ap-south-1.amazonaws.com/prod/rdsmysql?contact_number=$phoneNo";
-
-    // debugPrint("details is coming");
-
-    // var url = Uri.parse(baseUrl);
-    // try {
-    //   final res = await http.get(url);
-    //   if (res.statusCode == 200) {
-    //     var data = jsonDecode(res.body);
-    //     debugPrint("Data fetched successfully");
-
-    //     var newUser = UserModel(
-    //       name: data[0]["Name"] ?? "Unknown User",
-    //       age: data[0]["Age"] ?? "XX",
-    //       phone: "$countryCode $phoneNo",
-    //       image: "NA",
-    //       gender: data[0]["Gender"] ?? "XX",
-    //       address: data[0]["Address"] ?? "XX",
-    //       email: data[0]["Email"] ?? "XX",
-    //     );
-    //     LocalDB.saveUser(newUser);
-    //   } else {
-    //     debugPrint("Failed to fetch data ");
-    //   }
-    // } catch (e) {
-    //   debugPrint("API Error: ${e.toString()}");
-    // }
     try {
-      final result = await FirebaseFunctions.instanceFor(region: "us-central1")
+      UserModel newUser;
+      await FirebaseFunctions.instanceFor(region: "us-central1")
           .httpsCallable('user_data')
-          .call();
-      if (result.data!["data"]![0] != null) {
-        UserModel newUser = UserModel(
-          name: result.data["data"][0]["Name"] ?? "Unknown User",
-          age: "${result.data["data"][0]["Age"]}" ?? "xx",
-          phone: "$countryCode $phoneNo",
-          image: "NA",
-          gender: result.data["data"][0]["Gender"] ?? "XX",
-          address: result.data["data"][0]["Address"] ?? "XX",
-          email: result.data["data"][0]["Email"] ?? "XX",
-        );
-        LocalDB.saveUser(newUser);
-      }
-      // print("----------->${result.data}");
+          .call()
+          .then((result) => {
+                if (result.data?["data"]?.length != 0)
+                  {
+                    newUser = UserModel(
+                        name: result.data["data"][0]["Name"] ?? "Unknown User",
+                        age: "${result.data["data"][0]["Age"]}",
+                        phone: "$countryCode $phoneNo",
+                        image: "NA",
+                        gender: result.data["data"][0]["Gender"] ?? "XX",
+                        address: result.data["data"][0]["Address"] ?? "XX",
+                        email: result.data["data"][0]["Email"] ?? "XX"),
+                    LocalDB.saveUser(newUser),
+                  }
+              });
     } catch (error) {
-      debugPrint(error.toString());
+      log(error.toString());
     }
+  }
+
+  static Future<dynamic> getUserDetailsFireStore() async {
+    // retriving data
+    await FirebaseFirestore.instance
+        .collection("UserProfiles")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then(
+      (DocumentSnapshot doc) {
+        if (doc.data() != null) {
+          final data = doc.data() as Map<String, dynamic>;
+          if (data.isNotEmpty) {
+            if (data["User Details"] != null &&
+                data["User Details"] is List &&
+                data["User Details"].isNotEmpty) {
+              var userData = data["User Details"]?.last as Map<String, dynamic>;
+              UserModel newUser = UserModel(
+                name: userData["userName"] ?? "Unknown User",
+                age: userData["userAge"],
+                phone: userData["userPhone"] ?? LocalDB.user!.phone,
+                image: "NA",
+                gender: userData["userGender"] ?? "XX",
+                address: userData["userAddress"] ?? "XX",
+                email: userData["userEmail"] ?? "XX",
+              );
+              LocalDB.saveUser(newUser);
+              DetailsPage.height = userData["userHeight"];
+              DetailsPage.weight = userData["userWeight"];
+              PreferenceController.saveStringData(
+                  "Height", userData["userHeight"] ?? "");
+              PreferenceController.saveStringData(
+                  "Weight", userData["userWeight"] ?? "");
+            }
+          }
+        } else {
+          getUserDetails;
+          if (LocalDB.user!.name == "Unknown User") {
+            FirestoreUserModel userDetails = FirestoreUserModel(
+              userName: LocalDB.user!.name,
+              userPhone: LocalDB.user!.phone,
+              userGender: LocalDB.user!.gender,
+              userAge: LocalDB.user!.age,
+              userEmail: LocalDB.user!.email,
+              userAddress: LocalDB.user!.address,
+              userHeight: "",
+              userWeight: "",
+            );
+            FirebaseFirestore.instance
+                .collection("UserProfiles")
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .set({
+              "User Details": FieldValue.arrayUnion([userDetails.toJson()]),
+            }, SetOptions(merge: true));
+          }
+        }
+      },
+      onError: (e) => debugPrint("Error getting document: $e"),
+    );
   }
 }

@@ -3,6 +3,7 @@
 //ab is Server
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 Guid SERVICE = Guid("0000abf0-0000-1000-8000-00805f9b34fb");
 Guid WRITECHARACTERISTICS = Guid("0000abf1-0000-1000-8000-00805f9b34fb");
@@ -50,22 +51,21 @@ String RSTF = "rstf;";
 String RPROV = "rprov;";
 String NOTIFICON = "@mipmap/ic_launcher";
 
-final List<String> modesNames = [
-  'High Freq', //'Novib',
-  'Swing phase continuous',
-  'Swing phase burst',
-  'Stance phase continuous',
-  'Stance phase burst',
-  'Open loop',
-  'Advanced'
-];
-
-final Map<String, String> modesDictionary = {
-  'High Freq': "-1",
-  'Swing phase continuous': "2",
-  'Swing phase burst': "3",
-  'Stance phase continuous': "0",
-  'Stance phase burst': "1",
-  'Open loop': "4",
-  'Advanced': "11"
-};
+final Map<String, String> modesDictionary = AdvancedMode.modeSettingVisible
+    ? {
+        'High Freq': "-1",
+        'Swing phase continuous': "2",
+        'Swing phase burst': "3",
+        'Stance phase continuous': "0",
+        'Stance phase burst': "1",
+        'Open loop': "4",
+        'Advanced': "14"
+      }
+    : {
+        'High Freq': "-1",
+        'Swing phase continuous': "2",
+        'Swing phase burst': "3",
+        'Stance phase continuous': "0",
+        'Stance phase burst': "1",
+        'Open loop': "4",
+      };

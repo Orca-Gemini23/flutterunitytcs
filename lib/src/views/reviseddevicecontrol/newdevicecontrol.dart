@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:developer';
+import 'dart:math';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,14 +14,13 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/utils/version_number.dart';
+import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/additionalsettings/addsettings.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';
 import 'package:walk/src/views/reviseddevicecontrol/batterydetailscreen.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/widgets/devicecontrolpage/magnitudeslider.dart';
 import 'package:walk/src/widgets/dialog.dart';
-import 'package:walk/src/widgets/modetogglebutton.dart';
 
 class DeviceControlPage extends StatefulWidget {
   const DeviceControlPage({super.key});
@@ -37,19 +36,22 @@ class _DeviceControlPageState extends State<DeviceControlPage>
   StreamSubscription<BluetoothConnectionState>? _deviceStateSubscription;
   bool isDialogup = true;
   late Future<bool> metricsFuture;
-  RangeValues _currentRangeValues = RangeValues(-30, 30);
-  TextEditingController _minController = TextEditingController();
-  TextEditingController _maxController = TextEditingController();
-  FocusNode _minFocusNode = FocusNode();
-  FocusNode _maxFocusNode = FocusNode();
+  RangeValues _currentRangeValues = const RangeValues(-30, 30);
+  final TextEditingController _minController = TextEditingController();
+  final TextEditingController _maxController = TextEditingController();
+  final FocusNode _minFocusNode = FocusNode();
+  final FocusNode _maxFocusNode = FocusNode();
+  bool? previousValue;
+  bool magChanger = false;
   // Right Band Angle
-  RangeValues _currentRangeValuesRight = RangeValues(-30, 30);
-  TextEditingController _minControllerRight = TextEditingController();
-  TextEditingController _maxControllerRight = TextEditingController();
-  FocusNode _minFocusNodeRight = FocusNode();
-  FocusNode _maxFocusNodeRight = FocusNode();
+  RangeValues _currentRangeValuesRight = const RangeValues(-30, 30);
+  final TextEditingController _minControllerRight = TextEditingController();
+  final TextEditingController _maxControllerRight = TextEditingController();
+  final FocusNode _minFocusNodeRight = FocusNode();
+  final FocusNode _maxFocusNodeRight = FocusNode();
   // String s = "eyJraWQiOiJNbjVDS1EiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxOjIwNTYyMzk5NTc0NzphbmRyb2lkOjUzNjA0NzllMTdiMzNhYmZiZWI3NTYiLCJhdWQiOlsicHJvamVjdHNcLzIwNTYyMzk5NTc0NyIsInByb2plY3RzXC93YWxrLTkwZGJmIl0sInByb3ZpZGVyIjoiZGVidWciLCJpc3MiOiJodHRwczpcL1wvZmlyZWJhc2VhcHBjaGVjay5nb29nbGVhcGlzLmNvbVwvMjA1NjIzOTk1NzQ3IiwiZXhwIjoxNzIwNTA2MDMxLCJpYXQiOjE3MjA1MDI0MzEsImp0aSI6IkhfMDVSVXNqQ1RLdTlzZC05cWNCUGJuQ242UVZiNTNzTVlJejZZV2tIc3cifQ.R4h_eNPGQztZ10IgscYU9ybcpVkagV8LVIbm8lwOncIwxNTf2Eruo1EME4IJTxlOWX_kEIc5HlC13PVUzwWyBIQb5Qp_u-NmE5mZSSxRb3b4rRVzMUAxoSofldZpq_6Ou2q9xWlm-5BGt6DRpE2T3cT0CS5TA0UDMnV4G8Jiynvrx1twb6pOCLPduIYfymZfECyguSjgJXvY1YzLRbXrVl2FDjuY30Jp69JLzlGbuhfd1UJN_iG0OncCspn7_lst4U7WH9GzIKB7JXh1-MLJmwXWy-PWLWbkvWSYDSkobt6-eCUkEpz-_v6BQWqDvyPlLQ_Vv9W0mMb-jMjCaY8XI84BqsopjmK2gG8OAwl-fgA0zIvUnxvJpFjiUBxChjlX1jboah3MRHCLoIf9Xf96M1BYTMVRhyJjsGv1-6PzR9hXtFGX-hG7sjQrQ9oq5rWx7JLNZRA2A2f-Q0TU9Kiv5rHegUUBJH0b1zjd1Q2xvhWNOykh6Q9U0hL4nyzGfEHo";
-
+  bool isInclusive = false;
+  bool isInclusiveRight = false;
   Future<bool> getDeviceMetrics() async {
     try {
       await deviceController.getBatteryPercentageValues();
@@ -70,7 +72,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
   @override
   void initState() {
     FirebaseAnalytics.instance
-        .setCurrentScreen(screenName: 'Device Control Page')
+        .logScreenView(screenName: 'Device Control Page')
         .then(
           (value) => debugPrint("Analytics stated"),
         );
@@ -123,6 +125,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
     _maxControllerRight.dispose();
     _minFocusNodeRight.dispose();
     _maxFocusNodeRight.dispose();
+    scrollController.dispose();
   }
 
   void _validateAndUpdateMin() {
@@ -182,800 +185,546 @@ class _DeviceControlPageState extends State<DeviceControlPage>
   }
 
   Future<bool> _onWillPop() async {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  RevisedHomePage()));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => const RevisedHomePage()));
     return false;
   }
 
+  final ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        extendBody: false,
-        appBar: AppBar(
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          iconTheme: const IconThemeData(
-            color: AppColor.blackColor,
-          ),
-          title: const Text(
-            "Device Control",
-            style: TextStyle(
+    return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) {
+            return;
+          }
+          await _onWillPop();
+        },
+        child: Scaffold(
+          extendBody: false,
+          appBar: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            iconTheme: const IconThemeData(
               color: AppColor.blackColor,
-              fontSize: 16,
             ),
-          )
-        ],
-      ),
-      body: RawScrollbar(
-          thumbVisibility: true,
-          thickness: 8, 
-          radius: const Radius.circular(10),  
-          minThumbLength: 10,
-          thumbColor: AppColor.lightgreen,
-          child: StreamBuilder<BluetoothConnectionState>(
-              stream: deviceController.connectedDevice?.connectionState ??
-                  const Stream.empty(),
-              builder: (context, connectionSnapshot) {
-                log("Stream output is ${connectionSnapshot.data} ");
-                if (connectionSnapshot.data ==
-                    BluetoothConnectionState.disconnected) {
-                  if (isDialogup) {
-                    WidgetsBinding.instance.addPostFrameCallback(
-                      (timeStamp) {
-                        setState(() {
-                          isDialogup = false;
-                        });
-                        deviceController.clearConnectedDevice();
-        
-                        CustomDialogs.showBleDisconnectedDialog(context);
-                      },
-                    );
+            title: const Text(
+              "Device Control",
+              style: TextStyle(
+                color: AppColor.blackColor,
+                fontSize: 16,
+              ),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      settings: const RouteSettings(
+                          name: "/device/additionalsettings"),
+                      builder: (context) => const AdditionalSettings(),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.settings_outlined,
+                  size: 30,
+                ),
+              )
+            ],
+          ),
+          body: RawScrollbar(
+            controller: scrollController,
+            thumbVisibility: AdvancedMode.modevisiable,
+            thickness: 8,
+            radius: const Radius.circular(10),
+            minThumbLength: 10,
+            thumbColor: AppColor.lightgreen,
+            child: StreamBuilder<BluetoothConnectionState>(
+                stream: deviceController.connectedDevice?.connectionState ??
+                    const Stream.empty(),
+                builder: (context, connectionSnapshot) {
+                  if (connectionSnapshot.data ==
+                      BluetoothConnectionState.disconnected) {
+                    deviceController.isScanning = false;
+                    deviceController.isConnecting = false;
+                    if (isDialogup) {
+                      WidgetsBinding.instance.addPostFrameCallback(
+                        (timeStamp) {
+                          setState(() {
+                            isDialogup = false;
+                          });
+                          deviceController.clearConnectedDevice();
+
+                          CustomDialogs.showBleDisconnectedDialog(context);
+                        },
+                      );
+                    }
                   }
-                }
-                var currentMode = deviceController.modeValue;
-                return FutureBuilder<bool>(
-                  builder: (context, deviceMetricSnapshot) {
-                    switch (deviceMetricSnapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColor.greenDarkColor,
-                            ),
-                          );
-                        }
-                      case ConnectionState.done:
-                      default:
-                        if (deviceMetricSnapshot.hasError) {
-                          return const Center(
-                            child: Text(
-                                "Some error occurred getting device details. Try again."),
-                          );
-                        } else if (deviceMetricSnapshot.hasData) {
-                          TextEditingController frequencyTextController =
-                              deviceController.frequencyValue < 0
-                                  ? TextEditingController(text: " ")
-                                  : TextEditingController(
-                                      text: (deviceController.frequencyValue * 60)
-                                          .toStringAsFixed(0));
-                          return Consumer<DeviceController>(
-                            builder: (context, deviceController, widget) {
-                              deviceController.isScanning = false;
-                              var currentmode = deviceController.modeValue;
-                              // var logTimer = Timer.periodic(
-                              //     const Duration(seconds: 1), (timer) {
-                              //   print("timer");
-                              //   if (!deviceController.bandC) {
-                              //     print("hi ");
-                              //     deviceController.getClientConnectionStatus();
-                              //   }
-                              // });
-        
-                              // if (deviceController.bandC) {
-                              //   print('timer cancel');
-                              //   logTimer.cancel();
-                              // }
-        
-                              // log("${!deviceController.bandC} ,${deviceController.battC} ,${deviceController.magCValue}");
-                              // print(
-                              //     "${!deviceController.bandC} ,${deviceController.battC} ,${deviceController.magCValue},${deviceController.frequencyValue}");
-        
-                              // log("---->${deviceController.battC}");
-                              // print("hi");
-        
-                              // deviceController.sendToDevice(
-                              //     s, WRITECHARACTERISTICS);
-        
-                              return Container(
-                                width: double.maxFinite,
-                                height: double.maxFinite,
-                                padding: const EdgeInsets.only(
-                                  bottom: 15,
-                                  left: 15,
-                                  right: 15,
-                                ),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // Container(
-                                      //   width: 120,
-                                      //   padding: const EdgeInsets.symmetric(
-                                      //       horizontal: 10),
-                                      //   decoration: BoxDecoration(
-                                      //       borderRadius: BorderRadius.circular(10),
-                                      //       color: AppColor.lightgreen),
-                                      //   child: Row(
-                                      //     children: [
-                                      //       Text(
-                                      //         "SOS",
-                                      //         style: TextStyle(
-                                      //           color: AppColor.blackColor,
-                                      //           fontSize: 14.sp,
-                                      //         ),
-                                      //       ),
-                                      //       const Spacer(),
-                                      //       Switch(
-                                      //         activeColor: AppColor.greenDarkColor,
-                                      //         activeTrackColor:
-                                      //             AppColor.greenDarkColor,
-                                      //         value: sosMode,
-                                      //         onChanged: (value) async {
-                                      //           sosMode = value;
-                                      //           setState(() {});
-                                      //           if (sosMode) {
-                                      //             String modeCommand = "mode 4;";
-                                      //             await deviceController
-                                      //                 .sendToDevice(
-                                      //               modeCommand,
-                                      //               WRITECHARACTERISTICS,
-                                      //             );
-                                      //           } else {
-                                      //             String modeCommand = "mode 4;";
-                                      //             await deviceController
-                                      //                 .sendToDevice(
-                                      //               modeCommand,
-                                      //               WRITECHARACTERISTICS,
-                                      //             );
-                                      //           }
-                                      //         },
-                                      //       )
-                                      //     ],
-                                      //   ),
-                                      // ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        height: 180.h,
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 15,
+
+                  return FutureBuilder<bool>(
+                    builder: (context, deviceMetricSnapshot) {
+                      switch (deviceMetricSnapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColor.greenDarkColor,
+                              ),
+                            );
+                          }
+                        case ConnectionState.done:
+                        default:
+                          if (deviceMetricSnapshot.hasError) {
+                            return const Center(
+                              child: Text(
+                                  "Some error occurred getting device details. Try again."),
+                            );
+                          } else if (deviceMetricSnapshot.hasData) {
+                            return Consumer<DeviceController>(
+                              builder: (context, deviceController, widget) {
+                                deviceController.isScanning = false;
+                                TextEditingController frequencyTextController =
+                                    deviceController.frequencyValue < 0
+                                        ? TextEditingController(text: " ")
+                                        : TextEditingController(
+                                            text: (deviceController
+                                                        .frequencyValue *
+                                                    60)
+                                                .toStringAsFixed(0));
+                                // deviceController.getClientConnectionStream();
+                                // deviceController
+                                //     .getClientConnectionStatus()
+                                //     .asStream()
+                                //     .listen((onData) {
+                                //   print(onData);
+                                // });
+                                return Container(
+                                  width: double.maxFinite,
+                                  height: double.maxFinite,
+                                  padding: const EdgeInsets.only(
+                                    bottom: 15,
+                                    left: 15,
+                                    right: 15,
+                                  ),
+                                  child: SingleChildScrollView(
+                                    controller: scrollController,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(
+                                          height: 10,
                                         ),
-                                        decoration: BoxDecoration(
-                                          color: AppColor.lightbluegrey,
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Image(
-                                              height: 119.h,
-                                              width: 119.w,
-                                              alignment: Alignment.centerLeft,
-                                              fit: BoxFit.fitHeight,
-                                              image: const AssetImage(
-                                                "assets/images/battery.png",
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                ////Implement Battery Refresh
-                                                Go.to(
-                                                  context: context,
-                                                  push: const BatteryDetails(
-                                                    initalPage: 0,
-                                                  ),
-                                                );
-                                              },
-                                              onVerticalDragDown: (_) async {
-                                                await deviceController
-                                                    .refreshBatteryValues();
-                                              },
-                                              child: Container(
-                                                ////Left Battery Container
-                                                width: 90.w,
-                                                height: 135.h,
-        
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 10),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: AppColor.whiteColor,
-                                                  boxShadow: const [
-                                                    BoxShadow(
-                                                        offset: Offset(4, 4),
-                                                        color: AppColor.black12,
-                                                        blurRadius: 3,
-                                                        spreadRadius: 1),
-                                                    BoxShadow(
-                                                        offset: Offset(-4, 0),
-                                                        color: AppColor.black12,
-                                                        blurRadius: 5,
-                                                        spreadRadius: 1)
-                                                  ],
+                                        Container(
+                                          height: 180.h,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 15,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColor.lightbluegrey,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Image(
+                                                height: 119.h,
+                                                width: 119.w,
+                                                alignment: Alignment.centerLeft,
+                                                fit: BoxFit.fitHeight,
+                                                image: const AssetImage(
+                                                  "assets/images/battery.png",
                                                 ),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      width: double.maxFinite,
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 5,
-                                                          vertical: 5),
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        color: AppColor.lightgreen,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                                topLeft: Radius
-                                                                    .circular(10),
-                                                                topRight:
-                                                                    Radius.circular(
-                                                                        10)),
-                                                      ),
-                                                      child: Text(
-                                                        "Left",
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          letterSpacing: 1,
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  ////Implement Battery Refresh
+                                                  Go.to(
+                                                    context: context,
+                                                    push: const BatteryDetails(
+                                                      initalPage: 0,
+                                                    ),
+                                                  );
+                                                },
+                                                onVerticalDragDown: (_) async {
+                                                  await deviceController
+                                                      .refreshBatteryValues();
+                                                },
+                                                child: Container(
+                                                  ////Left Battery Container
+                                                  width: 90.w,
+                                                  height: 135.h,
+
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 10),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: AppColor.whiteColor,
+                                                    boxShadow: const [
+                                                      BoxShadow(
+                                                          offset: Offset(4, 4),
+                                                          color:
+                                                              AppColor.black12,
+                                                          blurRadius: 3,
+                                                          spreadRadius: 1),
+                                                      BoxShadow(
+                                                          offset: Offset(-4, 0),
+                                                          color:
+                                                              AppColor.black12,
+                                                          blurRadius: 5,
+                                                          spreadRadius: 1)
+                                                    ],
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Container(
+                                                        width: double.maxFinite,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 5,
+                                                                vertical: 5),
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          color: AppColor
+                                                              .lightgreen,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10)),
+                                                        ),
+                                                        child: Text(
+                                                          "Left",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            letterSpacing: 1,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5.h,
-                                                    ),
-                                                    Visibility(
-                                                      replacement:
-                                                          CircularPercentIndicator(
-                                                        radius: 20.w,
-                                                        backgroundColor:
-                                                            AppColor.lightgreen,
+                                                      SizedBox(
+                                                        height: 5.h,
                                                       ),
-                                                      child:
-                                                          CircularPercentIndicator(
+                                                      Visibility(
+                                                        replacement:
+                                                            CircularPercentIndicator(
+                                                          radius: 20.w,
+                                                          backgroundColor:
+                                                              AppColor
+                                                                  .lightgreen,
+                                                        ),
+                                                        child:
+                                                            CircularPercentIndicator(
+                                                          lineWidth: 7,
+                                                          percent:
+                                                              deviceController
+                                                                      .battS /
+                                                                  100,
+                                                          radius: 20.w,
+                                                          center: deviceController
+                                                                      .battS <
+                                                                  30
+                                                              ? const Icon(
+                                                                  Icons.error,
+                                                                  color: Colors
+                                                                      .red,
+                                                                )
+                                                              : null,
+                                                          progressColor:
+                                                              deviceController
+                                                                          .battS <
+                                                                      30
+                                                                  ? Colors.red
+                                                                  : AppColor
+                                                                      .greenDarkColor,
+                                                          circularStrokeCap:
+                                                              CircularStrokeCap
+                                                                  .round,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Text(
+                                                        "${deviceController.battS}%",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.black,
+                                                          fontSize: 16.sp,
+                                                          letterSpacing: 1,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  Go.to(
+                                                      context: context,
+                                                      push:
+                                                          const BatteryDetails(
+                                                        initalPage: 1,
+                                                      ));
+                                                },
+                                                onVerticalDragDown:
+                                                    (details) async {
+                                                  await deviceController
+                                                      .refreshBatteryValues();
+                                                },
+                                                child: Container(
+                                                  ////Right Battery Container
+                                                  width: 90.w,
+                                                  height: 135.h,
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 10),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      color:
+                                                          AppColor.whiteColor,
+                                                      boxShadow: const [
+                                                        BoxShadow(
+                                                          offset: Offset(4, 4),
+                                                          color:
+                                                              AppColor.black12,
+                                                          blurRadius: 3,
+                                                          spreadRadius: 1,
+                                                        ),
+                                                        BoxShadow(
+                                                          offset: Offset(-4, 0),
+                                                          color:
+                                                              AppColor.black12,
+                                                          blurRadius: 5,
+                                                          spreadRadius: 1,
+                                                        )
+                                                      ]),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Container(
+                                                        width: double.maxFinite,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 5,
+                                                                vertical: 5),
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          color: AppColor
+                                                              .lightgreen,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10)),
+                                                        ),
+                                                        child: Text(
+                                                          "Right",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            letterSpacing: 1,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5.h,
+                                                      ),
+                                                      CircularPercentIndicator(
                                                         lineWidth: 7,
-                                                        percent:
-                                                            deviceController.battS /
+                                                        percent: deviceController
+                                                                    .battC <
+                                                                0
+                                                            ? deviceController
+                                                                    .battC *
+                                                                -1
+                                                            : deviceController
+                                                                    .battC /
                                                                 100,
                                                         radius: 20.w,
-                                                        center: deviceController
-                                                                    .battS <
-                                                                30
+                                                        center: (!deviceController
+                                                                    .bandC ||
+                                                                deviceController
+                                                                        .battC <
+                                                                    0 ||
+                                                                deviceController
+                                                                        .magCValue <
+                                                                    0 ||
+                                                                deviceController
+                                                                        .frequencyValue <
+                                                                    0)
                                                             ? const Icon(
                                                                 Icons.error,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.grey,
                                                               )
-                                                            : null,
-                                                        progressColor:
-                                                            deviceController.battS <
+                                                            : deviceController
+                                                                        .battC <
+                                                                    30
+                                                                ? const Icon(
+                                                                    Icons.error,
+                                                                    color: Colors
+                                                                        .red,
+                                                                  )
+                                                                : null,
+                                                        progressColor: (!deviceController
+                                                                    .bandC ||
+                                                                deviceController
+                                                                        .battC <
+                                                                    0 ||
+                                                                deviceController
+                                                                        .magCValue <
+                                                                    0 ||
+                                                                deviceController
+                                                                        .frequencyValue <
+                                                                    0)
+                                                            ? Colors.grey
+                                                            : deviceController
+                                                                        .battC <
                                                                     30
                                                                 ? Colors.red
                                                                 : AppColor
                                                                     .greenDarkColor,
                                                         circularStrokeCap:
-                                                            CircularStrokeCap.round,
+                                                            CircularStrokeCap
+                                                                .round,
                                                       ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Text(
-                                                      "${deviceController.battS}%",
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.w600,
-                                                        color: Colors.black,
-                                                        fontSize: 16.sp,
-                                                        letterSpacing: 1,
+                                                      const SizedBox(
+                                                        height: 5,
                                                       ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () async {
-                                                Go.to(
-                                                    context: context,
-                                                    push: const BatteryDetails(
-                                                      initalPage: 1,
-                                                    ));
-                                              },
-                                              onVerticalDragDown: (details) async {
-                                                await deviceController
-                                                    .refreshBatteryValues();
-                                              },
-                                              child: Container(
-                                                ////Right Battery Container
-                                                width: 90.w,
-                                                height: 135.h,
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 10),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(10),
-                                                    color: AppColor.whiteColor,
-                                                    boxShadow: const [
-                                                      BoxShadow(
-                                                        offset: Offset(4, 4),
-                                                        color: AppColor.black12,
-                                                        blurRadius: 3,
-                                                        spreadRadius: 1,
-                                                      ),
-                                                      BoxShadow(
-                                                        offset: Offset(-4, 0),
-                                                        color: AppColor.black12,
-                                                        blurRadius: 5,
-                                                        spreadRadius: 1,
-                                                      )
-                                                    ]),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      width: double.maxFinite,
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 5,
-                                                          vertical: 5),
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        color: AppColor.lightgreen,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                                topLeft: Radius
-                                                                    .circular(10),
-                                                                topRight:
-                                                                    Radius.circular(
-                                                                        10)),
-                                                      ),
-                                                      child: Text(
-                                                        "Right",
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                          fontSize: 16.sp,
+                                                      Text(
+                                                        (!deviceController
+                                                                    .bandC ||
+                                                                deviceController
+                                                                        .battC <
+                                                                    0 ||
+                                                                deviceController
+                                                                        .magCValue <
+                                                                    0 ||
+                                                                deviceController
+                                                                        .frequencyValue <
+                                                                    0)
+                                                            ? "??"
+                                                            : "${deviceController.battC}%",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w600,
+                                                          color: Colors.black,
+                                                          fontSize: 16,
                                                           letterSpacing: 1,
                                                         ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5.h,
-                                                    ),
-                                                    CircularPercentIndicator(
-                                                      lineWidth: 7,
-                                                      percent:
-                                                          deviceController.battC < 0
-                                                              ? deviceController
-                                                                      .battC *
-                                                                  -1
-                                                              : deviceController
-                                                                      .battC /
-                                                                  100,
-                                                      radius: 20.w,
-                                                      center: (!deviceController.bandC ||
-                                                              deviceController
-                                                                      .battC <
-                                                                  0 ||
-                                                              deviceController
-                                                                      .magCValue <
-                                                                  0 ||
-                                                              deviceController
-                                                                      .frequencyValue <
-                                                                  0)
-                                                          ? const Icon(
-                                                              Icons.error,
-                                                              color: Colors.grey,
-                                                            )
-                                                          : deviceController.battC <
-                                                                  30
-                                                              ? const Icon(
-                                                                  Icons.error,
-                                                                  color: Colors.red,
-                                                                )
-                                                              : null,
-                                                      progressColor: (!deviceController
-                                                                  .bandC ||
-                                                              deviceController.battC <
-                                                                  0 ||
-                                                              deviceController
-                                                                      .magCValue <
-                                                                  0 ||
-                                                              deviceController
-                                                                      .frequencyValue <
-                                                                  0)
-                                                          ? Colors.grey
-                                                          : deviceController.battC <
-                                                                  30
-                                                              ? Colors.red
-                                                              : AppColor
-                                                                  .greenDarkColor,
-                                                      circularStrokeCap:
-                                                          CircularStrokeCap.round,
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Text(
-                                                      (!deviceController.bandC ||
-                                                              deviceController
-                                                                      .battC <
-                                                                  0 ||
-                                                              deviceController
-                                                                      .magCValue <
-                                                                  0 ||
-                                                              deviceController
-                                                                      .frequencyValue <
-                                                                  0)
-                                                          ? "??"
-                                                          : "${deviceController.battC}%",
-                                                      textAlign: TextAlign.center,
-                                                      style: const TextStyle(
-                                                        fontWeight: FontWeight.w600,
-                                                        color: Colors.black,
-                                                        fontSize: 16,
-                                                        letterSpacing: 1,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: AppColor.lightgreen,
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: AppColor.greyLight,
-                                                offset: Offset(0, 2),
-                                                blurRadius: 4,
-                                                spreadRadius: 0,
-                                                blurStyle: BlurStyle.normal,
-                                              )
-                                            ]),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 5,
-                                        ),
-                                        width: double.maxFinite,
-                                        height: 107.h,
-                                        child: AbsorbPointer(
-                                          absorbing: (!deviceController.bandC ||
-                                              deviceController.battC < 0 ||
-                                              deviceController.magCValue < 0 ||
-                                              deviceController.frequencyValue < 0),
-                                          child: Stack(
-                                            textDirection: TextDirection.ltr,
-                                            children: [
-                                              Positioned(
-                                                top: 0.h,
-                                                child: Text(
-                                                  AppString.frequency,
-                                                  style: TextStyle(
-                                                    color: AppColor.blackColor,
-                                                    fontSize: 16.sp,
-                                                    letterSpacing: 1,
+                                                      )
+                                                    ],
                                                   ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 0,
-                                                right: 0,
-                                                top: 20.h,
-                                                bottom: 0,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: SliderTheme(
-                                                        data: SliderThemeData(
-                                                          trackHeight: 8,
-                                                          activeTrackColor: (!deviceController
-                                                                      .bandC ||
-                                                                  deviceController
-                                                                          .battC <
-                                                                      0 ||
-                                                                  deviceController
-                                                                          .magCValue <
-                                                                      0 ||
-                                                                  deviceController
-                                                                          .frequencyValue <
-                                                                      0)
-                                                              ? Colors.grey
-                                                              : AppColor
-                                                                  .greenDarkColor,
-                                                        ),
-                                                        child: Slider(
-                                                          value: deviceController
-                                                                      .frequencyValue ==
-                                                                  -1
-                                                              ? 0.3
-                                                              : deviceController
-                                                                  .frequencyValue,
-                                                          min: 0.3,
-                                                          max: 2,
-                                                          label: deviceController
-                                                              .frequencyValue
-                                                              .toString(),
-                                                          thumbColor: (!deviceController
-                                                                      .bandC ||
-                                                                  deviceController
-                                                                          .battC <
-                                                                      0 ||
-                                                                  deviceController
-                                                                          .magCValue <
-                                                                      0 ||
-                                                                  deviceController
-                                                                          .frequencyValue <
-                                                                      0)
-                                                              ? Colors.grey
-                                                              : AppColor
-                                                                  .greenDarkColor,
-                                                          onChanged: (value) {
-                                                            if (deviceController
-                                                                .bandC) {
-                                                              HapticFeedback
-                                                                  .lightImpact();
-                                                              deviceController
-                                                                  .setfreqValue(
-                                                                      value);
-                                                            } else {
-                                                              null;
-                                                            }
-                                                          },
-                                                          onChangeEnd:
-                                                              (value) async {
-                                                            if (deviceController
-                                                                .bandC) {
-                                                              String approxFrequency = deviceController
-                                                                          .frequencyValue
-                                                                          .toString()
-                                                                          .length >
-                                                                      3
-                                                                  ? deviceController
-                                                                      .frequencyValue
-                                                                      .toString()
-                                                                      .substring(
-                                                                          0, 4)
-                                                                  : deviceController
-                                                                      .frequencyValue
-                                                                      .toString();
-        
-                                                              String command =
-                                                                  "$FREQ c $approxFrequency;";
-        
-                                                              log(command);
-                                                              await deviceController
-                                                                  .sendToDevice(
-                                                                      command,
-                                                                      WRITECHARACTERISTICS);
-                                                              frequencyTextController
-                                                                  .text = (value *
-                                                                      60)
-                                                                  .toStringAsFixed(
-                                                                      0);
-                                                            } else {
-                                                              null;
-                                                            }
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 1,
-                                                      child: Container(
-                                                        height: 40,
-                                                        // width: 1,
-                                                        decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                  10),
-                                                        ),
-                                                        child: TextField(
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            textAlignVertical:
-                                                                TextAlignVertical
-                                                                    .center,
-                                                            controller:
-                                                                frequencyTextController,
-                                                            decoration:
-                                                                const InputDecoration(
-                                                                    border:
-                                                                        OutlineInputBorder(),
-                                                                    labelText:
-                                                                        'steps/min',
-                                                                    labelStyle:
-                                                                        TextStyle(
-                                                                            fontSize:
-                                                                                15)),
-                                                            inputFormatters: <TextInputFormatter>[
-                                                              FilteringTextInputFormatter
-                                                                  .digitsOnly,
-                                                              LengthLimitingTextInputFormatter(
-                                                                  3),
-                                                            ],
-                                                            keyboardType:
-                                                                const TextInputType
-                                                                    .numberWithOptions(
-                                                                    signed: true,
-                                                                    decimal: true),
-                                                            onSubmitted:
-                                                                (value) async {
-                                                              if (double.parse(
-                                                                      value) >
-                                                                  120) {
-                                                                value = "120";
-                                                              }
-                                                              if (double.parse(
-                                                                      value) <
-                                                                  18) {
-                                                                value = "18";
-                                                              }
-                                                              if (deviceController
-                                                                  .bandC) {
-                                                                setState(() {
-                                                                  try {
-                                                                    deviceController
-                                                                        .setfreqValue(
-                                                                            double.parse(value) /
-                                                                                60);
-                                                                  } catch (e) {
-                                                                    log('$e');
-                                                                  }
-                                                                });
-                                                                String approxFrequency = deviceController
-                                                                            .frequencyValue
-                                                                            .toString()
-                                                                            .length >
-                                                                        3
-                                                                    ? deviceController
-                                                                        .frequencyValue
-                                                                        .toString()
-                                                                        .substring(
-                                                                            0, 4)
-                                                                    : deviceController
-                                                                        .frequencyValue
-                                                                        .toString();
-        
-                                                                String command =
-                                                                    "$FREQ c $approxFrequency;";
-        
-                                                                log(command);
-                                                                await deviceController
-                                                                    .sendToDevice(
-                                                                        command,
-                                                                        WRITECHARACTERISTICS);
-                                                              } else {
-                                                                null;
-                                                              }
-                                                            }),
-                                                      ),
-                                                    ),
-                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: AppColor.lightgreen,
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: AppColor.greyLight,
-                                                offset: Offset(0, 2),
-                                                blurRadius: 4,
-                                                spreadRadius: 0,
-                                                blurStyle: BlurStyle.normal,
-                                              )
-                                            ]),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 5,
+                                        const SizedBox(
+                                          height: 10,
                                         ),
-                                        width: double.maxFinite,
-                                        height: 140.h,
-                                        child: Stack(
-                                          textDirection: TextDirection.ltr,
-                                          children: [
-                                            Positioned(
-                                              child: Text(
-                                                AppString.magnitude,
-                                                style: TextStyle(
-                                                  color: AppColor.blackColor,
-                                                  fontSize: 16.sp,
-                                                  letterSpacing: 1,
-                                                ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              color: AppColor.lightgreen,
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                10,
                                               ),
-                                            ),
-                                            Positioned(
-                                                top: 40,
-                                                left: 0,
-                                                right: 0,
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.spaceEvenly,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        children: [
-                                                          Text(
-                                                            "Left",
-                                                            style: TextStyle(
-                                                                fontSize: 14.sp,
-                                                                fontWeight:
-                                                                    FontWeight.w500,
-                                                                color:
-                                                                    Colors.black),
-                                                          ),
-                                                          magSlider(false,
-                                                              deviceController),
-                                                        ],
-                                                      ),
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: AppColor.greyLight,
+                                                  offset: Offset(0, 2),
+                                                  blurRadius: 4,
+                                                  spreadRadius: 0,
+                                                  blurStyle: BlurStyle.normal,
+                                                )
+                                              ]),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 5,
+                                          ),
+                                          width: double.maxFinite,
+                                          height: 107.h,
+                                          child: AbsorbPointer(
+                                            absorbing: (!deviceController
+                                                    .bandC ||
+                                                deviceController.battC < 0 ||
+                                                deviceController.magCValue <
+                                                    0 ||
+                                                deviceController
+                                                        .frequencyValue <
+                                                    0),
+                                            child: Stack(
+                                              textDirection: TextDirection.ltr,
+                                              children: [
+                                                Positioned(
+                                                  top: 0.h,
+                                                  child: Text(
+                                                    AppString.frequency,
+                                                    style: TextStyle(
+                                                      color:
+                                                          AppColor.blackColor,
+                                                      fontSize: 16.sp,
+                                                      letterSpacing: 1,
                                                     ),
-                                                    // const Spacer(),
-                                                    Expanded(
-                                                      child: Column(
-                                                        children: [
-                                                          Text(
-                                                            "Right",
-                                                            style: TextStyle(
-                                                              fontSize: 14.sp,
-                                                              fontWeight:
-                                                                  FontWeight.w500,
-                                                              color: Colors.black,
-                                                            ),
-                                                          ),
-                                                          AbsorbPointer(
-                                                            absorbing:
-                                                                (!deviceController
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  left: 0,
+                                                  right: 0,
+                                                  top: 20.h,
+                                                  bottom: 0,
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 3,
+                                                        child: SliderTheme(
+                                                          data: SliderThemeData(
+                                                            trackHeight: 8,
+                                                            activeTrackColor: (!deviceController
                                                                         .bandC ||
                                                                     deviceController
                                                                             .battC <
@@ -985,22 +734,304 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                         0 ||
                                                                     deviceController
                                                                             .frequencyValue <
-                                                                        0),
-                                                            child: magSlider(true,
-                                                                deviceController),
+                                                                        0)
+                                                                ? Colors.grey
+                                                                : AppColor
+                                                                    .greenDarkColor,
                                                           ),
-                                                        ],
+                                                          child: Slider(
+                                                            value: deviceController
+                                                                        .frequencyValue ==
+                                                                    -1
+                                                                ? 0.3
+                                                                : deviceController
+                                                                    .frequencyValue,
+                                                            min: 0.3,
+                                                            max: 2,
+                                                            label: deviceController
+                                                                .frequencyValue
+                                                                .toString(),
+                                                            thumbColor: (!deviceController
+                                                                        .bandC ||
+                                                                    deviceController
+                                                                            .battC <
+                                                                        0 ||
+                                                                    deviceController
+                                                                            .magCValue <
+                                                                        0 ||
+                                                                    deviceController
+                                                                            .frequencyValue <
+                                                                        0)
+                                                                ? Colors.grey
+                                                                : AppColor
+                                                                    .greenDarkColor,
+                                                            onChanged: (value) {
+                                                              if (deviceController
+                                                                  .bandC) {
+                                                                HapticFeedback
+                                                                    .lightImpact();
+                                                                deviceController
+                                                                    .setfreqValue(
+                                                                        value);
+                                                              } else {
+                                                                null;
+                                                              }
+                                                              frequencyTextController
+                                                                  .text = (value *
+                                                                      60)
+                                                                  .toStringAsFixed(
+                                                                      0);
+                                                            },
+                                                            onChangeEnd:
+                                                                (value) async {
+                                                              if (deviceController
+                                                                  .bandC) {
+                                                                String approxFrequency = deviceController
+                                                                            .frequencyValue
+                                                                            .toString()
+                                                                            .length >
+                                                                        3
+                                                                    ? deviceController
+                                                                        .frequencyValue
+                                                                        .toString()
+                                                                        .substring(
+                                                                            0,
+                                                                            4)
+                                                                    : deviceController
+                                                                        .frequencyValue
+                                                                        .toString();
+
+                                                                String command =
+                                                                    "$FREQ c $approxFrequency;";
+                                                                await deviceController
+                                                                    .sendToDevice(
+                                                                        command,
+                                                                        WRITECHARACTERISTICS);
+                                                                frequencyTextController
+                                                                        .text =
+                                                                    (value * 60)
+                                                                        .toStringAsFixed(
+                                                                            0);
+                                                              } else {
+                                                                null;
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
                                                       ),
-                                                    )
-                                                  ],
-                                                ))
-                                          ],
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Container(
+                                                          height: 40,
+                                                          // width: 1,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          child: TextField(
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              textAlignVertical:
+                                                                  TextAlignVertical
+                                                                      .center,
+                                                              controller:
+                                                                  frequencyTextController,
+                                                              decoration: const InputDecoration(
+                                                                  border:
+                                                                      OutlineInputBorder(),
+                                                                  labelText:
+                                                                      'steps/min',
+                                                                  labelStyle:
+                                                                      TextStyle(
+                                                                          fontSize:
+                                                                              15)),
+                                                              inputFormatters: <TextInputFormatter>[
+                                                                FilteringTextInputFormatter
+                                                                    .digitsOnly,
+                                                                LengthLimitingTextInputFormatter(
+                                                                    3),
+                                                              ],
+                                                              keyboardType:
+                                                                  const TextInputType
+                                                                      .numberWithOptions(
+                                                                      signed:
+                                                                          true,
+                                                                      decimal:
+                                                                          true),
+                                                              onSubmitted:
+                                                                  (value) async {
+                                                                if (double.parse(
+                                                                        value) >
+                                                                    120) {
+                                                                  value = "120";
+                                                                }
+                                                                if (double.parse(
+                                                                        value) <
+                                                                    18) {
+                                                                  value = "18";
+                                                                }
+                                                                if (deviceController
+                                                                    .bandC) {
+                                                                  setState(() {
+                                                                    try {
+                                                                      deviceController.setfreqValue(
+                                                                          double.parse(value) /
+                                                                              60);
+                                                                    } catch (e) {
+                                                                      debugPrint(
+                                                                          e.toString());
+                                                                    }
+                                                                  });
+                                                                  String approxFrequency = deviceController
+                                                                              .frequencyValue
+                                                                              .toString()
+                                                                              .length >
+                                                                          3
+                                                                      ? deviceController
+                                                                          .frequencyValue
+                                                                          .toString()
+                                                                          .substring(
+                                                                              0,
+                                                                              4)
+                                                                      : deviceController
+                                                                          .frequencyValue
+                                                                          .toString();
+
+                                                                  String
+                                                                      command =
+                                                                      "$FREQ c $approxFrequency;";
+                                                                  await deviceController
+                                                                      .sendToDevice(
+                                                                          command,
+                                                                          WRITECHARACTERISTICS);
+                                                                } else {
+                                                                  null;
+                                                                }
+                                                              }),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Visibility(
-                                        visible: AdvancedMode.modevisiable,
-                                        child: Container(
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              color: AppColor.lightgreen,
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                10,
+                                              ),
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: AppColor.greyLight,
+                                                  offset: Offset(0, 2),
+                                                  blurRadius: 4,
+                                                  spreadRadius: 0,
+                                                  blurStyle: BlurStyle.normal,
+                                                )
+                                              ]),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 5,
+                                          ),
+                                          width: double.maxFinite,
+                                          height: 140.h,
+                                          child: Stack(
+                                            textDirection: TextDirection.ltr,
+                                            children: [
+                                              Positioned(
+                                                child: Text(
+                                                  AppString.magnitude,
+                                                  style: TextStyle(
+                                                    color: AppColor.blackColor,
+                                                    fontSize: 16.sp,
+                                                    letterSpacing: 1,
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                  top: 40,
+                                                  left: 0,
+                                                  right: 0,
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          children: [
+                                                            Text(
+                                                              "Left",
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      14.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                            magSlider(false,
+                                                                deviceController),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      // const Spacer(),
+                                                      Expanded(
+                                                        child: Column(
+                                                          children: [
+                                                            Text(
+                                                              "Right",
+                                                              style: TextStyle(
+                                                                fontSize: 14.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                            ),
+                                                            AbsorbPointer(
+                                                              absorbing: (!deviceController
+                                                                      .bandC ||
+                                                                  deviceController
+                                                                          .battC <
+                                                                      0 ||
+                                                                  deviceController
+                                                                          .magCValue <
+                                                                      0 ||
+                                                                  deviceController
+                                                                          .frequencyValue <
+                                                                      0),
+                                                              child: magSlider(
+                                                                  true,
+                                                                  deviceController),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ))
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Visibility(
+                                          visible: AdvancedMode.modevisiable,
                                           child: Column(children: [
                                             Container(
                                               decoration: BoxDecoration(
@@ -1015,11 +1046,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                       offset: Offset(0, 2),
                                                       blurRadius: 4,
                                                       spreadRadius: 0,
-                                                      blurStyle: BlurStyle.normal,
+                                                      blurStyle:
+                                                          BlurStyle.normal,
                                                     )
                                                   ]),
                                               child: Padding(
-                                                padding: const EdgeInsets.all(20.0),
+                                                padding:
+                                                    const EdgeInsets.all(20.0),
                                                 child: Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
@@ -1031,146 +1064,204 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                       child: Text(
                                                         'Angle Mode',
                                                         style: TextStyle(
-                                                          color:
-                                                              AppColor.blackColor,
+                                                          color: AppColor
+                                                              .blackColor,
                                                           fontSize: 16.sp,
                                                           letterSpacing: 1,
                                                         ),
                                                       ),
                                                     ),
                                                     const Divider(),
-                                                    Container(
-                                                      child: Column(
-                                                        children: [
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .bottomLeft,
-                                                            child: Text(
-                                                              'Left Band Range',
-                                                              style: TextStyle(
-                                                                  color: AppColor
-                                                                      .greenDarkColor,
-                                                                  fontSize: 14.sp,
-                                                                  letterSpacing: 1,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                    Column(
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Align(
+                                                              alignment: Alignment
+                                                                  .bottomLeft,
+                                                              child: Text(
+                                                                'Left Band Range',
+                                                                style: TextStyle(
+                                                                    color: AppColor
+                                                                        .greenDarkColor,
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    letterSpacing:
+                                                                        1,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
                                                             ),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceEvenly,
-                                                            children: [
-                                                              // Min value input box
-                                                              Expanded(
-                                                                child:
-                                                                    TextFormField(
-                                                                  controller:
-                                                                      _minController,
-                                                                  keyboardType:
-                                                                      TextInputType
-                                                                          .number,
-                                                                  focusNode:
-                                                                      _minFocusNode,
-                                                                  inputFormatters: [
-                                                                    FilteringTextInputFormatter
-                                                                        .allow(RegExp(
-                                                                            r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
-                                                                  ],
-                                                                  decoration:
-                                                                      InputDecoration(
-                                                                    labelText:
-                                                                        'Min',
-                                                                    border:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0), // Rounded corners (optional)
-                                                                      borderSide:
-                                                                          const BorderSide(
-                                                                        color: AppColor
-                                                                            .greyLight, // Border color
-                                                                        width:
-                                                                            2.0, // Border width
-                                                                      ),
+                                                            Switch(
+                                                              value:
+                                                                  isInclusive,
+                                                              activeColor: AppColor
+                                                                  .greenDarkColor,
+                                                              onChanged: (bool
+                                                                  value) async {
+                                                                // This is called when the user toggles the switch.
+                                                                setState(() {
+                                                                  isInclusive =
+                                                                      value;
+                                                                });
+                                                                if (isInclusive ==
+                                                                    true) {
+                                                                  var command =
+                                                                      "alx_m 0;";
+                                                                  await deviceController
+                                                                      .sendToDevice(
+                                                                          command,
+                                                                          WRITECHARACTERISTICS);
+                                                                } else {
+                                                                  var command =
+                                                                      "alx_m 1;";
+                                                                  await deviceController
+                                                                      .sendToDevice(
+                                                                          command,
+                                                                          WRITECHARACTERISTICS);
+                                                                }
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            // Min value input box
+                                                            Expanded(
+                                                              child:
+                                                                  TextFormField(
+                                                                controller:
+                                                                    _minController,
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                focusNode:
+                                                                    _minFocusNode,
+                                                                inputFormatters: [
+                                                                  FilteringTextInputFormatter
+                                                                      .allow(RegExp(
+                                                                          r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
+                                                                ],
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  labelText:
+                                                                      'Min',
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0), // Rounded corners (optional)
+                                                                    borderSide:
+                                                                        const BorderSide(
+                                                                      color: AppColor
+                                                                          .greyLight, // Border color
+                                                                      width:
+                                                                          2.0, // Border width
                                                                     ),
-                                                                    focusedBorder:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0), // Rounded corners when focused
-                                                                      borderSide:
-                                                                          const BorderSide(
-                                                                        color: AppColor
-                                                                            .greenDarkColor, // Border color when focused
-                                                                        width:
-                                                                            2.0, // Border width when focused
-                                                                      ),
+                                                                  ),
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0), // Rounded corners when focused
+                                                                    borderSide:
+                                                                        const BorderSide(
+                                                                      color: AppColor
+                                                                          .greenDarkColor, // Border color when focused
+                                                                      width:
+                                                                          2.0, // Border width when focused
                                                                     ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                              const SizedBox(
-                                                                  width: 20),
-                                                              Expanded(
-                                                                child:
-                                                                    TextFormField(
-                                                                  controller:
-                                                                      _maxController,
-                                                                  keyboardType:
-                                                                      TextInputType
-                                                                          .number,
-                                                                  focusNode:
-                                                                      _maxFocusNode,
-                                                                  inputFormatters: [
-                                                                    FilteringTextInputFormatter
-                                                                        .allow(RegExp(
-                                                                            r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
-                                                                  ],
-                                                                  decoration:
-                                                                      InputDecoration(
-                                                                    labelText:
-                                                                        'Max',
-                                                                    border:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0), // Rounded corners (optional)
-                                                                      borderSide:
-                                                                          const BorderSide(
-                                                                        color: AppColor
-                                                                            .greyLight, // Border color
-                                                                        width:
-                                                                            2.0, // Border width
-                                                                      ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 20),
+                                                            Expanded(
+                                                              child:
+                                                                  TextFormField(
+                                                                controller:
+                                                                    _maxController,
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                focusNode:
+                                                                    _maxFocusNode,
+                                                                inputFormatters: [
+                                                                  FilteringTextInputFormatter
+                                                                      .allow(RegExp(
+                                                                          r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
+                                                                ],
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  labelText:
+                                                                      'Max',
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0), // Rounded corners (optional)
+                                                                    borderSide:
+                                                                        const BorderSide(
+                                                                      color: AppColor
+                                                                          .greyLight, // Border color
+                                                                      width:
+                                                                          2.0, // Border width
                                                                     ),
-                                                                    focusedBorder:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0), // Rounded corners when focused
-                                                                      borderSide:
-                                                                          const BorderSide(
-                                                                        color: AppColor
-                                                                            .greenDarkColor, // Border color when focused
-                                                                        width:
-                                                                            2.0, // Border width when focused
-                                                                      ),
+                                                                  ),
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0), // Rounded corners when focused
+                                                                    borderSide:
+                                                                        const BorderSide(
+                                                                      color: AppColor
+                                                                          .greenDarkColor, // Border color when focused
+                                                                      width:
+                                                                          2.0, // Border width when focused
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              )
-                                                            ],
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        Theme(
+                                                          data: ThemeData(
+                                                            sliderTheme:
+                                                                SliderThemeData(
+                                                              trackHeight: 8,
+                                                              thumbColor: AppColor
+                                                                  .greenDarkColor, // Change thumb color
+                                                              activeTrackColor: isInclusive
+                                                                  ? AppColor
+                                                                      .greenDarkColor
+                                                                  : Colors.green
+                                                                      .withOpacity(
+                                                                          0.3),
+                                                              inactiveTrackColor:
+                                                                  isInclusive
+                                                                      ? Colors
+                                                                          .green
+                                                                          .withOpacity(
+                                                                              0.3)
+                                                                      : AppColor
+                                                                          .greenDarkColor,
+                                                            ),
                                                           ),
-                                                          SizedBox(height: 20),
-                                                          RangeSlider(
+                                                          child: RangeSlider(
                                                             values:
                                                                 _currentRangeValues,
                                                             min: -90,
@@ -1186,13 +1277,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                   .round()
                                                                   .toString(),
                                                             ),
-                                                            activeColor: AppColor
-                                                                .greenDarkColor, // Change the active portion to green
-                                                            inactiveColor: Colors
-                                                                .green
-                                                                .withOpacity(0.3),
                                                             onChanged: (RangeValues
-                                                                values) {
+                                                                values) async {
+                                                              HapticFeedback
+                                                                  .lightImpact();
                                                               setState(() {
                                                                 _currentRangeValues =
                                                                     values;
@@ -1207,197 +1295,296 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                         .toStringAsFixed(
                                                                             0);
                                                               });
+                                                              double
+                                                                  startValue =
+                                                                  values.start;
+                                                              double endValue =
+                                                                  values.end;
+
+                                                              String
+                                                                  commandMin =
+                                                                  "alx_min: ${sin(startValue * pi / 180)};";
+                                                              String
+                                                                  commandMax =
+                                                                  "alx_max: ${sin(endValue * pi / 180)};";
+
+                                                              // Call a function to send the commands to the device
+                                                              await deviceController
+                                                                  .sendToDevice(
+                                                                      commandMin,
+                                                                      WRITECHARACTERISTICS);
+                                                              await deviceController
+                                                                  .sendToDevice(
+                                                                      commandMax,
+                                                                      WRITECHARACTERISTICS);
                                                             },
                                                           ),
-                                                        ],
-                                                      ),
+                                                        )
+                                                      ],
                                                     ),
                                                     const Divider(),
-                                                    Container(
-                                                      child: Column(
-                                                        children: [
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .bottomLeft,
-                                                            child: Text(
-                                                              'Right Band Range',
-                                                              style: TextStyle(
-                                                                  color: AppColor
-                                                                      .greenDarkColor,
-                                                                  fontSize: 14.sp,
-                                                                  letterSpacing: 1,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                    Column(
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Align(
+                                                              alignment: Alignment
+                                                                  .bottomLeft,
+                                                              child: Text(
+                                                                'Right Band Range',
+                                                                style: TextStyle(
+                                                                    color: AppColor
+                                                                        .greenDarkColor,
+                                                                    fontSize:
+                                                                        14.sp,
+                                                                    letterSpacing:
+                                                                        1,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
                                                             ),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceEvenly,
-                                                            children: [
-                                                              // Min value input box
-                                                              Expanded(
-                                                                child:
-                                                                    TextFormField(
-                                                                  controller:
-                                                                      _minControllerRight,
-                                                                  keyboardType:
-                                                                      TextInputType
-                                                                          .number,
-                                                                  focusNode:
-                                                                      _minFocusNodeRight,
-                                                                  inputFormatters: [
-                                                                    FilteringTextInputFormatter
-                                                                        .allow(RegExp(
-                                                                            r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
-                                                                  ],
-                                                                  decoration:
-                                                                      InputDecoration(
-                                                                    labelText:
-                                                                        'Min',
-                                                                    border:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0), // Rounded corners (optional)
-                                                                      borderSide:
-                                                                          const BorderSide(
-                                                                        color: AppColor
-                                                                            .greyLight, // Border color
-                                                                        width:
-                                                                            2.0, // Border width
-                                                                      ),
+                                                            Switch(
+                                                              value:
+                                                                  isInclusiveRight,
+                                                              activeColor: AppColor
+                                                                  .greenDarkColor,
+                                                              onChanged: (bool
+                                                                  value) async {
+                                                                // This is called when the user toggles the switch.
+                                                                setState(() {
+                                                                  isInclusiveRight =
+                                                                      value;
+                                                                });
+                                                                if (isInclusiveRight ==
+                                                                    true) {
+                                                                  var command =
+                                                                      "arx_m 0;";
+                                                                  await deviceController
+                                                                      .sendToDevice(
+                                                                          command,
+                                                                          WRITECHARACTERISTICS);
+                                                                } else {
+                                                                  var command =
+                                                                      "arx_m 1;";
+                                                                  await deviceController
+                                                                      .sendToDevice(
+                                                                          command,
+                                                                          WRITECHARACTERISTICS);
+                                                                }
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            // Min value input box
+                                                            Expanded(
+                                                              child:
+                                                                  TextFormField(
+                                                                controller:
+                                                                    _minControllerRight,
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                focusNode:
+                                                                    _minFocusNodeRight,
+                                                                inputFormatters: [
+                                                                  FilteringTextInputFormatter
+                                                                      .allow(RegExp(
+                                                                          r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
+                                                                ],
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  labelText:
+                                                                      'Min',
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0), // Rounded corners (optional)
+                                                                    borderSide:
+                                                                        const BorderSide(
+                                                                      color: AppColor
+                                                                          .greyLight, // Border color
+                                                                      width:
+                                                                          2.0, // Border width
                                                                     ),
-                                                                    focusedBorder:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0), // Rounded corners when focused
-                                                                      borderSide:
-                                                                          const BorderSide(
-                                                                        color: AppColor
-                                                                            .greenDarkColor, // Border color when focused
-                                                                        width:
-                                                                            2.0, // Border width when focused
-                                                                      ),
+                                                                  ),
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0), // Rounded corners when focused
+                                                                    borderSide:
+                                                                        const BorderSide(
+                                                                      color: AppColor
+                                                                          .greenDarkColor, // Border color when focused
+                                                                      width:
+                                                                          2.0, // Border width when focused
                                                                     ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                              const SizedBox(
-                                                                  width: 20),
-                                                              Expanded(
-                                                                child:
-                                                                    TextFormField(
-                                                                  controller:
-                                                                      _maxControllerRight,
-                                                                  keyboardType:
-                                                                      TextInputType
-                                                                          .number,
-                                                                  focusNode:
-                                                                      _maxFocusNodeRight,
-                                                                  inputFormatters: [
-                                                                    FilteringTextInputFormatter
-                                                                        .allow(RegExp(
-                                                                            r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
-                                                                  ],
-                                                                  decoration:
-                                                                      InputDecoration(
-                                                                    labelText:
-                                                                        'Max',
-                                                                    border:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0), // Rounded corners (optional)
-                                                                      borderSide:
-                                                                          const BorderSide(
-                                                                        color: AppColor
-                                                                            .greyLight, // Border color
-                                                                        width:
-                                                                            2.0, // Border width
-                                                                      ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 20),
+                                                            Expanded(
+                                                              child:
+                                                                  TextFormField(
+                                                                controller:
+                                                                    _maxControllerRight,
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .number,
+                                                                focusNode:
+                                                                    _maxFocusNodeRight,
+                                                                inputFormatters: [
+                                                                  FilteringTextInputFormatter
+                                                                      .allow(RegExp(
+                                                                          r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
+                                                                ],
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  labelText:
+                                                                      'Max',
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0), // Rounded corners (optional)
+                                                                    borderSide:
+                                                                        const BorderSide(
+                                                                      color: AppColor
+                                                                          .greyLight, // Border color
+                                                                      width:
+                                                                          2.0, // Border width
                                                                     ),
-                                                                    focusedBorder:
-                                                                        OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .circular(
-                                                                                  10.0), // Rounded corners when focused
-                                                                      borderSide:
-                                                                          const BorderSide(
-                                                                        color: AppColor
-                                                                            .greenDarkColor, // Border color when focused
-                                                                        width:
-                                                                            2.0, // Border width when focused
-                                                                      ),
+                                                                  ),
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10.0), // Rounded corners when focused
+                                                                    borderSide:
+                                                                        const BorderSide(
+                                                                      color: AppColor
+                                                                          .greenDarkColor, // Border color when focused
+                                                                      width:
+                                                                          2.0, // Border width when focused
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          RangeSlider(
-                                                            values:
-                                                                _currentRangeValuesRight,
-                                                            min: -90,
-                                                            max: 90,
-                                                            divisions: 180,
-                                                            labels: RangeLabels(
-                                                              _currentRangeValuesRight
-                                                                  .start
-                                                                  .round()
-                                                                  .toString(),
-                                                              _currentRangeValuesRight
-                                                                  .end
-                                                                  .round()
-                                                                  .toString(),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        Theme(
+                                                            data: ThemeData(
+                                                              sliderTheme:
+                                                                  SliderThemeData(
+                                                                trackHeight: 8,
+                                                                thumbColor: AppColor
+                                                                    .greenDarkColor, // Change thumb color
+                                                                activeTrackColor: isInclusiveRight
+                                                                    ? AppColor
+                                                                        .greenDarkColor
+                                                                    : Colors
+                                                                        .green
+                                                                        .withOpacity(
+                                                                            0.3),
+                                                                inactiveTrackColor: isInclusiveRight
+                                                                    ? Colors
+                                                                        .green
+                                                                        .withOpacity(
+                                                                            0.3)
+                                                                    : AppColor
+                                                                        .greenDarkColor,
+                                                              ),
                                                             ),
-                                                            activeColor: AppColor
-                                                                .greenDarkColor, // Change the active portion to green
-                                                            inactiveColor: Colors
-                                                                .green
-                                                                .withOpacity(0.3),
-                                                            onChanged: (RangeValues
-                                                                values) {
-                                                              setState(() {
-                                                                _currentRangeValuesRight =
-                                                                    values;
-                                                                _minControllerRight
-                                                                        .text =
-                                                                    values.start
-                                                                        .toStringAsFixed(
-                                                                            0);
-                                                                _maxControllerRight
-                                                                        .text =
-                                                                    values.end
-                                                                        .toStringAsFixed(
-                                                                            0);
-                                                              });
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    // Custom Labels below the slider (-90, 0, 90)
-                                                    const Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text('-90'),
-                                                        Text('0'),
-                                                        Text('90'),
+                                                            child: RangeSlider(
+                                                              values:
+                                                                  _currentRangeValuesRight,
+                                                              min: -90,
+                                                              max: 90,
+                                                              divisions: 180,
+                                                              labels:
+                                                                  RangeLabels(
+                                                                _currentRangeValuesRight
+                                                                    .start
+                                                                    .round()
+                                                                    .toString(),
+                                                                _currentRangeValuesRight
+                                                                    .end
+                                                                    .round()
+                                                                    .toString(),
+                                                              ),
+                                                              onChanged:
+                                                                  (RangeValues
+                                                                      values) async {
+                                                                HapticFeedback
+                                                                    .lightImpact();
+                                                                setState(() {
+                                                                  _currentRangeValuesRight =
+                                                                      values;
+                                                                  _minControllerRight
+                                                                          .text =
+                                                                      values
+                                                                          .start
+                                                                          .toStringAsFixed(
+                                                                              0);
+                                                                  _maxControllerRight
+                                                                          .text =
+                                                                      values.end
+                                                                          .toStringAsFixed(
+                                                                              0);
+                                                                });
+                                                                double
+                                                                    startValue =
+                                                                    values
+                                                                        .start;
+                                                                double
+                                                                    endValue =
+                                                                    values.end;
+                                                                String
+                                                                    commandMin =
+                                                                    "arx_min: ${sin(startValue * pi / 180)};";
+                                                                String
+                                                                    commandMax =
+                                                                    "arx_max: ${sin(endValue * pi / 180)};";
+                                                                await deviceController
+                                                                    .sendToDevice(
+                                                                        commandMin,
+                                                                        WRITECHARACTERISTICS);
+                                                                await deviceController
+                                                                    .sendToDevice(
+                                                                        commandMax,
+                                                                        WRITECHARACTERISTICS);
+                                                              },
+                                                            )),
                                                       ],
                                                     ),
+                                                    // Custom Labels below the slider (-90, 0, 90)
+                                                    // const Row(
+                                                    //   mainAxisAlignment:
+                                                    //       MainAxisAlignment
+                                                    //           .spaceBetween,
+                                                    //   children: [
+                                                    //     Text('-90'),
+                                                    //     Text('0'),
+                                                    //     Text('90'),
+                                                    //   ],
+                                                    // ),
                                                     // Input Fields for manual entry with validation
                                                     const SizedBox(height: 20),
                                                     // Display the current range values
@@ -1405,147 +1592,150 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 10),
-                                            ActiveInactiveButtons(),
-                                            const SizedBox(height: 10)
+                                            const SizedBox(height: 20),
+                                            // const ActiveInactiveButtons(),
+                                            // const SizedBox(height: 10)
                                           ]),
                                         ),
-                                      ),
-                                      Visibility(
-                                        visible: !AdvancedMode.modevisiable,
-                                        child: const SizedBox(
-                                          height: 45,
+                                        Visibility(
+                                          visible: !AdvancedMode.modevisiable,
+                                          child: const SizedBox(
+                                            height: 45,
+                                          ),
                                         ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "App Connected",
-                                            style: TextStyle(
-                                              color: AppColor.greenDarkColor,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16.sp,
+                                        // Row(
+                                        //   children: [
+                                        //     Text(
+                                        //       "App Connected",
+                                        //       style: TextStyle(
+                                        //         color: AppColor.greenDarkColor,
+                                        //         fontWeight: FontWeight.w600,
+                                        //         fontSize: 16.sp,
+                                        //       ),
+                                        //     ),
+                                        //     const Spacer(),
+                                        //     connectionSnapshot.data ==
+                                        //             BluetoothConnectionState
+                                        //                 .disconnected
+                                        //         ? const Icon(
+                                        //             Icons.error,
+                                        //             color: Colors.red,
+                                        //           )
+                                        //         : const Icon(
+                                        //             Icons
+                                        //                 .check_circle_outline_sharp,
+                                        //           )
+                                        //   ],
+                                        // ),
+                                        // const SizedBox(
+                                        //   height: 5,
+                                        // ),
+                                        // const Divider(
+                                        //   thickness: 4,
+                                        // ),
+                                        // const SizedBox(
+                                        //   height: 5,
+                                        // ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Both Bands Connected",
+                                              style: TextStyle(
+                                                color: AppColor.greenDarkColor,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16.sp,
+                                              ),
                                             ),
-                                          ),
-                                          const Spacer(),
-                                          connectionSnapshot.data ==
-                                                  BluetoothConnectionState
-                                                      .disconnected
-                                              ? const Icon(
-                                                  Icons.error,
-                                                  color: Colors.red,
-                                                )
-                                              : const Icon(
-                                                  Icons.check_circle_outline_sharp,
-                                                )
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      const Divider(
-                                        thickness: 4,
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Both Bands Connected",
-                                            style: TextStyle(
-                                              color: AppColor.greenDarkColor,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16.sp,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          connectionSnapshot.data ==
-                                                  BluetoothConnectionState
-                                                      .disconnected
-                                              ? const Icon(
-                                                  Icons.error,
-                                                  color: Colors.red,
-                                                )
-                                              : (!deviceController.bandC ||
-                                                      deviceController.battC < 0 ||
-                                                      deviceController.magCValue <
-                                                          0 ||
-                                                      deviceController
-                                                              .frequencyValue <
-                                                          0)
-                                                  ? const Icon(
-                                                      Icons.error,
-                                                      color: Colors.grey,
-                                                    )
-                                                  : const Icon(
-                                                      Icons
-                                                          .check_circle_outline_sharp,
-                                                    )
-                                        ],
-                                      ),
-                                      const Divider(
-                                        thickness: 4,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Disconnect Device",
-                                            style: TextStyle(
-                                              color: AppColor.greenDarkColor,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16.sp,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          IconButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      ConfirmationBox(
-                                                    title: 'Disconnect device',
-                                                    content:
-                                                        'Are sure want to disconnect device?',
-                                                    btnText: 'Disconnect',
-                                                    onConfirm: () {
-                                                      deviceController
-                                                          .disconnectDevice(
-                                                              deviceController
-                                                                  .connectedDevice);
-                                                    },
-                                                  ),
-                                                );
-                                                //
-                                              },
-                                              icon: const Icon(
-                                                  Icons.bluetooth_disabled)),
-                                        ],
-                                      ),
-                                      const Divider(
-                                        thickness: 4,
-                                      ),
-                                      Visibility(
-                                        visible: AdvancedMode.modevisiable,
-                                        child: const SizedBox(
-                                          height: 25,
+                                            const Spacer(),
+                                            connectionSnapshot.data ==
+                                                    BluetoothConnectionState
+                                                        .disconnected
+                                                ? const Icon(
+                                                    Icons.error,
+                                                    color: Colors.red,
+                                                  )
+                                                : (!deviceController.bandC ||
+                                                        deviceController.battC <
+                                                            0 ||
+                                                        deviceController
+                                                                .magCValue <
+                                                            0 ||
+                                                        deviceController
+                                                                .frequencyValue <
+                                                            0)
+                                                    ? const Icon(
+                                                        Icons.error,
+                                                        color: Colors.grey,
+                                                      )
+                                                    : const Icon(
+                                                        Icons
+                                                            .check_circle_outline_sharp,
+                                                      )
+                                          ],
                                         ),
-                                      )
-                                    ],
+                                        const Divider(
+                                          thickness: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Disconnect Device",
+                                              style: TextStyle(
+                                                color: AppColor.greenDarkColor,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16.sp,
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            IconButton(
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        ConfirmationBox(
+                                                      title:
+                                                          'Disconnect device',
+                                                      content:
+                                                          'Are sure want to disconnect device?',
+                                                      btnText: 'Disconnect',
+                                                      onConfirm: () {
+                                                        deviceController
+                                                            .disconnectDevice(
+                                                                deviceController
+                                                                    .connectedDevice);
+                                                      },
+                                                    ),
+                                                  );
+                                                  //
+                                                },
+                                                icon: const Icon(
+                                                    Icons.bluetooth_disabled)),
+                                          ],
+                                        ),
+                                        const Divider(
+                                          thickness: 4,
+                                        ),
+                                        Visibility(
+                                          visible: AdvancedMode.modevisiable,
+                                          child: const SizedBox(
+                                            height: 25,
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        } else {
-                          return const Text("No data by device");
-                        }
-                    }
-                  },
-                  future: metricsFuture,
-                );
-              }),
-        ),
-    );
+                                );
+                              },
+                            );
+                          } else {
+                            return const Text("No data by device");
+                          }
+                      }
+                    },
+                    future: metricsFuture,
+                  );
+                }),
+          ),
+        ));
   }
 }

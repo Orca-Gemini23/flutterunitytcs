@@ -41,12 +41,7 @@ class LoginRegister extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => LoginPage(),
-                      //   ),
-                      // );
+
                       Go.to(
                         context: context,
                         push: const PhoneAuthPage(),
@@ -99,12 +94,7 @@ class LoginRegister extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const SignupPage(),
-                      //   ),
-                      // );
+
                       Go.to(
                         context: context,
                         push: const PhoneAuthPage(),
@@ -130,48 +120,6 @@ class LoginRegister extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // const SizedBox(
-                  //   height: 20,
-                  // ),
-                  // const Text(
-                  //   AppString.or,
-                  //   style: TextStyle(
-                  //       color: Colors.black45,
-                  //       fontSize: 18,
-                  //       fontWeight: FontWeight.w400),
-                  // ),
-                  // const SizedBox(
-                  //   height: 20,
-                  // ),
-                  // ElevatedButton(
-                  //   onPressed: () {},
-                  //   style: ElevatedButton.styleFrom(
-                  //     padding: const EdgeInsets.symmetric(
-                  //         vertical: 10, horizontal: 30),
-                  //     backgroundColor: const Color(0xffEA4335),
-                  //     elevation: 7,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(22),
-                  //     ),
-                  //   ),
-                  //   child: const Text(
-                  //     AppString.signInGoogle,
-                  //     style: TextStyle(
-                  //       color: Colors.white,
-                  //       fontSize: 22,
-                  //       fontWeight: FontWeight.w600,
-                  //       letterSpacing: 2,
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 20),
-                  // const CircleAvatar(
-                  //   radius: 22,
-                  //   foregroundImage: AssetImage(AppAssets.googleIcon),
-                  // ),
-                  // const SizedBox(
-                  //   height: 10,
-                  // ),
                 ],
               ),
             ),
