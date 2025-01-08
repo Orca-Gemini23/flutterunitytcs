@@ -2,13 +2,17 @@ import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 import '../../constants/app_color.dart';
 
 Widget magSlider(bool isClient, DeviceController controller) {
   return SliderTheme(
     data: SliderThemeData(
-      trackHeight: 8,
+      thumbShape: RoundSliderThumbShape(
+          enabledThumbRadius: DeviceSize.isTablet ? 18 : 10),
+      trackHeight: DeviceSize.isTablet ? 16 : 8,
       activeTrackColor: AppColor.greenDarkColor,
       thumbColor: isClient
           ? (controller.magCValue < 0 || !controller.bandC)
@@ -36,6 +40,11 @@ Widget magSlider(bool isClient, DeviceController controller) {
               : controller.setmagSValue(value);
         },
         onChangeEnd: (value) async {
+          Analytics.addClicks(
+              isClient
+                  ? "MagnitudeSliderRight-$value"
+                  : "MagnitudeSliderLeft-$value",
+              DateTime.timestamp());
           String command = "";
           command = isClient ? "$MAG c $value;" : "$MAG s $value;";
           await controller.sendToDevice(command, WRITECHARACTERISTICS);

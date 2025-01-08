@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 // import 'package:walk/src/models/game_history_model.dart';
@@ -125,7 +127,67 @@ class FirebaseDB {
         },
       );
     } catch (e) {
-      log("error in uploadingUserScore ${e.toString()}");
+      log("error in getNumbers ${e.toString()}");
+    }
+  }
+
+  static Future<void> addUniqueId() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    // log('Token: $fcmToken');
+    try {
+      FirebaseFirestore.instance
+          .collection("UserUniqueIds")
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+          .set({
+        "User Details": FieldValue.arrayUnion(
+            [FirebaseAuth.instance.currentUser!.uid, fcmToken]),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      log("error in uploadingUserUniqueId ${e.toString()}");
+    }
+  }
+}
+
+class Analytics {
+  static var docRef;
+
+  static Future<void> start({String? authNumber}) async {
+    try {
+      docRef = FirebaseFirestore.instance
+          .collection("Analytics")
+          .doc(authNumber ??
+              FirebaseAuth.instance.currentUser!.phoneNumber ??
+              FirebaseAuth.instance.currentUser!.uid)
+          .collection("UserSessions")
+          .doc(DateTime.now().toString());
+      docRef.set({
+        "session": FieldValue.arrayUnion([]),
+      }, SetOptions(merge: false));
+      CollectAnalytics.start = true;
+    } catch (e) {
+      log("error in starting analyics ${e.toString()}");
+    }
+  }
+
+  static Future<void> addNavigation(var data) async {
+    try {
+      await docRef.update({
+        "session": FieldValue.arrayUnion([data]),
+      });
+    } catch (e) {
+      log("error in adding data to analytics ${e.toString()}");
+    }
+  }
+
+  static Future<void> addClicks(String click, DateTime timeStamp) async {
+    try {
+      await docRef.update({
+        "session": FieldValue.arrayUnion([
+          AnalyticsClicksModel(click: click, clickTime: timeStamp).toJson()
+        ]),
+      });
+    } catch (e) {
+      log("error in adding data to analytics ${e.toString()}");
     }
   }
 }

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/server/api.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 class TodaysGoalBox extends StatefulWidget {
   const TodaysGoalBox({
-    super.key, required this.goalBoxKey,
+    super.key,
+    required this.goalBoxKey,
   });
 
   final GlobalKey goalBoxKey;
@@ -60,7 +62,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
               ),
             ),
             Positioned(
-              right: 25,
+              right: DeviceSize.isTablet ? 125 : 25,
               top: 0,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,10 +95,11 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                             width: 5,
                           ),
                         ),
-                        const WidgetSpan(
+                        WidgetSpan(
                           child: Icon(
                             Icons.verified,
                             color: AppColor.amberColor,
+                            size: 20.sp,
                           ),
                         ),
                       ],
@@ -123,7 +126,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                               style: TextStyle(
                                 color: AppColor.greenDarkColor,
                                 fontFamily: 'Helvetica',
-                                fontSize: 16.sp,
+                                fontSize: 16.h,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -131,7 +134,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                               "Balance Score : $balanceScore",
                               style: TextStyle(
                                 color: AppColor.greenDarkColor,
-                                fontSize: 16.sp,
+                                fontSize: 16.h,
                                 fontFamily: 'Helvetica',
                                 fontWeight: FontWeight.w400,
                               ),

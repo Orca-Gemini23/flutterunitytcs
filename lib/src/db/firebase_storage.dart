@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FirebaseStorageDB {
-  static Future<void> getData() async {
+  static Future<void> putData() async {
     final storage = FirebaseStorage.instance;
     final storageRef = storage.ref();
 
@@ -25,13 +25,12 @@ class FirebaseStorageDB {
           var folderName = FirebaseAuth.instance.currentUser!.uid;
           final uploadRef = storageRef.child("$folderName/$fileName");
           if ((fileName.contains("ball") ||
-                  fileName.contains("swing") ||
-                  fileName.contains("fish")) &&
-              !fileName.contains("-")) {
+              fileName.contains("swing") ||
+              fileName.contains("fish"))) {
             try {
               if (file.path.endsWith('.csv')) {
                 var fileLines = await file.readAsLines();
-                if (fileLines.length > 23) {
+                if (fileLines.length > 10) {
                   await uploadRef.putData(await file.readAsBytes());
                 }
               }
@@ -57,5 +56,27 @@ class FirebaseStorageDB {
     } catch (e) {
       debugPrint("---> $e");
     }
+  }
+
+  static Future<void> downloadFiles() async {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child("/${FirebaseAuth.instance.currentUser!.uid}");
+    storageRef.listAll().then((value) async {
+      for (var item in value.items) {
+        Directory? directory;
+        String filename = "";
+        if (Platform.isAndroid) {
+          directory = await getExternalStorageDirectory();
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+        if (item.fullPath.substring((item.fullPath.length - 3)) == "pdf") {
+          filename = item.name;
+          final file = File("${directory?.path}/$filename");
+          FirebaseStorage.instance.ref().child(item.fullPath).writeToFile(file);
+        }
+      }
+    });
   }
 }

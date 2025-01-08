@@ -1,25 +1,36 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/global_variables.dart';
+import 'package:walk/src/views/unity.dart';
 
-import '../../views/unity.dart';
+class TherapySessionButton extends StatefulWidget {
+  const TherapySessionButton({
+    super.key,
+    required this.unityScreenNumber,
+    required this.imageAssetPath,
+    required this.gameName,
+  });
 
-class SwingTherapySessionBtn extends StatefulWidget {
-  const SwingTherapySessionBtn({super.key});
+  final int unityScreenNumber;
+  final String imageAssetPath;
+  final String gameName;
 
   @override
-  State<SwingTherapySessionBtn> createState() => _SwingTherapySessionBtnState();
+  State<TherapySessionButton> createState() => _TherapySessionButtonState();
 }
 
-class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
+class _TherapySessionButtonState extends State<TherapySessionButton> {
   bool _isTherapyButtonTapped = false;
+
   @override
   Widget build(BuildContext context) {
+    String gameName = widget.gameName;
+    String imagePath = widget.imageAssetPath;
     return Consumer<DeviceController>(
       builder: (context, deviceController, widget) {
         return InkWell(
@@ -38,11 +49,23 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.fastLinearToSlowEaseIn,
-            height: _isTherapyButtonTapped ? 145.h : 150.h,
-            width: _isTherapyButtonTapped ? 147.w : 154.w,
+            height: DeviceSize.isTablet
+                ? _isTherapyButtonTapped
+                    ? 175.h
+                    : 170.h
+                : _isTherapyButtonTapped
+                    ? 145.h
+                    : 150.h,
+            width: DeviceSize.isTablet
+                ? _isTherapyButtonTapped
+                    ? 150.w
+                    : 144.w
+                : _isTherapyButtonTapped
+                    ? 147.w
+                    : 154.w,
             child: Container(
-              height: 150.h,
-              width: 154.w,
+              height: DeviceSize.isTablet ? 175.h : 150.h,
+              width: DeviceSize.isTablet ? 150.w : 154.w,
               padding: const EdgeInsets.symmetric(
                 horizontal: 5,
                 vertical: 5,
@@ -67,14 +90,13 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
                     width: 92.w,
                     height: 92.h,
                     child: Image.asset(
-                      "assets/images/swing.png",
-                      scale: 3.5,
-                      // fit: BoxFit.fill,
+                      imagePath,
+                      scale: DeviceSize.isTablet ? 2 : 3.5,
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "Swing Game",
+                    gameName,
                     overflow: TextOverflow.fade,
                     style: TextStyle(
                       fontSize: 14.sp,
@@ -93,6 +115,8 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
   }
 
   void therapyButtonOnPressed(DeviceController deviceController) async {
+    Analytics.addClicks(
+        "${widget.gameName.replaceAll(" ", "")}Button", DateTime.timestamp());
     if (deviceController.connectedDevice == null) {
       Fluttertoast.showToast(
         msg: "Please Connect to the device first",
@@ -101,7 +125,8 @@ class _SwingTherapySessionBtnState extends State<SwingTherapySessionBtn> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: ((context) => const UnityScreen(i: 2)),
+          builder: ((context) => UnityScreen(i: widget.unityScreenNumber)),
+          settings: RouteSettings(name: '/${widget.gameName}'),
         ),
       );
     }

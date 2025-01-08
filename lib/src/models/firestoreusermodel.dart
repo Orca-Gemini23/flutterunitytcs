@@ -7,6 +7,7 @@ class FirestoreUserModel {
   final String userEmail;
   final String userHeight;
   final String userWeight;
+  final DateTime loginTime;
   // final List<int> userScores;
   // final DateTime updatedOn;
 
@@ -19,6 +20,7 @@ class FirestoreUserModel {
     required this.userAddress,
     required this.userHeight,
     required this.userWeight,
+    required this.loginTime,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,7 +32,32 @@ class FirestoreUserModel {
         "userAddress": userAddress,
         "userHeight": userHeight,
         "userWeight": userWeight,
+        "loginTime": loginTime,
         // "userScores": userScores,
         // "updatedOn": updatedOn,
+      };
+}
+
+class AnalyticsNavigationModel {
+  final String landingPage;
+  final DateTime landTime;
+
+  AnalyticsNavigationModel({required this.landingPage, required this.landTime});
+
+  Map<String, dynamic> toJson() => {
+        "landingPage": landingPage,
+        "landTime": landTime,
+      };
+}
+
+class AnalyticsClicksModel {
+  final String click;
+  final DateTime clickTime;
+
+  AnalyticsClicksModel({required this.click, required this.clickTime});
+
+  Map<String, dynamic> toJson() => {
+        "click": click,
+        "clickTime": clickTime,
       };
 }

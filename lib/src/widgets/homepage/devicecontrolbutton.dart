@@ -1,12 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/reviseddevicecontrol/connectionscreen.dart';
-import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 class DeviceControlBtn extends StatefulWidget {
   const DeviceControlBtn({super.key, required this.deviceControlKey});
@@ -40,8 +38,16 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.fastLinearToSlowEaseIn,
-        height: _isDeviceButtonTapped ? 145.h : 150.h,
-        width: _isDeviceButtonTapped ? 147.w : 154.w,
+        height: DeviceSize.isTablet
+            ? 170.h
+            : _isDeviceButtonTapped
+                ? 145.h
+                : 150.h,
+        width: DeviceSize.isTablet
+            ? 170.w
+            : _isDeviceButtonTapped
+                ? 147.w
+                : 154.w,
         child: Container(
           height: 150.h,
           width: 154.w,
@@ -73,7 +79,7 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
                 height: 92.h,
                 child: Image.asset(
                   "assets/images/devicecontrol.png",
-                  scale: 3,
+                  scale: DeviceSize.isTablet ? 2 : 3,
                 ),
                 // const Image(
                 //   fit: BoxFit.contain,
@@ -104,19 +110,17 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
 
   void onPressed(DeviceController? deviceController) async {
     await deviceController?.checkPrevConnection();
+    Analytics.addClicks("DeviceControlButton", DateTime.timestamp());
     if (deviceController?.connectedDevice == null) ////no device yet connected
     {
-      Go.to(
-        context: context,
-        push: const ConnectionScreen(),
+      Navigator.pushNamed(
+        context,
+        '/connectionscreen',
       );
     } else {
-      Navigator.push(
+      Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          settings: const RouteSettings(name: "/devicecontrolpage"),
-          builder: (context) => const DeviceControlPage(),
-        ),
+        '/devicecontrol',
       );
     }
   }

@@ -1,23 +1,18 @@
 import 'dart:io';
-import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/controllers/shared_preferences.dart';
-import 'package:walk/src/db/firebase_storage.dart';
-import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/server/upload.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/views/reports/filepath.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 class ReportList extends StatefulWidget {
   const ReportList({super.key});
@@ -33,86 +28,11 @@ class _ReportListState extends State<ReportList> {
   @override
   void initState() {
     super.initState();
-    FilePathChange.getExternalFiles().then((value) async {
-      loadFiles().then((_) {
-        _filteredItems = List.from(_files);
-        _updateList();
-        firstLoad = false;
-      });
+    loadFiles().then((_) {
+      _filteredItems = List.from(_files);
+      _updateList();
+      firstLoad = false;
     });
-  }
-
-  Future<void> reportGeneration(String filePathInput, String gameName) async {
-    String weight = await PreferenceController.getstringData("Weight");
-    var uri = Uri.https(
-        'csvreport-gen-kujosay34a-el.a.run.app', "/", {'weight': weight});
-
-    // Boundary string
-    String boundary = 'wL36Yn8afVp8Ag7AmP8qZ0SA4n1v9T';
-
-    // File path and type
-    String filePath = filePathInput;
-    String fileName = filePath.split('/').last;
-    String mimeType = lookupMimeType(filePath) ?? 'application/octet-stream';
-
-    // Reading the file
-    File file = File(filePath);
-    Uint8List fileBytes = await file.readAsBytes();
-
-    // Building multipart body
-    var body = '--$boundary\r\n'
-        'Content-Disposition: form-data; name="dataBall"; filename="$fileName"\r\n'
-        'Content-Type: $mimeType\r\n\r\n'
-        '${utf8.decode(fileBytes)}\r\n'
-        '--$boundary--\r\n';
-
-    // Building request headers
-    var headers = {
-      'Authorization':
-          'Bearer:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6ImxpZmVzcGFyay50ZWNoIiwiaWQiOjIzLCJjb3VudHJpZXMiOlsiSW5kaWEiLCJBdXN0cmFsaWEiLCJVU0EiXX0.1FEuK1FhyKIRzlDu_IjrRXd-WL4H6lOs2D88g4rTAdA',
-      'name': LocalDB.user!.name,
-      'age': LocalDB.user!.age,
-      // 'sex': LocalDB.user!.gender,
-      'Content-Type': 'multipart/form-data; boundary=$boundary',
-    };
-
-    // Sending the request until 200 status
-    bool uploaded = false;
-    while (!uploaded) {
-      var response = await http.post(uri, headers: headers, body: body);
-      await Future.delayed(const Duration(seconds: 10)).then((_) {
-        if (!uploaded) {
-          setState(() {
-            isLoading = false;
-          });
-          uploaded = true;
-        }
-      });
-      if (response.statusCode == 200) {
-        uploaded = true;
-        final pdfFilePath =
-            "${filePathInput.substring(0, filePathInput.length - 3)}pdf";
-
-        File pdfFile = File(pdfFilePath);
-        await pdfFile.writeAsBytes(response.bodyBytes);
-        await FirebaseStorageDB.storeReportFile(pdfFile);
-        if (showProgressIndicatorIndex.length == 1) {
-          await OpenFile.open(pdfFilePath);
-        }
-        if (await file.exists()) {
-          file.deleteSync();
-        }
-        setState(() {
-          loadFiles().then((_) {
-            _filteredItems = List.from(_files);
-            _updateList();
-            // isLoading = false;
-          });
-        });
-      } else {
-        log('Failed to upload file. Status code: ${response.statusCode}');
-      }
-    }
   }
 
   Future<List<FileSystemEntity>> getExternalFiles() async {
@@ -136,27 +56,20 @@ class _ReportListState extends State<ReportList> {
         .sort((a, b) => a.statSync().modified.compareTo(b.statSync().modified));
     for (var file in files) {
       if (file is File) {
-        // print(file.path);
         var fileName = file.path.split('/').last;
         if (fileName.contains("-")) {
-          // print(file.path);
           if (fileName.contains("ball") ||
               fileName.contains("swing") ||
               fileName.contains("fish")) {
             String uid = fileName.split('-')[0];
-            // String fileTimeStamp = fileName.split('-')[1];
             if (uid == FirebaseAuth.instance.currentUser!.uid) {
               if (file.path.endsWith('.csv')) {
                 var fileLines = await file.readAsLines();
-                // print(fileLines.length);
-                // print(fileLines[0]);
-                var arr = fileLines[0].split(",");
-                // print(arr);
-                // print(arr[3]);
-                if (fileLines.length > 6 && arr.last == "SessionID") {
-                  gameFiles.add(file);
+                if (fileLines.length > 6 &&
+                    fileLines[0].split(",").last == "SessionID") {
+                  // gameFiles.add(file);
                 } else {
-                  file.delete();
+                  // file.delete();
                 }
               } else if (file.path.endsWith('.pdf')) {
                 gameFiles.add(file);
@@ -201,7 +114,7 @@ class _ReportListState extends State<ReportList> {
   Color tileColor = Colors.red;
   int currIndex = -1;
   late List<FileSystemEntity> _filteredItems;
-  DateTime? selectedDate;
+  List<DateTime> selectedDates = [];
   bool firstLoad = true;
   List<int> showProgressIndicatorIndex = [];
 
@@ -223,47 +136,81 @@ class _ReportListState extends State<ReportList> {
                 .toString()
                 .toLowerCase()));
       } else {
-        _filteredItems = _files
-            .where((item) =>
-                renameFile(item.path.split('/').last)[1]
-                    .toString()
-                    .substring(0, 10)
-                    .toLowerCase() ==
-                (selectedDate.toString().substring(0, 10).toLowerCase()))
-            .toList();
+        _filteredItems = _files.where((item) {
+          final itemDate = DateTime.parse(
+              renameFile(item.path.split('/').last)[1]
+                  .toString()
+                  .substring(0, 10));
+          return selectedDates.any((date) =>
+              date.toString().substring(0, 10) ==
+              itemDate.toString().substring(0, 10));
+        }).toList();
       }
     });
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
+  Future<void> _selectMultipleDates(BuildContext context) async {
+    final DateTimeRange? pickedDate = await showDateRangePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
+      // initialDate: DateTime.now(),
+      firstDate: DateTime(2023),
       lastDate: DateTime.now(),
       builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme:
-                ColorScheme.fromSeed(seedColor: AppColor.greenDarkColor),
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.9,
+              maxHeight: MediaQuery.of(context).size.height * 0.7,
+            ),
+            child: Theme(
+              data: ThemeData.light().copyWith(
+                dialogTheme: DialogTheme(
+                  // backgroundColor: AppColor.greenColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                colorScheme:
+                    ColorScheme.fromSeed(seedColor: AppColor.greenDarkColor),
+              ),
+              child: child!,
+            ),
           ),
-          child: child!,
         );
       },
     );
-    if (pickedDate != null && pickedDate != selectedDate) {
-      setState(() {
-        selectedDate = pickedDate;
-        log(selectedDate.toString());
-        _sortOption = 'search';
-        isFilter = true;
-        _updateList();
-      });
+    List<DateTime> dates = [];
+    DateTime currentDate = pickedDate!.start;
+
+    while (currentDate.isBefore(pickedDate.end) ||
+        currentDate.isAtSameMomentAs(pickedDate.end)) {
+      dates.add(currentDate);
+      currentDate = currentDate.add(const Duration(days: 1));
+    }
+    for (var date in dates) {
+      if (!selectedDates.contains(date)) {
+        setState(() {
+          selectedDates.add(date);
+          log(selectedDates.toString());
+          _sortOption = 'search';
+          isFilter = true;
+          _updateList();
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    var uploadData = Provider.of<Report>(context);
+    if (uploadData.loaded) {
+      loadFiles().then((_) {
+        _filteredItems = List.from(_files);
+        _updateList();
+        firstLoad = false;
+      });
+    }
+    // log("Report Page: ${uploadData.loaded.toString()}");
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -302,7 +249,8 @@ class _ReportListState extends State<ReportList> {
                         OutlinedButton(
                           onPressed: () {
                             setState(() {
-                              _selectDate(context);
+                              // _selectDate(context);
+                              _selectMultipleDates(context);
                             });
                           },
                           style: OutlinedButton.styleFrom(
@@ -376,43 +324,77 @@ class _ReportListState extends State<ReportList> {
                     ),
                     Visibility(
                       visible: isFilter,
-                      child: Row(
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 4.0,
                         children: [
-                          const SizedBox(width: 10),
+                          ...selectedDates.map((date) {
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 1, horizontal: 8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    date.toString().substring(0, 10),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        if (selectedDates.length == 1) {
+                                          _filteredItems = _files;
+                                          _sortOption = "";
+                                          isFilter = false;
+                                          selectedDates.clear();
+                                        } else {
+                                          selectedDates.remove(date);
+                                          _updateList();
+                                        }
+                                      });
+                                    },
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      minimumSize: Size.zero,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      backgroundColor: Colors.transparent,
+                                    ),
+                                    child: const Text(
+                                      "X",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 1, horizontal: 8),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Colors
-                                      .grey), // Adding border to mimic an OutlinedButton
-                              borderRadius:
-                                  BorderRadius.circular(5), // Rounded corners
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(selectedDate != null
-                                    ? selectedDate.toString().substring(0, 10)
-                                    : ""),
-                                const SizedBox(width: 20),
-                                // Icon(Icons.cancel_outlined),
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _filteredItems = _files;
-                                      _sortOption = "";
-                                      isFilter = false;
-                                    });
-                                  },
-                                  child: const Text(
-                                    "X",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  // child: Icon(Icons.cancel_outlined),
-                                ),
-                              ],
+                                vertical: 4, horizontal: 8),
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                backgroundColor: Colors.transparent,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _filteredItems = _files;
+                                  _sortOption = "";
+                                  isFilter = false;
+                                  selectedDates.clear();
+                                });
+                              },
+                              child: const Text("Clear All"),
                             ),
                           ),
                         ],
@@ -441,7 +423,7 @@ class _ReportListState extends State<ReportList> {
 
                                 String title = result[0];
                                 var subTitle = result[1];
-                                String game = result[2];
+                                // String game = result[2];
 
                                 bool showDateHeader = true;
 
@@ -512,12 +494,11 @@ class _ReportListState extends State<ReportList> {
                                                               .contains(
                                                                   index)) {
                                                             showProgressIndicatorIndex
-                                                                .add(
-                                                                    index); // Select if not already selected
+                                                                .add(index);
                                                           }
                                                         });
-                                                        await reportGeneration(
-                                                            file.path, game);
+                                                        // await reportGeneration(
+                                                        //     file.path, game);
                                                       },
                                                       icon: const Icon(
                                                           Icons.download),
@@ -548,10 +529,28 @@ class _ReportListState extends State<ReportList> {
                                                   builder:
                                                       (BuildContext context) {
                                                     return AlertDialog(
-                                                      title: const Text(
-                                                          'Delete File'),
-                                                      content: const Text(
-                                                          'Are you sure you want to delete the file?'),
+                                                      contentPadding: DeviceSize
+                                                              .isTablet
+                                                          ? const EdgeInsets
+                                                              .fromLTRB(
+                                                              48, 40, 48, 48)
+                                                          : null,
+                                                      title: Text(
+                                                        'Delete File',
+                                                        style: TextStyle(
+                                                            fontSize: DeviceSize
+                                                                    .isTablet
+                                                                ? 40
+                                                                : null),
+                                                      ),
+                                                      content: Text(
+                                                        'Are you sure you want to delete the file?',
+                                                        style: TextStyle(
+                                                            fontSize: DeviceSize
+                                                                    .isTablet
+                                                                ? 24
+                                                                : null),
+                                                      ),
                                                       actions: [
                                                         TextButton(
                                                           onPressed: () async {
@@ -573,11 +572,15 @@ class _ReportListState extends State<ReportList> {
                                                                 context:
                                                                     context);
                                                           },
-                                                          child: const Text(
-                                                              'Yes',
+                                                          child: Text('Yes',
                                                               style: TextStyle(
-                                                                  color: Colors
-                                                                      .black)),
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: DeviceSize
+                                                                        .isTablet
+                                                                    ? 24
+                                                                    : null,
+                                                              )),
                                                         ),
                                                         TextButton(
                                                           onPressed: () {
@@ -585,14 +588,20 @@ class _ReportListState extends State<ReportList> {
                                                                     context)
                                                                 .pop(); // Closes the dialog without action
                                                           },
-                                                          child: const Text(
-                                                              'No',
-                                                              style: TextStyle(
-                                                                  color: Color(
-                                                                      0xFF005749),
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold)),
+                                                          child: Text(
+                                                            'No',
+                                                            style: TextStyle(
+                                                              color: const Color(
+                                                                  0xFF005749),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: DeviceSize
+                                                                      .isTablet
+                                                                  ? 24
+                                                                  : null,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ],
                                                     );
@@ -603,11 +612,11 @@ class _ReportListState extends State<ReportList> {
                                         ],
                                       ),
                                       onTap: () async {
-                                        if (file.path.endsWith('.pdf')) {
-                                          await OpenFile.open(file.path);
-                                        } else {
-                                          null;
-                                        }
+                                        // if (file.path.endsWith('.pdf')) {
+                                        await OpenFile.open(file.path);
+                                        // } else {
+                                        //   null;
+                                        // }
                                       },
                                     ),
                                   ],
@@ -617,6 +626,18 @@ class _ReportListState extends State<ReportList> {
                           ),
                   ],
                 ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // FilePathChange.getExternalFiles().then((value) async {
+      //     loadFiles().then((_) {
+      //       _filteredItems = List.from(_files);
+      //       _updateList();
+      //       firstLoad = false;
+      //     });
+      //   },
+      //   backgroundColor: AppColor.greenDarkColor,
+      //   child: const Icon(Icons.refresh),
+      // ),
     );
   }
 }

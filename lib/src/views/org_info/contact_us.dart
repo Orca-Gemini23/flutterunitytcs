@@ -1,12 +1,10 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 class ContactUsPage extends StatelessWidget {
   const ContactUsPage({super.key});
@@ -21,16 +19,17 @@ class ContactUsPage extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: AppColor.blackColor,
         ),
-        title: const Text(
+        title: Text(
           AppString.contactUsPageTitle,
           style: TextStyle(
-            color: AppColor.greenDarkColor,
-          ),
+              color: AppColor.greenDarkColor,
+              fontSize: DeviceSize.isTablet ? 36 : 20),
         ),
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: AppColor.blackColor,
+            size: DeviceSize.isTablet ? 36 : 24,
           ),
           onPressed: (() {
             Navigator.pop(context);
@@ -48,10 +47,10 @@ class ContactUsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text(
+                Text(
                   AppString.org,
                   style: TextStyle(
-                      fontSize: 42,
+                      fontSize: DeviceSize.isTablet ? 84 : 42,
                       // letterSpacing: 4,
                       fontFamily: "Helvetica",
                       color: AppColor.greenDarkColor,
@@ -59,16 +58,16 @@ class ContactUsPage extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Container(
-                  height: 40,
+                  height: DeviceSize.isTablet ? 80 : 40,
                   padding: const EdgeInsets.all(0.5),
                   color: AppColor.greenDarkColor,
                 ),
                 const SizedBox(width: 10),
-                const Text(
+                Text(
                   "Lifespark\nTechnologies",
                   style: TextStyle(
                       color: AppColor.greenDarkColor,
-                      fontSize: 18,
+                      fontSize: DeviceSize.isTablet ? 36 : 18,
                       fontFamily: "Helvetica",
                       fontWeight: FontWeight.w500),
                 ),
@@ -78,36 +77,48 @@ class ContactUsPage extends StatelessWidget {
             Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(20.0, 10, 10, 10),
-              height: 60,
+              height: DeviceSize.isTablet ? 90 : 60,
               color: AppColor.greenDarkColor,
-              child: const Text(
-                AppString.knowMore,
+              child: DeviceSize.isTablet
+                  ? Text(
+                    AppString.knowMore,
+                    style: TextStyle(
+                        color: AppColor.whiteColor,
+                        fontSize: DeviceSize.isTablet ? 32 : 18,
+                        fontWeight: FontWeight.w300),
+                  )
+                  : Center(
+                      child: Text(
+                        AppString.knowMore,
+                        style: TextStyle(
+                            color: AppColor.whiteColor,
+                            fontSize: DeviceSize.isTablet ? 36 : 18,
+                            fontWeight: FontWeight.w300),
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: Text(
+                AppString.beInContact,
                 style: TextStyle(
-                    color: AppColor.whiteColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w300),
+                  color: AppColor.blackColor,
+                  fontSize: DeviceSize.isTablet ? 32 : 16,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 30),
-            const Text(
-              AppString.beInContact,
-              style: TextStyle(
-                color: AppColor.blackColor,
-                fontSize: 16,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
+            SizedBox(height: DeviceSize.isTablet ? 50 : 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Icon(
+                Icon(
                   Icons.email,
                   color: AppColor.greenDarkColor,
+                  size: DeviceSize.isTablet ? 48 : 24,
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: DeviceSize.isTablet ? 20 : 10),
                 TextButton(
                   onPressed: () async {
                     final Uri launchUri = Uri(
@@ -116,51 +127,50 @@ class ContactUsPage extends StatelessWidget {
                     );
                     await launchUrl(launchUri);
                   },
-                  child: const Text(
+                  child: Text(
                     "info@lifesparktech.com",
                     style: TextStyle(
                       color: AppColor.blackColor,
-                      fontSize: 16,
+                      fontSize: DeviceSize.isTablet ? 32 : 16,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: DeviceSize.isTablet ? 25 : 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                InkWell(
-                  onTap: () async {
-                    String contact = '+919324730665';
-                    var androidUrl = "whatsapp://send?phone=$contact&text=";
-                    var iosUrl = "https://wa.me/$contact?text=${Uri.parse('')}";
+                // InkWell(
+                //   onTap: () async {
+                //     String contact = '+919324730665';
+                //     var androidUrl = "whatsapp://send?phone=$contact&text=";
+                //     var iosUrl = "https://wa.me/$contact?text=${Uri.parse('')}";
 
-                    try {
-                      if (Platform.isIOS) {
-                        await launchUrl(Uri.parse(iosUrl));
-                      } else {
-                        await launchUrl(Uri.parse(androidUrl));
-                      }
-                    } catch (e) {
-                      log('Whatsapp function error: $e');
-                    }
-                  },
-                  child: Image.asset(
-                    AppAssets.whatsappIcon,
-                    height: 26,
-                  ),
-                ),
+                //     try {
+                //       if (Platform.isIOS) {
+                //         await launchUrl(Uri.parse(iosUrl));
+                //       } else {
+                //         await launchUrl(Uri.parse(androidUrl));
+                //       }
+                //     } catch (e) {
+                //       log('Whatsapp function error: $e');
+                //     }
+                //   },
+                //   child: Image.asset(
+                //     AppAssets.whatsappIcon,
+                //     height: DeviceSize.isTablet ? 52 : 26,
+                //   ),
+                // ),
                 const SizedBox(
                   width: 5,
                 ),
-                const Icon(
+                Icon(
                   Icons.phone,
                   color: AppColor.greenDarkColor,
+                  size: DeviceSize.isTablet ? 48 : 24,
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: DeviceSize.isTablet ? 20 : 10),
                 TextButton(
                   onPressed: () async {
                     final Uri launchUri = Uri(
@@ -169,22 +179,22 @@ class ContactUsPage extends StatelessWidget {
                     );
                     await launchUrl(launchUri);
                   },
-                  child: const Text(
+                  child: Text(
                     "+91 919324730665",
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 16,
+                      fontSize: DeviceSize.isTablet ? 32 : 16,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 35),
-            const Text(
+            SizedBox(height: DeviceSize.isTablet ? 50 : 35),
+            Text(
               AppString.weAreAvailable,
               style: TextStyle(
                 color: AppColor.blackColor,
-                fontSize: 16,
+                fontSize: DeviceSize.isTablet ? 32 : 16,
               ),
             ),
             const SizedBox(
@@ -218,12 +228,12 @@ class ContactUsPage extends StatelessWidget {
                     },
                   ];
                   return Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(24.0),
                     child: InkWell(
                       onTap: logoOnTap[index],
                       child: Image.asset(
                         socialMediaLogo[index],
-                        height: 40,
+                        height: DeviceSize.isTablet ? 44 : 40,
                       ),
                     ),
                   );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
@@ -11,8 +12,9 @@ class AboutUsPage extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           color: AppColor.blackColor,
+          size: DeviceSize.isTablet ? 36 : 24,
         ),
         leading: IconButton(
           icon: const Icon(
@@ -23,10 +25,11 @@ class AboutUsPage extends StatelessWidget {
             Navigator.pop(context);
           }),
         ),
-        title: const Text(
+        title: Text(
           AppString.aboutUsTitle,
           style: TextStyle(
             color: AppColor.blackColor,
+            fontSize: DeviceSize.isTablet ? 36 : 20,
           ),
         ),
         centerTitle: false,
@@ -43,10 +46,10 @@ class AboutUsPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    const Text(
+                    Text(
                       AppString.org,
                       style: TextStyle(
-                        fontSize: 42,
+                        fontSize: 42.h,
                         // letterSpacing: 4,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Helvetica",
@@ -55,16 +58,16 @@ class AboutUsPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     Container(
-                      height: 40,
+                      height: 40.h,
                       padding: const EdgeInsets.all(0.5),
                       color: AppColor.greenDarkColor,
                     ),
                     const SizedBox(width: 10),
-                    const Text(
+                    Text(
                       "Lifespark\nTechnologies",
                       style: TextStyle(
                           color: AppColor.greenDarkColor,
-                          fontSize: 18,
+                          fontSize: 18.h,
                           fontFamily: "Helvetica",
                           fontWeight: FontWeight.w500),
                     ),
@@ -78,7 +81,10 @@ class AboutUsPage extends StatelessWidget {
               child: Text(
                 AppString.aboutUsParagraph,
                 textAlign: TextAlign.justify,
-                style: TextStyle(fontSize: 14.sp),
+                style: TextStyle(
+                  fontSize: 14.h,
+                  // fontFamily: "Helvetica",
+                ),
               ),
             ),
             const Spacer(),
@@ -101,6 +107,7 @@ class AboutUsPage extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14.sp,
+                        fontFamily: "Helvetica",
                       ),
                     ),
                   ),
@@ -127,6 +134,7 @@ class AboutUsPage extends StatelessWidget {
                           color: AppColor.blackColor,
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
+                          fontFamily: "Helvetica",
                         ),
                       ))
                 ],

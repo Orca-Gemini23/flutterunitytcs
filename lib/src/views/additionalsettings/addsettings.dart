@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 
 class AdditionalSettings extends StatefulWidget {
@@ -110,6 +111,8 @@ class _AdditionalSettingsState extends State<AdditionalSettings> {
                             AdvancedMode.modevisiable = false;
                           }
                         });
+                        Analytics.addClicks(
+                            _selectedMode, DateTime.timestamp());
                         ////Send Change Mode Command to device
                         log("$MODE $newValue;");
 

@@ -2,10 +2,14 @@ import 'dart:developer';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/server/upload.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/views/reports/filepath.dart';
+import 'package:walk/src/widgets/dialog.dart';
 import '../constants/bt_constants.dart';
 
 class UnityScreen extends StatefulWidget {
@@ -18,6 +22,9 @@ class UnityScreen extends StatefulWidget {
 
 class UnityScreenState extends State<UnityScreen> {
   static bool back = false;
+  bool isDialogup = true;
+  late DeviceController deviceController;
+  late Report report;
   @override
   void initState() {
     FirebaseAnalytics.instance
@@ -25,6 +32,8 @@ class UnityScreenState extends State<UnityScreen> {
         .then(
           (value) => debugPrint("Analytics stated"),
         );
+    deviceController = Provider.of<DeviceController>(context, listen: false);
+    report = Provider.of<Report>(context, listen: false);
     super.initState();
   }
 
@@ -67,70 +76,95 @@ class UnityScreenState extends State<UnityScreen> {
       //   // title: const Text('First Route'),
       // ),
       key: _scaffoldKey,
-      body: SafeArea(
-        bottom: false,
-        child: PopScope(
-            onPopInvokedWithResult: (bool didPop, Object? result) async {
-              sendUploadRequest();
-              FirebaseDB.uploadUserScore(
-                score: finalScore,
-                playedOn: DateTime.now(),
-                secondsPlayedFor: secondPlayed,
-              );
-            },
-            child: Stack(
-                // color: Colors.white,
-                children: <Widget>[
-                  UnityWidget(
-                    // uiLevel: 0,
-                    onUnityCreated: onUnityCreated,
-                    onUnityUnloaded: stopStream,
-                    onUnityMessage: (message) async {
-                      var msg = message.toString();
-                      if (msg.toString().contains("xc")) {
-                        var score = msg.toString().split("c");
-                        log(score[1]);
-                        setState(() {
-                          finalScore = int.parse(score[1]);
-                          secondPlayed = int.parse(
-                              double.parse(score[2]).toStringAsFixed(0));
-                        });
-                      } else if (msg.toString() == "Exit") {
-                        // sendUploadRequest();
-                        FirebaseDB.uploadUserScore(
-                          score: finalScore,
-                          playedOn: DateTime.now(),
-                          secondsPlayedFor: secondPlayed,
-                        );
-                        Navigator.pop(context);
-                      } else {
-                        switch (msg) {
-                          case "VL":
-                            vibrateLeft();
-                            break;
-                          case "VR":
-                            vibrateRight();
-                            break;
-                        }
-                      }
-                    },
-                    fullscreen: true,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () async {
-                      sendUploadRequest();
-                      FirebaseDB.uploadUserScore(
-                        score: finalScore,
-                        playedOn: DateTime.now(),
-                        secondsPlayedFor: secondPlayed,
-                      );
+      body: StreamBuilder<BluetoothConnectionState>(
+          stream: deviceController.connectedDevice?.connectionState ??
+              const Stream.empty(),
+          builder: (context, connectionSnapshot) {
+            if (connectionSnapshot.data ==
+                BluetoothConnectionState.disconnected) {
+              deviceController.isScanning = false;
+              deviceController.isConnecting = false;
+              if (isDialogup) {
+                WidgetsBinding.instance.addPostFrameCallback(
+                  (timeStamp) {
+                    setState(() {
+                      isDialogup = false;
+                    });
+                    deviceController.clearConnectedDevice();
 
-                      Navigator.pop(context);
-                    },
-                  )
-                ])),
-      ),
+                    CustomDialogs.showBleDisconnectedDialog(context);
+                  },
+                );
+              }
+            }
+
+            return SafeArea(
+              bottom: false,
+              // top: false,
+              child: PopScope(
+                  onPopInvokedWithResult: (bool didPop, Object? result) async {
+                    sendUploadRequest();
+                    FirebaseDB.uploadUserScore(
+                      score: finalScore,
+                      playedOn: DateTime.now(),
+                      secondsPlayedFor: secondPlayed,
+                    );
+                    FilePathChange.getExternalFiles(report);
+                  },
+                  child: Stack(
+                      // color: Colors.white,
+                      children: <Widget>[
+                        UnityWidget(
+                          // uiLevel: 0,
+                          onUnityCreated: onUnityCreated,
+                          onUnityUnloaded: stopStream,
+                          onUnityMessage: (message) async {
+                            var msg = message.toString();
+                            if (msg.toString().contains("xc")) {
+                              var score = msg.toString().split("c");
+                              log(score[1]);
+                              setState(() {
+                                finalScore = int.parse(score[1]);
+                                secondPlayed = int.parse(
+                                    double.parse(score[2]).toStringAsFixed(0));
+                              });
+                            } else if (msg.toString() == "Exit") {
+                              // sendUploadRequest();
+                              FirebaseDB.uploadUserScore(
+                                score: finalScore,
+                                playedOn: DateTime.now(),
+                                secondsPlayedFor: secondPlayed,
+                              );
+                              Navigator.pop(context);
+                            } else {
+                              switch (msg) {
+                                case "VL":
+                                  vibrateLeft();
+                                  break;
+                                case "VR":
+                                  vibrateRight();
+                                  break;
+                              }
+                            }
+                          },
+                          fullscreen: true,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          onPressed: () async {
+                            sendUploadRequest();
+                            FirebaseDB.uploadUserScore(
+                              score: finalScore,
+                              playedOn: DateTime.now(),
+                              secondsPlayedFor: secondPlayed,
+                            );
+                            FilePathChange.getExternalFiles(report);
+                            Navigator.pop(context);
+                          },
+                        )
+                      ])),
+            );
+          }),
     );
   }
 

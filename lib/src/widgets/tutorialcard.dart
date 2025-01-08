@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 List<Image> imageItems = const [
   Image(
@@ -64,14 +65,12 @@ Widget tutorialCard(int index) {
           Text(
             imageNames[index],
             overflow: TextOverflow.clip,
-            style: const TextStyle(
+            style: TextStyle(
                 color: AppColor.greenDarkColor,
-                fontSize: 16,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: DeviceSize.isTablet ? 20 : 10),
           Flexible(
             child: Text(
               imageDescription[index],
@@ -125,7 +124,8 @@ Widget lastTutorialCard() {
               Expanded(
                 child: Text(
                   "The device will start sensory cueing once worn properly in standing position.It will stop cueing when sitting.",
-                  style: TextStyle(fontSize: 14.sp),
+                  style:
+                      TextStyle(fontSize: DeviceSize.isTablet ? 12.sp : 14.sp),
                   textAlign: TextAlign.left,
                 ),
               )
@@ -164,7 +164,8 @@ Widget lastTutorialCard() {
               Expanded(
                 child: Text(
                   "Move the leg which vibrates first, then the second.",
-                  style: TextStyle(fontSize: 14.sp),
+                  style:
+                      TextStyle(fontSize: DeviceSize.isTablet ? 12.sp : 14.sp),
                   textAlign: TextAlign.left,
                 ),
               )
@@ -203,7 +204,8 @@ Widget lastTutorialCard() {
               Expanded(
                 child: Text(
                   "Wear the device for one hour each in the morning and evening or when you feel that you might freeze.",
-                  style: TextStyle(fontSize: 14.sp),
+                  style:
+                      TextStyle(fontSize: DeviceSize.isTablet ? 12.sp : 14.sp),
                   textAlign: TextAlign.left,
                 ),
               )

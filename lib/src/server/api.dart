@@ -101,7 +101,7 @@ class API {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then(
-      (DocumentSnapshot doc) {
+      (DocumentSnapshot doc) async {
         if (doc.data() != null) {
           final data = doc.data() as Map<String, dynamic>;
           if (data.isNotEmpty) {
@@ -128,7 +128,7 @@ class API {
             }
           }
         } else {
-          getUserDetails;
+          await getUserDetails();
           if (LocalDB.user!.name == "Unknown User") {
             FirestoreUserModel userDetails = FirestoreUserModel(
               userName: LocalDB.user!.name,
@@ -139,6 +139,7 @@ class API {
               userAddress: LocalDB.user!.address,
               userHeight: "",
               userWeight: "",
+              loginTime: DateTime.now(),
             );
             FirebaseFirestore.instance
                 .collection("UserProfiles")

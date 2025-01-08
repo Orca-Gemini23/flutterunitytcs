@@ -12,8 +12,9 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/models/user_model.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
 import 'package:walk/src/views/user/newrevisedaccountpage.dart';
@@ -51,10 +52,11 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
   final ButtonStyle elevatedButtonStyle = ElevatedButton.styleFrom(
     disabledBackgroundColor: Colors.grey,
     backgroundColor: const Color.fromRGBO(0, 87, 73, 1),
-    minimumSize: const Size(double.maxFinite, 60),
+    minimumSize: Size(double.maxFinite, DeviceSize.isTablet ? 90 : 60),
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(30)),
+    shape: RoundedRectangleBorder(
+      borderRadius:
+          BorderRadius.all(Radius.circular(DeviceSize.isTablet ? 45 : 30)),
     ),
   );
 
@@ -101,29 +103,29 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                   alignment: Alignment.topCenter,
                   child: Column(
                     children: [
-                      const Text(
+                      Text(
                         "Let’s get started.",
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
-                            fontSize: 24,
+                            fontSize: DeviceSize.isTablet ? 48 : 24,
                             fontFamily: "Helvetica"),
                       ),
-                      const Text(
+                      Text(
                         "What’s your number?",
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
-                            fontSize: 24,
+                            fontSize: DeviceSize.isTablet ? 48 : 24,
                             fontFamily: "Helvetica"),
                       ),
-                      const SizedBox(
-                        height: 8,
+                      SizedBox(
+                        height: DeviceSize.isTablet ? 16 : 8,
                       ),
                       Text(
                         "We’ll send you a code to verify your phone.",
                         style: TextStyle(
                             fontWeight: FontWeight.lerp(
                                 FontWeight.w400, FontWeight.w500, 0.5),
-                            fontSize: 14,
+                            fontSize: DeviceSize.isTablet ? 28 : 14,
                             fontFamily: "Helvetica"),
                       ),
                     ],
@@ -131,18 +133,24 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
               const SizedBox(
                 height: 48,
               ),
-              const Text(
+              Text(
                 "Phone Number",
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                    fontSize: DeviceSize.isTablet ? 28 : 14,
                     fontFamily: "Helvetica"),
               ),
-              const SizedBox(
-                height: 12,
+              SizedBox(
+                height: DeviceSize.isTablet ? 18 : 12,
               ),
               IntlPhoneField(
                 controller: numberController,
+                style: DeviceSize.isTablet
+                    ? const TextStyle(
+                        fontSize: 28,
+                        fontFamily: "Helvetica",
+                      )
+                    : null,
                 validator: (p0) {
                   country = countries.firstWhere(
                       (element) => element.code == p0?.countryISOCode);
@@ -161,19 +169,27 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
                 ],
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Enter phone number',
                   hintStyle: TextStyle(
                       fontFamily: "Helvetica",
-                      fontSize: 14,
+                      fontSize: DeviceSize.isTablet ? 28 : 14,
                       fontWeight: FontWeight.w400),
                   counterText: '',
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide(),
                   ),
                 ),
                 initialCountryCode: 'IN',
-                // showCountryFlag: false,
+                dropdownTextStyle: DeviceSize.isTablet
+                    ? const TextStyle(
+                        fontSize: 28,
+                        fontFamily: "Helvetica",
+                      )
+                    : null,
+                dropdownIcon: Icon(Icons.arrow_drop_down,
+                    size: DeviceSize.isTablet ? 48 : 24),
+                showCountryFlag: !DeviceSize.isTablet,
                 keyboardType: const TextInputType.numberWithOptions(
                     signed: true, decimal: true),
                 onChanged: (phone) {
@@ -209,27 +225,64 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                                       color: Color(
                                           0xFF2DBA9B)), //decoration: TextDecoration.underline
                                   recognizer: TapGestureRecognizer()
-                                    ..onTap = () async {
-                                      try {
-                                        debugPrint(
-                                            "Signed in with temporary account.");
-                                        setState(() {
-                                          // UserDetails.unavailable = true;
-                                          UserDetails.iosUnavailable = true;
-                                        });
-                                        Go.pushReplacement(
-                                          context: context,
-                                          pushReplacement:
-                                              const NewRevisedAccountPage(),
-                                        );
-                                        await FirebaseAuth.instance
-                                            .signInAnonymously();
-                                      } on FirebaseAuthException catch (e) {
-                                        if (kDebugMode) {
-                                          print(e);
-                                        }
-                                      }
-                                    },
+                                    ..onTap = !loading
+                                        ? () async {
+                                            setState(() {
+                                              loading = true;
+                                            });
+                                            try {
+                                              debugPrint(
+                                                  "Signed in with temporary account.");
+                                              setState(() {
+                                                UserDetails.unavailable = true;
+                                                // UserDetails.iosUnavailable =
+                                                //     true;
+                                              });
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const NewRevisedAccountPage(),
+                                                  settings: const RouteSettings(
+                                                      name: '/accountpage'),
+                                                ),
+                                              );
+                                              await FirebaseAuth.instance
+                                                  .signInAnonymously();
+                                              Analytics.start();
+                                              await Analytics.addNavigation(
+                                                  AnalyticsNavigationModel(
+                                                          landingPage:
+                                                              "First Time User",
+                                                          landTime: DateTime
+                                                              .timestamp())
+                                                      .toJson());
+
+                                              for (var data in CollectAnalytics
+                                                  .initialData) {
+                                                await Analytics.addNavigation(
+                                                    data);
+                                              }
+                                              await Analytics.addNavigation(
+                                                  AnalyticsNavigationModel(
+                                                          landingPage:
+                                                              "First Time Anonymous User",
+                                                          landTime: DateTime
+                                                              .timestamp())
+                                                      .toJson());
+                                              setState(() {
+                                                loading = false;
+                                              });
+                                            } on FirebaseAuthException catch (e) {
+                                              setState(() {
+                                                loading = false;
+                                              });
+                                              if (kDebugMode) {
+                                                print(e);
+                                              }
+                                            }
+                                          }
+                                        : null,
                                 ),
                               ],
                             ),
@@ -240,9 +293,9 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 10),
                     child: Text.rich(
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.w400,
-                          fontSize: 9,
+                          fontSize: DeviceSize.isTablet ? 13.5 : 9,
                           fontFamily: "Helvetica"),
                       TextSpan(
                         children: [
@@ -256,6 +309,12 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                               ..onTap = () async {
                                 openUrl(
                                     'https://www.lifesparktech.com/terms-and-conditions');
+
+                                CollectAnalytics.initialData.add(
+                                    AnalyticsClicksModel(
+                                            click: "Terms&ConditionLink",
+                                            clickTime: DateTime.timestamp())
+                                        .toJson());
                               },
                           ),
                           const TextSpan(text: " and "),
@@ -268,6 +327,12 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                               ..onTap = () async {
                                 openUrl(
                                     'https://www.lifesparktech.com/privacy-policy');
+
+                                CollectAnalytics.initialData.add(
+                                    AnalyticsClicksModel(
+                                            click: "PrivacyPolicyLink",
+                                            clickTime: DateTime.timestamp())
+                                        .toJson());
                               },
                           ),
                         ],
@@ -283,6 +348,18 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                               setState(() {
                                 loading = true;
                               });
+                              Analytics.start(
+                                  authNumber: "$countryCode$phoneNo");
+                              await Analytics.addNavigation(
+                                  AnalyticsNavigationModel(
+                                          landingPage: "First Time User",
+                                          landTime: DateTime.timestamp())
+                                      .toJson());
+
+                              for (var data in CollectAnalytics.initialData) {
+                                await Analytics.addNavigation(data);
+                              }
+
                               var newUser = UserModel(
                                 name: "Unknown User",
                                 age: "XX",
@@ -311,12 +388,16 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                                     _verificationId = verificationId;
                                     _resendToken = resendToken;
                                   });
-                                  Go.to(
-                                    context: context,
-                                    push: OTPPage(
-                                      verificationId: verificationId,
-                                      resendToken: resendToken,
-                                      phoneNumber: phoneNumber,
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OTPPage(
+                                        verificationId: verificationId,
+                                        resendToken: resendToken,
+                                        phoneNumber: phoneNumber,
+                                      ),
+                                      settings:
+                                          const RouteSettings(name: '/otppage'),
                                     ),
                                   );
                                 },
@@ -329,17 +410,17 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                             }
                           : null,
                       child: !loading
-                          ? const Text(
+                          ? Text(
                               'Continue',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 16,
+                                  fontSize: DeviceSize.isTablet ? 24 : 16,
                                   fontFamily: "Helvetica"),
                             )
                           : LoadingAnimationWidget.staggeredDotsWave(
                               color: Colors.white,
-                              size: 30,
+                              size: DeviceSize.isTablet ? 45 : 30,
                             ),
                     ),
                   ),

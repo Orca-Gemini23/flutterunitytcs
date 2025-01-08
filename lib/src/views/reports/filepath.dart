@@ -1,10 +1,12 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:walk/src/server/upload.dart';
 
 class FilePathChange {
-  static Future<bool> getExternalFiles() async {
+  static Future<bool> getExternalFiles(Report report) async {
     Directory? directory;
     if (Platform.isAndroid) {
       directory = await getExternalStorageDirectory();
@@ -30,7 +32,8 @@ class FilePathChange {
                         .create(recursive: true, exclusive: true);
                     await file.rename(destinationFile.path);
                   } catch (e) {
-                    await file.delete();
+                    log(e.toString());
+                    // await file.delete();
                   }
                 }
               }
@@ -39,6 +42,7 @@ class FilePathChange {
         }
       }
     }
+    UploadData(report).loadFiles();
     return true;
   }
 }

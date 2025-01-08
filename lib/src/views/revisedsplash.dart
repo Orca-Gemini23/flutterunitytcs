@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
+import 'package:walk/src/db/firebase_storage.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
@@ -33,7 +34,7 @@ class _RevisedsplashState extends State<Revisedsplash>
   double _containerOpacity = 0.0;
   String userToken = "";
 
-  double imageSize = 4;
+  double imageSize = DeviceSize.isTablet ? 3 : 4;
 
   late AnimationController _controller;
   late Animation<double> animation1;
@@ -41,18 +42,6 @@ class _RevisedsplashState extends State<Revisedsplash>
   @override
   void initState() {
     super.initState();
-
-    // if (Platform.isIOS && LocalDB.user!.phone == "") {
-    //   FirebaseAuth.instance.signOut();
-    // }
-    // if (LocalDB.user!.name == "Unknown User") {
-    //   API.getUserDetails();
-    // }
-    // if (LocalDB.user!.name == "Unknown User") {
-    //   API.getUserDetailsFireStore();
-    // }
-    // API.getUserDetailsFireStore();
-    FirebaseDB.getNumbers();
 
     PreferenceController.getstringData("Height").then((value) {
       setState(() {
@@ -62,7 +51,6 @@ class _RevisedsplashState extends State<Revisedsplash>
     PreferenceController.getstringData("Weight").then((value) {
       setState(() {
         DetailsPage.weight = value;
-        // weightController = TextEditingController(text: value);
       });
     });
     PreferenceController.getstringData("profileImage").then((value) {
@@ -107,16 +95,28 @@ class _RevisedsplashState extends State<Revisedsplash>
             tour = false;
           });
           if (Platform.isIOS) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const GuestUserLogin()));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const GuestUserLogin(),
+                settings: const RouteSettings(name: '/iosguestuser'),
+              ),
+            );
           } else {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const PhoneAuthPage()));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PhoneAuthPage(),
+                settings: const RouteSettings(name: '/authpage'),
+              ),
+            );
           }
         } else {
           debugPrint('User is signed in!');
+          await Analytics.start();
+          if (LocalDB.user!.name == "Unknown User") {
+            FirebaseStorageDB.downloadFiles();
+          }
           if (LocalDB.user!.name == "Unknown User") {
             log("splash screen rds data call");
             await API.getUserDetails();
@@ -137,10 +137,14 @@ class _RevisedsplashState extends State<Revisedsplash>
                   context: context,
                   pushReplacement: const NewRevisedAccountPage());
             } else {
+              // await Analytics.start();
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RevisedHomePage()));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RevisedHomePage(),
+                  settings: const RouteSettings(name: '/home'),
+                ),
+              );
             }
           }
         }
@@ -158,6 +162,8 @@ class _RevisedsplashState extends State<Revisedsplash>
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
+    // if (DeviceSize.checkTablet(context)) DeviceSize.isTablet = true;
 
     return Scaffold(
       ///change here

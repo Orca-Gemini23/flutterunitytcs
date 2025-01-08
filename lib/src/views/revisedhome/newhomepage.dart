@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -8,10 +9,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/db/firebase_storage.dart';
+import 'package:walk/src/server/upload.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/revisedsplash.dart';
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
 import 'package:walk/src/widgets/homepage/gamehistorybuilder.dart';
@@ -58,6 +60,15 @@ class _RevisedHomePageState extends State<RevisedHomePage>
   @override
   void initState() {
     debugPrint(tour.toString());
+    FirebaseAnalytics.instance
+        .setUserId(id: '${FirebaseAuth.instance.currentUser!.phoneNumber}')
+        .then(
+          (value) => {
+            debugPrint("user id set"),
+            debugPrint('${FirebaseAuth.instance.currentUser!.phoneNumber}')
+          },
+        );
+
     FirebaseAnalytics.instance.logScreenView(screenName: 'Homepage').then(
           (value) => debugPrint("Analytics stated"),
         );
@@ -65,6 +76,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
     if (!tour) {
       tour = !tour;
       createTutorial();
+      FirebaseStorageDB.downloadFiles();
       Future.delayed(Duration.zero, showTutorial);
     }
     super.initState();
@@ -72,9 +84,12 @@ class _RevisedHomePageState extends State<RevisedHomePage>
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
+    final report = Provider.of<Report>(context, listen: false);
     context.read<DeviceController>().homeContext = homePagekey.currentContext;
-    // UploadData.uplaod();
-    // FirebaseStorageDB.getData();
+    FirebaseDB.getNumbers();
+    FirebaseDB.addUniqueId();
+    UploadData(report).loadFiles();
+    FirebaseStorageDB.putData();
     // FilePathChange.getExternalFiles();
   }
 
@@ -132,29 +147,36 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         backgroundColor: Colors.transparent,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         elevation: 0.0,
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           color: AppColor.blackColor,
+          size: DeviceSize.isTablet ? 36 : 24,
         ),
         actions: [
-          IconButton(
-            key: keyAccount,
-            onPressed: () {
-              // FirebaseCrashlytics.instance.crash();
-              Go.to(
-                context: context,
-                push: const NewRevisedAccountPage(),
-              );
-            },
-            icon: const Icon(
-              Icons.person_2_outlined,
+          Padding(
+            padding: DeviceSize.isTablet
+                ? const EdgeInsets.only(right: 20)
+                : EdgeInsets.zero,
+            child: IconButton(
+              key: keyAccount,
+              onPressed: () {
+                // FirebaseCrashlytics.instance.crash();
+                Analytics.addClicks("AccountPageButton", DateTime.timestamp());
+                Navigator.pushNamed(
+                  context,
+                  '/accountpage',
+                );
+              },
+              icon: const Icon(
+                Icons.person_2_outlined,
+              ),
             ),
           ),
         ],
       ),
       drawer: navigationDrawer(context),
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         padding: const EdgeInsets.only(
           left: 15,
           right: 15,
@@ -254,9 +276,14 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         log("finish");
       },
       onClickTarget: (target) {
+        Analytics.addClicks(
+            "Home/OnboardingScreen/onClickTarget", DateTime.timestamp());
         log('onClickTarget: $target');
       },
       onClickTargetWithTapPosition: (target, tapDetails) {
+        Analytics.addClicks(
+            "Home/OnboardingScreen/onClickTargetWithTapPosition",
+            DateTime.timestamp());
         log("target: $target");
         log("clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
       },
@@ -264,6 +291,8 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         log('onClickOverlay: $target');
       },
       onSkip: () {
+        Analytics.addClicks(
+            "Home/OnboardingScreen/onSkip", DateTime.timestamp());
         return true;
       },
       // focusAnimationDuration: const Duration(milliseconds: 200),
@@ -292,23 +321,6 @@ class _RevisedHomePageState extends State<RevisedHomePage>
         ],
       ),
     );
-    // targets.add(
-    //   TargetFocus(
-    //     identify: "Target 6",
-    //     keyTarget: keyMenu,
-    //     enableOverlayTab: true,
-    //     contents: [
-    //       TargetContent(
-    //         align: ContentAlign.right,
-    //         // customPosition: CustomTargetContentPosition(top: 425, right: 70),
-    //         builder: (context, controller) {
-    //           return Image.asset('assets/images/tour/menu.png');
-    //         },
-    //       ),
-    //     ],
-    //     shape: ShapeLightFocus.RRect,
-    //   ),
-    // );
     targets.add(
       TargetFocus(
         identify: "Target 1",

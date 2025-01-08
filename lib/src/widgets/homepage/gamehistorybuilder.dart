@@ -30,9 +30,29 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
                 child: Text("No data to show , please do a therapy sesssion"),
               );
             } else {
-              return DetailChart(
-                  historyData:
-                      gameHistoryFromJson(jsonEncode(snapshot.data!.data())));
+              return Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(right: 8),
+                    alignment: Alignment.bottomRight,
+                    child: const Text(
+                      "x-axis : Date",
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(left: 8),
+                    alignment: Alignment.bottomLeft,
+                    child: const Text(
+                      "y-axis : Score",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  DetailChart(
+                      historyData: gameHistoryFromJson(
+                          jsonEncode(snapshot.data!.data()))),
+                ],
+              );
             }
           }
         } else {

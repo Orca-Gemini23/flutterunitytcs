@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/models/firestoreusermodel.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/user/newrevisedaccountpage.dart';
@@ -27,6 +28,8 @@ class _GuestUserLoginState extends State<GuestUserLogin> {
     minimumSize: const Size(double.maxFinite, 60),
     padding: const EdgeInsets.symmetric(horizontal: 16),
   );
+
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +73,13 @@ class _GuestUserLoginState extends State<GuestUserLogin> {
                         ),
                       ),
                       onPressed: () {
-                        Go.to(context: context, push: const PhoneAuthPage());
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PhoneAuthPage(),
+                            settings: const RouteSettings(name: '/authpage'),
+                          ),
+                        );
                       },
                       child: const Text(
                         "CONTINUE WITH PHONE NUMBER",
@@ -92,25 +101,54 @@ class _GuestUserLoginState extends State<GuestUserLogin> {
                           borderRadius: BorderRadius.all(Radius.circular(30)),
                         ),
                       ),
-                      onPressed: () async {
-                        try {
-                          debugPrint("Signed in with temporary account.");
-                          setState(() {
-                            UserDetails.unavailable = true;
-                          });
-                          await FirebaseAuth.instance.signInAnonymously();
-                          if (context.mounted) {
-                            Go.to(
-                            context: context,
-                            push: const NewRevisedAccountPage(),
-                          );
-                          }
-                        } on FirebaseAuthException catch (e) {
-                          if (kDebugMode) {
-                            print(e);
-                          }
-                        }
-                      },
+                      onPressed: !loading
+                          ? () async {
+                              debugPrint(
+                                  "Signed in with temporary account. $loading");
+                              setState(() {
+                                loading = true;
+                              });
+                              try {
+                                debugPrint("Signed in with temporary account.");
+                                setState(() {
+                                  UserDetails.unavailable = true;
+                                });
+                                await FirebaseAuth.instance.signInAnonymously();
+                                Analytics.start();
+                                await Analytics.addNavigation(
+                                    AnalyticsNavigationModel(
+                                            landingPage: "First Time User",
+                                            landTime: DateTime.timestamp())
+                                        .toJson());
+
+                                for (var data in CollectAnalytics.initialData) {
+                                  await Analytics.addNavigation(data);
+                                }
+                                CollectAnalytics.initialData.clear();
+                                if (context.mounted) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const NewRevisedAccountPage(),
+                                      settings: const RouteSettings(
+                                          name: '/accountpage'),
+                                    ),
+                                  );
+                                }
+                                setState(() {
+                                  loading = false;
+                                });
+                              } on FirebaseAuthException catch (e) {
+                                if (kDebugMode) {
+                                  print(e);
+                                }
+                                setState(() {
+                                  loading = false;
+                                });
+                              }
+                            }
+                          : null,
                       child: const Text(
                         "CONTINUE AS GUEST",
                         style: TextStyle(color: Colors.white),

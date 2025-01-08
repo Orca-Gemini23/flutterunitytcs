@@ -1,13 +1,12 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/firebase_storage.dart';
-import 'package:walk/src/views/reports/filepath.dart';
-import 'package:walk/src/widgets/therapybutton/balltherapysessionbutton.dart';
-import 'package:walk/src/widgets/therapybutton/fishtherapysessionbutton.dart';
-import 'package:walk/src/widgets/therapybutton/swingtherapysessionbutton.dart';
+import 'package:walk/src/utils/global_variables.dart';
+import 'package:walk/src/widgets/therapybutton/theraphysessionbuttons.dart';
 
 import '../../constants/bt_constants.dart';
 import '../../controllers/device_controller.dart';
@@ -32,16 +31,18 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
         );
     super.initState();
     deviceController = Provider.of<DeviceController>(context, listen: false);
-    deviceController.getDeviceMode();
-    mode = deviceController.modeValue;
+    deviceController.getDeviceMode().then((_) {
+      mode = deviceController.modeValue;
+    });
     deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
   }
 
   @override
   void dispose() {
     super.dispose();
-    FirebaseStorageDB.getData();
-    FilePathChange.getExternalFiles();
+    FirebaseStorageDB.putData();
+    // FilePathChange.getExternalFiles();
+    // UploadData().loadFiles();
     deviceController.sendToDevice("mode $mode;", WRITECHARACTERISTICS);
   }
 
@@ -54,7 +55,10 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         elevation: 0.0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: DeviceSize.isTablet ? 48 : 24,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         iconTheme: const IconThemeData(
@@ -80,24 +84,46 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
         decoration: const BoxDecoration(
           color: AppColor.whiteColor,
         ),
-        child: const SafeArea(
+        child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                mainAxisAlignment: DeviceSize.isTablet
+                    ? MainAxisAlignment.spaceEvenly
+                    : MainAxisAlignment.spaceBetween,
+                children: const [
                   ////Device Control and AI therapy session control buttons
-                  BallTherapySessionBtn(),
-                  SwingTherapySessionBtn(),
+                  TherapySessionButton(
+                    imageAssetPath: "assets/images/ball.png",
+                    unityScreenNumber: 0,
+                    gameName: 'Ball Game',
+                  ),
+                  TherapySessionButton(
+                    imageAssetPath: "assets/images/swing.png",
+                    unityScreenNumber: 2,
+                    gameName: 'Swing Game',
+                  ),
                 ],
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: DeviceSize.isTablet
+                    ? MainAxisAlignment.spaceEvenly
+                    : MainAxisAlignment.spaceBetween,
                 children: [
-                  FishTherapySessionBtn(),
+                  const TherapySessionButton(
+                    imageAssetPath: "assets/images/fish.png",
+                    unityScreenNumber: 1,
+                    gameName: 'Fish Game',
+                  ),
+                  // // const FishTherapySessionBtn(),
+                  if (DeviceSize.isTablet)
+                    SizedBox(
+                      height: 170.h,
+                      width: 144.w,
+                    )
                   // TaxiTherapySessionBtn(),
                 ],
               ),

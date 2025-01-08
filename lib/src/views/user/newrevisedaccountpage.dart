@@ -12,9 +12,10 @@ import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
-import 'package:walk/walk_app.dart';
+import 'package:walk/src/views/revisedsplash.dart';
+import 'package:walk/src/views/user/tutorial.dart';
 
 String country = "India";
 
@@ -41,7 +42,9 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
       text: LocalDB.user!.email != "XX" ? LocalDB.user!.email : "");
   final TextEditingController phoneController = TextEditingController(
       text: LocalDB.user!.phone == ""
-          ? FirebaseAuth.instance.currentUser!.phoneNumber
+          ? FirebaseAuth.instance.currentUser != null
+              ? FirebaseAuth.instance.currentUser!.phoneNumber
+              : LocalDB.user!.phone
           : LocalDB.user!.phone);
   TextEditingController heightController =
       TextEditingController(text: DetailsPage.height);
@@ -54,23 +57,24 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
   final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
     disabledBackgroundColor: Colors.grey,
     backgroundColor: AppColor.greenDarkColor,
-    minimumSize: const Size(double.maxFinite, 60),
+    minimumSize: Size(double.maxFinite, DeviceSize.isTablet ? 90 : 60),
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(30)),
+    shape: RoundedRectangleBorder(
+      borderRadius:
+          BorderRadius.all(Radius.circular(DeviceSize.isTablet ? 45 : 30)),
     ),
   );
 
-  final TextStyle textStyle = const TextStyle(
-    fontSize: 14.0,
-    fontWeight: FontWeight.w400,
-  );
+  final TextStyle textStyle = TextStyle(
+      fontSize: DeviceSize.isTablet ? 28 : 14.0,
+      fontWeight: FontWeight.w400,
+      fontFamily: "Helvetica");
 
   static final List<String> genders = [
     'Male',
     'Female',
     'Other',
-    'prefer not to say'
+    'Prefer not to say'
   ];
   String? selectedGender = (genders.contains(LocalDB.user!.gender))
       ? genders[genders.indexOf(LocalDB.user!.gender)]
@@ -220,8 +224,14 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Logout'),
-          content: const Text('Are you sure you want to logout?'),
+          title: Text(
+            'Logout',
+            style: TextStyle(fontSize: DeviceSize.isTablet ? 40 : null),
+          ),
+          content: Text(
+            'Are you sure you want to logout?',
+            style: TextStyle(fontSize: DeviceSize.isTablet ? 24 : null),
+          ),
           actions: [
             TextButton(
               onPressed: () async {
@@ -232,20 +242,27 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                 if (context.mounted) {
                   Go.pushAndRemoveUntil(
                     context: context,
-                    pushReplacement: const WalkApp(),
+                    pushReplacement: const Revisedsplash(),
                   );
                 }
                 // Navigator.of(context).pop();
               },
-              child: const Text('Yes', style: TextStyle(color: Colors.black)),
+              child: Text('Yes',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: DeviceSize.isTablet ? 24 : null,
+                  )),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Closes the dialog without action
               },
-              child: const Text('No',
+              child: Text('No',
                   style: TextStyle(
-                      color: Color(0xFF005749), fontWeight: FontWeight.bold)),
+                    color: const Color(0xFF005749),
+                    fontWeight: FontWeight.bold,
+                    fontSize: DeviceSize.isTablet ? 24 : null,
+                  )),
             ),
           ],
         );
@@ -265,30 +282,37 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
       },
       child: Scaffold(
         appBar: AppBar(
+          toolbarHeight: DeviceSize.isTablet ? 100 : 50,
           centerTitle: true,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           backgroundColor: Colors.transparent,
           elevation: 0.0,
-          iconTheme: const IconThemeData(
+          iconTheme: IconThemeData(
             color: AppColor.blackColor,
+            size: DeviceSize.isTablet ? 36 : 24,
           ),
-          leading: UserDetails.unavailable
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    _onWillPop();
-                  },
-                )
-              : IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () => Navigator.pop(context),
-                ),
-          title: const Text(
+          leading: Padding(
+            padding: DeviceSize.isTablet
+                ? const EdgeInsets.only(left: 16)
+                : EdgeInsets.zero,
+            child: UserDetails.unavailable
+                ? IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      _onWillPop();
+                    },
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+          ),
+          title: Text(
             'Tell us about you !',
             style: TextStyle(
               color: AppColor.blackColor,
               fontWeight: FontWeight.w700,
-              fontSize: 24,
+              fontSize: DeviceSize.isTablet ? 36 : 24,
             ),
             textAlign: TextAlign.center,
           ),
@@ -300,9 +324,14 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                   context: context,
                   position: const RelativeRect.fromLTRB(1000, 80, 0, 0),
                   items: [
-                    const PopupMenuItem<String>(
+                    PopupMenuItem<String>(
                       value: 'Delete Account',
-                      child: Text('Delete Account'),
+                      child: Text(
+                        'Delete Account',
+                        style: DeviceSize.isTablet
+                            ? const TextStyle(fontSize: 25)
+                            : const TextStyle(fontSize: 18),
+                      ),
                     ),
                   ],
                 ).then((value) async {
@@ -312,9 +341,20 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: const Text('Delete Account'),
-                              content: const Text(
-                                  'Are you sure you want to delete account?'),
+                              contentPadding: DeviceSize.isTablet
+                                  ? const EdgeInsets.fromLTRB(48, 40, 48, 48)
+                                  : null,
+                              title: Text(
+                                'Delete Account',
+                                style: TextStyle(
+                                    fontSize: DeviceSize.isTablet ? 40 : null),
+                              ),
+                              // contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.15, vertical: MediaQuery.of(context).size.height*0.05),
+                              content: Text(
+                                'Are you sure you want to delete account?',
+                                style: TextStyle(
+                                    fontSize: DeviceSize.isTablet ? 24 : null),
+                              ),
                               actions: [
                                 TextButton(
                                   onPressed: () async {
@@ -331,23 +371,33 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                     }
                                     LocalDB.saveUser(LocalDB.defaultUser);
                                     PreferenceController.clearAllData();
-                                    Go.pushAndRemoveUntil(
-                                      context: context,
-                                      pushReplacement: const WalkApp(),
-                                    );
+                                    if (context.mounted) {
+                                      Go.pushAndRemoveUntil(
+                                        context: context,
+                                        pushReplacement: const Revisedsplash(),
+                                      );
+                                    }
                                   },
-                                  child: const Text('Yes',
-                                      style: TextStyle(color: Colors.black)),
+                                  child: Text(
+                                    'Yes',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: DeviceSize.isTablet ? 24 : null,
+                                    ),
+                                  ),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context)
                                         .pop(); // Closes the dialog without action
                                   },
-                                  child: const Text('No',
+                                  child: Text('No',
                                       style: TextStyle(
-                                          color: Color(0xFF005749),
-                                          fontWeight: FontWeight.bold)),
+                                        color: const Color(0xFF005749),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                            DeviceSize.isTablet ? 24 : null,
+                                      )),
                                 ),
                               ],
                             );
@@ -393,7 +443,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                 Text(
                                     "Name${UserDetails.unavailable ? "*" : ""}",
                                     style: textStyle),
-                                const SizedBox(height: 6),
+                                SizedBox(height: DeviceSize.isTablet ? 12 : 6),
                                 TextFormField(
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) {
@@ -428,6 +478,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                   inputFormatters: <TextInputFormatter>[
                                     FilteringTextInputFormatter.allow(
                                         RegExp(r'^[a-zA-Z ]+')),
+                                    UpperCaseTextFormatter()
                                   ],
                                 ),
                                 // Row(
@@ -444,9 +495,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
+                      SizedBox(height: DeviceSize.isTablet ? 24 : 12),
                       IntrinsicHeight(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -458,7 +507,8 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                   Text(
                                       "Age${UserDetails.unavailable ? "*" : ""}",
                                       style: textStyle),
-                                  const SizedBox(height: 6),
+                                  SizedBox(
+                                      height: DeviceSize.isTablet ? 12 : 6),
                                   TextFormField(
                                     validator: (value) {
                                       if (value == null ||
@@ -504,15 +554,18 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                     "Gender${UserDetails.unavailable ? "*" : ""}",
                                     style: textStyle,
                                   ),
-                                  const SizedBox(height: 6),
+                                  SizedBox(
+                                      height: DeviceSize.isTablet ? 12 : 6),
                                   DropdownButtonHideUnderline(
                                     child: DropdownButtonFormField<String>(
                                       isExpanded: true,
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 14.5),
-                                      ),
+                                      decoration: InputDecoration(
+                                          border: const OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 8.0,
+                                              vertical: DeviceSize.isTablet
+                                                  ? 20
+                                                  : 14.5)),
                                       hint: Text(
                                         'Gender',
                                         style: textStyle,
@@ -536,7 +589,12 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                           value: gender,
                                           child: Text(
                                             gender,
-                                            style: textStyle,
+                                            style: TextStyle(
+                                                fontSize: DeviceSize.isTablet
+                                                    ? 26
+                                                    : 14.0,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: "Helvetica"),
                                           ),
                                         );
                                       }).toList(),
@@ -548,7 +606,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: DeviceSize.isTablet ? 24 : 12),
                       Row(
                         children: [
                           Expanded(
@@ -556,7 +614,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("Address", style: textStyle),
-                                const SizedBox(height: 6),
+                                SizedBox(height: DeviceSize.isTablet ? 12 : 6),
                                 TextFormField(
                                   validator: (value) {
                                     if ((value == null ||
@@ -599,7 +657,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: DeviceSize.isTablet ? 24 : 12),
                       IntrinsicHeight(
                         child: Row(
                           children: [
@@ -608,7 +666,8 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Height(cm)", style: textStyle),
-                                  const SizedBox(height: 6),
+                                  SizedBox(
+                                      height: DeviceSize.isTablet ? 12 : 6),
                                   TextFormField(
                                     validator: (value) {
                                       if (!UserDetails.unavailable) {
@@ -660,7 +719,8 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                   Text(
                                       "Weight(kg)${UserDetails.unavailable ? "*" : ""}",
                                       style: textStyle),
-                                  const SizedBox(height: 6),
+                                  SizedBox(
+                                      height: DeviceSize.isTablet ? 12 : 6),
                                   TextFormField(
                                     validator: (value) {
                                       if (value == null ||
@@ -704,7 +764,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: DeviceSize.isTablet ? 24 : 12),
                       Row(
                         children: [
                           Expanded(
@@ -712,7 +772,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("E-mail", style: textStyle),
-                                const SizedBox(height: 6),
+                                SizedBox(height: DeviceSize.isTablet ? 12 : 6),
                                 TextFormField(
                                   validator: (value) {
                                     if ((value == null ||
@@ -755,7 +815,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: DeviceSize.isTablet ? 24 : 12),
                       Row(
                         children: [
                           Expanded(
@@ -763,12 +823,13 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("Phone Number", style: textStyle),
-                                const SizedBox(height: 6),
+                                SizedBox(height: DeviceSize.isTablet ? 12 : 6),
                                 TextFormField(
                                   validator: (value) {
                                     if ((value == null ||
                                             value.trim().isEmpty) &&
-                                        !UserDetails.unavailable) {
+                                        !FirebaseAuth.instance.currentUser!
+                                            .isAnonymous) {
                                       return 'Please enter Phone Number';
                                     }
                                     // else if (!RegExp(
@@ -806,12 +867,18 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                           ),
                         ],
                       ),
-                      // const Spacer(),
-                      const SizedBox(height: 36),
+                      DeviceSize.isTablet
+                          ? const Spacer()
+                          : const SizedBox(height: 36),
                       ElevatedButton(
                         style: raisedButtonStyle,
                         onPressed: changeInPage
                             ? () async {
+                                Analytics.addClicks(
+                                    UserDetails.unavailable
+                                        ? 'ContinueButton'
+                                        : 'SaveButton',
+                                    DateTime.timestamp());
                                 validate = true;
                                 if (_formKey.currentState!.validate()) {
                                   emailErrorMessage = null;
@@ -851,6 +918,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                     userAddress: cityController.text,
                                     userHeight: heightController.text,
                                     userWeight: weightController.text,
+                                    loginTime: DateTime.now(),
                                   );
 
                                   FirebaseFirestore.instance
@@ -864,14 +932,29 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                     (value) => {
                                       if (UserDetails.unavailable)
                                         {
-                                          Go.pushAndRemoveUntil(
-                                            context: context,
-                                            pushReplacement:
-                                                const RevisedHomePage(),
-                                          ),
+                                          if (context.mounted)
+                                            {
+                                              Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const TutorialPage(),
+                                                  settings: const RouteSettings(
+                                                      name: '/tutorial'),
+                                                ),
+                                                (route) => false,
+                                              ),
+                                            },
                                           setState(() {
                                             UserDetails.unavailable = false;
                                           }),
+                                        }
+                                      else
+                                        {
+                                          Future.delayed(
+                                              const Duration(seconds: 1)),
+                                          if (context.mounted)
+                                            Navigator.pop(context),
                                         }
                                     },
                                   );
@@ -883,9 +966,9 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                             : null,
                         child: Text(
                           UserDetails.unavailable ? 'continue' : 'save',
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontWeight: FontWeight.w400,
-                              fontSize: 16,
+                              fontSize: DeviceSize.isTablet ? 32 : 16,
                               color: Colors.white),
                         ),
                       ),
@@ -901,6 +984,21 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
   }
 }
 
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: capitalize(newValue.text),
+      selection: newValue.selection,
+    );
+  }
+}
+
+String capitalize(String value) {
+  if (value.trim().isEmpty) return "";
+  return "${value[0].toUpperCase()}${value.substring(1).toLowerCase()}";
+}
 // retriving data
 // FirebaseFirestore.instance
 //     .collection("UserProfiles")
@@ -913,3 +1011,11 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
 //   },
 //   onError: (e) => print("Error getting document: $e"),
 // );
+
+// (UserDetails.unavailable)
+//     ? (nameController.text.isEmpty &&
+//             ageController.text.isEmpty &&
+//             ageController.text.isEmpty &&
+//             weightController.text.isEmpty)
+//         ? null
+//         : null:

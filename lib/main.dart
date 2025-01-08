@@ -6,13 +6,17 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasecm.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/walk_app.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   /// Ensuring widgets initialization
@@ -60,6 +64,9 @@ void main() async {
 
   /// initializes Hive local databased
   await initializeLocalDatabase();
+  FirebaseCM().initNotifications();
+
+  await dotenv.load(fileName: '.env');
 
   Provider.debugCheckInvalidValueType = null;
 

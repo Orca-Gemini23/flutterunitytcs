@@ -1,7 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 
 class CustomDialogs {
@@ -14,8 +13,13 @@ class CustomDialogs {
       dismissOnTouchOutside: false,
       desc: "Oops , lost bluetooth connection please try and connect again.",
       btnOkOnPress: () {
-        Go.pushReplacement(
-            context: context, pushReplacement: const RevisedHomePage());
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: ((context) => const RevisedHomePage()),
+            settings: const RouteSettings(name: '/home'),
+          ),
+        );
       },
       btnOkText: "Take me to home",
       btnOkColor: AppColor.greenDarkColor,

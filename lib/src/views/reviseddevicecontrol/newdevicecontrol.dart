@@ -14,6 +14,7 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/additionalsettings/addsettings.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';
@@ -211,28 +212,43 @@ class _DeviceControlPageState extends State<DeviceControlPage>
             iconTheme: const IconThemeData(
               color: AppColor.blackColor,
             ),
-            title: const Text(
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: DeviceSize.isTablet ? 36 : 24,
+              ),
+              onPressed: (() {
+                Navigator.pop(context);
+              }),
+            ),
+            title: Text(
               "Device Control",
               style: TextStyle(
                 color: AppColor.blackColor,
-                fontSize: 16,
+                fontSize: DeviceSize.isTablet ? 36 : 16,
               ),
             ),
             actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      settings: const RouteSettings(
-                          name: "/device/additionalsettings"),
-                      builder: (context) => const AdditionalSettings(),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.settings_outlined,
-                  size: 30,
+              Padding(
+                padding: DeviceSize.isTablet
+                    ? const EdgeInsets.only(right: 20)
+                    : EdgeInsets.zero,
+                child: IconButton(
+                  onPressed: () {
+                    Analytics.addClicks("SettingsButton", DateTime.timestamp());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        settings: const RouteSettings(
+                            name: "/device/additionalsettings"),
+                        builder: (context) => const AdditionalSettings(),
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.settings_outlined,
+                    size: DeviceSize.isTablet ? 45 : 30,
+                  ),
                 ),
               )
             ],
@@ -323,7 +339,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                           height: 10,
                                         ),
                                         Container(
-                                          height: 180.h,
+                                          height: DeviceSize.isTablet
+                                              ? 200.h
+                                              : 180.h,
                                           padding: const EdgeInsets.symmetric(
                                             vertical: 15,
                                           ),
@@ -334,8 +352,12 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                           ),
                                           child: Row(
                                             children: [
+                                              if (DeviceSize.isTablet)
+                                                const SizedBox(width: 20),
                                               Image(
-                                                height: 119.h,
+                                                height: DeviceSize.isTablet
+                                                    ? 189.h
+                                                    : 119.h,
                                                 width: 119.w,
                                                 alignment: Alignment.centerLeft,
                                                 fit: BoxFit.fitHeight,
@@ -343,12 +365,17 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                   "assets/images/battery.png",
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                width: 10,
+                                              SizedBox(
+                                                width: DeviceSize.isTablet
+                                                    ? 30
+                                                    : 10,
                                               ),
                                               GestureDetector(
                                                 onTap: () {
                                                   ////Implement Battery Refresh
+                                                  Analytics.addClicks(
+                                                      "BatteryDetails",
+                                                      DateTime.timestamp());
                                                   Go.to(
                                                     context: context,
                                                     push: const BatteryDetails(
@@ -359,11 +386,16 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                 onVerticalDragDown: (_) async {
                                                   await deviceController
                                                       .refreshBatteryValues();
+                                                  Analytics.addClicks(
+                                                      "BatteryRefreshDrag",
+                                                      DateTime.timestamp());
                                                 },
                                                 child: Container(
                                                   ////Left Battery Container
                                                   width: 90.w,
-                                                  height: 135.h,
+                                                  height: DeviceSize.isTablet
+                                                      ? 185.h
+                                                      : 135.h,
 
                                                   padding:
                                                       const EdgeInsets.only(
@@ -438,7 +470,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                         ),
                                                         child:
                                                             CircularPercentIndicator(
-                                                          lineWidth: 7,
+                                                          lineWidth: DeviceSize
+                                                                  .isTablet
+                                                              ? 15
+                                                              : 7,
                                                           percent:
                                                               deviceController
                                                                       .battS /
@@ -447,10 +482,14 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                           center: deviceController
                                                                       .battS <
                                                                   30
-                                                              ? const Icon(
+                                                              ? Icon(
                                                                   Icons.error,
                                                                   color: Colors
                                                                       .red,
+                                                                  size: DeviceSize
+                                                                          .isTablet
+                                                                      ? 50
+                                                                      : null,
                                                                 )
                                                               : null,
                                                           progressColor:
@@ -476,7 +515,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                           fontWeight:
                                                               FontWeight.w600,
                                                           color: Colors.black,
-                                                          fontSize: 16.sp,
+                                                          fontSize: 16.h,
                                                           letterSpacing: 1,
                                                         ),
                                                       )
@@ -484,8 +523,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                   ),
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                width: 10,
+                                              SizedBox(
+                                                width: DeviceSize.isTablet
+                                                    ? 30
+                                                    : 10,
                                               ),
                                               GestureDetector(
                                                 onTap: () async {
@@ -504,7 +545,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                 child: Container(
                                                   ////Right Battery Container
                                                   width: 90.w,
-                                                  height: 135.h,
+                                                  height: DeviceSize.isTablet
+                                                      ? 185.h
+                                                      : 135.h,
                                                   padding:
                                                       const EdgeInsets.only(
                                                           bottom: 10),
@@ -571,7 +614,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                         height: 5.h,
                                                       ),
                                                       CircularPercentIndicator(
-                                                        lineWidth: 7,
+                                                        lineWidth:
+                                                            DeviceSize.isTablet
+                                                                ? 15
+                                                                : 7,
                                                         percent: deviceController
                                                                     .battC <
                                                                 0
@@ -593,18 +639,26 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                 deviceController
                                                                         .frequencyValue <
                                                                     0)
-                                                            ? const Icon(
+                                                            ? Icon(
                                                                 Icons.error,
                                                                 color:
                                                                     Colors.grey,
+                                                                size: DeviceSize
+                                                                        .isTablet
+                                                                    ? 50
+                                                                    : null,
                                                               )
                                                             : deviceController
                                                                         .battC <
                                                                     30
-                                                                ? const Icon(
+                                                                ? Icon(
                                                                     Icons.error,
                                                                     color: Colors
                                                                         .red,
+                                                                    size: DeviceSize
+                                                                            .isTablet
+                                                                        ? 50
+                                                                        : null,
                                                                   )
                                                                 : null,
                                                         progressColor: (!deviceController
@@ -648,11 +702,11 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                             : "${deviceController.battC}%",
                                                         textAlign:
                                                             TextAlign.center,
-                                                        style: const TextStyle(
+                                                        style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w600,
                                                           color: Colors.black,
-                                                          fontSize: 16,
+                                                          fontSize: 16.h,
                                                           letterSpacing: 1,
                                                         ),
                                                       )
@@ -687,7 +741,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             vertical: 5,
                                           ),
                                           width: double.maxFinite,
-                                          height: 107.h,
+                                          height: DeviceSize.isTablet
+                                              ? 147.h
+                                              : 107.h,
                                           child: AbsorbPointer(
                                             absorbing: (!deviceController
                                                     .bandC ||
@@ -697,195 +753,124 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                 deviceController
                                                         .frequencyValue <
                                                     0),
-                                            child: Stack(
-                                              textDirection: TextDirection.ltr,
-                                              children: [
-                                                Positioned(
-                                                  top: 0.h,
-                                                  child: Text(
-                                                    AppString.frequency,
-                                                    style: TextStyle(
-                                                      color:
-                                                          AppColor.blackColor,
-                                                      fontSize: 16.sp,
-                                                      letterSpacing: 1,
+                                            child: Padding(
+                                              padding: DeviceSize.isTablet
+                                                  ? const EdgeInsets.all(16.0)
+                                                  : const EdgeInsets.all(0),
+                                              child: Stack(
+                                                textDirection:
+                                                    TextDirection.ltr,
+                                                children: [
+                                                  Positioned(
+                                                    top: 0.h,
+                                                    child: Text(
+                                                      AppString.frequency,
+                                                      style: TextStyle(
+                                                        color:
+                                                            AppColor.blackColor,
+                                                        fontSize:
+                                                            DeviceSize.isTablet
+                                                                ? 20.h
+                                                                : 16.sp,
+                                                        letterSpacing: 1,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                Positioned(
-                                                  left: 0,
-                                                  right: 0,
-                                                  top: 20.h,
-                                                  bottom: 0,
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 3,
-                                                        child: SliderTheme(
-                                                          data: SliderThemeData(
-                                                            trackHeight: 8,
-                                                            activeTrackColor: (!deviceController
-                                                                        .bandC ||
-                                                                    deviceController
-                                                                            .battC <
-                                                                        0 ||
-                                                                    deviceController
-                                                                            .magCValue <
-                                                                        0 ||
-                                                                    deviceController
-                                                                            .frequencyValue <
-                                                                        0)
-                                                                ? Colors.grey
-                                                                : AppColor
-                                                                    .greenDarkColor,
-                                                          ),
-                                                          child: Slider(
-                                                            value: deviceController
-                                                                        .frequencyValue ==
-                                                                    -1
-                                                                ? 0.3
-                                                                : deviceController
-                                                                    .frequencyValue,
-                                                            min: 0.3,
-                                                            max: 2,
-                                                            label: deviceController
-                                                                .frequencyValue
-                                                                .toString(),
-                                                            thumbColor: (!deviceController
-                                                                        .bandC ||
-                                                                    deviceController
-                                                                            .battC <
-                                                                        0 ||
-                                                                    deviceController
-                                                                            .magCValue <
-                                                                        0 ||
-                                                                    deviceController
-                                                                            .frequencyValue <
-                                                                        0)
-                                                                ? Colors.grey
-                                                                : AppColor
-                                                                    .greenDarkColor,
-                                                            onChanged: (value) {
-                                                              if (deviceController
-                                                                  .bandC) {
-                                                                HapticFeedback
-                                                                    .lightImpact();
-                                                                deviceController
-                                                                    .setfreqValue(
-                                                                        value);
-                                                              } else {
-                                                                null;
-                                                              }
-                                                              frequencyTextController
-                                                                  .text = (value *
-                                                                      60)
-                                                                  .toStringAsFixed(
-                                                                      0);
-                                                            },
-                                                            onChangeEnd:
-                                                                (value) async {
-                                                              if (deviceController
-                                                                  .bandC) {
-                                                                String approxFrequency = deviceController
-                                                                            .frequencyValue
-                                                                            .toString()
-                                                                            .length >
-                                                                        3
-                                                                    ? deviceController
-                                                                        .frequencyValue
-                                                                        .toString()
-                                                                        .substring(
-                                                                            0,
-                                                                            4)
-                                                                    : deviceController
-                                                                        .frequencyValue
-                                                                        .toString();
-
-                                                                String command =
-                                                                    "$FREQ c $approxFrequency;";
-                                                                await deviceController
-                                                                    .sendToDevice(
-                                                                        command,
-                                                                        WRITECHARACTERISTICS);
+                                                  Positioned(
+                                                    left: 0,
+                                                    right: 0,
+                                                    top: DeviceSize.isTablet
+                                                        ? 30.h
+                                                        : 20.h,
+                                                    bottom: 0,
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: DeviceSize
+                                                                  .isTablet
+                                                              ? 5
+                                                              : 3,
+                                                          child: SliderTheme(
+                                                            data:
+                                                                SliderThemeData(
+                                                              thumbShape: RoundSliderThumbShape(
+                                                                  enabledThumbRadius:
+                                                                      DeviceSize
+                                                                              .isTablet
+                                                                          ? 18
+                                                                          : 10),
+                                                              trackHeight:
+                                                                  DeviceSize
+                                                                          .isTablet
+                                                                      ? 16
+                                                                      : 8,
+                                                              activeTrackColor: (!deviceController
+                                                                          .bandC ||
+                                                                      deviceController
+                                                                              .battC <
+                                                                          0 ||
+                                                                      deviceController
+                                                                              .magCValue <
+                                                                          0 ||
+                                                                      deviceController
+                                                                              .frequencyValue <
+                                                                          0)
+                                                                  ? Colors.grey
+                                                                  : AppColor
+                                                                      .greenDarkColor,
+                                                            ),
+                                                            child: Slider(
+                                                              value: deviceController
+                                                                          .frequencyValue ==
+                                                                      -1
+                                                                  ? 0.3
+                                                                  : deviceController
+                                                                      .frequencyValue,
+                                                              min: 0.3,
+                                                              max: 2,
+                                                              label: deviceController
+                                                                  .frequencyValue
+                                                                  .toString(),
+                                                              thumbColor: (!deviceController
+                                                                          .bandC ||
+                                                                      deviceController
+                                                                              .battC <
+                                                                          0 ||
+                                                                      deviceController
+                                                                              .magCValue <
+                                                                          0 ||
+                                                                      deviceController
+                                                                              .frequencyValue <
+                                                                          0)
+                                                                  ? Colors.grey
+                                                                  : AppColor
+                                                                      .greenDarkColor,
+                                                              onChanged:
+                                                                  (value) {
+                                                                if (deviceController
+                                                                    .bandC) {
+                                                                  HapticFeedback
+                                                                      .lightImpact();
+                                                                  deviceController
+                                                                      .setfreqValue(
+                                                                          value);
+                                                                } else {
+                                                                  null;
+                                                                }
                                                                 frequencyTextController
                                                                         .text =
                                                                     (value * 60)
                                                                         .toStringAsFixed(
                                                                             0);
-                                                              } else {
-                                                                null;
-                                                              }
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        flex: 1,
-                                                        child: Container(
-                                                          height: 40,
-                                                          // width: 1,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                          ),
-                                                          child: TextField(
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              textAlignVertical:
-                                                                  TextAlignVertical
-                                                                      .center,
-                                                              controller:
-                                                                  frequencyTextController,
-                                                              decoration: const InputDecoration(
-                                                                  border:
-                                                                      OutlineInputBorder(),
-                                                                  labelText:
-                                                                      'steps/min',
-                                                                  labelStyle:
-                                                                      TextStyle(
-                                                                          fontSize:
-                                                                              15)),
-                                                              inputFormatters: <TextInputFormatter>[
-                                                                FilteringTextInputFormatter
-                                                                    .digitsOnly,
-                                                                LengthLimitingTextInputFormatter(
-                                                                    3),
-                                                              ],
-                                                              keyboardType:
-                                                                  const TextInputType
-                                                                      .numberWithOptions(
-                                                                      signed:
-                                                                          true,
-                                                                      decimal:
-                                                                          true),
-                                                              onSubmitted:
+                                                              },
+                                                              onChangeEnd:
                                                                   (value) async {
-                                                                if (double.parse(
-                                                                        value) >
-                                                                    120) {
-                                                                  value = "120";
-                                                                }
-                                                                if (double.parse(
-                                                                        value) <
-                                                                    18) {
-                                                                  value = "18";
-                                                                }
                                                                 if (deviceController
                                                                     .bandC) {
-                                                                  setState(() {
-                                                                    try {
-                                                                      deviceController.setfreqValue(
-                                                                          double.parse(value) /
-                                                                              60);
-                                                                    } catch (e) {
-                                                                      debugPrint(
-                                                                          e.toString());
-                                                                    }
-                                                                  });
+                                                                  Analytics.addClicks(
+                                                                      "FrequencySlider-${(value * 60).toStringAsFixed(0)}",
+                                                                      DateTime
+                                                                          .timestamp());
                                                                   String approxFrequency = deviceController
                                                                               .frequencyValue
                                                                               .toString()
@@ -908,16 +893,132 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       .sendToDevice(
                                                                           command,
                                                                           WRITECHARACTERISTICS);
+                                                                  frequencyTextController
+                                                                      .text = (value *
+                                                                          60)
+                                                                      .toStringAsFixed(
+                                                                          0);
                                                                 } else {
                                                                   null;
                                                                 }
-                                                              }),
+                                                              },
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                        if (DeviceSize.isTablet)
+                                                          const SizedBox(
+                                                              width: 30),
+                                                        Expanded(
+                                                          flex: 1,
+                                                          child: Container(
+                                                            height: DeviceSize
+                                                                    .isTablet
+                                                                ? 80
+                                                                : 40,
+                                                            // width: 1,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: TextField(
+                                                                textAlign: TextAlign
+                                                                    .center,
+                                                                textAlignVertical:
+                                                                    TextAlignVertical
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        DeviceSize
+                                                                                .isTablet
+                                                                            ? 12
+                                                                                .sp
+                                                                            : 15),
+                                                                controller:
+                                                                    frequencyTextController,
+                                                                decoration: InputDecoration(
+                                                                    border:
+                                                                        const OutlineInputBorder(),
+                                                                    labelText:
+                                                                        'steps/min',
+                                                                    labelStyle: TextStyle(
+                                                                        fontSize: DeviceSize.isTablet
+                                                                            ? 12
+                                                                                .sp
+                                                                            : 14)),
+                                                                inputFormatters: <TextInputFormatter>[
+                                                                  FilteringTextInputFormatter
+                                                                      .digitsOnly,
+                                                                  LengthLimitingTextInputFormatter(
+                                                                      3),
+                                                                ],
+                                                                keyboardType:
+                                                                    const TextInputType
+                                                                        .numberWithOptions(
+                                                                        signed:
+                                                                            true,
+                                                                        decimal:
+                                                                            true),
+                                                                onSubmitted:
+                                                                    (value) async {
+                                                                  if (double.parse(
+                                                                          value) >
+                                                                      120) {
+                                                                    value =
+                                                                        "120";
+                                                                  }
+                                                                  if (double.parse(
+                                                                          value) <
+                                                                      18) {
+                                                                    value =
+                                                                        "18";
+                                                                  }
+                                                                  Analytics.addClicks(
+                                                                      "FrequencyTextField-${(value)}",
+                                                                      DateTime
+                                                                          .timestamp());
+                                                                  if (deviceController
+                                                                      .bandC) {
+                                                                    setState(
+                                                                        () {
+                                                                      try {
+                                                                        deviceController.setfreqValue(double.parse(value) /
+                                                                            60);
+                                                                      } catch (e) {
+                                                                        debugPrint(
+                                                                            e.toString());
+                                                                      }
+                                                                    });
+                                                                    String approxFrequency = deviceController.frequencyValue.toString().length >
+                                                                            3
+                                                                        ? deviceController
+                                                                            .frequencyValue
+                                                                            .toString()
+                                                                            .substring(0,
+                                                                                4)
+                                                                        : deviceController
+                                                                            .frequencyValue
+                                                                            .toString();
+
+                                                                    String
+                                                                        command =
+                                                                        "$FREQ c $approxFrequency;";
+                                                                    await deviceController.sendToDevice(
+                                                                        command,
+                                                                        WRITECHARACTERISTICS);
+                                                                  } else {
+                                                                    null;
+                                                                  }
+                                                                }),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -945,88 +1046,115 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             vertical: 5,
                                           ),
                                           width: double.maxFinite,
-                                          height: 140.h,
-                                          child: Stack(
-                                            textDirection: TextDirection.ltr,
-                                            children: [
-                                              Positioned(
-                                                child: Text(
-                                                  AppString.magnitude,
-                                                  style: TextStyle(
-                                                    color: AppColor.blackColor,
-                                                    fontSize: 16.sp,
-                                                    letterSpacing: 1,
+                                          height: DeviceSize.isTablet
+                                              ? 170.h
+                                              : 140.h,
+                                          child: Padding(
+                                            padding: DeviceSize.isTablet
+                                                ? const EdgeInsets.all(8.0)
+                                                : const EdgeInsets.all(0),
+                                            child: Stack(
+                                              textDirection: TextDirection.ltr,
+                                              children: [
+                                                Positioned(
+                                                  child: Text(
+                                                    AppString.magnitude,
+                                                    style: TextStyle(
+                                                      color:
+                                                          AppColor.blackColor,
+                                                      fontSize:
+                                                          DeviceSize.isTablet
+                                                              ? 20.h
+                                                              : 16.sp,
+                                                      letterSpacing: 1,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              Positioned(
-                                                  top: 40,
-                                                  left: 0,
-                                                  right: 0,
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              "Left",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      14.sp,
+                                                Positioned(
+                                                    top: DeviceSize.isTablet
+                                                        ? 80
+                                                        : 40,
+                                                    left: 0,
+                                                    right: 0,
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                "Left",
+                                                                style: TextStyle(
+                                                                    fontSize: DeviceSize
+                                                                            .isTablet
+                                                                        ? 12.sp
+                                                                        : 14.sp,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: Colors
+                                                                        .black),
+                                                              ),
+                                                              if (DeviceSize
+                                                                  .isTablet)
+                                                                const SizedBox(
+                                                                    height: 20),
+                                                              magSlider(false,
+                                                                  deviceController),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        // const Spacer(),
+                                                        Expanded(
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                "Right",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: DeviceSize
+                                                                          .isTablet
+                                                                      ? 12.sp
+                                                                      : 14.sp,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
                                                                   color: Colors
-                                                                      .black),
-                                                            ),
-                                                            magSlider(false,
-                                                                deviceController),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      // const Spacer(),
-                                                      Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              "Right",
-                                                              style: TextStyle(
-                                                                fontSize: 14.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black,
+                                                                      .black,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            AbsorbPointer(
-                                                              absorbing: (!deviceController
-                                                                      .bandC ||
-                                                                  deviceController
-                                                                          .battC <
-                                                                      0 ||
-                                                                  deviceController
-                                                                          .magCValue <
-                                                                      0 ||
-                                                                  deviceController
-                                                                          .frequencyValue <
-                                                                      0),
-                                                              child: magSlider(
-                                                                  true,
-                                                                  deviceController),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ))
-                                            ],
+                                                              if (DeviceSize
+                                                                  .isTablet)
+                                                                const SizedBox(
+                                                                    height: 20),
+                                                              AbsorbPointer(
+                                                                absorbing: (!deviceController
+                                                                        .bandC ||
+                                                                    deviceController
+                                                                            .battC <
+                                                                        0 ||
+                                                                    deviceController
+                                                                            .magCValue <
+                                                                        0 ||
+                                                                    deviceController
+                                                                            .frequencyValue <
+                                                                        0),
+                                                                child: magSlider(
+                                                                    true,
+                                                                    deviceController),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ))
+                                              ],
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(height: 10),
@@ -1066,7 +1194,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                         style: TextStyle(
                                                           color: AppColor
                                                               .blackColor,
-                                                          fontSize: 16.sp,
+                                                          fontSize: DeviceSize
+                                                                  .isTablet
+                                                              ? 20.h
+                                                              : 16.sp,
                                                           letterSpacing: 1,
                                                         ),
                                                       ),
@@ -1087,8 +1218,10 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                 style: TextStyle(
                                                                     color: AppColor
                                                                         .greenDarkColor,
-                                                                    fontSize:
-                                                                        14.sp,
+                                                                    fontSize: DeviceSize
+                                                                            .isTablet
+                                                                        ? 18.h
+                                                                        : 14.sp,
                                                                     letterSpacing:
                                                                         1,
                                                                     fontWeight:
@@ -1151,10 +1284,20 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       .allow(RegExp(
                                                                           r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
                                                                 ],
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        DeviceSize.isTablet
+                                                                            ? 24
+                                                                            : 16),
                                                                 decoration:
                                                                     InputDecoration(
                                                                   labelText:
                                                                       'Min',
+                                                                  labelStyle: TextStyle(
+                                                                      fontSize: DeviceSize
+                                                                              .isTablet
+                                                                          ? 28
+                                                                          : 16),
                                                                   border:
                                                                       OutlineInputBorder(
                                                                     borderRadius:
@@ -1201,10 +1344,20 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       .allow(RegExp(
                                                                           r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
                                                                 ],
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        DeviceSize.isTablet
+                                                                            ? 24
+                                                                            : 16),
                                                                 decoration:
                                                                     InputDecoration(
                                                                   labelText:
                                                                       'Max',
+                                                                  labelStyle: TextStyle(
+                                                                      fontSize: DeviceSize
+                                                                              .isTablet
+                                                                          ? 28
+                                                                          : 16),
                                                                   border:
                                                                       OutlineInputBorder(
                                                                     borderRadius:
@@ -1242,7 +1395,17 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                           data: ThemeData(
                                                             sliderTheme:
                                                                 SliderThemeData(
-                                                              trackHeight: 8,
+                                                              rangeThumbShape: RoundRangeSliderThumbShape(
+                                                                  enabledThumbRadius:
+                                                                      DeviceSize
+                                                                              .isTablet
+                                                                          ? 18
+                                                                          : 10),
+                                                              trackHeight:
+                                                                  DeviceSize
+                                                                          .isTablet
+                                                                      ? 16
+                                                                      : 8,
                                                               thumbColor: AppColor
                                                                   .greenDarkColor, // Change thumb color
                                                               activeTrackColor: isInclusive
@@ -1402,10 +1565,20 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       .allow(RegExp(
                                                                           r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
                                                                 ],
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        DeviceSize.isTablet
+                                                                            ? 24
+                                                                            : 16),
                                                                 decoration:
                                                                     InputDecoration(
                                                                   labelText:
                                                                       'Min',
+                                                                  labelStyle: TextStyle(
+                                                                      fontSize: DeviceSize
+                                                                              .isTablet
+                                                                          ? 28
+                                                                          : 16),
                                                                   border:
                                                                       OutlineInputBorder(
                                                                     borderRadius:
@@ -1452,10 +1625,20 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       .allow(RegExp(
                                                                           r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
                                                                 ],
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        DeviceSize.isTablet
+                                                                            ? 24
+                                                                            : 16),
                                                                 decoration:
                                                                     InputDecoration(
                                                                   labelText:
                                                                       'Max',
+                                                                  labelStyle: TextStyle(
+                                                                      fontSize: DeviceSize
+                                                                              .isTablet
+                                                                          ? 28
+                                                                          : 16),
                                                                   border:
                                                                       OutlineInputBorder(
                                                                     borderRadius:
@@ -1493,7 +1676,16 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                             data: ThemeData(
                                                               sliderTheme:
                                                                   SliderThemeData(
-                                                                trackHeight: 8,
+                                                                rangeThumbShape: RoundRangeSliderThumbShape(
+                                                                    enabledThumbRadius:
+                                                                        DeviceSize.isTablet
+                                                                            ? 18
+                                                                            : 10),
+                                                                trackHeight:
+                                                                    DeviceSize
+                                                                            .isTablet
+                                                                        ? 16
+                                                                        : 8,
                                                                 thumbColor: AppColor
                                                                     .greenDarkColor, // Change thumb color
                                                                 activeTrackColor: isInclusiveRight
@@ -1643,16 +1835,21 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                               style: TextStyle(
                                                 color: AppColor.greenDarkColor,
                                                 fontWeight: FontWeight.w600,
-                                                fontSize: 16.sp,
+                                                fontSize: DeviceSize.isTablet
+                                                    ? 18.h
+                                                    : 16.sp,
                                               ),
                                             ),
                                             const Spacer(),
                                             connectionSnapshot.data ==
                                                     BluetoothConnectionState
                                                         .disconnected
-                                                ? const Icon(
+                                                ? Icon(
                                                     Icons.error,
                                                     color: Colors.red,
+                                                    size: DeviceSize.isTablet
+                                                        ? 36
+                                                        : 24,
                                                   )
                                                 : (!deviceController.bandC ||
                                                         deviceController.battC <
@@ -1663,19 +1860,35 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                         deviceController
                                                                 .frequencyValue <
                                                             0)
-                                                    ? const Icon(
+                                                    ? Icon(
                                                         Icons.error,
                                                         color: Colors.grey,
+                                                        size:
+                                                            DeviceSize.isTablet
+                                                                ? 36
+                                                                : 24,
                                                       )
-                                                    : const Icon(
+                                                    : Icon(
                                                         Icons
                                                             .check_circle_outline_sharp,
+                                                        size:
+                                                            DeviceSize.isTablet
+                                                                ? 36
+                                                                : 24,
                                                       )
                                           ],
                                         ),
-                                        const Divider(
-                                          thickness: 4,
+                                        const SizedBox(
+                                          height: 10,
                                         ),
+                                        Divider(
+                                          thickness:
+                                              DeviceSize.isTablet ? 8 : 4,
+                                        ),
+                                        if (DeviceSize.isTablet)
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
                                         Row(
                                           children: [
                                             Text(
@@ -1683,12 +1896,17 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                               style: TextStyle(
                                                 color: AppColor.greenDarkColor,
                                                 fontWeight: FontWeight.w600,
-                                                fontSize: 16.sp,
+                                                fontSize: DeviceSize.isTablet
+                                                    ? 18.h
+                                                    : 16.sp,
                                               ),
                                             ),
                                             const Spacer(),
                                             IconButton(
                                                 onPressed: () {
+                                                  Analytics.addClicks(
+                                                      "DisconnectButton",
+                                                      DateTime.timestamp());
                                                   showDialog(
                                                     context: context,
                                                     builder: (context) =>
@@ -1708,13 +1926,55 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                   );
                                                   //
                                                 },
-                                                icon: const Icon(
-                                                    Icons.bluetooth_disabled)),
+                                                icon: Icon(
+                                                  Icons.bluetooth_disabled,
+                                                  size: DeviceSize.isTablet
+                                                      ? 36
+                                                      : 24,
+                                                )),
                                           ],
                                         ),
-                                        const Divider(
-                                          thickness: 4,
+                                        if (DeviceSize.isTablet)
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        Divider(
+                                          thickness:
+                                              DeviceSize.isTablet ? 8 : 4,
                                         ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        if (DeviceSize.isTablet)
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Connect Device : ${Device.name}",
+                                              style: TextStyle(
+                                                color: AppColor.greenDarkColor,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: DeviceSize.isTablet
+                                                    ? 18.h
+                                                    : 16.sp,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        if (DeviceSize.isTablet)
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Divider(
+                                          thickness:
+                                              DeviceSize.isTablet ? 8 : 4,
+                                        ),
+
                                         Visibility(
                                           visible: AdvancedMode.modevisiable,
                                           child: const SizedBox(

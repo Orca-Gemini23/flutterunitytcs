@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class VersionNumber {
   static String versionNumber = "";
 }
@@ -19,4 +21,21 @@ class DetailsPage {
 
 class ImagePath {
   static String path = "";
+}
+
+class DeviceSize {
+  static bool isTablet = false;
+  static bool checkTablet(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return size.shortestSide >= 600;
+  }
+}
+
+class CollectAnalytics {
+  static bool start = false;
+  static List<dynamic> initialData = [];
+}
+
+class Device {
+  static String name = "";
 }

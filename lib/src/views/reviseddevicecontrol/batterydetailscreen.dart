@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/batterydetailindicator.dart';
 
 class BatteryDetails extends StatefulWidget {
@@ -22,14 +24,24 @@ class _BatteryDetailsState extends State<BatteryDetails> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           color: AppColor.blackColor,
+          size: DeviceSize.isTablet ? 36 : 20,
+        ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColor.blackColor,
+          ),
+          onPressed: (() {
+            Navigator.pop(context);
+          }),
         ),
         title: Text(
           "Battery Monitor",
           style: TextStyle(
             color: AppColor.blackColor,
-            fontSize: 16.sp,
+            fontSize: DeviceSize.isTablet ? 20.h : 16.sp,
           ),
         ),
       ),
@@ -71,6 +83,9 @@ class _BatteryDetailsState extends State<BatteryDetails> {
                     viewportFraction: 1,
                     height: 260.h,
                     onPageChanged: (index, reason) {
+                      Analytics.addClicks(
+                          "CustomServerBatteryValueIndicatorSwipe",
+                          DateTime.timestamp());
                       _current = index;
                       setState(() {});
                     }),
@@ -101,7 +116,7 @@ class _BatteryDetailsState extends State<BatteryDetails> {
               ),
               ////Also add a text if the charging is on
               Container(
-                height: 105.h,
+                height: DeviceSize.isTablet ? 160.h : 105.h,
                 padding: EdgeInsets.only(
                   top: 10.h,
                   left: 20.w,
@@ -114,9 +129,9 @@ class _BatteryDetailsState extends State<BatteryDetails> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.cable_sharp,
-                      size: 30,
+                      size: DeviceSize.isTablet ? 60 : 30,
                       color: AppColor.blackColor,
                     ),
                     SizedBox(
@@ -156,7 +171,7 @@ class _BatteryDetailsState extends State<BatteryDetails> {
                 height: 30.h,
               ),
               Container(
-                height: 105.h,
+                height: DeviceSize.isTablet ? 160.h : 105.h,
                 padding: EdgeInsets.only(
                   top: 10.h,
                   left: 20.w,
@@ -169,9 +184,9 @@ class _BatteryDetailsState extends State<BatteryDetails> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.lock_clock,
-                      size: 30,
+                      size: DeviceSize.isTablet ? 60 : 30,
                       color: AppColor.blackColor,
                     ),
                     SizedBox(

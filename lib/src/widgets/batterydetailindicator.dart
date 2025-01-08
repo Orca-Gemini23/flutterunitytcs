@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 import '../controllers/device_controller.dart';
 
@@ -49,8 +50,8 @@ class _CustomServerBatteryValueIndicatorState
             right: 0,
             top: 70.h,
             child: Container(
-              height: 152.h,
-              width: 152.w,
+              height: DeviceSize.isTablet ? 180.h : 152.h,
+              width: DeviceSize.isTablet ? 304.w : 152.w,
               decoration: BoxDecoration(
                 color: AppColor.whiteColor,
                 shape: BoxShape.circle,
@@ -59,15 +60,15 @@ class _CustomServerBatteryValueIndicatorState
                         BoxShadow(
                             offset: Offset.zero,
                             color: const Color(0xffA5DECD).withOpacity(.4),
-                            blurRadius: 30,
-                            spreadRadius: 21)
+                            blurRadius: DeviceSize.isTablet ? 60 : 30,
+                            spreadRadius: DeviceSize.isTablet ? 28 : 21)
                       ]
                     : [
                         BoxShadow(
                             offset: Offset.zero,
                             color: const Color(0xffDEBAA5).withOpacity(.4),
-                            blurRadius: 30,
-                            spreadRadius: 21)
+                            blurRadius: DeviceSize.isTablet ? 60 : 30,
+                            spreadRadius: DeviceSize.isTablet ? 28 : 21)
                       ],
               ),
               child: widget.isCharging
@@ -109,7 +110,7 @@ class _CustomServerBatteryValueIndicatorState
                               "Connect Charger",
                               style: TextStyle(
                                 color: AppColor.blackColor,
-                                fontSize: 13.sp,
+                                fontSize: DeviceSize.isTablet ? 17.h : 13.sp,
                               ),
                             )
                           ],
@@ -130,12 +131,17 @@ class _CustomServerBatteryValueIndicatorState
           Positioned(
             left: 78.w,
             top: 0.h,
-            child: Text(
-              "Left",
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Column(
+              children: [
+                Text(
+                  "Left",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
             ),
           )
         ],
@@ -188,8 +194,8 @@ class _CustomClientBatteryValueIndicatorState
             right: 0,
             top: 70.h,
             child: Container(
-              height: 152.h,
-              width: 152.w,
+              height: DeviceSize.isTablet ? 180.h : 152.h,
+              width: DeviceSize.isTablet ? 304.w : 152.w,
               decoration: BoxDecoration(
                 color: AppColor.whiteColor,
                 shape: BoxShape.circle,
@@ -198,15 +204,15 @@ class _CustomClientBatteryValueIndicatorState
                         BoxShadow(
                             offset: Offset.zero,
                             color: const Color(0xffA5DECD).withOpacity(.4),
-                            blurRadius: 30,
-                            spreadRadius: 21)
+                            blurRadius: DeviceSize.isTablet ? 60 : 30,
+                            spreadRadius: DeviceSize.isTablet ? 28 : 21)
                       ]
                     : [
                         BoxShadow(
                             offset: Offset.zero,
                             color: const Color(0xffDEBAA5).withOpacity(.4),
-                            blurRadius: 30,
-                            spreadRadius: 21)
+                            blurRadius: DeviceSize.isTablet ? 60 : 30,
+                            spreadRadius: DeviceSize.isTablet ? 28 : 21)
                       ],
               ),
               child: widget.isCharging
@@ -252,7 +258,7 @@ class _CustomClientBatteryValueIndicatorState
                               "Connect Charger",
                               style: TextStyle(
                                 color: AppColor.blackColor,
-                                fontSize: 13.sp,
+                                fontSize: DeviceSize.isTablet ? 17.h : 13.sp,
                               ),
                             )
                           ],

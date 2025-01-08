@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
+import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/therapybutton/fileread.dart';
 
 import '../views/unity.dart';
@@ -378,8 +379,10 @@ class DeviceController extends ChangeNotifier {
         isScanning = false;
         isConnecting = false;
         scanSubscription!.cancel();
-        showScannedDevicesDialog(
-            context, _scannedDeviceNames, onDeviceSelected);
+        if (context.mounted) {
+          showScannedDevicesDialog(
+              context, _scannedDeviceNames, onDeviceSelected);
+        }
         notifyListeners();
       });
 
@@ -397,17 +400,25 @@ class DeviceController extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Scanned Devices'),
+          title: Text(
+            'Scanned Devices',
+            style: TextStyle(fontSize: DeviceSize.isTablet ? 40 : null),
+          ),
           content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: deviceNames.length,
               itemBuilder: (BuildContext context, int index) {
+                String deviceName = deviceNames[index].platformName;
                 return ListTile(
-                  title: Text(deviceNames[index].platformName),
+                  title: Text(
+                    "WALK (${deviceName.substring(deviceName.length - 3, deviceName.length)})",
+                    style: TextStyle(fontSize: DeviceSize.isTablet ? 28 : null),
+                  ),
                   onTap: () {
                     onDeviceSelected(deviceNames[index]);
+                    Device.name = deviceName;
                     Navigator.of(context).pop();
                   },
                 );
@@ -638,35 +649,38 @@ class DeviceController extends ChangeNotifier {
       var serverResponse = await serverTarget!.read();
       String tempBattC = String.fromCharCodes(clientResponse);
       String tempBattS = String.fromCharCodes(serverResponse);
+      log("CLIENT RAW BATTERY PERCENTAGE is $tempBattC");
+      log("SERVER RAW BATTERY PERCENTAGE is $tempBattS");
       if (double.parse(tempBattS) > 100 || double.parse(tempBattS) < 0) {
         log("Server Battery Percentage Out of Limit , modifying ....");
         if (double.parse(tempBattS) > 100) {
-          _batteryS = "100";
+          tempBattS = "100";
           notifyListeners();
         } else {
-          _batteryS = "0";
+          tempBattS = "0";
           notifyListeners();
         }
       }
       if (double.parse(tempBattC) > 100 || double.parse(tempBattC) < -1) {
         log("Client battery percentage Out of Limit , modifying ....");
         if (double.parse(tempBattC) > 100) {
-          _batteryC = "100";
+          tempBattC = "100";
           notifyListeners();
         } else {
-          _batteryC = "0";
+          tempBattC = "0";
           notifyListeners();
         }
         _batteryInfoStatus = true;
-      } else {
-        log("Battery values in range");
-        log("CLIENT BATTERY PERCENTAGE is $tempBattC");
-        log("SERVER BATTERY PERCENTAGE is $tempBattS");
-        _batteryC = tempBattC;
-        _batteryS = tempBattS;
-        _batteryInfoStatus = true;
-        notifyListeners();
       }
+
+      log("Battery values in range");
+      log("CLIENT BATTERY PERCENTAGE is $tempBattC");
+      log("SERVER BATTERY PERCENTAGE is $tempBattS");
+      _batteryC = tempBattC;
+      _batteryS = tempBattS;
+      _batteryInfoStatus = true;
+      notifyListeners();
+
       _batteryInfoStatus = true;
       return true;
     } catch (e) {

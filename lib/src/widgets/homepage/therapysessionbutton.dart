@@ -4,7 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/views/therapyentrypage/therapypage.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 class TherapySessionBtn extends StatefulWidget {
   const TherapySessionBtn({super.key, required this.therapySessionKey});
@@ -38,8 +39,16 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.fastLinearToSlowEaseIn,
-            height: _isTherapyButtonTapped ? 145.h : 150.h,
-            width: _isTherapyButtonTapped ? 147.w : 154.w,
+            height: DeviceSize.isTablet
+                ? 170.h
+                : _isTherapyButtonTapped
+                    ? 145.h
+                    : 150.h,
+            width: DeviceSize.isTablet
+                ? 170.w
+                : _isTherapyButtonTapped
+                    ? 147.w
+                    : 154.w,
             child: Container(
               height: 150.h,
               width: 154.w,
@@ -69,7 +78,7 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                     height: 92.h,
                     child: Image.asset(
                       "assets/images/therapysession.png",
-                      scale: 3,
+                      scale: DeviceSize.isTablet ? 2 : 3,
                       // fit: BoxFit.contain,
                     ),
                   ),
@@ -92,45 +101,17 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
     );
   }
 
-  // bool checkAccountEligible() {
-  //   String phoneNumber = LocalDB.listenableUser()
-  //       .value
-  //       .get(0, defaultValue: LocalDB.defaultUser)!
-  //       .phone;
-
-  //   if (!RegExp(
-  //           r"^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$")
-  //       .hasMatch(phoneNumber)) {
-  //     ////Dont allow user to use the therapy page
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
   void therapyButtonOnPressed(DeviceController deviceController) async {
+    Analytics.addClicks("TherapySessionButton", DateTime.timestamp());
     if (deviceController.connectedDevice == null) {
       Fluttertoast.showToast(
         msg: "Please Connect to the device first",
       );
     } else {
-      // bool accountEligible = checkAccountEligible();
-
-      // if (accountEligible) {
-      Navigator.push(
+      Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          builder: ((context) => const TherapyEntryPage()),
-        ),
+        '/therapypage',
       );
-      // } else {
-      //   Fluttertoast.showToast(msg: "Please update the account details first");
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) => const NewRevisedAccountPage(),
-      //     ),
-      //   );
-      // }
     }
   }
 }

@@ -13,11 +13,11 @@ import 'package:pinput/pinput.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/server/api.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/views/user/newrevisedaccountpage.dart';
+import 'package:walk/src/views/user/tutorial.dart';
 
 class OTPPage extends StatefulWidget {
   const OTPPage({
@@ -65,10 +65,11 @@ class _OTPPageState extends State<OTPPage> {
   final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: const Color.fromRGBO(0, 87, 73, 1),
     disabledBackgroundColor: Colors.grey,
-    minimumSize: const Size(double.maxFinite, 60),
+    minimumSize: Size(double.maxFinite, DeviceSize.isTablet ? 90 : 60),
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(30)),
+    shape: RoundedRectangleBorder(
+      borderRadius:
+          BorderRadius.all(Radius.circular(DeviceSize.isTablet ? 45 : 30)),
     ),
   );
 
@@ -98,10 +99,10 @@ class _OTPPageState extends State<OTPPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               'OTP Verification',
               style: TextStyle(
-                fontSize: 30,
+                fontSize: DeviceSize.isTablet ? 60 : 30,
                 fontWeight: FontWeight.w700,
                 fontFamily: "Helvetica",
               ),
@@ -112,8 +113,8 @@ class _OTPPageState extends State<OTPPage> {
             ),
             Text(
               "Enter 6 digit code sent to $phoneNo",
-              style: const TextStyle(
-                fontSize: 14,
+              style: TextStyle(
+                fontSize: DeviceSize.isTablet ? 28 : 14,
                 fontWeight: FontWeight.w400,
                 fontFamily: "Helvetica",
               ),
@@ -121,10 +122,24 @@ class _OTPPageState extends State<OTPPage> {
             const SizedBox(height: 25),
             Pinput(
               length: 6,
+              defaultPinTheme: PinTheme(
+                width: DeviceSize.isTablet ? 84 : 56,
+                height: DeviceSize.isTablet ? 84 : 56,
+                textStyle: TextStyle(
+                    fontSize: DeviceSize.isTablet ? 30 : 20,
+                    color: const Color.fromRGBO(30, 60, 87, 1),
+                    fontWeight: FontWeight.w600),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius:
+                      BorderRadius.circular(DeviceSize.isTablet ? 30 : 20),
+                ),
+              ),
               controller: _otpController,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
               ],
+              onCompleted:(value) => log(""),// to validate on auto complete 
             ),
             // const SizedBox(height: 86),
             SizedBox(
@@ -135,11 +150,11 @@ class _OTPPageState extends State<OTPPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    const Text(
+                    Text(
                       "Didn't Receive OTP? ",
                       style: TextStyle(
-                        color: Color(0xFF475569),
-                        fontSize: 14,
+                        color: const Color(0xFF475569),
+                        fontSize: DeviceSize.isTablet ? 21 : 14,
                         fontWeight: FontWeight.w400,
                         fontFamily: "Helvetica",
                       ),
@@ -161,6 +176,8 @@ class _OTPPageState extends State<OTPPage> {
                                   timer.cancel();
                                 }
                               });
+                              Analytics.addClicks(
+                                  "ResendOTP", DateTime.timestamp());
                               await FirebaseAuth.instance.verifyPhoneNumber(
                                 phoneNumber: widget.phoneNumber,
                                 verificationCompleted:
@@ -196,7 +213,7 @@ class _OTPPageState extends State<OTPPage> {
                           color: t == 0
                               ? const Color(0xFF2DBA9B)
                               : const Color(0xFF94A3B8),
-                          fontSize: 14,
+                          fontSize: DeviceSize.isTablet ? 21 : 14,
                           fontWeight: FontWeight.w700,
                           decoration: TextDecoration.underline,
                           fontFamily: "Helvetica",
@@ -215,11 +232,11 @@ class _OTPPageState extends State<OTPPage> {
                 const SizedBox(height: 8),
                 Text(
                   t >= 10 ? "Resend code in 00:$t" : "Resend code in 00:0$t",
-                  style: const TextStyle(
-                    fontSize: 14,
+                  style: TextStyle(
+                    fontSize: DeviceSize.isTablet ? 20 : 14,
                     fontWeight: FontWeight.w400,
                     fontFamily: "Helvetica",
-                    color: Color(0xFF475569),
+                    color: const Color(0xFF475569),
                   ),
                 ),
               ],
@@ -235,6 +252,8 @@ class _OTPPageState extends State<OTPPage> {
                       setState(() {
                         loading = true;
                       });
+                      Analytics.addClicks(
+                          "OTPVerficationButton", DateTime.timestamp());
                       PhoneAuthCredential credential =
                           PhoneAuthProvider.credential(
                               verificationId: widget.verificationId,
@@ -248,6 +267,7 @@ class _OTPPageState extends State<OTPPage> {
                         });
                         await API.getUserDetails();
                         await API.getUserDetailsFireStore();
+                        await FirebaseDB.addUniqueId();
                         log("page change");
                         if (LocalDB.user!.name == "Unknown User" ||
                             DetailsPage.weight.isEmpty) {
@@ -255,16 +275,28 @@ class _OTPPageState extends State<OTPPage> {
                             UserDetails.unavailable = true;
                           });
                           if (context.mounted) {
-                            Go.pushAndRemoveUntil(
-                              context: context,
-                              pushReplacement: const NewRevisedAccountPage(),
-                            );
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const NewRevisedAccountPage(),
+                                  settings:
+                                      const RouteSettings(name: '/accountpage'),
+                                ),
+                                (route) => false
+                                // pushReplacement: const NewRevisedAccountPage(),
+                                );
                           }
                         } else {
                           if (context.mounted) {
-                            Go.pushAndRemoveUntil(
-                              context: context,
-                              pushReplacement: const RevisedHomePage(),
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const TutorialPage(),
+                                settings:
+                                    const RouteSettings(name: '/tutorial'),
+                              ),
+                              (route) => false,
                             );
                           }
                         }
@@ -286,15 +318,17 @@ class _OTPPageState extends State<OTPPage> {
                     }
                   : null,
               child: !loading
-                  ? const Text(
+                  ? Text(
                       'Continue',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400, fontSize: 16),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: DeviceSize.isTablet ? 24 : 16,
+                      ),
                     )
                   : LoadingAnimationWidget.staggeredDotsWave(
                       color: Colors.white,
-                      size: 30,
+                      size: DeviceSize.isTablet ? 45 : 30,
                     ),
             ),
           ],

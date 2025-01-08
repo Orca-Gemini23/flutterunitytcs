@@ -3,15 +3,19 @@ import 'dart:io';
 import 'package:awesome_ripple_animation/awesome_ripple_animation.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/scanningpage/bluetoothconnectionicon.dart';
 import 'package:walk/src/widgets/scanningpage/revisedconnectbutton.dart';
 
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({super.key});
+
+  static const route = "/connection-screen";
 
   @override
   State<ConnectionScreen> createState() => _ConnectionScreenState();
@@ -41,17 +45,27 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text(
+            contentPadding: DeviceSize.isTablet
+                ? const EdgeInsets.fromLTRB(48, 40, 48, 48)
+                : null,
+            title: Text(
               'Device Control',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: DeviceSize.isTablet ? 32 : 16,
+                  fontWeight: FontWeight.bold),
             ),
-            content: Text(message),
+            content: Text(
+              message,
+              style: TextStyle(fontSize: DeviceSize.isTablet ? 24 : null),
+            ),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text(
+                child: Text(
                   'No',
-                  style: TextStyle(color: AppColor.greenDarkColor),
+                  style: TextStyle(
+                      fontSize: DeviceSize.isTablet ? 24 : null,
+                      color: Colors.black),
                 ),
               ),
               TextButton(
@@ -63,9 +77,14 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                     deviceController.isConnecting = false;
                     deviceController.notifyListeners();
                   }
-                  Navigator.of(context).pop(true);
+                  if (context.mounted) Navigator.of(context).pop(true);
                 },
-                child: const Text('Yes'),
+                child: Text(
+                  'Yes',
+                  style: TextStyle(
+                      fontSize: DeviceSize.isTablet ? 24 : null,
+                      color: AppColor.greenDarkColor),
+                ),
               ),
             ],
           ),
@@ -96,20 +115,29 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         backgroundColor: AppColor.whiteColor,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          // systemOverlayStyle: SystemUiOverlayStyle.dark,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
           // automaticallyImplyLeading: !Provider.of<DeviceController>(context,
           //         listen: true)
           //     .isScanning, ////Remove the default back button when scan is running
           backgroundColor: Colors.transparent,
           elevation: 0.0,
-          iconTheme: const IconThemeData(
+          iconTheme: IconThemeData(
             color: AppColor.blackColor,
+            size: DeviceSize.isTablet ? 36 : 24,
           ),
-          title: const Text(
+          // leading: IconButton(
+          //   icon: const Icon(
+          //     Icons.arrow_back_ios,
+          //   ),
+          //   onPressed: (() {
+          //     Navigator.pop(context);
+          //   }),
+          // ),
+          title: Text(
             "Device Control",
             style: TextStyle(
               color: AppColor.blackColor,
-              fontSize: 16,
+              fontSize: DeviceSize.isTablet ? 32 : 16,
             ),
           ),
         ),
@@ -131,7 +159,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   deviceController.checkLocationPremission();
                 }
                 return Positioned(
-                  top: 250,
+                  top: DeviceSize.isTablet ? 300 : 250,
                   left: 0,
                   right: 0,
                   child: (deviceController.scanStatus ||
@@ -140,8 +168,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                           ripplesCount: 2,
                           repeat: true,
                           color: AppColor.greyLight,
-                          size: const Size.fromRadius(40),
-                          minRadius: 180,
+                          size: DeviceSize.isTablet
+                              ? const Size.fromRadius(80)
+                              : const Size.fromRadius(40),
+                          minRadius: DeviceSize.isTablet ? 270 : 180,
                           child: deviceController.connectedDevice == null
                               ? bluetoothIcon()
                               : bluetoothConnectedIcon(),

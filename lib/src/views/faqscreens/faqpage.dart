@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 class Faqpage extends StatefulWidget {
   const Faqpage({super.key});
@@ -19,14 +20,23 @@ class _FaqpageState extends State<Faqpage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           color: AppColor.blackColor,
+          size: DeviceSize.isTablet ? 36 : 24,
         ),
-        title: const Text(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+          ),
+          onPressed: (() {
+            Navigator.pop(context);
+          }),
+        ),
+        title: Text(
           "FAQ's",
           style: TextStyle(
             color: AppColor.blackColor,
-            fontSize: 19,
+            fontSize: DeviceSize.isTablet ? 38 : 19,
           ),
         ),
       ),
@@ -42,7 +52,7 @@ class _FaqpageState extends State<Faqpage> {
               Text(
                 "Frequently Asked Questions",
                 style: TextStyle(
-                  fontSize: 21.sp,
+                  fontSize: DeviceSize.isTablet ? 28.h : 21.sp,
                   color: AppColor.greenDarkColor,
                   fontWeight: FontWeight.w600,
                 ),
@@ -60,8 +70,10 @@ class _FaqpageState extends State<Faqpage> {
                     );
                   },
                   separatorBuilder: (context, index) {
-                    return const Divider(
+                    return Divider(
                       height: 5,
+                      thickness: DeviceSize.isTablet ? 3 : 1,
+                      //DeviceType.tablet ? ,
                       color: AppColor.greyLight,
                     );
                   },
@@ -106,33 +118,39 @@ class _CustomFAQWidgetState extends State<CustomFAQWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTileTheme(
-      data: const ExpansionTileThemeData(
-          backgroundColor: Colors.transparent,
-          collapsedTextColor: AppColor.blackColor,
-          collapsedIconColor: AppColor.blackColor),
-      child: ExpansionTile(
-        title: Text(
-          questions[widget.index],
-          style: TextStyle(fontSize: 14.sp),
-        ),
-        tilePadding: EdgeInsets.zero,
-        textColor: AppColor.blackColor,
-        children: [
-          Card(
-            elevation: 0,
-            color: AppColor.lightbluegrey,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                answers[widget.index],
-                style: TextStyle(fontSize: 14.sp),
-                // textAlign: TextAlign.justify,
-              ),
+    return Column(
+      children: [
+        if (DeviceSize.isTablet) const SizedBox(height: 20),
+        ExpansionTileTheme(
+          data: const ExpansionTileThemeData(
+              backgroundColor: Colors.transparent,
+              collapsedTextColor: AppColor.blackColor,
+              collapsedIconColor: AppColor.blackColor),
+          child: ExpansionTile(
+            title: Text(
+              questions[widget.index],
+              style: TextStyle(fontSize: 14.sp),
             ),
-          )
-        ],
-      ),
+            tilePadding: EdgeInsets.zero,
+            textColor: AppColor.blackColor,
+            children: [
+              Card(
+                elevation: 0,
+                color: AppColor.lightbluegrey,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    answers[widget.index],
+                    style: TextStyle(fontSize: 14.sp),
+                    // textAlign: TextAlign.justify,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        if (DeviceSize.isTablet) const SizedBox(height: 20),
+      ],
     );
   }
 }

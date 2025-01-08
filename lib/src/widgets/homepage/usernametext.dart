@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 
 import '../../models/user_model.dart';
@@ -23,7 +24,9 @@ class UsernameText extends StatelessWidget {
       builder: (contex, userBox, child) {
         return RichText(
           text: TextSpan(
-            style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w700),
+            style: TextStyle(
+                fontSize: DeviceSize.isTablet ? 30.h : 30.sp,
+                fontWeight: FontWeight.w700),
             children: <TextSpan>[
               const TextSpan(
                 text: 'Hello, ',
@@ -85,10 +88,11 @@ class _UserNameImageState extends State<UserNameImage> {
         builder: (context, userBox, child) {
           return GestureDetector(
             onTap: () {
+              Analytics.addClicks("ProfilePicPicker", DateTime.timestamp());
               _pickImage();
             },
             child: CircleAvatar(
-              radius: 30,
+              radius: DeviceSize.isTablet ? 60 : 30,
               backgroundImage: ImagePath.path == ""
                   ? const AssetImage("assets/images/defaultuser.png")
                   : FileImage(

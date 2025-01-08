@@ -10,25 +10,21 @@ import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';
-import 'package:walk/src/views/faqscreens/faqpage.dart';
-import 'package:walk/src/views/org_info/about_us.dart';
-import 'package:walk/src/views/org_info/contact_us.dart';
-import 'package:walk/src/views/reports/reporttiles.dart';
-import 'package:walk/src/views/reviseddevicecontrol/connectionscreen.dart';
-import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
-import 'package:walk/src/views/user/tutorial.dart';
+import 'package:walk/src/views/revisedsplash.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
-import 'package:walk/walk_app.dart';
 
 Drawer navigationDrawer(BuildContext context) {
   return Drawer(
     key: keyMenu,
     // backgroundColor: Color(DRAWERCOLOR),
+    width: DeviceSize.isTablet
+        ? MediaQuery.of(context).size.width * 0.6
+        : MediaQuery.of(context).size.width * 0.8,
     semanticLabel: "drawer",
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
@@ -42,7 +38,8 @@ Drawer navigationDrawer(BuildContext context) {
       children: [
         Container(
           color: AppColor.lightgreen,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+          padding: EdgeInsets.symmetric(
+              vertical: 10, horizontal: DeviceSize.isTablet ? 60 : 30),
           height: Screen.height(context: context) * 0.25,
           width: double.infinity,
           child: Column(
@@ -74,7 +71,7 @@ Drawer navigationDrawer(BuildContext context) {
                             .name,
                     style: TextStyle(
                       color: AppColor.blackColor,
-                      fontSize: 16.sp,
+                      fontSize: DeviceSize.isTablet ? 20.h : 16.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   );
@@ -83,7 +80,7 @@ Drawer navigationDrawer(BuildContext context) {
             ],
           ),
         ),
-        drawerItem(context),
+        Expanded(child: drawerItem(context)),
       ],
     ),
   );
@@ -100,8 +97,9 @@ Widget drawerItem(BuildContext context) {
     // Icons.qr_code,
     Icons.help,
     Icons.question_answer,
+    // Icons.money_rounded,
+    Icons.info_outline,
     Icons.logout_sharp,
-    Icons.info_outline
     // Icons.autorenew,
   ];
   List<String> drawerTileName = [
@@ -114,51 +112,58 @@ Widget drawerItem(BuildContext context) {
     // 'QR-Scanner',
     'Tutorial',
     "FAQ's",
-    'Log Out',
+    // "Subscription",
     "App Version - v${VersionNumber.versionNumber}",
+    'Log Out',
   ];
   List<Function()?> drawerOnTap = [
     () {
       //Home
+      Analytics.addClicks("Drawer/HomeButton", DateTime.timestamp());
       Go.back(context: context);
     },
     () {
-      Go.to(
-        context: context,
-        push: const NewRevisedAccountPage(),
+      Analytics.addClicks("Drawer/AccountButton", DateTime.timestamp());
+      Navigator.pushNamed(
+        context,
+        '/accountpage',
       );
     },
     () {
+      Analytics.addClicks("Drawer/DeviceControlButton", DateTime.timestamp());
       if (Provider.of<DeviceController>(context, listen: false)
               .connectedDevice ==
           null) {
-        Go.to(
-          context: context,
-          push: const ConnectionScreen(),
+        Navigator.pushNamed(
+          context,
+          '/connectionscreen',
         );
       } else {
-        Go.to(
-          context: context,
-          push: const DeviceControlPage(),
+        Navigator.pushNamed(
+          context,
+          '/devicecontrol',
         );
       }
     },
     () {
-      Go.to(
-        context: context,
-        push: const ReportList(),
+      Analytics.addClicks("Drawer/ReportButton", DateTime.timestamp());
+      Navigator.pushNamed(
+        context,
+        '/reports',
       );
     },
     () {
-      Go.to(
-        context: context,
-        push: const AboutUsPage(),
+      Analytics.addClicks("Drawer/AboutUsButton", DateTime.timestamp());
+      Navigator.pushNamed(
+        context,
+        '/aboutus',
       );
     },
     () {
-      Go.to(
-        context: context,
-        push: const ContactUsPage(),
+      Analytics.addClicks("Drawer/ContactUsButton", DateTime.timestamp());
+      Navigator.pushNamed(
+        context,
+        '/contactus',
       );
     },
     // () {
@@ -169,18 +174,28 @@ Widget drawerItem(BuildContext context) {
     //Goto qr scanner page
     // },
     () {
-      Go.to(
-        context: context,
-        push: const TutorialPage(),
+      Analytics.addClicks("Drawer/TutorialButton", DateTime.timestamp());
+      Navigator.pushNamed(
+        context,
+        '/tutorial',
       );
     },
     () {
-      Go.to(
-        context: context,
-        push: const Faqpage(),
+      Analytics.addClicks("Drawer/FaqButton", DateTime.timestamp());
+      Navigator.pushNamed(
+        context,
+        '/faq',
       );
     },
+    // () {
+    //   Navigator.pushNamed(
+    //     context,
+    //     '/subscription',
+    //   );
+    // },
+    null,
     () {
+      Analytics.addClicks("Drawer/SignoutButton", DateTime.timestamp());
       showDialog(
         context: context,
         builder: (context) => ConfirmationBox(
@@ -190,50 +205,67 @@ Widget drawerItem(BuildContext context) {
             onConfirm: () async {
               Navigator.of(context).pop();
               await FirebaseAuth.instance.signOut();
-              LocalDB.saveUser(LocalDB.defaultUser);
-              PreferenceController.clearAllData();
+              await LocalDB.saveUser(LocalDB.defaultUser);
+              await PreferenceController.clearAllData();
+              CollectAnalytics.start = false;
               if (context.mounted) {
                 Go.pushAndRemoveUntil(
-                    context: context, pushReplacement: const WalkApp());
+                    context: context, pushReplacement: const Revisedsplash());
               }
             }),
       );
     },
-    null,
   ];
 
   return ListView.builder(
     shrinkWrap: true,
-    physics:
-        const BouncingScrollPhysics(parent: NeverScrollableScrollPhysics()),
+    // physics:
+    //     const BouncingScrollPhysics(parent: NeverScrollableScrollPhysics()),
     itemBuilder: (context, index) {
       if (Flavors.prod) {
-        return index == 9
-            ? const Center()
-            : ListTile(
-                leading: Icon(
+        return Column(
+          children: [
+            ListTile(
+              leading: Padding(
+                padding: DeviceSize.isTablet
+                    ? const EdgeInsets.only(right: 40, left: 10)
+                    : const EdgeInsets.all(0),
+                child: Icon(
                   drawerIcon[index],
                   color: AppColor.blackColor,
-                  size: 26,
+                  size: DeviceSize.isTablet ? 40 : 26,
                 ),
-                title: Text(
-                  drawerTileName[index],
-                  style: const TextStyle(
-                    color: AppColor.blackColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  ),
+              ),
+              title: Text(
+                drawerTileName[index],
+                style: TextStyle(
+                  color: AppColor.blackColor,
+                  fontSize: DeviceSize.isTablet ? 32 : 16,
+                  fontWeight: FontWeight.w300,
                 ),
-                onTap: drawerOnTap[index],
-              );
+              ),
+              onTap: drawerOnTap[index],
+            ),
+            if (DeviceSize.isTablet) const SizedBox(height: 25)
+          ],
+        );
       } else {
         return ListTile(
-          leading: Icon(drawerIcon[index]),
+          leading: Padding(
+            padding: DeviceSize.isTablet
+                ? const EdgeInsets.only(right: 40, left: 10)
+                : const EdgeInsets.all(0),
+            child: Icon(
+              drawerIcon[index],
+              color: AppColor.blackColor,
+              size: DeviceSize.isTablet ? 40 : 26,
+            ),
+          ),
           title: Text(
             drawerTileName[index],
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColor.blackColor,
-              fontSize: 16,
+              fontSize: DeviceSize.isTablet ? 32 : 16,
               fontWeight: FontWeight.w300,
             ),
           ),
