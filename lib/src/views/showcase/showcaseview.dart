@@ -24,7 +24,6 @@ class ShowCaseView extends StatelessWidget {
       key: globalKey,
       title: title,
       description: description,
-      shapeBorder: shapeBorder,
       child: child,
     );
   }

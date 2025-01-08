@@ -1,21 +1,18 @@
 import 'dart:developer';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:rive/rive.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/server/upload.dart';
-// import 'package:walk/src/utils/awshelper.dart/awsauth.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
-import 'package:walk/src/utils/version_number.dart';
+import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/walk_app.dart';
-
-RiveFile? file;
 
 void main() async {
   /// Ensuring widgets initialization
@@ -42,6 +39,10 @@ void main() async {
   /// Initializes the firebase
   await FirebaseDB.initFirebaseServices();
   // await initServices();
+  if (kDebugMode) {
+    log("its debug mode");
+    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
+  }
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -61,17 +62,6 @@ void main() async {
   await initializeLocalDatabase();
 
   Provider.debugCheckInvalidValueType = null;
-
-  // UploadData.uplaod();
-
-  // final file = File('${directory!.path}/test.txt');
-  // await file.writeAsString('Hello, World!');
-
-  // NotificationService.initNotification();
-  // NotificationService.cancelScheduledNotifications();
-  // NotificationService.sendScheduledTestNotification();
-
-  // AWSAuth.configureAmplify();
 
   /// Core app
   runApp(

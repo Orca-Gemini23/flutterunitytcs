@@ -20,15 +20,17 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
     return Consumer<DeviceController>(
         builder: (context, deviceController, child) {
       return Visibility(
-        visible: !deviceController.scanStatus,
-        replacement: const Text(
-          "Searching for device",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: AppColor.greenDarkColor,
-            fontSize: 19,
+        visible: !deviceController.scanStatus && !deviceController.isConnecting,
+          replacement: Text(
+            deviceController.isConnecting
+                ? "Connecting to device"
+                : "Searching for device",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppColor.greenDarkColor,
+              fontSize: 19,
+            ),
           ),
-        ),
         child: SizedBox(
           width: double.maxFinite,
           height: 50,
@@ -43,6 +45,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
               "Connect Device",
               style: TextStyle(
                 fontSize: 19,
+                color: Colors.white
               ),
             ),
           ),
@@ -72,6 +75,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
             pushReplacement: const DeviceControlPage(),
           );
         },
+        context
       );
     }
   }

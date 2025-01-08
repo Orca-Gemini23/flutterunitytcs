@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:walk/src/constants/app_assets.dart';
 import 'package:walk/src/constants/app_color.dart';
@@ -14,6 +15,12 @@ class ContactUsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        iconTheme: const IconThemeData(
+          color: AppColor.blackColor,
+        ),
         title: const Text(
           AppString.contactUsPageTitle,
           style: TextStyle(
@@ -30,8 +37,6 @@ class ContactUsPage extends StatelessWidget {
           }),
         ),
         centerTitle: false,
-        backgroundColor: AppColor.whiteColor,
-        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(

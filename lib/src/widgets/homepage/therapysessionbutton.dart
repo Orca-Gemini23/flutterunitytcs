@@ -4,14 +4,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/views/therapyentrypage/therapypage.dart';
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 
 class TherapySessionBtn extends StatefulWidget {
-  const TherapySessionBtn({super.key, required this.pKey});
+  const TherapySessionBtn({super.key, required this.therapySessionKey});
 
-  final GlobalKey pKey;
+  final GlobalKey therapySessionKey;
 
   @override
   State<TherapySessionBtn> createState() => _TherapySessionBtnState();
@@ -22,7 +20,7 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DeviceController>(
-      key: widget.pKey,
+      key: widget.therapySessionKey,
       builder: (context, deviceController, widget) {
         return InkWell(
           highlightColor: Colors.transparent,
@@ -94,46 +92,45 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
     );
   }
 
-  bool checkAccountEligible() {
-    String phoneNumber = LocalDB.listenableUser()
-        .value
-        .get(0, defaultValue: LocalDB.defaultUser)!
-        .phone;
+  // bool checkAccountEligible() {
+  //   String phoneNumber = LocalDB.listenableUser()
+  //       .value
+  //       .get(0, defaultValue: LocalDB.defaultUser)!
+  //       .phone;
 
-    if (!RegExp(
-            r"^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$")
-        .hasMatch(phoneNumber)) {
-      ////Dont allow user to use the therapy page
-      return false;
-    }
-    return true;
-  }
+  //   if (!RegExp(
+  //           r"^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$")
+  //       .hasMatch(phoneNumber)) {
+  //     ////Dont allow user to use the therapy page
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   void therapyButtonOnPressed(DeviceController deviceController) async {
-    print("coming here");
     if (deviceController.connectedDevice == null) {
       Fluttertoast.showToast(
         msg: "Please Connect to the device first",
       );
     } else {
-      bool accountEligible = checkAccountEligible();
+      // bool accountEligible = checkAccountEligible();
 
-      if (accountEligible) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => const TherapyEntryPage()),
-          ),
-        );
-      } else {
-        Fluttertoast.showToast(msg: "Please update the account details first");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const NewRevisedAccountPage(),
-          ),
-        );
-      }
+      // if (accountEligible) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: ((context) => const TherapyEntryPage()),
+        ),
+      );
+      // } else {
+      //   Fluttertoast.showToast(msg: "Please update the account details first");
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => const NewRevisedAccountPage(),
+      //     ),
+      //   );
+      // }
     }
   }
 }

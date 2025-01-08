@@ -93,7 +93,6 @@ class _FishTherapySessionBtnState extends State<FishTherapySessionBtn> {
   }
 
   void therapyButtonOnPressed(DeviceController deviceController) async {
-    print("coming here");
     if (deviceController.connectedDevice == null) {
       Fluttertoast.showToast(
         msg: "Please Connect to the device first",

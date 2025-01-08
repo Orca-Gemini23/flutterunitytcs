@@ -1,15 +1,20 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
+import 'package:walk/src/server/api.dart';
+import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/global_variables.dart';
+import 'package:walk/src/views/auth/guest_login_ios.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
+import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 
 bool tour = false;
 
@@ -33,19 +38,38 @@ class _RevisedsplashState extends State<Revisedsplash>
   late AnimationController _controller;
   late Animation<double> animation1;
 
-  void getUserToken() async {
-    userToken = await PreferenceController.getstringData("customerAuthToken");
-    log("userToken is $userToken");
-  }
-
   @override
   void initState() {
     super.initState();
-    getUserToken();
 
-    if (Platform.isIOS && LocalDB.user!.name == "Unknown User") {
-      FirebaseAuth.instance.signOut();
-    }
+    // if (Platform.isIOS && LocalDB.user!.phone == "") {
+    //   FirebaseAuth.instance.signOut();
+    // }
+    // if (LocalDB.user!.name == "Unknown User") {
+    //   API.getUserDetails();
+    // }
+    // if (LocalDB.user!.name == "Unknown User") {
+    //   API.getUserDetailsFireStore();
+    // }
+    // API.getUserDetailsFireStore();
+    FirebaseDB.getNumbers();
+
+    PreferenceController.getstringData("Height").then((value) {
+      setState(() {
+        DetailsPage.height = value;
+      });
+    });
+    PreferenceController.getstringData("Weight").then((value) {
+      setState(() {
+        DetailsPage.weight = value;
+        // weightController = TextEditingController(text: value);
+      });
+    });
+    PreferenceController.getstringData("profileImage").then((value) {
+      setState(() {
+        ImagePath.path = value;
+      });
+    });
 
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 3));
@@ -76,28 +100,50 @@ class _RevisedsplashState extends State<Revisedsplash>
 
     Timer(
       const Duration(seconds: 4),
-      () {
-        // setState(
-        //   () {
-        // FirebaseAuth.instance.idTokenChanges().listen(
-        // (User? user) {
+      () async {
         if (FirebaseAuth.instance.currentUser == null) {
+          debugPrint('User is currently signed out!');
           setState(() {
             tour = false;
           });
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const PhoneAuthPage()));
+          if (Platform.isIOS) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const GuestUserLogin()));
+          } else {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const PhoneAuthPage()));
+          }
         } else {
-          setState(() {
-            tour = true;
-          });
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const RevisedHomePage()));
+          debugPrint('User is signed in!');
+          if (LocalDB.user!.name == "Unknown User") {
+            log("splash screen rds data call");
+            await API.getUserDetails();
+          }
+          if (LocalDB.user!.name == "Unknown User") {
+            log("splash screen firebase data call");
+            await API.getUserDetailsFireStore();
+          }
+          if (mounted) {
+            setState(() {
+              tour = true;
+            });
+            if (LocalDB.user!.name == "Unknown User") {
+              setState(() {
+                UserDetails.unavailable = true;
+              });
+              Go.pushReplacement(
+                  context: context,
+                  pushReplacement: const NewRevisedAccountPage());
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RevisedHomePage()));
+            }
+          }
         }
-        // },
-        // );
-        //   },
-        // );
       },
     );
   }

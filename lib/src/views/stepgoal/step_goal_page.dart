@@ -8,7 +8,7 @@ import 'package:walk/src/widgets/stepgoalpage/templevisitcard.dart';
 import 'package:walk/src/widgets/stepgoalpage/weekdayindicator';
 
 class StepGoalPage extends StatefulWidget {
-  const StepGoalPage({Key? key}) : super(key: key);
+  const StepGoalPage({super.key});
 
   @override
   State<StepGoalPage> createState() => _StepGoalPageState();
@@ -270,7 +270,7 @@ class _StepGoalPageState extends State<StepGoalPage> {
     );
   }
 
-  final CarouselController _crouselController = CarouselController();
+  // final CarouselController _crouselController = CarouselController();
   int _currentIndex = 0;
 
   @override
@@ -425,7 +425,7 @@ class _StepGoalPageState extends State<StepGoalPage> {
                 width: double.maxFinite,
                 height: 145.h,
                 child: CarouselSlider(
-                  carouselController: _crouselController,
+                  // carouselController: _crouselController,
                   items: getAllQuests(),
                   options: CarouselOptions(
                       enlargeCenterPage: true,

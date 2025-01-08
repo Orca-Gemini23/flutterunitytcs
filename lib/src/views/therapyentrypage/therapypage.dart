@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/db/firebase_storage.dart';
+import 'package:walk/src/views/reports/filepath.dart';
 import 'package:walk/src/widgets/therapybutton/balltherapysessionbutton.dart';
 import 'package:walk/src/widgets/therapybutton/fishtherapysessionbutton.dart';
 import 'package:walk/src/widgets/therapybutton/swingtherapysessionbutton.dart';
@@ -24,13 +26,13 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
   @override
   void initState() {
     FirebaseAnalytics.instance
-        .setCurrentScreen(screenName: 'Therapy Entry Page')
+        .logScreenView(screenName: 'Therapy Entry Page')
         .then(
           (value) => debugPrint("Analytics stated"),
         );
     super.initState();
     deviceController = Provider.of<DeviceController>(context, listen: false);
-
+    deviceController.getDeviceMode();
     mode = deviceController.modeValue;
     deviceController.sendToDevice("mode 9;", WRITECHARACTERISTICS);
   }
@@ -38,6 +40,8 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
   @override
   void dispose() {
     super.dispose();
+    FirebaseStorageDB.getData();
+    FilePathChange.getExternalFiles();
     deviceController.sendToDevice("mode $mode;", WRITECHARACTERISTICS);
   }
 
@@ -94,8 +98,16 @@ class _TherapyEntryPageState extends State<TherapyEntryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   FishTherapySessionBtn(),
+                  // TaxiTherapySessionBtn(),
                 ],
               ),
+              // SizedBox(height: 24),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     AnglesDisplayBtn(),
+              //   ],
+              // ),
             ],
           ),
         ),
