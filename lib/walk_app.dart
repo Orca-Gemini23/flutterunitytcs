@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:provider/provider.dart';
 import 'package:walk/main.dart';
 import 'package:walk/src/controllers/device_controller.dart';
@@ -141,22 +140,6 @@ class MyNavigatorObserver extends NavigatorObserver {
       }
       // log('2. Returned to: $currentRoute');
     }
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    super.didRemove(route, previousRoute);
-    // if (CollectAnalytics.start) {
-    //   Analytics.addNavigation(AnalyticsNavigationModel(
-    //     landingPage: route.settings.name ?? routeStack.last,
-    //     landTime: DateTime.timestamp(),
-    //   ).toJson());
-    // } else {
-    //   CollectAnalytics.initialData.add(AnalyticsNavigationModel(
-    //           landingPage: currentRoute, landTime: DateTime.timestamp())
-    //       .toJson());
-    // }
-    // log('3. Removed route: ${route.settings.name}');
   }
 
   @override

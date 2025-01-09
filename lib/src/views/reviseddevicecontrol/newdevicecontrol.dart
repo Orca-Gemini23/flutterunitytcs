@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,12 +14,10 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/additionalsettings/addsettings.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';
-import 'package:walk/src/views/reviseddevicecontrol/batterydetailscreen.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/widgets/devicecontrolpage/magnitudeslider.dart';
 import 'package:walk/src/widgets/dialog.dart';
@@ -32,7 +31,6 @@ class DeviceControlPage extends StatefulWidget {
 
 class _DeviceControlPageState extends State<DeviceControlPage>
     with WidgetsBindingObserver {
-  bool sosMode = false;
   late DeviceController deviceController;
   StreamSubscription<BluetoothConnectionState>? _deviceStateSubscription;
   bool isDialogup = true;
@@ -44,15 +42,16 @@ class _DeviceControlPageState extends State<DeviceControlPage>
   final FocusNode _maxFocusNode = FocusNode();
   bool? previousValue;
   bool magChanger = false;
+
   // Right Band Angle
   RangeValues _currentRangeValuesRight = const RangeValues(-30, 30);
   final TextEditingController _minControllerRight = TextEditingController();
   final TextEditingController _maxControllerRight = TextEditingController();
   final FocusNode _minFocusNodeRight = FocusNode();
   final FocusNode _maxFocusNodeRight = FocusNode();
-  // String s = "eyJraWQiOiJNbjVDS1EiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxOjIwNTYyMzk5NTc0NzphbmRyb2lkOjUzNjA0NzllMTdiMzNhYmZiZWI3NTYiLCJhdWQiOlsicHJvamVjdHNcLzIwNTYyMzk5NTc0NyIsInByb2plY3RzXC93YWxrLTkwZGJmIl0sInByb3ZpZGVyIjoiZGVidWciLCJpc3MiOiJodHRwczpcL1wvZmlyZWJhc2VhcHBjaGVjay5nb29nbGVhcGlzLmNvbVwvMjA1NjIzOTk1NzQ3IiwiZXhwIjoxNzIwNTA2MDMxLCJpYXQiOjE3MjA1MDI0MzEsImp0aSI6IkhfMDVSVXNqQ1RLdTlzZC05cWNCUGJuQ242UVZiNTNzTVlJejZZV2tIc3cifQ.R4h_eNPGQztZ10IgscYU9ybcpVkagV8LVIbm8lwOncIwxNTf2Eruo1EME4IJTxlOWX_kEIc5HlC13PVUzwWyBIQb5Qp_u-NmE5mZSSxRb3b4rRVzMUAxoSofldZpq_6Ou2q9xWlm-5BGt6DRpE2T3cT0CS5TA0UDMnV4G8Jiynvrx1twb6pOCLPduIYfymZfECyguSjgJXvY1YzLRbXrVl2FDjuY30Jp69JLzlGbuhfd1UJN_iG0OncCspn7_lst4U7WH9GzIKB7JXh1-MLJmwXWy-PWLWbkvWSYDSkobt6-eCUkEpz-_v6BQWqDvyPlLQ_Vv9W0mMb-jMjCaY8XI84BqsopjmK2gG8OAwl-fgA0zIvUnxvJpFjiUBxChjlX1jboah3MRHCLoIf9Xf96M1BYTMVRhyJjsGv1-6PzR9hXtFGX-hG7sjQrQ9oq5rWx7JLNZRA2A2f-Q0TU9Kiv5rHegUUBJH0b1zjd1Q2xvhWNOykh6Q9U0hL4nyzGfEHo";
   bool isInclusive = false;
   bool isInclusiveRight = false;
+
   Future<bool> getDeviceMetrics() async {
     try {
       await deviceController.getBatteryPercentageValues();
@@ -371,18 +370,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                     : 10,
                                               ),
                                               GestureDetector(
-                                                onTap: () {
-                                                  ////Implement Battery Refresh
-                                                  Analytics.addClicks(
-                                                      "BatteryDetails",
-                                                      DateTime.timestamp());
-                                                  Go.to(
-                                                    context: context,
-                                                    push: const BatteryDetails(
-                                                      initalPage: 0,
-                                                    ),
-                                                  );
-                                                },
                                                 onVerticalDragDown: (_) async {
                                                   await deviceController
                                                       .refreshBatteryValues();
@@ -529,14 +516,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                     : 10,
                                               ),
                                               GestureDetector(
-                                                onTap: () async {
-                                                  Go.to(
-                                                      context: context,
-                                                      push:
-                                                          const BatteryDetails(
-                                                        initalPage: 1,
-                                                      ));
-                                                },
                                                 onVerticalDragDown:
                                                     (details) async {
                                                   await deviceController
@@ -1282,7 +1261,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                 inputFormatters: [
                                                                   FilteringTextInputFormatter
                                                                       .allow(RegExp(
-                                                                          r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
+                                                                          r'^-?\d{0,2}')),
+                                                                  // Allow up to 2 digits with optional negative sign
                                                                 ],
                                                                 style: TextStyle(
                                                                     fontSize:
@@ -1302,11 +1282,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
-                                                                            10.0), // Rounded corners (optional)
+                                                                            10.0),
+                                                                    // Rounded corners (optional)
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greyLight, // Border color
+                                                                          .greyLight,
+                                                                      // Border color
                                                                       width:
                                                                           2.0, // Border width
                                                                     ),
@@ -1315,11 +1297,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
-                                                                            10.0), // Rounded corners when focused
+                                                                            10.0),
+                                                                    // Rounded corners when focused
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greenDarkColor, // Border color when focused
+                                                                          .greenDarkColor,
+                                                                      // Border color when focused
                                                                       width:
                                                                           2.0, // Border width when focused
                                                                     ),
@@ -1342,7 +1326,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                 inputFormatters: [
                                                                   FilteringTextInputFormatter
                                                                       .allow(RegExp(
-                                                                          r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
+                                                                          r'^-?\d{0,2}')),
+                                                                  // Allow up to 2 digits with optional negative sign
                                                                 ],
                                                                 style: TextStyle(
                                                                     fontSize:
@@ -1362,11 +1347,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
-                                                                            10.0), // Rounded corners (optional)
+                                                                            10.0),
+                                                                    // Rounded corners (optional)
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greyLight, // Border color
+                                                                          .greyLight,
+                                                                      // Border color
                                                                       width:
                                                                           2.0, // Border width
                                                                     ),
@@ -1375,11 +1362,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
-                                                                            10.0), // Rounded corners when focused
+                                                                            10.0),
+                                                                    // Rounded corners when focused
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greenDarkColor, // Border color when focused
+                                                                          .greenDarkColor,
+                                                                      // Border color when focused
                                                                       width:
                                                                           2.0, // Border width when focused
                                                                     ),
@@ -1407,7 +1396,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       ? 16
                                                                       : 8,
                                                               thumbColor: AppColor
-                                                                  .greenDarkColor, // Change thumb color
+                                                                  .greenDarkColor,
+                                                              // Change thumb color
                                                               activeTrackColor: isInclusive
                                                                   ? AppColor
                                                                       .greenDarkColor
@@ -1563,7 +1553,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                 inputFormatters: [
                                                                   FilteringTextInputFormatter
                                                                       .allow(RegExp(
-                                                                          r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
+                                                                          r'^-?\d{0,2}')),
+                                                                  // Allow up to 2 digits with optional negative sign
                                                                 ],
                                                                 style: TextStyle(
                                                                     fontSize:
@@ -1583,11 +1574,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
-                                                                            10.0), // Rounded corners (optional)
+                                                                            10.0),
+                                                                    // Rounded corners (optional)
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greyLight, // Border color
+                                                                          .greyLight,
+                                                                      // Border color
                                                                       width:
                                                                           2.0, // Border width
                                                                     ),
@@ -1596,11 +1589,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
-                                                                            10.0), // Rounded corners when focused
+                                                                            10.0),
+                                                                    // Rounded corners when focused
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greenDarkColor, // Border color when focused
+                                                                          .greenDarkColor,
+                                                                      // Border color when focused
                                                                       width:
                                                                           2.0, // Border width when focused
                                                                     ),
@@ -1623,7 +1618,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                 inputFormatters: [
                                                                   FilteringTextInputFormatter
                                                                       .allow(RegExp(
-                                                                          r'^-?\d{0,2}')), // Allow up to 2 digits with optional negative sign
+                                                                          r'^-?\d{0,2}')),
+                                                                  // Allow up to 2 digits with optional negative sign
                                                                 ],
                                                                 style: TextStyle(
                                                                     fontSize:
@@ -1643,11 +1639,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
-                                                                            10.0), // Rounded corners (optional)
+                                                                            10.0),
+                                                                    // Rounded corners (optional)
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greyLight, // Border color
+                                                                          .greyLight,
+                                                                      // Border color
                                                                       width:
                                                                           2.0, // Border width
                                                                     ),
@@ -1656,11 +1654,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       OutlineInputBorder(
                                                                     borderRadius:
                                                                         BorderRadius.circular(
-                                                                            10.0), // Rounded corners when focused
+                                                                            10.0),
+                                                                    // Rounded corners when focused
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greenDarkColor, // Border color when focused
+                                                                          .greenDarkColor,
+                                                                      // Border color when focused
                                                                       width:
                                                                           2.0, // Border width when focused
                                                                     ),
@@ -1687,7 +1687,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                         ? 16
                                                                         : 8,
                                                                 thumbColor: AppColor
-                                                                    .greenDarkColor, // Change thumb color
+                                                                    .greenDarkColor,
+                                                                // Change thumb color
                                                                 activeTrackColor: isInclusiveRight
                                                                     ? AppColor
                                                                         .greenDarkColor
@@ -1766,17 +1767,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                             )),
                                                       ],
                                                     ),
-                                                    // Custom Labels below the slider (-90, 0, 90)
-                                                    // const Row(
-                                                    //   mainAxisAlignment:
-                                                    //       MainAxisAlignment
-                                                    //           .spaceBetween,
-                                                    //   children: [
-                                                    //     Text('-90'),
-                                                    //     Text('0'),
-                                                    //     Text('90'),
-                                                    //   ],
-                                                    // ),
+
                                                     // Input Fields for manual entry with validation
                                                     const SizedBox(height: 20),
                                                     // Display the current range values
@@ -1795,96 +1786,11 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             height: 45,
                                           ),
                                         ),
-                                        // Row(
-                                        //   children: [
-                                        //     Text(
-                                        //       "App Connected",
-                                        //       style: TextStyle(
-                                        //         color: AppColor.greenDarkColor,
-                                        //         fontWeight: FontWeight.w600,
-                                        //         fontSize: 16.sp,
-                                        //       ),
-                                        //     ),
-                                        //     const Spacer(),
-                                        //     connectionSnapshot.data ==
-                                        //             BluetoothConnectionState
-                                        //                 .disconnected
-                                        //         ? const Icon(
-                                        //             Icons.error,
-                                        //             color: Colors.red,
-                                        //           )
-                                        //         : const Icon(
-                                        //             Icons
-                                        //                 .check_circle_outline_sharp,
-                                        //           )
-                                        //   ],
-                                        // ),
+
                                         // const SizedBox(
                                         //   height: 5,
                                         // ),
-                                        // const Divider(
-                                        //   thickness: 4,
-                                        // ),
-                                        // const SizedBox(
-                                        //   height: 5,
-                                        // ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Both Bands Connected",
-                                              style: TextStyle(
-                                                color: AppColor.greenDarkColor,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: DeviceSize.isTablet
-                                                    ? 18.h
-                                                    : 16.sp,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            connectionSnapshot.data ==
-                                                    BluetoothConnectionState
-                                                        .disconnected
-                                                ? Icon(
-                                                    Icons.error,
-                                                    color: Colors.red,
-                                                    size: DeviceSize.isTablet
-                                                        ? 36
-                                                        : 24,
-                                                  )
-                                                : (!deviceController.bandC ||
-                                                        deviceController.battC <
-                                                            0 ||
-                                                        deviceController
-                                                                .magCValue <
-                                                            0 ||
-                                                        deviceController
-                                                                .frequencyValue <
-                                                            0)
-                                                    ? Icon(
-                                                        Icons.error,
-                                                        color: Colors.grey,
-                                                        size:
-                                                            DeviceSize.isTablet
-                                                                ? 36
-                                                                : 24,
-                                                      )
-                                                    : Icon(
-                                                        Icons
-                                                            .check_circle_outline_sharp,
-                                                        size:
-                                                            DeviceSize.isTablet
-                                                                ? 36
-                                                                : 24,
-                                                      )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Divider(
-                                          thickness:
-                                              DeviceSize.isTablet ? 8 : 4,
-                                        ),
+
                                         if (DeviceSize.isTablet)
                                           const SizedBox(
                                             height: 10,

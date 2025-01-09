@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:provider/provider.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasecm.dart';
