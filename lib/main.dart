@@ -54,7 +54,8 @@ void main() async {
   await FirebaseAppCheck.instance.activate(
     //Tried with enum 'debug' in emulator and 'playIntegrity' in real device
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.playIntegrity, //AndroidProvider.playIntegrity
+    androidProvider:
+        AndroidProvider.playIntegrity, //AndroidProvider.playIntegrity
     appleProvider: AppleProvider.appAttest,
   );
 
@@ -68,7 +69,7 @@ void main() async {
 
   await dotenv.load(fileName: '.env');
 
-  Provider.debugCheckInvalidValueType = null;
+  // Provider.debugCheckInvalidValueType = null;
 
   /// Core app
   runApp(

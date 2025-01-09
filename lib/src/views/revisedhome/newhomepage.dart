@@ -202,7 +202,7 @@ class _RevisedHomePageState extends State<RevisedHomePage>
                   const SizedBox(
                     height: 10,
                   ),
-                  TodaysGoalBox(goalBoxKey: keyGoalBox),
+                  // TodaysGoalBox(goalBoxKey: keyGoalBox),
                   const SizedBox(
                     height: 20,
                   ),

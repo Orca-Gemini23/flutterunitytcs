@@ -31,65 +31,71 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   }
 
   Future<bool> _onWillPop() async {
+    bool warn = false;
     String message = "Are you sure you want to go back?"; // Default message
     final deviceController =
         Provider.of<DeviceController>(context, listen: false);
 
     if (deviceController.scanStatus == true) {
+      warn = true;
       message = "Are you sure you want to stop the scanning?";
     }
     if (deviceController.isConnecting == true) {
+      warn = true;
       message = "Are you sure you want to stop the Connecting?";
     }
-
-    return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            contentPadding: DeviceSize.isTablet
-                ? const EdgeInsets.fromLTRB(48, 40, 48, 48)
-                : null,
-            title: Text(
-              'Device Control',
-              style: TextStyle(
-                  fontSize: DeviceSize.isTablet ? 32 : 16,
-                  fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              message,
-              style: TextStyle(fontSize: DeviceSize.isTablet ? 24 : null),
-            ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(
-                  'No',
-                  style: TextStyle(
-                      fontSize: DeviceSize.isTablet ? 24 : null,
-                      color: Colors.black),
-                ),
+    if (warn) {
+      return await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              contentPadding: DeviceSize.isTablet
+                  ? const EdgeInsets.fromLTRB(48, 40, 48, 48)
+                  : null,
+              title: Text(
+                'Device Control',
+                style: TextStyle(
+                    fontSize: DeviceSize.isTablet ? 32 : 16,
+                    fontWeight: FontWeight.bold),
               ),
-              TextButton(
-                onPressed: () async {
-                  if (deviceController.scanStatus == true ||
-                      deviceController.isConnecting == true) {
-                    await FlutterBluePlus.stopScan();
-                    deviceController.isScanning = false;
-                    deviceController.isConnecting = false;
-                    deviceController.notifyListeners();
-                  }
-                  if (context.mounted) Navigator.of(context).pop(true);
-                },
-                child: Text(
-                  'Yes',
-                  style: TextStyle(
-                      fontSize: DeviceSize.isTablet ? 24 : null,
-                      color: AppColor.greenDarkColor),
-                ),
+              content: Text(
+                message,
+                style: TextStyle(fontSize: DeviceSize.isTablet ? 24 : null),
               ),
-            ],
-          ),
-        ) ??
-        false;
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(
+                    'No',
+                    style: TextStyle(
+                        fontSize: DeviceSize.isTablet ? 24 : null,
+                        color: Colors.black),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (deviceController.scanStatus == true ||
+                        deviceController.isConnecting == true) {
+                      await FlutterBluePlus.stopScan();
+                      deviceController.isScanning = false;
+                      deviceController.isConnecting = false;
+                      deviceController.notifyListeners();
+                    }
+                    if (context.mounted) Navigator.of(context).pop(true);
+                  },
+                  child: Text(
+                    'Yes',
+                    style: TextStyle(
+                        fontSize: DeviceSize.isTablet ? 24 : null,
+                        color: AppColor.greenDarkColor),
+                  ),
+                ),
+              ],
+            ),
+          ) ??
+          false;
+    } else {
+      return true;
+    }
   }
 
   @override

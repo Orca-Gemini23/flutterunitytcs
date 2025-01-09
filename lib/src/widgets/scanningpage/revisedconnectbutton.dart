@@ -42,7 +42,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
               onPressed(deviceController);
             },
             child: Text(
-              "Connect Device",
+              "Connect to my walk device",
               style: TextStyle(
                   fontSize: DeviceSize.isTablet ? 38 : 19, color: Colors.white),
             ),
@@ -53,22 +53,13 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
   }
 
   void onPressed(DeviceController deviceController) async {
-    numberOfScans++;
     Analytics.addClicks("ConnectButton", DateTime.timestamp());
-    if (numberOfScans == 3) {
-      showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) => deviceNotFoundDialog(),
-      );
-      //  numberOfScans = 0;
-    } else {
-      //// Any time the connect button is pressed , checking the status of the bluetooth adapter(if its on or not), if not then turn on the bluetooth
-      // deviceController.checkLocationPremission();
-      await deviceController.checkBluetoothAdapterState(context);
-      await deviceController.startDiscovery(() {
-        Navigator.pushReplacementNamed(context, '/devicecontrol');
-      }, context);
-    }
+
+    //// Any time the connect button is pressed , checking the status of the bluetooth adapter(if its on or not), if not then turn on the bluetooth
+    // deviceController.checkLocationPremission();
+    await deviceController.checkBluetoothAdapterState(context);
+    await deviceController.startDiscovery(() {
+      Navigator.pushReplacementNamed(context, '/devicecontrol');
+    }, context);
   }
 }

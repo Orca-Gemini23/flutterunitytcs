@@ -14,6 +14,7 @@ import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/therapybutton/fileread.dart';
 
 import '../views/unity.dart';
+import '../widgets/scanningpage/notfounddialog.dart';
 
 class DeviceController extends ChangeNotifier {
   /// stores scanned devices
@@ -178,7 +179,8 @@ class DeviceController extends ChangeNotifier {
 
   /// Battery value for client[R]
   double get battC {
-    return double.parse(_batteryC);
+
+    return double.tryParse(_batteryC) ?? 0.0;
   }
 
   /// Battery value for server[L]
@@ -380,8 +382,16 @@ class DeviceController extends ChangeNotifier {
         isConnecting = false;
         scanSubscription!.cancel();
         if (context.mounted) {
-          showScannedDevicesDialog(
-              context, _scannedDeviceNames, onDeviceSelected);
+          if (_scannedDeviceNames.isNotEmpty) {
+            showScannedDevicesDialog(
+                context, _scannedDeviceNames, onDeviceSelected);
+          } else {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (context) => deviceNotFoundDialog(),
+            );
+          }
         }
         notifyListeners();
       });
@@ -410,18 +420,26 @@ class DeviceController extends ChangeNotifier {
               shrinkWrap: true,
               itemCount: deviceNames.length,
               itemBuilder: (BuildContext context, int index) {
-                String deviceName = deviceNames[index].platformName;
-                return ListTile(
-                  title: Text(
-                    "WALK (${deviceName.substring(deviceName.length - 3, deviceName.length)})",
-                    style: TextStyle(fontSize: DeviceSize.isTablet ? 28 : null),
-                  ),
-                  onTap: () {
-                    onDeviceSelected(deviceNames[index]);
-                    Device.name = deviceName;
-                    Navigator.of(context).pop();
-                  },
-                );
+                if (deviceNames.isEmpty) {
+                } else if (deviceNames.length == 1) {
+                  onDeviceSelected(deviceNames[index]);
+                  Device.name = deviceNames[index].platformName;
+                  Navigator.of(context).pop();
+                } else {
+                  String deviceName = deviceNames[index].platformName;
+                  return ListTile(
+                    title: Text(
+                      "WALK (${deviceName.substring(deviceName.length - 3, deviceName.length)})",
+                      style:
+                          TextStyle(fontSize: DeviceSize.isTablet ? 28 : null),
+                    ),
+                    onTap: () {
+                      onDeviceSelected(deviceNames[index]);
+                      Device.name = deviceName;
+                      Navigator.of(context).pop();
+                    },
+                  );
+                }
               },
             ),
           ),
@@ -440,7 +458,7 @@ class DeviceController extends ChangeNotifier {
 
   ///Checks already connected devices and highlights the respective device's tile in the home screen.
   Future checkPrevConnection() async {
-    _connectedDevices = await FlutterBluePlus.systemDevices;
+    _connectedDevices = await FlutterBluePlus.connectedSystemDevices;
     log("connected devices $_connectedDevices");
     if (_connectedDevices.isNotEmpty) {
       for (var device in _connectedDevices) {
@@ -641,9 +659,9 @@ class DeviceController extends ChangeNotifier {
   Future<bool> getBatteryPercentageValues() async {
     try {
       BluetoothCharacteristic? clientTarget =
-          _characteristicMap[BATTERY_PERCENTAGE_CLIENT];
+      _characteristicMap[BATTERY_PERCENTAGE_CLIENT];
       BluetoothCharacteristic? serverTarget =
-          _characteristicMap[BATTERY_PERCENTAGE_SERVER];
+      _characteristicMap[BATTERY_PERCENTAGE_SERVER];
 
       var clientResponse = await clientTarget!.read();
       var serverResponse = await serverTarget!.read();
@@ -651,25 +669,35 @@ class DeviceController extends ChangeNotifier {
       String tempBattS = String.fromCharCodes(serverResponse);
       log("CLIENT RAW BATTERY PERCENTAGE is $tempBattC");
       log("SERVER RAW BATTERY PERCENTAGE is $tempBattS");
-      if (double.parse(tempBattS) > 100 || double.parse(tempBattS) < 0) {
-        log("Server Battery Percentage Out of Limit , modifying ....");
-        if (double.parse(tempBattS) > 100) {
-          tempBattS = "100";
-          notifyListeners();
-        } else {
-          tempBattS = "0";
-          notifyListeners();
+
+      double parseBatteryValue(String value) {
+        try {
+          return double.parse(value);
+        } catch (e) {
+          return 0;
         }
       }
-      if (double.parse(tempBattC) > 100 || double.parse(tempBattC) < -1) {
+
+      double tempBattSValue = parseBatteryValue(tempBattS);
+      double tempBattCValue = parseBatteryValue(tempBattC);
+
+      if (tempBattSValue > 100 || tempBattSValue < 0) {
+        log("Server Battery Percentage Out of Limit , modifying ....");
+        if (tempBattSValue > 100) {
+          tempBattS = "100";
+        } else {
+          tempBattS = "0";
+        }
+        notifyListeners();
+      }
+      if (tempBattCValue > 100 || tempBattCValue < 0) {
         log("Client battery percentage Out of Limit , modifying ....");
-        if (double.parse(tempBattC) > 100) {
+        if (tempBattCValue > 100) {
           tempBattC = "100";
-          notifyListeners();
         } else {
           tempBattC = "0";
-          notifyListeners();
         }
+        notifyListeners();
         _batteryInfoStatus = true;
       }
 
@@ -681,7 +709,6 @@ class DeviceController extends ChangeNotifier {
       _batteryInfoStatus = true;
       notifyListeners();
 
-      _batteryInfoStatus = true;
       return true;
     } catch (e) {
       log(e.toString());

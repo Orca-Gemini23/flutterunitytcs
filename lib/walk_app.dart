@@ -91,7 +91,8 @@ class _WalkAppState extends State<WalkApp> {
                   textSelectionTheme: const TextSelectionThemeData(
                     selectionHandleColor: Colors.transparent,
                   ),
-                  useMaterial3: false, fontFamily: "Poppins"), //Helvetica
+                  useMaterial3: false,
+                  fontFamily: "Poppins"), //Helvetica
               debugShowCheckedModeBanner: false,
             );
           }),
