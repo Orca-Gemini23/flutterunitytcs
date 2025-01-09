@@ -81,12 +81,12 @@ class ContactUsPage extends StatelessWidget {
               color: AppColor.greenDarkColor,
               child: DeviceSize.isTablet
                   ? Text(
-                    AppString.knowMore,
-                    style: TextStyle(
-                        color: AppColor.whiteColor,
-                        fontSize: DeviceSize.isTablet ? 32 : 18,
-                        fontWeight: FontWeight.w300),
-                  )
+                      AppString.knowMore,
+                      style: TextStyle(
+                          color: AppColor.whiteColor,
+                          fontSize: DeviceSize.isTablet ? 32 : 18,
+                          fontWeight: FontWeight.w300),
+                    )
                   : Center(
                       child: Text(
                         AppString.knowMore,
@@ -203,12 +203,13 @@ class ContactUsPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                3,
+                4,
                 (index) {
                   List<String> socialMediaLogo = [
                     AppAssets.instagramIcon,
                     AppAssets.facebookIcon,
-                    AppAssets.twitterIcon,
+                    AppAssets.xIcon,
+                    AppAssets.youtubeIcon,
                   ];
                   List<Function()?> logoOnTap = [
                     () async {
@@ -226,9 +227,14 @@ class ContactUsPage extends StatelessWidget {
                           'https://x.com/i/flow/login?redirect_after_login=%2Flifesparktech');
                       await launchUrl(launchUri);
                     },
+                    () async {
+                      final Uri launchUri = Uri.parse(
+                          'https://www.youtube.com/@lifesparktechnologies');
+                      await launchUrl(launchUri);
+                    },
                   ];
                   return Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: InkWell(
                       onTap: logoOnTap[index],
                       child: Image.asset(
