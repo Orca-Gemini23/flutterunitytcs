@@ -4,7 +4,6 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/widgets/scanningpage/notfounddialog.dart';
 
 class RevisedConnectButton extends StatefulWidget {
   const RevisedConnectButton({super.key});
@@ -53,7 +52,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
   }
 
   void onPressed(DeviceController deviceController) async {
-    Analytics.addClicks("ConnectButton", DateTime.timestamp());
+    Analytics.addClicks("ConnectButton", DateTime.now());
 
     //// Any time the connect button is pressed , checking the status of the bluetooth adapter(if its on or not), if not then turn on the bluetooth
     // deviceController.checkLocationPremission();
