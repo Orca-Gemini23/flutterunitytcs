@@ -20,6 +20,7 @@ import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/additionalsettings/addsettings.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';
 import 'package:walk/src/widgets/devicecontrolpage/magnitudeslider.dart';
+import 'package:walk/src/widgets/dialog.dart';
 
 class DeviceControlPage extends StatefulWidget {
   const DeviceControlPage({super.key});
@@ -226,30 +227,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                 fontSize: DeviceSize.isTablet ? 36 : 16,
               ),
             ),
-            actions: [
-              Padding(
-                padding: DeviceSize.isTablet
-                    ? const EdgeInsets.only(right: 20)
-                    : EdgeInsets.zero,
-                child: IconButton(
-                  onPressed: () {
-                    Analytics.addClicks("SettingsButton", DateTime.timestamp());
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        settings: const RouteSettings(
-                            name: "/device/additionalsettings"),
-                        builder: (context) => const AdditionalSettings(),
-                      ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.settings_outlined,
-                    size: DeviceSize.isTablet ? 45 : 30,
-                  ),
-                ),
-              )
-            ],
           ),
           body: RawScrollbar(
             controller: scrollController,
@@ -273,12 +250,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                             isDialogup = false;
                           });
                           deviceController.clearConnectedDevice();
-                          Navigator.popAndPushNamed(
-                            context,
-                            '/connectionscreen',
-                          );
 
-                          // CustomDialogs.showBleDisconnectedDialog(context);
+                          CustomDialogs.showBleDisconnectedDialog(context);
                         },
                       );
                     }
@@ -699,9 +672,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
+                                        const AdditionalSettings(),
                                         Container(
                                           decoration: BoxDecoration(
                                               color: AppColor.lightgreen,
