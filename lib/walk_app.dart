@@ -17,7 +17,7 @@ import 'package:walk/src/pages/home_page.dart';
 import 'package:walk/src/pages/splash_screen.dart';
 import 'package:walk/src/pages/therapy_page.dart';
 import 'package:walk/src/server/upload.dart';
-import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/reports/reporttiles.dart';
 import 'package:walk/src/views/user/tutorial.dart';

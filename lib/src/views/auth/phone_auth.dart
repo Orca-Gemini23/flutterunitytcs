@@ -15,7 +15,7 @@ import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/pages/account_page.dart';
-import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
 

@@ -15,7 +15,7 @@ import 'package:walk/src/constants/app_strings.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/pages/home_page.dart';
-import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/additionalsettings/addsettings.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';

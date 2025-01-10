@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/server/upload.dart';
-import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/views/reports/filepath.dart';
 import 'package:walk/src/widgets/dialog.dart';
 

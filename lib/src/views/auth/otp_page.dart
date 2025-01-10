@@ -13,7 +13,7 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/pages/account_page.dart';
 import 'package:walk/src/server/api.dart';
-import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/user/tutorial.dart';

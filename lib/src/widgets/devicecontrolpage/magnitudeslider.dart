@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/utils/global_variables.dart';
 
 import '../../constants/app_color.dart';
