@@ -8,7 +8,7 @@ import 'package:walk/src/controllers/game_history_controller.dart';
 import 'package:walk/src/controllers/user_controller.dart';
 import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/server/upload.dart';
-import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/pages/AboutUs.dart';
 import 'package:walk/src/pages/AccountPage.dart';

@@ -14,7 +14,7 @@ import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/db/firebase_storage.dart';
 import 'package:walk/src/pages/SplashScreen.dart';
 import 'package:walk/src/server/upload.dart';
-import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
 import 'package:walk/src/widgets/homepage/gamehistorybuilder.dart';

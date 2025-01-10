@@ -12,7 +12,7 @@ import 'package:walk/src/pages/AccountPage.dart';
 import 'package:walk/src/pages/HomePage.dart';
 import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/guest_login_ios.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
