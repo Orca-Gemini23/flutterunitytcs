@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -111,11 +109,11 @@ class MyNavigatorObserver extends NavigatorObserver {
       routeStack.add(currentRoute);
       if (CollectAnalytics.start) {
         Analytics.addNavigation(AnalyticsNavigationModel(
-                landingPage: currentRoute, landTime: DateTime.timestamp())
+                landingPage: currentRoute, landTime: DateTime.now())
             .toJson());
       } else {
         CollectAnalytics.initialData.add(AnalyticsNavigationModel(
-                landingPage: currentRoute, landTime: DateTime.timestamp())
+                landingPage: currentRoute, landTime: DateTime.now())
             .toJson());
       }
       // log('1. Navigated to: $currentRoute');
@@ -125,17 +123,16 @@ class MyNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
-    log(routeStack.toString());
-    // routeStack.removeLast(); //  remove(route);
+    routeStack.removeLast();
     if (previousRoute is MaterialPageRoute) {
       if (CollectAnalytics.start) {
         currentRoute = previousRoute.settings.name ?? routeStack.last;
         Analytics.addNavigation(AnalyticsNavigationModel(
-                landingPage: currentRoute, landTime: DateTime.timestamp())
+                landingPage: currentRoute, landTime: DateTime.now())
             .toJson());
       } else {
         CollectAnalytics.initialData.add(AnalyticsNavigationModel(
-                landingPage: currentRoute, landTime: DateTime.timestamp())
+                landingPage: currentRoute, landTime: DateTime.now())
             .toJson());
       }
       // log('2. Returned to: $currentRoute');
@@ -147,13 +144,14 @@ class MyNavigatorObserver extends NavigatorObserver {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     if (newRoute is MaterialPageRoute) {
       currentRoute = newRoute.settings.name ?? 'Unknown';
+      routeStack.add(currentRoute);
       if (CollectAnalytics.start) {
         Analytics.addNavigation(AnalyticsNavigationModel(
-                landingPage: currentRoute, landTime: DateTime.timestamp())
+                landingPage: currentRoute, landTime: DateTime.now())
             .toJson());
       } else {
         CollectAnalytics.initialData.add(AnalyticsNavigationModel(
-                landingPage: currentRoute, landTime: DateTime.timestamp())
+                landingPage: currentRoute, landTime: DateTime.now())
             .toJson());
       }
       // log('4. Replaced with: $currentRoute');
