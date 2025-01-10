@@ -123,7 +123,7 @@ class MyNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
-    routeStack.removeLast();
+    // routeStack.removeLast();
     if (previousRoute is MaterialPageRoute) {
       if (CollectAnalytics.start) {
         currentRoute = previousRoute.settings.name ?? routeStack.last;
