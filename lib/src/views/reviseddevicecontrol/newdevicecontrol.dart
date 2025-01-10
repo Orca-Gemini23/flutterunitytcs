@@ -20,7 +20,6 @@ import 'package:walk/src/views/additionalsettings/addsettings.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/widgets/devicecontrolpage/magnitudeslider.dart';
-import 'package:walk/src/widgets/dialog.dart';
 
 class DeviceControlPage extends StatefulWidget {
   const DeviceControlPage({super.key});
@@ -274,8 +273,12 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                             isDialogup = false;
                           });
                           deviceController.clearConnectedDevice();
+                          Navigator.popAndPushNamed(
+                            context,
+                            '/connectionscreen',
+                          );
 
-                          CustomDialogs.showBleDisconnectedDialog(context);
+                          // CustomDialogs.showBleDisconnectedDialog(context);
                         },
                       );
                     }
