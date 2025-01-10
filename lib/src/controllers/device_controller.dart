@@ -11,7 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
-import 'package:walk/src/pages/Unity.dart';
+import 'package:walk/src/pages/unity_page.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/scanningpage/notfounddialog.dart';
 import 'package:walk/src/widgets/therapybutton/fileread.dart';

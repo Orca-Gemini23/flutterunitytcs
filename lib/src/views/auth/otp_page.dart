@@ -11,7 +11,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pinput/pinput.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/pages/AccountPage.dart';
+import 'package:walk/src/pages/account_page.dart';
 import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';

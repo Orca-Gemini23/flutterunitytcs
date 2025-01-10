@@ -12,7 +12,7 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/db/firebase_storage.dart';
-import 'package:walk/src/pages/SplashScreen.dart';
+import 'package:walk/src/pages/splash_screen.dart';
 import 'package:walk/src/server/upload.dart';
 import 'package:walk/src/utils/firebasehelper/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
