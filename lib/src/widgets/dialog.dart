@@ -1,7 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/views/pages/HomePage.dart';
+import 'package:walk/src/pages/HomePage.dart';
 
 class CustomDialogs {
   static showBleDisconnectedDialog(

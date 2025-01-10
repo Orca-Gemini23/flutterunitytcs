@@ -14,10 +14,10 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/models/user_model.dart';
+import 'package:walk/src/pages/AccountPage.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
-import 'package:walk/src/views/pages/AccountPage.dart';
 
 String countryCode = '';
 String phoneNo = '';

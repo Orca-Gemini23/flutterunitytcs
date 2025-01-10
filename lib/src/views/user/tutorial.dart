@@ -2,9 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/pages/HomePage.dart';
+import 'package:walk/src/pages/SplashScreen.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/pages/HomePage.dart';
-import 'package:walk/src/views/pages/SplashScreen.dart';
 import 'package:walk/src/widgets/tutorialcard.dart';
 
 class TutorialPage extends StatefulWidget {

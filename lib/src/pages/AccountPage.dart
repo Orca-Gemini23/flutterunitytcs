@@ -11,10 +11,10 @@ import 'package:walk/src/controllers/shared_preferences.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/models/user_model.dart';
+import 'package:walk/src/pages/SplashScreen.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/pages/SplashScreen.dart';
 import 'package:walk/src/views/user/tutorial.dart';
 
 String country = "India";

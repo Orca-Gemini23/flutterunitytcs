@@ -6,8 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
-
-import '../../views/pages/Unity.dart';
+import 'package:walk/src/pages/Unity.dart';
 
 class TaxiTherapySessionBtn extends StatefulWidget {
   const TaxiTherapySessionBtn({super.key});
