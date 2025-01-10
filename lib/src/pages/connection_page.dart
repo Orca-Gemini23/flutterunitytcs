@@ -78,7 +78,6 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                       await FlutterBluePlus.stopScan();
                       deviceController.isScanning = false;
                       deviceController.isConnecting = false;
-                      deviceController.notifyListeners();
                     }
                     if (context.mounted) Navigator.of(context).pop(true);
                   },
