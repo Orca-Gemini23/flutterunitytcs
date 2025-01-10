@@ -11,11 +11,11 @@ import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
-import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/utils/global_variables.dart';
+import 'package:walk/src/utils/screen_context.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
-import 'package:walk/src/views/revisedsplash.dart';
+import 'package:walk/src/views/pages/HomePage.dart';
+import 'package:walk/src/views/pages/SplashScreen.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
 
 Drawer navigationDrawer(BuildContext context) {
@@ -210,7 +210,7 @@ Widget drawerItem(BuildContext context) {
               CollectAnalytics.start = false;
               if (context.mounted) {
                 Go.pushAndRemoveUntil(
-                    context: context, pushReplacement: const Revisedsplash());
+                    context: context, pushReplacement: const SplashScreen());
               }
             }),
       );

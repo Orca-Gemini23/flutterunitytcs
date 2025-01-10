@@ -18,7 +18,7 @@ import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/additionalsettings/addsettings.dart';
 import 'package:walk/src/views/dialogs/confirmationbox.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
+import 'package:walk/src/views/pages/HomePage.dart';
 import 'package:walk/src/widgets/devicecontrolpage/magnitudeslider.dart';
 
 class DeviceControlPage extends StatefulWidget {
@@ -184,8 +184,8 @@ class _DeviceControlPageState extends State<DeviceControlPage>
   }
 
   Future<bool> _onWillPop() async {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const RevisedHomePage()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const HomePage()));
     return false;
   }
 

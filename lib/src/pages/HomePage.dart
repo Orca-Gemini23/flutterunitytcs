@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:ui';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,37 +8,33 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/db/firebase_storage.dart';
 import 'package:walk/src/server/upload.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/revisedsplash.dart';
-
+import 'package:walk/src/views/pages/SplashScreen.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
 import 'package:walk/src/widgets/homepage/gamehistorybuilder.dart';
 import 'package:walk/src/widgets/homepage/therapysessionbutton.dart';
-import 'package:walk/src/widgets/homepage/todaysgoalcontainer.dart';
-import 'package:walk/src/widgets/navigation_drawer.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
-
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
+import 'package:walk/src/widgets/navigation_drawer.dart';
 
 final GlobalKey keyMenu = GlobalKey();
 
-class RevisedHomePage extends StatefulWidget {
-  const RevisedHomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<RevisedHomePage> createState() => _RevisedHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 ////To be added : Wifi scanning , animation ball thing , app shortcut
 ////App shortcut is necessary
 
-class _RevisedHomePageState extends State<RevisedHomePage>
-    with WidgetsBindingObserver {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   // late DeviceController deviceController;
   final GlobalKey homePagekey = GlobalKey();
 

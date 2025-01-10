@@ -9,14 +9,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
-
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
+import 'package:walk/src/views/pages/AccountPage.dart';
 import 'package:walk/src/views/user/tutorial.dart';
 
 class OTPPage extends StatefulWidget {
@@ -139,7 +138,7 @@ class _OTPPageState extends State<OTPPage> {
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
               ],
-              onCompleted:(value) => log(""),// to validate on auto complete 
+              onCompleted: (value) => log(""), // to validate on auto complete
             ),
             // const SizedBox(height: 86),
             SizedBox(
@@ -278,8 +277,7 @@ class _OTPPageState extends State<OTPPage> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const NewRevisedAccountPage(),
+                                  builder: (context) => const AccountPage(),
                                   settings:
                                       const RouteSettings(name: '/accountpage'),
                                 ),

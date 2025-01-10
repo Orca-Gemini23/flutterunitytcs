@@ -14,19 +14,19 @@ import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/revisedsplash.dart';
+import 'package:walk/src/views/pages/SplashScreen.dart';
 import 'package:walk/src/views/user/tutorial.dart';
 
 String country = "India";
 
-class NewRevisedAccountPage extends StatefulWidget {
-  const NewRevisedAccountPage({super.key});
+class AccountPage extends StatefulWidget {
+  const AccountPage({super.key});
 
   @override
-  State<NewRevisedAccountPage> createState() => _RevisedaccountpageState();
+  State<AccountPage> createState() => _AccountPageState();
 }
 
-class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
+class _AccountPageState extends State<AccountPage> {
   RegExp nameRegex = RegExp(r"^[a-zA-Z ]+$");
   RegExp numberRegex = RegExp(r"^\d+$");
   RegExp emailRegex = RegExp(r'\S+@\S+\.\S+');
@@ -242,7 +242,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                 if (context.mounted) {
                   Go.pushAndRemoveUntil(
                     context: context,
-                    pushReplacement: const Revisedsplash(),
+                    pushReplacement: const SplashScreen(),
                   );
                 }
                 // Navigator.of(context).pop();
@@ -374,7 +374,7 @@ class _RevisedaccountpageState extends State<NewRevisedAccountPage> {
                                     if (context.mounted) {
                                       Go.pushAndRemoveUntil(
                                         context: context,
-                                        pushReplacement: const Revisedsplash(),
+                                        pushReplacement: const SplashScreen(),
                                       );
                                     }
                                   },

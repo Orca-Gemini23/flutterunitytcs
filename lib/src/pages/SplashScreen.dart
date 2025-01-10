@@ -10,24 +10,23 @@ import 'package:walk/src/db/firebase_storage.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
+import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
+import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/guest_login_ios.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
-
-import '../utils/firebasehelper.dart/firebasedb.dart';
-import '../utils/global_variables.dart';
+import 'package:walk/src/views/pages/AccountPage.dart';
+import 'package:walk/src/views/pages/HomePage.dart';
 
 bool tour = false;
 
-class Revisedsplash extends StatefulWidget {
-  const Revisedsplash({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<Revisedsplash> createState() => _RevisedsplashState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _RevisedsplashState extends State<Revisedsplash>
+class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   double _fontSize = 2;
   double _containerSize = 2;
@@ -153,12 +152,12 @@ class _RevisedsplashState extends State<Revisedsplash>
         UserDetails.unavailable = true;
       });
       Go.pushReplacement(
-          context: context, pushReplacement: const NewRevisedAccountPage());
+          context: context, pushReplacement: const AccountPage());
     } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const RevisedHomePage(),
+          builder: (context) => const HomePage(),
           settings: const RouteSettings(name: '/home'),
         ),
       );

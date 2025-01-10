@@ -10,16 +10,16 @@ import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/server/upload.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/faqscreens/faqpage.dart';
-import 'package:walk/src/views/org_info/about_us.dart';
-import 'package:walk/src/views/org_info/contact_us.dart';
+import 'package:walk/src/views/pages/AboutUs.dart';
+import 'package:walk/src/views/pages/AccountPage.dart';
+import 'package:walk/src/views/pages/ConnectionScreen.dart';
+import 'package:walk/src/views/pages/ContactUs.dart';
+import 'package:walk/src/views/pages/DeviceControl.dart';
+import 'package:walk/src/views/pages/FAQ.dart';
+import 'package:walk/src/views/pages/HomePage.dart';
+import 'package:walk/src/views/pages/SplashScreen.dart';
+import 'package:walk/src/views/pages/TherapyPage.dart';
 import 'package:walk/src/views/reports/reporttiles.dart';
-import 'package:walk/src/views/reviseddevicecontrol/connectionscreen.dart';
-import 'package:walk/src/views/reviseddevicecontrol/newdevicecontrol.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
-import 'package:walk/src/views/revisedsplash.dart';
-import 'package:walk/src/views/therapyentrypage/therapypage.dart';
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
 import 'package:walk/src/views/user/tutorial.dart';
 
 class WalkApp extends StatefulWidget {
@@ -71,12 +71,12 @@ class _WalkAppState extends State<WalkApp> {
               initialRoute: "/",
               routes: {
                 ConnectionScreen.route: (context) => const ConnectionScreen(),
-                '/': (context) => const Revisedsplash(),
-                '/home': (context) => const RevisedHomePage(),
+                '/': (context) => const SplashScreen(),
+                '/home': (context) => const HomePage(),
                 '/connectionscreen': (context) => const ConnectionScreen(),
                 '/devicecontrol': (context) => const DeviceControlPage(),
                 '/therapypage': (context) => const TherapyEntryPage(),
-                '/accountpage': (context) => const NewRevisedAccountPage(),
+                '/accountpage': (context) => const AccountPage(),
                 '/reports': (context) => const ReportList(),
                 '/aboutus': (context) => const AboutUsPage(),
                 '/contactus': (context) => const ContactUsPage(),

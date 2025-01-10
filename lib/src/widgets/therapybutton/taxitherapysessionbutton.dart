@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 
-import '../../views/unity.dart';
+import '../../views/pages/Unity.dart';
 
 class TaxiTherapySessionBtn extends StatefulWidget {
   const TaxiTherapySessionBtn({super.key});
@@ -67,7 +67,7 @@ class _TaxiTherapySessionBtnState extends State<TaxiTherapySessionBtn> {
                     width: 92.w,
                     height: 92.h,
                     //TODO add image from here
-                    
+
                     // child: Image.asset(
                     //   "assets/images/fish.png",
                     //   scale: 3.5,

@@ -6,7 +6,7 @@ import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/unity.dart';
+import 'package:walk/src/views/pages/Unity.dart';
 
 class TherapySessionButton extends StatefulWidget {
   const TherapySessionButton({

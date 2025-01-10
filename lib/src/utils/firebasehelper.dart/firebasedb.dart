@@ -7,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
+import 'package:walk/src/views/pages/AccountPage.dart';
 // import 'package:walk/src/models/game_history_model.dart';
 
 class FirebaseDB {

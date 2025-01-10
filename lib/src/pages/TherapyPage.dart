@@ -4,12 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
+import 'package:walk/src/constants/bt_constants.dart';
+import 'package:walk/src/controllers/device_controller.dart';
 import 'package:walk/src/db/firebase_storage.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/therapybutton/theraphysessionbuttons.dart';
-
-import '../../constants/bt_constants.dart';
-import '../../controllers/device_controller.dart';
 
 class TherapyEntryPage extends StatefulWidget {
   const TherapyEntryPage({super.key});

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,9 +13,7 @@ import 'package:walk/src/models/firestoreusermodel.dart';
 import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
-import 'dart:convert';
-
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
+import 'package:walk/src/views/pages/AccountPage.dart';
 
 Future<bool> isNetworkAvailable() async {
   // var connectivityResult = await Connectivity().checkConnectivity();

@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -13,7 +14,7 @@ import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/therapybutton/fileread.dart';
 
-import '../views/unity.dart';
+import '../views/pages/Unity.dart';
 import '../widgets/scanningpage/notfounddialog.dart';
 
 class DeviceController extends ChangeNotifier {
@@ -179,7 +180,6 @@ class DeviceController extends ChangeNotifier {
 
   /// Battery value for client[R]
   double get battC {
-
     return double.tryParse(_batteryC) ?? 0.0;
   }
 
@@ -659,9 +659,9 @@ class DeviceController extends ChangeNotifier {
   Future<bool> getBatteryPercentageValues() async {
     try {
       BluetoothCharacteristic? clientTarget =
-      _characteristicMap[BATTERY_PERCENTAGE_CLIENT];
+          _characteristicMap[BATTERY_PERCENTAGE_CLIENT];
       BluetoothCharacteristic? serverTarget =
-      _characteristicMap[BATTERY_PERCENTAGE_SERVER];
+          _characteristicMap[BATTERY_PERCENTAGE_SERVER];
 
       var clientResponse = await clientTarget!.read();
       var serverResponse = await serverTarget!.read();

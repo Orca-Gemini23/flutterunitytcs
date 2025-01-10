@@ -1,7 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
+import 'package:walk/src/views/pages/HomePage.dart';
 
 class CustomDialogs {
   static showBleDisconnectedDialog(
@@ -16,7 +16,7 @@ class CustomDialogs {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: ((context) => const RevisedHomePage()),
+            builder: ((context) => const HomePage()),
             settings: const RouteSettings(name: '/home'),
           ),
         );

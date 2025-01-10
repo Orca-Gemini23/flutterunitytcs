@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/utils/global_variables.dart';
-import 'package:walk/src/views/revisedhome/newhomepage.dart';
-import 'package:walk/src/views/revisedsplash.dart';
+import 'package:walk/src/views/pages/HomePage.dart';
+import 'package:walk/src/views/pages/SplashScreen.dart';
 import 'package:walk/src/widgets/tutorialcard.dart';
 
 class TutorialPage extends StatefulWidget {
@@ -125,7 +125,7 @@ class _TutorialPageState extends State<TutorialPage> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RevisedHomePage(),
+                            builder: (context) => const HomePage(),
                             settings: const RouteSettings(name: '/home'),
                           ),
                           (route) => false,

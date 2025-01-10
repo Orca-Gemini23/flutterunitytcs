@@ -17,7 +17,7 @@ import 'package:walk/src/models/user_model.dart';
 import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/otp_page.dart';
-import 'package:walk/src/views/user/newrevisedaccountpage.dart';
+import 'package:walk/src/views/pages/AccountPage.dart';
 
 String countryCode = '';
 String phoneNo = '';
@@ -242,7 +242,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const NewRevisedAccountPage(),
+                                                      const AccountPage(),
                                                   settings: const RouteSettings(
                                                       name: '/accountpage'),
                                                 ),
