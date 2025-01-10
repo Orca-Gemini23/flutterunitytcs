@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,12 +10,13 @@ import 'package:walk/src/db/firebase_storage.dart';
 import 'package:walk/src/db/local_db.dart';
 import 'package:walk/src/server/api.dart';
 import 'package:walk/src/utils/custom_navigation.dart';
-import 'package:walk/src/utils/firebasehelper.dart/firebasedb.dart';
-import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/views/auth/guest_login_ios.dart';
 import 'package:walk/src/views/auth/phone_auth.dart';
 import 'package:walk/src/views/revisedhome/newhomepage.dart';
 import 'package:walk/src/views/user/newrevisedaccountpage.dart';
+
+import '../utils/firebasehelper.dart/firebasedb.dart';
+import '../utils/global_variables.dart';
 
 bool tour = false;
 
@@ -32,8 +33,6 @@ class _RevisedsplashState extends State<Revisedsplash>
   double _containerSize = 2;
   double _textOpacity = 0.0;
   double _containerOpacity = 0.0;
-  String userToken = "";
-
   double imageSize = DeviceSize.isTablet ? 3 : 4;
 
   late AnimationController _controller;
@@ -43,6 +42,27 @@ class _RevisedsplashState extends State<Revisedsplash>
   void initState() {
     super.initState();
 
+    _loadPreferences();
+    _initializeAnimation();
+
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        _fontSize = 1.06;
+        // imageSize = 5;
+      });
+    });
+
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        _containerSize = 1.5;
+        _containerOpacity = 1;
+      });
+    });
+
+    Timer(const Duration(seconds: 3), _navigateUser);
+  }
+
+  void _loadPreferences() {
     PreferenceController.getstringData("Height").then((value) {
       setState(() {
         DetailsPage.height = value;
@@ -58,98 +78,91 @@ class _RevisedsplashState extends State<Revisedsplash>
         ImagePath.path = value;
       });
     });
+  }
 
+  void _initializeAnimation() {
     _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 3));
-
-    animation1 = Tween<double>(begin: 40, end: 20).animate(CurvedAnimation(
-        parent: _controller, curve: Curves.fastLinearToSlowEaseIn))
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    animation1 = Tween<double>(begin: 40, end: 20)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut))
       ..addListener(() {
         setState(() {
           _textOpacity = 1.0;
         });
       });
-
     _controller.forward();
+  }
 
-    Timer(const Duration(seconds: 2), () {
+  Future<void> _navigateUser() async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      debugPrint('User is currently signed out!');
       setState(() {
-        _fontSize = 1.06;
-        imageSize = 5;
+        tour = false;
       });
-    });
+      _navigateToAuthPage();
+    } else {
+      debugPrint('User is signed in!');
+      await Analytics.start();
+      await _loadUserData();
+      if (mounted) {
+        setState(() {
+          tour = true;
+        });
+        _navigateToHomePage();
+      }
+    }
+  }
 
-    Timer(const Duration(seconds: 2), () {
+  void _navigateToAuthPage() {
+    if (Platform.isIOS) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const GuestUserLogin(),
+          settings: const RouteSettings(name: '/iosguestuser'),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PhoneAuthPage(),
+          settings: const RouteSettings(name: '/authpage'),
+        ),
+      );
+    }
+  }
+
+  Future<void> _loadUserData() async {
+    if (LocalDB.user!.name == "Unknown User") {
+      FirebaseStorageDB.downloadFiles();
+    }
+    if (LocalDB.user!.name == "Unknown User") {
+      debugPrint("splash screen rds data call");
+      await API.getUserDetails();
+    }
+    if (LocalDB.user!.name == "Unknown User") {
+      debugPrint("splash screen firebase data call");
+      await API.getUserDetailsFireStore();
+    }
+  }
+
+  void _navigateToHomePage() {
+    if (LocalDB.user!.name == "Unknown User") {
       setState(() {
-        _containerSize = 1.5;
-        _containerOpacity = 1;
+        UserDetails.unavailable = true;
       });
-    });
-
-    Timer(
-      const Duration(seconds: 4),
-      () async {
-        if (FirebaseAuth.instance.currentUser == null) {
-          debugPrint('User is currently signed out!');
-          setState(() {
-            tour = false;
-          });
-          if (Platform.isIOS) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const GuestUserLogin(),
-                settings: const RouteSettings(name: '/iosguestuser'),
-              ),
-            );
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PhoneAuthPage(),
-                settings: const RouteSettings(name: '/authpage'),
-              ),
-            );
-          }
-        } else {
-          debugPrint('User is signed in!');
-          await Analytics.start();
-          if (LocalDB.user!.name == "Unknown User") {
-            FirebaseStorageDB.downloadFiles();
-          }
-          if (LocalDB.user!.name == "Unknown User") {
-            log("splash screen rds data call");
-            await API.getUserDetails();
-          }
-          if (LocalDB.user!.name == "Unknown User") {
-            log("splash screen firebase data call");
-            await API.getUserDetailsFireStore();
-          }
-          if (mounted) {
-            setState(() {
-              tour = true;
-            });
-            if (LocalDB.user!.name == "Unknown User") {
-              setState(() {
-                UserDetails.unavailable = true;
-              });
-              Go.pushReplacement(
-                  context: context,
-                  pushReplacement: const NewRevisedAccountPage());
-            } else {
-              // await Analytics.start();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const RevisedHomePage(),
-                  settings: const RouteSettings(name: '/home'),
-                ),
-              );
-            }
-          }
-        }
-      },
-    );
+      Go.pushReplacement(
+          context: context, pushReplacement: const NewRevisedAccountPage());
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const RevisedHomePage(),
+          settings: const RouteSettings(name: '/home'),
+        ),
+      );
+    }
   }
 
   @override
@@ -163,22 +176,19 @@ class _RevisedsplashState extends State<Revisedsplash>
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    // if (DeviceSize.checkTablet(context)) DeviceSize.isTablet = true;
-
     return Scaffold(
-      ///change here
       backgroundColor: AppColor.greenDarkColor,
       body: Stack(
         children: [
           Column(
             children: [
               AnimatedContainer(
-                duration: const Duration(milliseconds: 2000),
-                curve: Curves.fastLinearToSlowEaseIn,
+                duration: const Duration(milliseconds: 1500),
+                curve: Curves.easeInOut,
                 height: height / _fontSize - 100,
               ),
               AnimatedOpacity(
-                duration: const Duration(milliseconds: 1000),
+                duration: const Duration(milliseconds: 1500),
                 opacity: _textOpacity,
                 child: Image.asset(
                   "assets/images/group89.png",
@@ -189,25 +199,21 @@ class _RevisedsplashState extends State<Revisedsplash>
           ),
           Center(
             child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 2000),
-              curve: Curves.fastLinearToSlowEaseIn,
+              duration: const Duration(milliseconds: 1500),
+              curve: Curves.easeInOut,
               opacity: _containerOpacity,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 2000),
-                curve: Curves.fastLinearToSlowEaseIn,
+                duration: const Duration(milliseconds: 1500),
+                curve: Curves.easeInOut,
                 height: (width / _containerSize).h,
                 width: (width / _containerSize).w,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  ///change here
-                  // color: AppColor.whiteColor,
                   borderRadius: BorderRadius.circular(30),
                 ),
-                // child: Image.asset('assets/images/file_name.png')
                 child: Text(
                   "WALK",
                   style: TextStyle(
-                    ///change here
                     color: AppColor.whiteColor,
                     letterSpacing: 2,
                     fontSize: 55.sp,
@@ -229,10 +235,10 @@ class PageTransition extends PageRouteBuilder {
   PageTransition(this.page)
       : super(
           pageBuilder: (context, animation, anotherAnimation) => page,
-          transitionDuration: const Duration(milliseconds: 2000),
+          transitionDuration: const Duration(milliseconds: 1500),
           transitionsBuilder: (context, animation, anotherAnimation, child) {
             animation = CurvedAnimation(
-              curve: Curves.fastLinearToSlowEaseIn,
+              curve: Curves.easeInOut,
               parent: animation,
             );
             return Align(
