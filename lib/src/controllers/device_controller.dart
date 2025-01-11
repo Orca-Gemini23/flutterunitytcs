@@ -12,6 +12,7 @@ import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/pages/unity_page.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/scanningpage/notfounddialog.dart';
 import 'package:walk/src/widgets/therapybutton/fileread.dart';
@@ -420,10 +421,14 @@ class DeviceController extends ChangeNotifier {
               itemCount: deviceNames.length,
               itemBuilder: (BuildContext context, int index) {
                 if (deviceNames.isEmpty) {
+                  return const SizedBox.shrink();
                 } else if (deviceNames.length == 1) {
                   onDeviceSelected(deviceNames[index]);
                   Device.name = deviceNames[index].platformName;
+                  Analytics.addClicks(
+                      "connecting to ${Device.name}", DateTime.timestamp());
                   Navigator.of(context).pop();
+                  return const SizedBox.shrink();
                 } else {
                   String deviceName = deviceNames[index].platformName;
                   return ListTile(
@@ -435,6 +440,9 @@ class DeviceController extends ChangeNotifier {
                     onTap: () {
                       onDeviceSelected(deviceNames[index]);
                       Device.name = deviceName;
+                      Analytics.addClicks(
+                          "connecting to ${Device.name} from list",
+                          DateTime.timestamp());
                       Navigator.of(context).pop();
                     },
                   );
@@ -445,6 +453,8 @@ class DeviceController extends ChangeNotifier {
           actions: [
             TextButton(
               onPressed: () {
+                Analytics.addClicks(
+                    "close in device list", DateTime.timestamp());
                 Navigator.of(context).pop();
               },
               child: const Text('Close'),
