@@ -27,7 +27,7 @@ class _ConnectButtonState extends State<ConnectButton> {
             backgroundColor: Colors.purple,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18.0),
-                side: const BorderSide(color: Colors.black))),
+                side: const BorderSide())),
         child: Text(
           widget.controller.connectedDevice?.remoteId ==
                   widget.controller.getScannedDevices
@@ -68,7 +68,7 @@ Widget showCaseConnectButton(GlobalKey key, DeviceController controller) {
             backgroundColor: Colors.purple,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18.0),
-                side: const BorderSide(color: Colors.black))),
+                side: const BorderSide())),
         child: Text((controller.connectedDevice?.remoteId) ==
                 controller.getScannedDevices.elementAt(0).remoteId
             ? "Disconnect"

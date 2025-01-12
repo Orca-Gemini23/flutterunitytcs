@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       Future.delayed(Duration.zero, showTutorial);
     }
     super.initState();
-    FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
+    FlutterBluePlus.setLogLevel(LogLevel.verbose);
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
@@ -264,8 +264,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     tutorialCoachMark = TutorialCoachMark(
       targets: _createTargets(),
       colorShadow: const Color.fromRGBO(0, 0, 0, 0.5),
-      textSkip: "SKIP",
-      paddingFocus: 10,
       opacityShadow: 0.5,
       pulseEnable: false,
       imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
@@ -325,7 +323,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         enableOverlayTab: true,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
             // customPosition: CustomTargetContentPosition(top: 425, right: 70),
             builder: (context, controller) {
               return Image.asset(
@@ -345,7 +342,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         enableOverlayTab: true,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
             // customPosition: CustomTargetContentPosition(top: 425, right: 70),
             builder: (context, controller) {
               return Image.asset('assets/images/tour/1.png', scale: 3);
@@ -362,7 +358,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         enableOverlayTab: true,
         contents: [
           TargetContent(
-            align: ContentAlign.bottom,
             // customPosition: CustomTargetContentPosition(top: 425, left: 70),
             child: Image.asset(
               'assets/images/tour/7.png',

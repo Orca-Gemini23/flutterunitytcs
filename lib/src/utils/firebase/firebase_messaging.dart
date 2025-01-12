@@ -20,13 +20,7 @@ class FirebaseCM {
 
   Future<void> initNotifications() async {
     NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
+      
     );
     debugPrint('User granted permission: ${settings.authorizationStatus}');
 
@@ -91,9 +85,7 @@ class FirebaseCM {
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+      
     );
 
     const InitializationSettings settings = InitializationSettings(

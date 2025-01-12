@@ -97,7 +97,7 @@ Widget lastTutorialCard() {
     margin: EdgeInsets.symmetric(horizontal: 5.w),
     child: Column(mainAxisSize: MainAxisSize.min, children: [
       SizedBox(
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        child: Column(children: [
           Text(
             "Sensory Cueing",
             style: TextStyle(
@@ -137,7 +137,7 @@ Widget lastTutorialCard() {
         height: 20.h,
       ),
       SizedBox(
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        child: Column(children: [
           Text(
             "Focus on vibration \nwhile moving",
             style: TextStyle(
@@ -177,7 +177,7 @@ Widget lastTutorialCard() {
         height: 20.h,
       ),
       SizedBox(
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        child: Column(children: [
           Text(
             "2 hours a day",
             style: TextStyle(

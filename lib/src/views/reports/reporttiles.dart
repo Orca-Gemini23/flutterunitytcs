@@ -257,7 +257,6 @@ class _ReportListState extends State<ReportList> {
                             foregroundColor: AppColor.greenDarkColor,
                             side: const BorderSide(
                               color: AppColor.greenDarkColor,
-                              width: 1,
                             ),
                           ),
                           child: const Row(
@@ -302,7 +301,6 @@ class _ReportListState extends State<ReportList> {
                                 isSort ? const Color(0x40005748) : Colors.white,
                             side: const BorderSide(
                               color: AppColor.greenDarkColor,
-                              width: 1,
                             ),
                           ),
                           child: const Row(

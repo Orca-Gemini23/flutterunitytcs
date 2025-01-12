@@ -25,7 +25,6 @@ Widget getTextfield(
         ),
         contentPadding: const EdgeInsets.symmetric(
           vertical: 5,
-          horizontal: 0,
         ),
         labelText: labelText,
         labelStyle: const TextStyle(
@@ -68,7 +67,6 @@ Widget getLargeTextField(
         ),
         contentPadding: const EdgeInsets.symmetric(
           vertical: 5,
-          horizontal: 0,
         ),
         labelText: labelText,
         labelStyle: const TextStyle(

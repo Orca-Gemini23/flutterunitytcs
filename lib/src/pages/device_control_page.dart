@@ -203,7 +203,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
           await _onWillPop();
         },
         child: Scaffold(
-          extendBody: false,
           appBar: AppBar(
             systemOverlayStyle: SystemUiOverlayStyle.dark,
             backgroundColor: Colors.transparent,
@@ -305,8 +304,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                   child: SingleChildScrollView(
                                     controller: scrollController,
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -685,8 +682,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                   color: AppColor.greyLight,
                                                   offset: Offset(0, 2),
                                                   blurRadius: 4,
-                                                  spreadRadius: 0,
-                                                  blurStyle: BlurStyle.normal,
                                                 )
                                               ]),
                                           padding: const EdgeInsets.symmetric(
@@ -862,7 +857,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                           const SizedBox(
                                                               width: 30),
                                                         Expanded(
-                                                          flex: 1,
                                                           child: Container(
                                                             height: DeviceSize
                                                                     .isTablet
@@ -990,8 +984,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                   color: AppColor.greyLight,
                                                   offset: Offset(0, 2),
                                                   blurRadius: 4,
-                                                  spreadRadius: 0,
-                                                  blurStyle: BlurStyle.normal,
                                                 )
                                               ]),
                                           padding: const EdgeInsets.symmetric(
@@ -1030,9 +1022,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                     left: 0,
                                                     right: 0,
                                                     child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .spaceEvenly,
@@ -1126,9 +1115,6 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                       color: AppColor.greyLight,
                                                       offset: Offset(0, 2),
                                                       blurRadius: 4,
-                                                      spreadRadius: 0,
-                                                      blurStyle:
-                                                          BlurStyle.normal,
                                                     )
                                                   ]),
                                               child: Padding(

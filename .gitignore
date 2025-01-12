@@ -78,4 +78,5 @@ android/key.properties
 
 
 # env variables
+!/.env
 .env

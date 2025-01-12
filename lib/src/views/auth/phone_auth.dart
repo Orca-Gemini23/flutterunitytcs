@@ -177,7 +177,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
                       fontWeight: FontWeight.w400),
                   counterText: '',
                   border: const OutlineInputBorder(
-                    borderSide: BorderSide(),
+                    
                   ),
                 ),
                 initialCountryCode: 'IN',

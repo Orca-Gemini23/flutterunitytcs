@@ -201,7 +201,7 @@ class DeviceController extends ChangeNotifier {
 
   // //Constructor to start scanning as soon as an object of Device Controller is inititated in the runApp
   DeviceController(
-      {bool performScan = false, bool checkPrevconnection = false}) {
+      {bool checkPrevconnection = false}) {
     if (!permissionRequested) {
       askForPermission();
     }
@@ -388,7 +388,6 @@ class DeviceController extends ChangeNotifier {
           } else {
             showDialog(
               context: context,
-              barrierDismissible: true,
               builder: (context) => deviceNotFoundDialog(),
             );
           }
@@ -467,7 +466,7 @@ class DeviceController extends ChangeNotifier {
 
   ///Checks already connected devices and highlights the respective device's tile in the home screen.
   Future checkPrevConnection() async {
-    _connectedDevices = await FlutterBluePlus.connectedSystemDevices;
+    _connectedDevices = await FlutterBluePlus.systemDevices([Guid("1800")]);
     log("connected devices $_connectedDevices");
     if (_connectedDevices.isNotEmpty) {
       for (var device in _connectedDevices) {
@@ -497,7 +496,7 @@ class DeviceController extends ChangeNotifier {
         notifyListeners();
 
         await device.connect(
-          autoConnect: false,
+          
         );
         if (Platform.isAndroid) {
           await device.requestConnectionPriority(
@@ -562,7 +561,7 @@ class DeviceController extends ChangeNotifier {
           .first
           .characteristics;
 
-      var subscriptionElement;
+      BluetoothCharacteristic subscriptionElement;
 
       for (var element in _characteristics) {
         characteristicMap.putIfAbsent(element.uuid, () => element);
@@ -570,12 +569,11 @@ class DeviceController extends ChangeNotifier {
             Guid("0000abf1-0000-1000-8000-00805f9b34fb")) {
           // print(element);
           subscriptionElement = element;
+          var subscription = subscriptionElement.onValueReceived.listen((event) {});
+          device.cancelWhenDisconnected(subscription);
+          await subscriptionElement.setNotifyValue(true);
         }
       }
-      var subscription = subscriptionElement.onValueReceived.listen((event) {});
-      device.cancelWhenDisconnected(subscription);
-      await subscriptionElement.setNotifyValue(true);
-
       notifyListeners();
       return true;
     } catch (e) {

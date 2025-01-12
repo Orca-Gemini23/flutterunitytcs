@@ -14,7 +14,7 @@ import 'package:walk/src/db/firebase_storage.dart';
 import 'package:walk/src/db/local_db.dart';
 
 class UploadData {
-  static uplaod() async {
+  static upload() async {
     Directory? directory;
     if (Platform.isAndroid) {
       directory = await getExternalStorageDirectory();
@@ -31,7 +31,7 @@ class UploadData {
               fileName.contains("swing") ||
               fileName.contains("fish")) {
             var folderName = FirebaseAuth
-                .instance.currentUser!.uid; // Replace with actual folder name
+                .instance.currentUser?.uid; // Replace with actual folder name
             var request = http.MultipartRequest(
               'PUT',
               Uri.parse(
@@ -50,11 +50,7 @@ class UploadData {
 
               if (response.statusCode == 200) {
                 log('Uploaded $fileName!');
-                // try {
-                //   await file.delete();
-                // } catch (e) {
-                //   log('Error deleting $fileName: $e');
-                // }
+
               } else {
                 log('Upload failed for $fileName!');
               }

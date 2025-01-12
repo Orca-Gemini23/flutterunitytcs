@@ -68,12 +68,9 @@ class _TutorialPageState extends State<TutorialPage> {
                       ),
                       options: CarouselOptions(
                           enableInfiniteScroll: tour,
-                          autoPlay: false,
-                          padEnds: true,
                           enlargeCenterPage: true,
                           height: DeviceSize.isTablet ? 550.h : 450.h,
                           viewportFraction: .9,
-                          reverse: false,
                           onPageChanged: (index, reason) {
                             // log(index.toString());
                             setState(() {

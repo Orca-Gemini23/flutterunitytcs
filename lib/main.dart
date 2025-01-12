@@ -43,7 +43,6 @@ void main() async {
 
   await FirebaseAppCheck.instance.activate(
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.playIntegrity,
     appleProvider: AppleProvider.appAttest,
   );
 
@@ -53,7 +52,7 @@ void main() async {
 
   await initializeLocalDatabase();
   FirebaseCM().initNotifications();
-  await dotenv.load(fileName: '.env');
+  await dotenv.load();
 
   runApp(const WalkApp());
 }

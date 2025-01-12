@@ -95,7 +95,6 @@ class _OTPPageState extends State<OTPPage> {
       body: Padding(
         padding: EdgeInsets.fromLTRB(24, 24, 24, bottomInset == 0 ? 48.0 : 8),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
@@ -129,7 +128,7 @@ class _OTPPageState extends State<OTPPage> {
                     color: const Color.fromRGBO(30, 60, 87, 1),
                     fontWeight: FontWeight.w600),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
+                  border: Border.all(),
                   borderRadius:
                       BorderRadius.circular(DeviceSize.isTablet ? 30 : 20),
                 ),

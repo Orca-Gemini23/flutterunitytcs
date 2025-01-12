@@ -26,7 +26,6 @@ class _DetailChartState extends State<DetailChart> {
           primaryXAxis: DateTimeAxis(
             isVisible: true,
             axisLine: const AxisLine(color: AppColor.greenDarkColor, width: 4),
-            intervalType: DateTimeIntervalType.auto,
           ),
           primaryYAxis: NumericAxis(
             isVisible: true,
@@ -60,7 +59,6 @@ class _DetailChartState extends State<DetailChart> {
                   color: AppColor.blackColor,
                   fontSize: 12.sp,
                 ),
-                labelAlignment: ChartDataLabelAlignment.auto,
               ),
             ),
           ],

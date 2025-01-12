@@ -29,7 +29,6 @@ class CustomDialogs {
   static showScoreUplodingDialog(BuildContext context) {
     AwesomeDialog(
       context: context,
-      dialogType: DialogType.info,
       title: "Uploading you scores",
       desc: "Please wait while we upload your data to cloud .",
       customHeader: const CircularProgressIndicator(

@@ -46,7 +46,6 @@ class _WalkAppState extends State<WalkApp> {
       providers: [
         ChangeNotifierProvider(
           create: (_) => DeviceController(
-            performScan: false,
             checkPrevconnection: true,
           ),
         ),

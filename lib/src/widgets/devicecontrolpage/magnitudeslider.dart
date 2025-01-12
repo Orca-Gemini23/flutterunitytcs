@@ -27,7 +27,6 @@ Widget magSlider(bool isClient, DeviceController controller) {
                 ? 0
                 : controller.magCValue
             : controller.magSValue,
-        min: 0,
         max: 4,
         divisions: 4,
         label: isClient

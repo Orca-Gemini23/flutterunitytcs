@@ -40,7 +40,6 @@ class _GuestUserLoginState extends State<GuestUserLogin> {
             const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 48),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Spacer(),
             Container(

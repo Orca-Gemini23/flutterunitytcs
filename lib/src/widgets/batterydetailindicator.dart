@@ -58,14 +58,12 @@ class _CustomServerBatteryValueIndicatorState
                 boxShadow: deviceController.battS > 25
                     ? [
                         BoxShadow(
-                            offset: Offset.zero,
                             color: const Color(0xffA5DECD).withOpacity(.4),
                             blurRadius: DeviceSize.isTablet ? 60 : 30,
                             spreadRadius: DeviceSize.isTablet ? 28 : 21)
                       ]
                     : [
                         BoxShadow(
-                            offset: Offset.zero,
                             color: const Color(0xffDEBAA5).withOpacity(.4),
                             blurRadius: DeviceSize.isTablet ? 60 : 30,
                             spreadRadius: DeviceSize.isTablet ? 28 : 21)
@@ -202,14 +200,12 @@ class _CustomClientBatteryValueIndicatorState
                 boxShadow: deviceController.battC > 25
                     ? [
                         BoxShadow(
-                            offset: Offset.zero,
                             color: const Color(0xffA5DECD).withOpacity(.4),
                             blurRadius: DeviceSize.isTablet ? 60 : 30,
                             spreadRadius: DeviceSize.isTablet ? 28 : 21)
                       ]
                     : [
                         BoxShadow(
-                            offset: Offset.zero,
                             color: const Color(0xffDEBAA5).withOpacity(.4),
                             blurRadius: DeviceSize.isTablet ? 60 : 30,
                             spreadRadius: DeviceSize.isTablet ? 28 : 21)
