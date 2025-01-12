@@ -149,7 +149,7 @@ class FirebaseDB {
 }
 
 class Analytics {
-  static var docRef;
+  static DocumentReference? docRef;
 
   static Future<void> start({String? authNumber}) async {
     try {
@@ -160,7 +160,7 @@ class Analytics {
               FirebaseAuth.instance.currentUser!.uid)
           .collection("UserSessions")
           .doc(DateTime.now().toString());
-      docRef.set({
+      docRef?.set({
         "session": FieldValue.arrayUnion([]),
       }, SetOptions(merge: false));
       CollectAnalytics.start = true;
@@ -171,7 +171,7 @@ class Analytics {
 
   static Future<void> addNavigation(var data) async {
     try {
-      await docRef.update({
+      await docRef?.update({
         "session": FieldValue.arrayUnion([data]),
       });
     } catch (e) {
@@ -181,7 +181,7 @@ class Analytics {
 
   static Future<void> addClicks(String click, DateTime timeStamp) async {
     try {
-      await docRef.update({
+      await docRef?.update({
         "session": FieldValue.arrayUnion([
           AnalyticsClicksModel(click: click, clickTime: timeStamp).toJson()
         ]),

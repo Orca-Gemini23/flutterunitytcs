@@ -31,7 +31,7 @@ class UploadData {
               fileName.contains("swing") ||
               fileName.contains("fish")) {
             var folderName = FirebaseAuth
-                .instance.currentUser?.uid; // Replace with actual folder name
+                .instance.currentUser!.uid; // Replace with actual folder name
             var request = http.MultipartRequest(
               'PUT',
               Uri.parse(
