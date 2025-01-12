@@ -78,3 +78,4 @@ todo.txt
 
 # env variables
 *.env!/android/key.properties
+!/.env
