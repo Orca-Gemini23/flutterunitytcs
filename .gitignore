@@ -71,11 +71,10 @@ amplifytools.xcconfig
 unityLibrary/
 
 todo.txt
-android/key.properties
 /linux/
 /windows/
 /macos/
 
 
 # env variables
-*.env 
+*.env!/android/key.properties
