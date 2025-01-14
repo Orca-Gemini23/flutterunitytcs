@@ -13,6 +13,7 @@ import 'package:walk/src/pages/connection_page.dart';
 import 'package:walk/src/pages/contact_us_page.dart';
 import 'package:walk/src/pages/device_control_page.dart';
 import 'package:walk/src/pages/faq_page.dart';
+import 'package:walk/src/pages/frs_test.dart';
 import 'package:walk/src/pages/home_page.dart';
 import 'package:walk/src/pages/splash_screen.dart';
 import 'package:walk/src/pages/therapy_page.dart';
@@ -81,6 +82,7 @@ class _WalkAppState extends State<WalkApp> {
                 '/contactus': (context) => const ContactUsPage(),
                 '/tutorial': (context) => const TutorialPage(),
                 '/faq': (context) => const Faqpage(),
+                '/frs_test': (context) => const FrsTest(),
                 // '/subscription': (context) => const SubscriptionPlans(),
               },
               theme: ThemeData(

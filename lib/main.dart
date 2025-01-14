@@ -10,8 +10,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:walk/env/flavors.dart';
 import 'package:walk/src/db/local_db.dart';
-import 'package:walk/src/utils/firebase/firebase_messaging.dart';
 import 'package:walk/src/utils/firebase/firebase_db.dart';
+import 'package:walk/src/utils/firebase/firebase_messaging.dart';
 import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/walk_app.dart';
 

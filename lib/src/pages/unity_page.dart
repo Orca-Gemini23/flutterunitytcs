@@ -33,12 +33,14 @@ class UnityScreenState extends State<UnityScreen> {
           (value) => debugPrint("Analytics stated"),
         );
     deviceController = Provider.of<DeviceController>(context, listen: false);
+    // deviceController.startStream();
     report = Provider.of<Report>(context, listen: false);
     super.initState();
   }
 
   @override
   void dispose() {
+    deviceController.subscribeToNotify(false);
     super.dispose();
   }
 
@@ -103,7 +105,6 @@ class UnityScreenState extends State<UnityScreen> {
               // top: false,
               child: PopScope(
                   onPopInvokedWithResult: (bool didPop, Object? result) async {
-                    sendUploadRequest();
                     FirebaseDB.uploadUserScore(
                       score: finalScore,
                       playedOn: DateTime.now(),
@@ -152,7 +153,6 @@ class UnityScreenState extends State<UnityScreen> {
                         IconButton(
                           icon: const Icon(Icons.arrow_back_ios),
                           onPressed: () async {
-                            sendUploadRequest();
                             FirebaseDB.uploadUserScore(
                               score: finalScore,
                               playedOn: DateTime.now(),
@@ -193,13 +193,11 @@ class UnityScreenState extends State<UnityScreen> {
   }
 
   void startReading() {
-    DeviceController deviceController =
-        Provider.of<DeviceController>(context, listen: false);
-    deviceController.startStream();
+    deviceController.subscribeToNotify(true);
   }
 
   void stopStream() {
-    // DeviceController deviceController = Provider.of<DeviceController>(context, listen: false);
+    deviceController.subscribeToNotify(false);
   }
 
   Future<void> vibrateLeft() async {
@@ -225,9 +223,5 @@ class UnityScreenState extends State<UnityScreen> {
   static void sendAccelerometer(String legData) {
     unityWidgetController?.postMessage(
         "SceneController", "SetAccelerometerValue", legData);
-  }
-
-  static void sendUploadRequest() {
-    // back=true;
   }
 }

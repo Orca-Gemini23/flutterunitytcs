@@ -200,8 +200,7 @@ class DeviceController extends ChangeNotifier {
   bool get permissionRequestStatus => permissionRequested;
 
   // //Constructor to start scanning as soon as an object of Device Controller is inititated in the runApp
-  DeviceController(
-      {bool checkPrevconnection = false}) {
+  DeviceController({bool checkPrevconnection = false}) {
     if (!permissionRequested) {
       askForPermission();
     }
@@ -495,9 +494,7 @@ class DeviceController extends ChangeNotifier {
         // isScanning = false;
         notifyListeners();
 
-        await device.connect(
-          
-        );
+        await device.connect();
         if (Platform.isAndroid) {
           await device.requestConnectionPriority(
               connectionPriorityRequest: ConnectionPriority.high);
@@ -569,9 +566,9 @@ class DeviceController extends ChangeNotifier {
             Guid("0000abf1-0000-1000-8000-00805f9b34fb")) {
           // print(element);
           subscriptionElement = element;
-          var subscription = subscriptionElement.onValueReceived.listen((event) {});
+          var subscription =
+              subscriptionElement.onValueReceived.listen((event) {});
           device.cancelWhenDisconnected(subscription);
-          await subscriptionElement.setNotifyValue(true);
         }
       }
       notifyListeners();
@@ -898,10 +895,16 @@ class DeviceController extends ChangeNotifier {
     }
   }
 
+  void subscribeToNotify(bool status) async {
+    BluetoothCharacteristic? targetCharacteristic =
+        _characteristicMap[THERAPY_CHARACTERISTICS];
+    await targetCharacteristic?.setNotifyValue(status);
+  }
+
   Future<StreamSubscription<List<int>>> startStream() async {
     BluetoothCharacteristic? targetCharacteristic =
         _characteristicMap[THERAPY_CHARACTERISTICS];
-
+    print("Subscribing to notify");
     StreamController<List<int>> controller = StreamController<List<int>>();
 
     late StreamSubscription<List<int>> angleValuesSubscription;
