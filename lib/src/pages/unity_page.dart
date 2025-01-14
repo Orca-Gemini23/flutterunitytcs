@@ -35,7 +35,7 @@ class UnityScreenState extends State<UnityScreen> {
           (value) => debugPrint("Analytics stated"),
         );
     deviceController = Provider.of<DeviceController>(context, listen: false);
-    deviceController.startStream();
+    // deviceController.startStream();
     report = Provider.of<Report>(context, listen: false);
     super.initState();
   }

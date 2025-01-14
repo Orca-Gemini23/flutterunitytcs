@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -95,7 +96,7 @@ class _StreamingStringScreenState extends State<StreamingStringScreen> {
     DeviceController deviceController =
         Provider.of<DeviceController>(context, listen: false);
     FileClass.initializeCommonName().then((_) {
-      deviceController.startStream();
+      // deviceController.startStream();
       _scrollController = ScrollController();
     });
   }

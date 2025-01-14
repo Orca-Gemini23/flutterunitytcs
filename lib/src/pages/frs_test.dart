@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
@@ -188,19 +191,30 @@ class RightLegUp extends StatefulWidget {
 }
 
 class _RightLegUpState extends State<RightLegUp> {
+  late StreamSubscription<List<int>> stream;
+
   @override
   void initState() {
     super.initState();
-    sendModeToDevice(9);
-  }
-
-  void sendModeToDevice(int mode) {
-    // Add your code to send the mode to the device here
-    // For example:
     context
         .read<DeviceController>()
         .sendToDevice("mode 9;", WRITECHARACTERISTICS);
-    print('Mode $mode sent to device');
+    BluetoothCharacteristic? targetCharacteristic = context
+        .read<DeviceController>()
+        .characteristicMap[WRITECHARACTERISTICS];
+    targetCharacteristic?.setNotifyValue(true);
+    stream = targetCharacteristic!.onValueReceived.listen(
+      (value) {
+        String data = String.fromCharCodes(value);
+        print(data);
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    stream.cancel();
+    super.dispose();
   }
 
   @override
