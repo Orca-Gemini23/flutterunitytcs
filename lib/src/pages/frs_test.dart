@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -192,6 +193,7 @@ class RightLegUp extends StatefulWidget {
 
 class _RightLegUpState extends State<RightLegUp> {
   late StreamSubscription<List<int>> stream;
+  double angle = 0.0;
 
   @override
   void initState() {
@@ -206,6 +208,25 @@ class _RightLegUpState extends State<RightLegUp> {
     stream = targetCharacteristic!.onValueReceived.listen(
       (value) {
         String data = String.fromCharCodes(value);
+
+        // L : 0.35 0.05 -0.91 -1.89 1.46 -0.37
+        var dataArr = data.split(" ");
+        if (dataArr[0] == "L") {
+          var ax = double.parse(dataArr[2]);
+          var ay = double.parse(dataArr[3]);
+          var az = double.parse(dataArr[4]);
+          // var gx = double.parse(dataArr[5]);
+          // var gy = double.parse(dataArr[6]);
+          // var gz = double.parse(dataArr[7]);
+          setState(() {
+            angle =
+                (((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az)) / 90) - 1) *
+                    -1;
+          });
+          // print("angle=");
+          print(angle);
+        } else {}
+
         print(data);
       },
     );
@@ -222,7 +243,7 @@ class _RightLegUpState extends State<RightLegUp> {
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
-          widthFactor: 0.8, // Set the width to 80% of the total width
+          widthFactor: 0.9, // Set the width to 80% of the total width
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -253,9 +274,24 @@ class _RightLegUpState extends State<RightLegUp> {
                               child: Image.asset(
                                   'assets/images/right_leg_indicator.png'),
                             ),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),
+                      SizedBox(
+                        width: 150,
+                        height: 100,
+                        child: Transform.rotate(
+                          angle: pi / 2, // Simplified angle calculation
+                          child: LinearProgressIndicator(
+                            minHeight: 200,
+                            value: angle,
+                            backgroundColor: AppColor.greenDarkColor,
+                            valueColor:
+                                AlwaysStoppedAnimation(AppColor.lightgreen),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ],
