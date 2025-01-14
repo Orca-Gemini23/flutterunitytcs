@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -25,6 +26,7 @@ class UnityScreenState extends State<UnityScreen> {
   bool isDialogup = true;
   late DeviceController deviceController;
   late Report report;
+  late StreamSubscription<List<int>> stream;
   @override
   void initState() {
     FirebaseAnalytics.instance
@@ -33,14 +35,14 @@ class UnityScreenState extends State<UnityScreen> {
           (value) => debugPrint("Analytics stated"),
         );
     deviceController = Provider.of<DeviceController>(context, listen: false);
-    // deviceController.startStream();
+    deviceController.startStream();
     report = Provider.of<Report>(context, listen: false);
     super.initState();
   }
 
   @override
   void dispose() {
-    deviceController.subscribeToNotify(false);
+    stopStream();
     super.dispose();
   }
 
@@ -192,12 +194,13 @@ class UnityScreenState extends State<UnityScreen> {
     }
   }
 
-  void startReading() {
-    deviceController.subscribeToNotify(true);
+  void startReading() async {
+    stream = await deviceController.startStream();
   }
 
   void stopStream() {
     deviceController.subscribeToNotify(false);
+    stream.cancel();
   }
 
   Future<void> vibrateLeft() async {

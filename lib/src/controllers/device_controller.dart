@@ -904,7 +904,7 @@ class DeviceController extends ChangeNotifier {
   Future<StreamSubscription<List<int>>> startStream() async {
     BluetoothCharacteristic? targetCharacteristic =
         _characteristicMap[THERAPY_CHARACTERISTICS];
-    print("Subscribing to notify");
+    subscribeToNotify(true);
     StreamController<List<int>> controller = StreamController<List<int>>();
 
     late StreamSubscription<List<int>> angleValuesSubscription;
