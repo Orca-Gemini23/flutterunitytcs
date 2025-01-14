@@ -829,9 +829,12 @@ class DeviceController extends ChangeNotifier {
       _modeValue = int.parse(
         String.fromCharCodes(serverResponse),
       );
+      if (_modeValue == 99) {
+        _modeValue = -1;
+      }
       notifyListeners();
 
-      log("Mode Value is ${String.fromCharCodes(serverResponse)}");
+      log("Mode Value is $_modeValue");
       return true;
     } catch (e) {
       log(
