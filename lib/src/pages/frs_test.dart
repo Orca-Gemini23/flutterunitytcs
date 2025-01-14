@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
@@ -192,6 +194,7 @@ class RightLegUp extends StatefulWidget {
 
 class _RightLegUpState extends State<RightLegUp> {
   late StreamSubscription<List<int>> stream;
+  double angle = 0.0;
 
   @override
   void initState() {
@@ -206,7 +209,22 @@ class _RightLegUpState extends State<RightLegUp> {
     stream = targetCharacteristic!.onValueReceived.listen(
       (value) {
         String data = String.fromCharCodes(value);
-        print(data);
+
+        // L : 0.35 0.05 -0.91 -1.89 1.46 -0.37
+        var dataArr = data.split(" ");
+        if (dataArr[0] == "R") {
+          var ax = double.parse(dataArr[2]);
+          var ay = double.parse(dataArr[3]);
+          var az = double.parse(dataArr[4]);
+          // var gx = double.parse(dataArr[5]);
+          // var gy = double.parse(dataArr[6]);
+          // var gz = double.parse(dataArr[7]);
+          setState(() {
+            angle =
+                (((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az)) / 90) - 1) *
+                    -1;
+          });
+        } else {}
       },
     );
   }
@@ -222,7 +240,7 @@ class _RightLegUpState extends State<RightLegUp> {
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
-          widthFactor: 0.8, // Set the width to 80% of the total width
+          widthFactor: 0.9, // Set the width to 80% of the total width
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -253,7 +271,21 @@ class _RightLegUpState extends State<RightLegUp> {
                               child: Image.asset(
                                   'assets/images/right_leg_indicator.png'),
                             ),
+                            const SizedBox(height: 10),
                           ],
+                        ),
+                      ),
+                      Transform.rotate(
+                        angle: pi / 2, // Simplified angle calculation
+                        child: SizedBox(
+                          width: 150,
+                          height: 75,
+                          child: LinearProgressIndicator(
+                            value: angle,
+                            backgroundColor: AppColor.greenDarkColor,
+                            valueColor: const AlwaysStoppedAnimation(
+                                AppColor.lightgreen),
+                          ),
                         ),
                       ),
                     ],
@@ -290,6 +322,7 @@ class _RightLegUpState extends State<RightLegUp> {
                     ),
                   ),
                   onPressed: () {
+                    stream.cancel();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -310,15 +343,70 @@ class _RightLegUpState extends State<RightLegUp> {
   }
 }
 
-class LeftLegUp extends StatelessWidget {
+class LeftLegUp extends StatefulWidget {
   const LeftLegUp({super.key});
+
+  @override
+  _LeftLegUpState createState() => _LeftLegUpState();
+}
+
+class _LeftLegUpState extends State<LeftLegUp> {
+  late StreamSubscription<List<int>> stream;
+  double angle = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<DeviceController>()
+        .sendToDevice("mode 9;", WRITECHARACTERISTICS);
+    BluetoothCharacteristic? targetCharacteristic = context
+        .read<DeviceController>()
+        .characteristicMap[WRITECHARACTERISTICS];
+    targetCharacteristic?.setNotifyValue(true);
+    stream = targetCharacteristic!.onValueReceived.listen(
+      (value) {
+        String data = String.fromCharCodes(value);
+
+        // L : 0.35 0.05 -0.91 -1.89 1.46 -0.37
+        var dataArr = data.split(" ");
+        if (dataArr[0] == "L") {
+          var ax = double.parse(dataArr[2]);
+          var ay = double.parse(dataArr[3]);
+          var az = double.parse(dataArr[4]);
+          // var gx = double.parse(dataArr[5]);
+          // var gy = double.parse(dataArr[6]);
+          // var gz = double.parse(dataArr[7]);
+          setState(() {
+            angle =
+                (((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az)) / 90) - 1) *
+                    -1;
+          });
+          // print("angle=");
+          if (kDebugMode) {
+            print(angle);
+          }
+        } else {}
+
+        if (kDebugMode) {
+          print(data);
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    stream.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
-          widthFactor: 0.8, // Set the width to 80% of the total width
+          widthFactor: 0.9, // Set the width to 80% of the total width
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -349,7 +437,21 @@ class LeftLegUp extends StatelessWidget {
                               child: Image.asset(
                                   'assets/images/left_leg_indicator.png'),
                             ),
+                            const SizedBox(height: 10),
                           ],
+                        ),
+                      ),
+                      Transform.rotate(
+                        angle: pi / 2, // Simplified angle calculation
+                        child: SizedBox(
+                          width: 150,
+                          height: 75,
+                          child: LinearProgressIndicator(
+                            value: angle,
+                            backgroundColor: AppColor.greenDarkColor,
+                            valueColor: const AlwaysStoppedAnimation(
+                                AppColor.lightgreen),
+                          ),
                         ),
                       ),
                     ],
@@ -361,7 +463,7 @@ class LeftLegUp extends StatelessWidget {
                   text: 'Lift your ',
                   children: <TextSpan>[
                     TextSpan(
-                      text: 'left leg',
+                      text: 'Left leg',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
