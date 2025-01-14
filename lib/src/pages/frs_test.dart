@@ -209,21 +209,17 @@ class _RightLegUpState extends State<RightLegUp> {
     stream = targetCharacteristic!.onValueReceived.listen(
       (value) {
         String data = String.fromCharCodes(value);
-
-        // L : 0.35 0.05 -0.91 -1.89 1.46 -0.37
         var dataArr = data.split(" ");
         if (dataArr[0] == "R") {
           var ax = double.parse(dataArr[2]);
           var ay = double.parse(dataArr[3]);
           var az = double.parse(dataArr[4]);
-          // var gx = double.parse(dataArr[5]);
-          // var gy = double.parse(dataArr[6]);
-          // var gz = double.parse(dataArr[7]);
           setState(() {
-            angle =
-                (((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az)) / 90) - 1) *
-                    -1;
+            angle = 1 -
+                (((((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az))) / -90)));
+            print(angle);
           });
+          print(angle);
         } else {}
       },
     );
@@ -322,7 +318,7 @@ class _RightLegUpState extends State<RightLegUp> {
                     ),
                   ),
                   onPressed: () {
-                    stream.cancel();
+                    // stream.cancel();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -374,9 +370,7 @@ class _LeftLegUpState extends State<LeftLegUp> {
           var ax = double.parse(dataArr[2]);
           var ay = double.parse(dataArr[3]);
           var az = double.parse(dataArr[4]);
-          // var gx = double.parse(dataArr[5]);
-          // var gy = double.parse(dataArr[6]);
-          // var gz = double.parse(dataArr[7]);
+
           setState(() {
             angle =
                 (((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az)) / 90) - 1) *
