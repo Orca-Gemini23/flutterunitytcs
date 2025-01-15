@@ -35,7 +35,7 @@ class UnityScreenState extends State<UnityScreen> {
           (value) => debugPrint("Analytics stated"),
         );
     deviceController = Provider.of<DeviceController>(context, listen: false);
-    // deviceController.startStream();
+    deviceController.startStream();
     report = Provider.of<Report>(context, listen: false);
     super.initState();
   }
@@ -176,27 +176,27 @@ class UnityScreenState extends State<UnityScreen> {
     switch (widget.i) {
       case 0:
         UnityScreenState.loadBallGame();
-        startReading();
+        // startReading();
 
         break;
       case 1:
         UnityScreenState.loadFishGame();
-        startReading();
+        // startReading();
         break;
       case 2:
         UnityScreenState.loadSwingGame();
-        startReading();
+        // startReading();
         break;
       case 3:
         UnityScreenState.loadTaxiGame();
-        startReading();
+        // startReading();
         break;
     }
   }
 
-  void startReading() async {
-    stream = await deviceController.startStream();
-  }
+  // void startReading() async {
+  //   // stream = await deviceController.startStream();
+  // }
 
   void stopStream() {
     deviceController.subscribeToNotify(false);
