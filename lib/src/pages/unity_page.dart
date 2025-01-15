@@ -15,6 +15,7 @@ import 'package:walk/src/widgets/dialog.dart';
 
 class UnityScreen extends StatefulWidget {
   const UnityScreen({super.key, required this.i});
+
   final int i;
 
   @override
@@ -103,8 +104,7 @@ class UnityScreenState extends State<UnityScreen> {
             }
 
             return SafeArea(
-              bottom: false,
-              // top: false,
+              bottom: false, // top: false,
               child: PopScope(
                   onPopInvokedWithResult: (bool didPop, Object? result) async {
                     FirebaseDB.uploadUserScore(
@@ -114,57 +114,56 @@ class UnityScreenState extends State<UnityScreen> {
                     );
                     FilePathChange.getExternalFiles(report);
                   },
-                  child: Stack(
-                      // color: Colors.white,
+                  child: Stack(// color: Colors.white,
                       children: <Widget>[
-                        UnityWidget(
-                          // uiLevel: 0,
-                          onUnityCreated: onUnityCreated,
-                          onUnityUnloaded: stopStream,
-                          onUnityMessage: (message) async {
-                            var msg = message.toString();
-                            if (msg.toString().contains("xc")) {
-                              var score = msg.toString().split("c");
-                              log(score[1]);
-                              setState(() {
-                                finalScore = int.parse(score[1]);
-                                secondPlayed = int.parse(
-                                    double.parse(score[2]).toStringAsFixed(0));
-                              });
-                            } else if (msg.toString() == "Exit") {
-                              // sendUploadRequest();
-                              FirebaseDB.uploadUserScore(
-                                score: finalScore,
-                                playedOn: DateTime.now(),
-                                secondsPlayedFor: secondPlayed,
-                              );
-                              Navigator.pop(context);
-                            } else {
-                              switch (msg) {
-                                case "VL":
-                                  vibrateLeft();
-                                  break;
-                                case "VR":
-                                  vibrateRight();
-                                  break;
-                              }
-                            }
-                          },
-                          fullscreen: true,
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios),
-                          onPressed: () async {
-                            FirebaseDB.uploadUserScore(
-                              score: finalScore,
-                              playedOn: DateTime.now(),
-                              secondsPlayedFor: secondPlayed,
-                            );
-                            FilePathChange.getExternalFiles(report);
-                            Navigator.pop(context);
-                          },
-                        )
-                      ])),
+                    UnityWidget(
+                      // uiLevel: 0,
+                      onUnityCreated: onUnityCreated,
+                      onUnityUnloaded: stopStream,
+                      onUnityMessage: (message) async {
+                        var msg = message.toString();
+                        if (msg.toString().contains("xc")) {
+                          var score = msg.toString().split("c");
+                          log(score[1]);
+                          setState(() {
+                            finalScore = int.parse(score[1]);
+                            secondPlayed = int.parse(
+                                double.parse(score[2]).toStringAsFixed(0));
+                          });
+                        } else if (msg.toString() == "Exit") {
+                          // sendUploadRequest();
+                          FirebaseDB.uploadUserScore(
+                            score: finalScore,
+                            playedOn: DateTime.now(),
+                            secondsPlayedFor: secondPlayed,
+                          );
+                          Navigator.pop(context);
+                        } else {
+                          switch (msg) {
+                            case "VL":
+                              vibrateLeft();
+                              break;
+                            case "VR":
+                              vibrateRight();
+                              break;
+                          }
+                        }
+                      },
+                      fullscreen: true,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios),
+                      onPressed: () async {
+                        FirebaseDB.uploadUserScore(
+                          score: finalScore,
+                          playedOn: DateTime.now(),
+                          secondsPlayedFor: secondPlayed,
+                        );
+                        FilePathChange.getExternalFiles(report);
+                        Navigator.pop(context);
+                      },
+                    )
+                  ])),
             );
           }),
     );

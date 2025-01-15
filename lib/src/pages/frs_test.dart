@@ -251,8 +251,8 @@ class _RightLegUpState extends State<RightLegUp> {
                   Column(
                     children: [
                       Transform.translate(
-                        offset: const Offset(
-                            0, -150), // Move the text and image up by 20 pixels
+                        offset: const Offset(0, -150),
+                        // Move the text and image up by 20 pixels
                         child: Column(
                           children: [
                             const Text(
@@ -260,10 +260,10 @@ class _RightLegUpState extends State<RightLegUp> {
                               style: TextStyle(fontSize: 16),
                             ),
                             SizedBox(
-                              width:
-                                  100, // Set the desired width for the indicator
-                              height:
-                                  100, // Set the desired height for the indicator
+                              width: 100,
+                              // Set the desired width for the indicator
+                              height: 100,
+                              // Set the desired height for the indicator
                               child: Image.asset(
                                   'assets/images/right_leg_indicator.png'),
                             ),
@@ -415,8 +415,8 @@ class _LeftLegUpState extends State<LeftLegUp> {
                   Column(
                     children: [
                       Transform.translate(
-                        offset: const Offset(
-                            0, -150), // Move the text and image up by 20 pixels
+                        offset: const Offset(0, -150),
+                        // Move the text and image up by 20 pixels
                         child: Column(
                           children: [
                             const Text(
@@ -424,10 +424,10 @@ class _LeftLegUpState extends State<LeftLegUp> {
                               style: TextStyle(fontSize: 16),
                             ),
                             SizedBox(
-                              width:
-                                  100, // Set the desired width for the indicator
-                              height:
-                                  100, // Set the desired height for the indicator
+                              width: 100,
+                              // Set the desired width for the indicator
+                              height: 100,
+                              // Set the desired height for the indicator
                               child: Image.asset(
                                   'assets/images/left_leg_indicator.png'),
                             ),
