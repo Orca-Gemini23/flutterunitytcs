@@ -39,3 +39,5 @@ class CollectAnalytics {
 class Device {
   static String name = "";
 }
+
+String testId = "";

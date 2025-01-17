@@ -5,7 +5,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -77,7 +76,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       Future.delayed(Duration.zero, showTutorial);
     }
     super.initState();
-    FlutterBluePlus.setLogLevel(LogLevel.verbose);
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsFlutterBinding.ensureInitialized();
@@ -202,7 +200,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   //button to take to frs test
                   ElevatedButton(
                     onPressed: () {
-                      if (context.read<DeviceController>().connectedDevice !=
+                      if (context
+                          .read<DeviceController>()
+                          .connectedDevice !=
                           null) {
                         Navigator.pushNamed(context, '/frs_test');
                       } else {
