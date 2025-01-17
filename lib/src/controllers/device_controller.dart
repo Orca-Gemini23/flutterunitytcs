@@ -327,7 +327,6 @@ class DeviceController extends ChangeNotifier {
   Future<void> startDiscovery(Function onConnect, BuildContext context) async {
     try {
       // ignore: unused_local_variable
-      FlutterBluePlus.setLogLevel(LogLevel.none);
       StreamSubscription<List<ScanResult>>? scanSubscription;
       await askForPermission();
       _scannedDevices.clear();

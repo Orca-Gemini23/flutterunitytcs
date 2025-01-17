@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:walk/env/flavors.dart';
@@ -39,8 +39,8 @@ void main() async {
     FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
   }
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
+  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  FlutterBluePlus.setLogLevel(LogLevel.error);
   await FirebaseAppCheck.instance.activate(
     webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
     appleProvider: AppleProvider.appAttest,
