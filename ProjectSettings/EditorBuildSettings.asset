@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Blank.unity
+    guid: d399c8d05bffe5a46b623b9781e3b886
+  - enabled: 1
+    path: Assets/Scenes/BallGame.unity
+    guid: 3fc8acdd13e6c734bafef6554d6fdbcd
+  - enabled: 1
+    path: Assets/Scenes/Fishing.unity
+    guid: 21dfa8ca0aa6abf45a1ba644412fb0f4
+  - enabled: 1
+    path: Assets/Scenes/SwingGame.unity
+    guid: d5c4cbf9c5f17634a8dd5ed131993fd3
+  - enabled: 1
+    path: Assets/Scenes/Taxi.unity
+    guid: e8a76611ea91c3849b045b230dc28156
+  m_configObjects:
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: a9bab5e302ea94a4792b871683de0251, type: 2}
