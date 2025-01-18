@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:walk/src/constants/app_color.dart';
 
 class FrsResult extends StatefulWidget {
   const FrsResult({super.key});
@@ -11,11 +13,56 @@ class FrsResult extends StatefulWidget {
 
 class _FrsResultState extends State<FrsResult> {
   late Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _frsData;
+  Map<DateTime, double> leftLegUpData = {};
+  Map<DateTime, double> rightLegUpData = {};
+  Map<DateTime, int> leftReactionTime = {};
+  Map<DateTime, int> rightReactionTime = {};
 
   @override
   void initState() {
     super.initState();
     _frsData = _fetchFrsData();
+    _frsData.then((docs) {
+      for (var doc in docs) {
+        var date = DateTime.parse(doc.id);
+        var leftValue = doc.data()['left_angles'];
+        var rightValue = doc.data()['right_angles'];
+        var leftReactionTimeValue = doc.data()['left_reaction_time'];
+        var rightReactionTimeValue = doc.data()['right_reaction_time'];
+        var leftY = leftValue.cast<double>() as List<double>;
+        var rightY = rightValue.cast<double>() as List<double>;
+        var leftReactionTimeY = leftReactionTimeValue.cast<int>() as List<int>;
+        var rightReactionTimeY =
+            rightReactionTimeValue.cast<int>() as List<int>;
+        var leftSum = 0.0;
+        var rightSum = 0.0;
+        for (var i in leftY) {
+          leftSum += i;
+        }
+        for (var i in rightY) {
+          rightSum += i;
+        }
+        var minLeft = 9999999999999;
+        for (var i in leftReactionTimeY) {
+          if (i < minLeft) {
+            minLeft = i;
+          }
+        }
+        var minRight = 9999999999999;
+        for (var i in rightReactionTimeY) {
+          if (i < minRight) {
+            minRight = i;
+          }
+        }
+
+        setState(() {
+          leftLegUpData[date] = leftSum / leftY.length;
+          rightLegUpData[date] = rightSum / rightY.length;
+          leftReactionTime[date] = minLeft;
+          rightReactionTime[date] = minRight;
+        });
+      }
+    });
   }
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
@@ -30,33 +77,123 @@ class _FrsResultState extends State<FrsResult> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Building FRS Results screen');
     return Scaffold(
       appBar: AppBar(
         title: const Text('FRS Results'),
+        backgroundColor: AppColor.greenDarkColor,
       ),
-      body: FutureBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
-        future: _frsData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Error loading data'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No data available'));
-          } else {
-            final frsData = snapshot.data!;
-            return ListView.builder(
-              itemCount: frsData.length,
-              itemBuilder: (context, index) {
-                final doc = frsData[index];
-                return ListTile(
-                  title: Text('Document ${index + 1}'),
-                  subtitle: Text(doc.id),
-                );
-              },
-            );
-          }
-        },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 200, // Set the desired height for the graph
+                child: LineChart(
+                  LineChartData(
+                    // minX: 1,
+                    // maxX: 31,
+                    // minY: 0,
+                    // maxY: 100,
+                    titlesData: const FlTitlesData(
+                      topTitles: AxisTitles(),
+                      rightTitles: AxisTitles(),
+                    ),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: leftLegUpData.entries
+                            .map((e) => FlSpot(e.key.month.toDouble(), e.value))
+                            .toList(),
+                        isCurved: true,
+                        color: Colors.blue,
+                        barWidth: 2,
+                        belowBarData: BarAreaData(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 200, // Set the desired height for the graph
+                child: LineChart(
+                  LineChartData(
+                    // minX: 1,
+                    // maxX: 31,
+                    // minY: 0,
+                    // maxY: 100,
+                    titlesData: const FlTitlesData(
+                      topTitles: AxisTitles(),
+                      rightTitles: AxisTitles(),
+                    ),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: rightLegUpData.entries
+                            .map((e) => FlSpot(e.key.month.toDouble(), e.value))
+                            .toList(),
+                        isCurved: true,
+                        color: Colors.red,
+                        barWidth: 2,
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 200, // Set the desired height for the graph
+                child: LineChart(
+                  LineChartData(
+                    titlesData: const FlTitlesData(
+                      topTitles: AxisTitles(),
+                      rightTitles: AxisTitles(),
+                    ),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: leftReactionTime.entries
+                            .map((e) => FlSpot(
+                                e.key.month.toDouble(), e.value.toDouble()))
+                            .toList(),
+                        isCurved: true,
+                        color: Colors.blue,
+                        barWidth: 2,
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 200, // Set the desired height for the graph
+                child: LineChart(
+                  LineChartData(
+                    titlesData: const FlTitlesData(
+                      topTitles: AxisTitles(),
+                      rightTitles: AxisTitles(),
+                    ),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: rightReactionTime.entries
+                            .map((e) => FlSpot(
+                                e.key.month.toDouble(), e.value.toDouble()))
+                            .toList(),
+                        isCurved: true,
+                        color: Colors.red,
+                        barWidth: 2,
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
       ),
     );
   }
