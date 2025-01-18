@@ -200,9 +200,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   //button to take to frs test
                   ElevatedButton(
                     onPressed: () {
-                      if (context
-                          .read<DeviceController>()
-                          .connectedDevice !=
+                      if (context.read<DeviceController>().connectedDevice !=
                           null) {
                         Navigator.pushNamed(context, '/frs_test');
                       } else {
@@ -221,6 +219,25 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ),
                     child: const Text(
                       "Take the test",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/frs_result');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.greenDarkColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      "View FRS Result",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,

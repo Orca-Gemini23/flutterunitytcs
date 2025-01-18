@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/pages/right_leg_up.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/utils/global_variables.dart';
 
 class FrsTest extends StatelessWidget {
@@ -9,6 +11,11 @@ class FrsTest extends StatelessWidget {
   @override
   StatelessElement createElement() {
     testId = DateTime.now().toIso8601String();
+
+    FirebaseDB.currentDb
+        .collection("frs")
+        .doc(testId)
+        .set({"user_id": FirebaseAuth.instance.currentUser?.uid});
     return super.createElement();
   }
 

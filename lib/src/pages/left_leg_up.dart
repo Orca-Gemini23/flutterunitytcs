@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
@@ -35,8 +34,7 @@ class _LeftLegUpState extends State<LeftLegUp>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
-    )
-      ..addListener(() {
+    )..addListener(() {
         setState(() {});
       });
 
@@ -50,7 +48,7 @@ class _LeftLegUpState extends State<LeftLegUp>
         .characteristicMap[WRITECHARACTERISTICS];
     // targetCharacteristic?.setNotifyValue(true);
     stream = targetCharacteristic!.onValueReceived.listen(
-          (value) {
+      (value) {
         String data = String.fromCharCodes(value);
         var dataArr = data.split(" ");
         if (dataArr[0] == "L") {
@@ -95,7 +93,7 @@ class _LeftLegUpState extends State<LeftLegUp>
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
-          widthFactor: 0.9, // Set the width to 80% of the total width
+          // widthFactor: 0.9, // Set the width to 80% of the total width
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -190,7 +188,7 @@ class _LeftLegUpState extends State<LeftLegUp>
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                    AppColor.greenDarkColor, // Dark green color
+                        AppColor.greenDarkColor, // Dark green color
                     foregroundColor: Colors.white, // White text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // Slight curve
@@ -198,18 +196,17 @@ class _LeftLegUpState extends State<LeftLegUp>
                   ),
                   onPressed: isButtonEnabled
                       ? () {
-                    FirebaseDB.currentDb
-                        .collection("frs")
-                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                        .collection(testId)
-                        .add({"left_angles": angles});
-                    stream.cancel();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ReactionTime()),
-                    );
-                  }
+                          FirebaseDB.currentDb
+                              .collection("frs")
+                              .doc(testId)
+                              .update({"left_angles": angles});
+                          stream.cancel();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ReactionTime()),
+                          );
+                        }
                       : null,
                   child: const Text(
                     "Next",
