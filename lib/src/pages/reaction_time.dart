@@ -226,7 +226,7 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                                 MaterialPageRoute(
                                   builder: (context) => const FrsResult(),
                                 ),
-                                (Route<dynamic> route) => false,
+                                ModalRoute.withName('/home'),
                               );
                             });
                           },

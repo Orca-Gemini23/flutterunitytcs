@@ -35,8 +35,8 @@ class _LeftLegUpState extends State<LeftLegUp>
       vsync: this,
       duration: const Duration(seconds: 3),
     )..addListener(() {
-        setState(() {});
-      });
+      setState(() {});
+    });
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
@@ -46,44 +46,46 @@ class _LeftLegUpState extends State<LeftLegUp>
     BluetoothCharacteristic? targetCharacteristic = context
         .read<DeviceController>()
         .characteristicMap[WRITECHARACTERISTICS];
-    // targetCharacteristic?.setNotifyValue(true);
-    stream = targetCharacteristic!.onValueReceived.listen(
-      (value) {
-        String data = String.fromCharCodes(value);
-        var dataArr = data.split(" ");
-        if (dataArr[0] == "L") {
-          var ax = double.parse(dataArr[2]);
-          var ay = double.parse(dataArr[3]);
-          var az = double.parse(dataArr[4]);
-          setState(() {
-            angle =
-                (((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az)) / 90) - 1) *
-                    -1;
-          });
-          if (_controller.isAnimating) {
-            angles.add(angle);
-          }
-          if (angle.abs() <= 0.65) {
-            if (!_controller.isAnimating && !isButtonEnabled) {
-              _controller.forward(from: 0);
-              _controller.addStatusListener((status) {
-                if (status == AnimationStatus.completed) {
-                  setState(() {
-                    isButtonEnabled = true;
-                  });
-                  _controller.stop();
-                }
-              });
+    if (targetCharacteristic != null) {
+      targetCharacteristic.setNotifyValue(true);
+      stream = targetCharacteristic.onValueReceived.listen(
+            (value) {
+          String data = String.fromCharCodes(value);
+          var dataArr = data.split(" ");
+          if (dataArr[0] == "L") {
+            var ax = double.parse(dataArr[2]);
+            var ay = double.parse(dataArr[3]);
+            var az = double.parse(dataArr[4]);
+            setState(() {
+              angle = 1 - (atan(ax / sqrt(ay * ay + az * az)) * (180 / pi) / -90);
+            });
+            if (_controller.isAnimating) {
+              angles.add(angle);
+            }
+            if (angle.abs() <= 0.65) {
+              if (!_controller.isAnimating && !isButtonEnabled) {
+                _controller.forward(from: 0);
+              }
             }
           }
-        }
-      },
-    );
+        },
+      );
+    }
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          isButtonEnabled = true;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    stream.cancel();
+    if (stream != null) {
+      stream.cancel();
+    }
     _controller.dispose();
     super.dispose();
   }
@@ -188,7 +190,7 @@ class _LeftLegUpState extends State<LeftLegUp>
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        AppColor.greenDarkColor, // Dark green color
+                    AppColor.greenDarkColor, // Dark green color
                     foregroundColor: Colors.white, // White text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // Slight curve
@@ -196,17 +198,17 @@ class _LeftLegUpState extends State<LeftLegUp>
                   ),
                   onPressed: isButtonEnabled
                       ? () {
-                          FirebaseDB.currentDb
-                              .collection("frs")
-                              .doc(testId)
-                              .update({"left_angles": angles});
-                          stream.cancel();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ReactionTime()),
-                          );
-                        }
+                    FirebaseDB.currentDb
+                        .collection("frs")
+                        .doc(testId)
+                        .update({"left_angles": angles});
+                    stream.cancel();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ReactionTime()),
+                    );
+                  }
                       : null,
                   child: const Text(
                     "Next",

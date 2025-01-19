@@ -36,8 +36,8 @@ class _RightLegUpState extends State<RightLegUp>
       vsync: this,
       duration: const Duration(seconds: 3),
     )..addListener(() {
-        setState(() {});
-      });
+      setState(() {});
+    });
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
@@ -47,44 +47,45 @@ class _RightLegUpState extends State<RightLegUp>
     BluetoothCharacteristic? targetCharacteristic = context
         .read<DeviceController>()
         .characteristicMap[WRITECHARACTERISTICS];
-    targetCharacteristic?.setNotifyValue(true);
-    stream = targetCharacteristic!.onValueReceived.listen(
-      (value) {
-        String data = String.fromCharCodes(value);
-        var dataArr = data.split(" ");
-        if (dataArr[0] == "R") {
-          var ax = double.parse(dataArr[2]);
-          var ay = double.parse(dataArr[3]);
-          var az = double.parse(dataArr[4]);
-          setState(() {
-            angle = 1 -
-                (((((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az))) / -90)));
-          });
-          if (_controller.isAnimating) {
-            angles.add(angle);
-          }
-          if (angle.abs() <= 0.65) {
-            if (!_controller.isAnimating && !isButtonEnabled) {
-              _controller.forward(from: 0);
-              _controller.addStatusListener((status) {
-                if (status == AnimationStatus.completed) {
-                  setState(() {
-                    isButtonEnabled = true;
-                  });
-                  _controller.stop();
-                }
-              });
+    if (targetCharacteristic != null) {
+      targetCharacteristic.setNotifyValue(true);
+      stream = targetCharacteristic.onValueReceived.listen(
+            (value) {
+          String data = String.fromCharCodes(value);
+          var dataArr = data.split(" ");
+          if (dataArr[0] == "R") {
+            var ax = double.parse(dataArr[2]);
+            var ay = double.parse(dataArr[3]);
+            var az = double.parse(dataArr[4]);
+            setState(() {
+              angle = 1 - (atan(ax / sqrt(ay * ay + az * az)) * (180 / pi) / -90);
+            });
+            if (_controller.isAnimating) {
+              angles.add(angle);
+            }
+            if (angle.abs() <= 0.65) {
+              if (!_controller.isAnimating && !isButtonEnabled) {
+                _controller.forward(from: 0);
+              }
             }
           }
-        }
-      },
-    );
+        },
+      );
+    }
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          isButtonEnabled = true;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     stream.cancel();
-    _controller.dispose();
+      _controller.dispose();
     super.dispose();
   }
 
@@ -93,7 +94,6 @@ class _RightLegUpState extends State<RightLegUp>
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
-          // widthFactor: 0., // Set the width to 80% of the total width
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -188,7 +188,7 @@ class _RightLegUpState extends State<RightLegUp>
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        AppColor.greenDarkColor, // Dark green color
+                    AppColor.greenDarkColor, // Dark green color
                     foregroundColor: Colors.white, // White text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // Slight curve
@@ -196,17 +196,17 @@ class _RightLegUpState extends State<RightLegUp>
                   ),
                   onPressed: isButtonEnabled
                       ? () {
-                          FirebaseDB.currentDb
-                              .collection("frs")
-                              .doc(testId)
-                              .update({"right_angles": angles});
-                          stream.cancel();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LeftLegUp()),
-                          );
-                        }
+                    FirebaseDB.currentDb
+                        .collection("frs")
+                        .doc(testId)
+                        .update({"right_angles": angles});
+                    stream.cancel();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LeftLegUp()),
+                    );
+                  }
                       : null,
                   child: const Text(
                     "Next",

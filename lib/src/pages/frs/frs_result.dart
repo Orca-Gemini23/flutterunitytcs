@@ -123,11 +123,14 @@ class _FrsResultState extends State<FrsResult> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          titleTextStyle: const TextStyle(color: Colors.greenAccent),
           title: const Text('FRS Results'),
           backgroundColor: AppColor.greenDarkColor,
           bottom: const TabBar(
+            labelColor: Colors.greenAccent,
+            unselectedLabelColor: Colors.white30,
             tabs: [
-              Tab(text: 'Leg Standing'),
+              Tab(text: 'Standing range of motion'),
               Tab(text: 'Reaction Time'),
             ],
           ),
