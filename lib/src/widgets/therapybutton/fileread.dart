@@ -93,8 +93,7 @@ class _StreamingStringScreenState extends State<StreamingStringScreen> {
     _streamController = StreamControllerClass._streamController;
     super.initState();
     DoStream.yes = false;
-    DeviceController deviceController =
-        Provider.of<DeviceController>(context, listen: false);
+    Provider.of<DeviceController>(context, listen: false);
     FileClass.initializeCommonName().then((_) {
       // deviceController.startStream();
       _scrollController = ScrollController();

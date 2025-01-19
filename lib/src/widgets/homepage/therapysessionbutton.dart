@@ -104,8 +104,10 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
   void therapyButtonOnPressed(DeviceController deviceController) async {
     Analytics.addClicks("TherapySessionButton", DateTime.timestamp());
     if (deviceController.connectedDevice == null) {
-      Fluttertoast.showToast(
-        msg: "Please Connect to the device first",
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please Connect to the device first'),
+        ),
       );
     } else {
       Navigator.pushNamed(
