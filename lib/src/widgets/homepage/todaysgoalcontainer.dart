@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:walk/src/constants/app_color.dart';
-import 'package:walk/src/server/api.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
 import 'package:walk/src/utils/global_variables.dart';
 
 class TodaysGoalBox extends StatefulWidget {
@@ -17,6 +18,20 @@ class TodaysGoalBox extends StatefulWidget {
 }
 
 class _TodaysGoalBoxState extends State<TodaysGoalBox> {
+  Future<bool> hasCompletedToday() async {
+    final today = DateTime.now();
+    final value = await FirebaseDB.currentDb
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.phoneNumber)
+        .get();
+    final gameHistoryData =
+        (value.data() as Map<String, dynamic>)["game_history"] as List<dynamic>;
+    return gameHistoryData.any((entry) =>
+        entry.date.year == today.year &&
+        entry.date.month == today.month &&
+        entry.date.day == today.day);
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -28,16 +43,15 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
         // );
       },
       child: Container(
-        ////Todays's goal Container
-
+        margin: const EdgeInsets.only(
+          top: 10,
+          bottom: 10,
+        ),
         padding: const EdgeInsets.only(
           top: 20,
           bottom: 20,
-          left: 10,
-          right: 10,
         ),
         width: double.maxFinite,
-        height: 158.h,
         decoration: BoxDecoration(
           color: AppColor.lightbluegrey,
           boxShadow: const [
@@ -54,7 +68,6 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
             Positioned(
               child: Image(
                 fit: BoxFit.contain,
-                width: 143.w,
                 height: 105.h,
                 image: const AssetImage(
                   "assets/images/re1.png",
@@ -73,75 +86,76 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                       color: AppColor.greenDarkColor,
                       fontFamily: 'Helvetica',
                       fontSize: 20.sp,
-                      // letterSpacing: 1,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Completed',
-                          style: TextStyle(
-                            color: AppColor.greenDarkColor,
-                            fontFamily: 'Helvetica',
-                            fontSize: 20.sp,
-                            // letterSpacing: 1,
-                            fontWeight: FontWeight.w700,
+                  FutureBuilder<bool>(
+                    future: hasCompletedToday(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasData && snapshot.data == true) {
+                        return Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Completed',
+                                style: TextStyle(
+                                  color: AppColor.greenDarkColor,
+                                  fontFamily: 'Helvetica',
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const WidgetSpan(
+                                child: SizedBox(
+                                  width: 5,
+                                ),
+                              ),
+                              WidgetSpan(
+                                child: Icon(
+                                  Icons.done,
+                                  color: AppColor.amberColor,
+                                  size: 20.sp,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        const WidgetSpan(
-                          child: SizedBox(
-                            width: 5,
+                        );
+                      } else {
+                        return Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Not Completed',
+                                style: TextStyle(
+                                  color: AppColor.greenDarkColor,
+                                  fontFamily: 'Helvetica',
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const WidgetSpan(
+                                child: SizedBox(
+                                  width: 5,
+                                ),
+                              ),
+                              WidgetSpan(
+                                child: Icon(
+                                  Icons.pending_actions_sharp,
+                                  color: AppColor.amberColor,
+                                  size: 20.sp,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.verified,
-                            color: AppColor.amberColor,
-                            size: 20.sp,
-                          ),
-                        ),
-                      ],
-                    ),
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  FutureBuilder(
-                      future: API.getScore(),
-                      builder: ((context, snapshot) {
-                        var gaitScore = snapshot.hasData
-                            ? (snapshot.data as Map)["data"]['Gait Score']
-                            : "";
-                        var balanceScore = snapshot.hasData
-                            ? (snapshot.data as Map)["data"]['Balance Score']
-                            : "";
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Gait Score : $gaitScore",
-                              style: TextStyle(
-                                color: AppColor.greenDarkColor,
-                                fontFamily: 'Helvetica',
-                                fontSize: 16.h,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            Text(
-                              "Balance Score : $balanceScore",
-                              style: TextStyle(
-                                color: AppColor.greenDarkColor,
-                                fontSize: 16.h,
-                                fontFamily: 'Helvetica',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            )
-                          ],
-                        );
-                      }))
                 ],
               ),
             ),

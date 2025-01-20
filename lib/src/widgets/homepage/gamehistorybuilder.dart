@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,27 +28,11 @@ class GameHistoryBuilderState extends State<GameHistoryBuilder> {
           if (snapshot.hasData) {
             if (snapshot.data?.data() == null) {
               return const Center(
-                child: Text("No data to show , please do a therapy sesssion"),
+                child: Text("No data to show , please do a therapy session"),
               );
             } else {
               return Stack(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.only(right: 8),
-                    alignment: Alignment.bottomRight,
-                    child: const Text(
-                      "x-axis : Date",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 8),
-                    alignment: Alignment.bottomLeft,
-                    child: const Text(
-                      "y-axis : Score",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
                   DetailChart(
                       historyData: gameHistoryFromJson(
                           jsonEncode(snapshot.data!.data()))),

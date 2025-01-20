@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:walk/src/constants/app_color.dart';
 
 class FrsResult extends StatefulWidget {
@@ -34,7 +34,8 @@ class _FrsResultState extends State<FrsResult> {
         var leftY = leftValue.cast<double>() as List<double>;
         var rightY = rightValue.cast<double>() as List<double>;
         var leftReactionTimeY = leftReactionTimeValue.cast<int>() as List<int>;
-        var rightReactionTimeY = rightReactionTimeValue.cast<int>() as List<int>;
+        var rightReactionTimeY =
+            rightReactionTimeValue.cast<int>() as List<int>;
         var leftSum = 0.0;
         var rightSum = 0.0;
         for (var i in leftY) {
@@ -68,7 +69,8 @@ class _FrsResultState extends State<FrsResult> {
     });
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _fetchFrsData() async {
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      _fetchFrsData() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     final querySnapshot = await FirebaseFirestore.instance
         .collection('frs')
@@ -79,8 +81,18 @@ class _FrsResultState extends State<FrsResult> {
 
   String getMonthName(int month) {
     const monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     return monthNames[month - 1];
   }
@@ -92,7 +104,7 @@ class _FrsResultState extends State<FrsResult> {
   Map<DateTime, double> _filterData(Map<DateTime, double> data) {
     return Map.fromEntries(
       data.entries.where((entry) =>
-      (selectedMonth == null || entry.key.month == selectedMonth) &&
+          (selectedMonth == null || entry.key.month == selectedMonth) &&
           (selectedYear == null || entry.key.year == selectedYear)),
     );
   }
@@ -100,20 +112,36 @@ class _FrsResultState extends State<FrsResult> {
   Map<DateTime, int> _filterReactionTimeData(Map<DateTime, int> data) {
     return Map.fromEntries(
       data.entries.where((entry) =>
-      (selectedMonth == null || entry.key.month == selectedMonth) &&
+          (selectedMonth == null || entry.key.month == selectedMonth) &&
           (selectedYear == null || entry.key.year == selectedYear)),
     );
   }
 
   double _getMinX() {
-    return selectedMonth != null ? 0 : 1;
+    return selectedMonth != null ? 1 : 1;
   }
 
   double _getMaxX() {
     return selectedMonth != null ? 31 : 12;
   }
+
   String getXAxisLabel() {
     return selectedMonth != null ? 'Day' : 'Month';
+  }
+
+  String getTrendText(Map<DateTime, dynamic> data) {
+    if (data.isEmpty) return 'No data available to determine trend.';
+    var sortedEntries = data.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    var firstValue = sortedEntries.first.value;
+    var lastValue = sortedEntries.last.value;
+    if (lastValue > firstValue) {
+      return 'The trend shows an improvement over time.';
+    } else if (lastValue < firstValue) {
+      return 'The trend shows a decline over time.';
+    } else {
+      return 'The trend shows no significant change over time.';
+    }
   }
 
   @override
@@ -123,12 +151,17 @@ class _FrsResultState extends State<FrsResult> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          shadowColor: Colors.greenAccent,
+          surfaceTintColor: Colors.greenAccent,
+          foregroundColor: Colors.greenAccent,
           titleTextStyle: const TextStyle(color: Colors.greenAccent),
           title: const Text('FRS Results'),
           backgroundColor: AppColor.greenDarkColor,
           bottom: const TabBar(
             labelColor: Colors.greenAccent,
             unselectedLabelColor: Colors.white30,
+            indicatorColor: Colors.greenAccent,
+            dividerColor: Colors.greenAccent,
             tabs: [
               Tab(text: 'Standing range of motion'),
               Tab(text: 'Reaction Time'),
@@ -198,7 +231,8 @@ class _FrsResultState extends State<FrsResult> {
                           children: [
                             const SizedBox(height: 20),
                             SizedBox(
-                              height: 400, // Set the desired height for the graph
+                              height:
+                                  400, // Set the desired height for the graph
                               child: LineChart(
                                 LineChartData(
                                   rangeAnnotations: RangeAnnotations(
@@ -212,14 +246,11 @@ class _FrsResultState extends State<FrsResult> {
                                         y1: 3,
                                         y2: 6,
                                         color: Colors.yellow.withOpacity(0.3),
-
-
                                       ),
                                       HorizontalRangeAnnotation(
                                         y1: 6,
                                         y2: 10,
                                         color: Colors.green.withOpacity(0.3),
-
                                       ),
                                     ],
                                   ),
@@ -229,7 +260,7 @@ class _FrsResultState extends State<FrsResult> {
                                   maxY: 10,
                                   titlesData: FlTitlesData(
                                     topTitles: const AxisTitles(
-                                      axisNameWidget: Text('Leg Standing'),
+                                      axisNameWidget: Text('Range Of motion'),
                                     ),
                                     rightTitles: const AxisTitles(),
                                     bottomTitles: AxisTitles(
@@ -257,27 +288,41 @@ class _FrsResultState extends State<FrsResult> {
                                       spots: _filterData(leftLegUpData)
                                           .entries
                                           .map((e) => FlSpot(
-                                          selectedMonth != null ? e.key.day.toDouble() : e.key.month.toDouble(),
-                                          e.value))
+                                              selectedMonth != null
+                                                  ? e.key.day.toDouble()
+                                                  : e.key.month.toDouble(),
+                                              e.value))
                                           .toList(),
                                       isCurved: true,
-                                      color: Colors.blue,
+                                      color: AppColor.greenColor,
                                       belowBarData: BarAreaData(),
                                     ),
                                     LineChartBarData(
                                       spots: _filterData(rightLegUpData)
                                           .entries
                                           .map((e) => FlSpot(
-                                          selectedMonth != null ? e.key.day.toDouble() : e.key.month.toDouble(),
-                                          e.value))
+                                              selectedMonth != null
+                                                  ? e.key.day.toDouble()
+                                                  : e.key.month.toDouble(),
+                                              e.value))
                                           .toList(),
                                       isCurved: true,
-                                      color: Colors.red,
+                                      color: AppColor.greenDarkColor,
                                       belowBarData: BarAreaData(),
                                     ),
                                   ],
                                 ),
                               ),
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              'This graph shows the range of motion for the left and right legs over time. The green areas indicate good range, yellow areas indicate moderate range, and red areas indicate poor range.',
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              getTrendText(_filterData(leftLegUpData)),
+                              textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 20),
                           ],
@@ -293,7 +338,8 @@ class _FrsResultState extends State<FrsResult> {
                           children: [
                             const SizedBox(height: 20),
                             SizedBox(
-                              height: 400, // Set the desired height for the graph
+                              height:
+                                  400, // Set the desired height for the graph
                               child: LineChart(
                                 LineChartData(
                                   minX: _getMinX(),
@@ -318,30 +364,47 @@ class _FrsResultState extends State<FrsResult> {
                                   ),
                                   lineBarsData: [
                                     LineChartBarData(
-                                      spots: _filterReactionTimeData(leftReactionTime)
+                                      spots: _filterReactionTimeData(
+                                              leftReactionTime)
                                           .entries
                                           .map((e) => FlSpot(
-                                          selectedMonth != null ? e.key.day.toDouble() : e.key.month.toDouble(),
-                                          e.value.toDouble()))
+                                              selectedMonth != null
+                                                  ? e.key.day.toDouble()
+                                                  : e.key.month.toDouble(),
+                                              e.value.toDouble()))
                                           .toList(),
                                       isCurved: true,
-                                      color: Colors.blue,
+                                      color: AppColor.greenColor,
                                       belowBarData: BarAreaData(),
                                     ),
                                     LineChartBarData(
-                                      spots: _filterReactionTimeData(rightReactionTime)
+                                      spots: _filterReactionTimeData(
+                                              rightReactionTime)
                                           .entries
                                           .map((e) => FlSpot(
-                                          selectedMonth != null ? e.key.day.toDouble() : e.key.month.toDouble(),
-                                          e.value.toDouble()))
+                                              selectedMonth != null
+                                                  ? e.key.day.toDouble()
+                                                  : e.key.month.toDouble(),
+                                              e.value.toDouble()))
                                           .toList(),
                                       isCurved: true,
-                                      color: Colors.red,
+                                      color: AppColor.greenDarkColor,
                                       belowBarData: BarAreaData(),
                                     ),
                                   ],
                                 ),
                               ),
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              'This graph shows the reaction times for the left and right legs over time. Lower values indicate faster reaction times.',
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              getTrendText(_filterReactionTimeData(
+                                  leftReactionTime.cast())),
+                              textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 20),
                           ],

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ import 'package:walk/src/utils/global_variables.dart';
 import 'package:walk/src/widgets/homepage/devicecontrolbutton.dart';
 import 'package:walk/src/widgets/homepage/gamehistorybuilder.dart';
 import 'package:walk/src/widgets/homepage/therapysessionbutton.dart';
+import 'package:walk/src/widgets/homepage/todaysgoalcontainer.dart';
 import 'package:walk/src/widgets/homepage/usernametext.dart';
 import 'package:walk/src/widgets/navigation_drawer.dart';
 
@@ -198,53 +200,78 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     height: 10,
                   ),
                   //button to take to frs test
-                  ElevatedButton(
-                    onPressed: () {
-                      if (context.read<DeviceController>().connectedDevice !=
-                          null) {
-                        Navigator.pushNamed(context, '/frs_test');
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please connect a device first.'),
+
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      // aspectRatio: 21 / 9,
+                      height: 200.0,
+                      viewportFraction: 0.9,
+
+                      // padEnds: false,
+
+                      enableInfiniteScroll: false,
+                      enlargeCenterPage: true,
+
+                      autoPlay: true,
+                    ),
+                    items: [
+                      TodaysGoalBox(goalBoxKey: keyGoalBox),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (context
+                                      .read<DeviceController>()
+                                      .connectedDevice !=
+                                  null) {
+                                Navigator.pushNamed(context, '/frs_test');
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Please connect a device first.'),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColor.greenDarkColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: const Text(
+                              "Take the test",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.greenDarkColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/frs_result');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColor.greenDarkColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: const Text(
+                              "View FRS Result",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    child: const Text(
-                      "Take the test",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
+                    ],
                   ),
-                  // const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/frs_result');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.greenDarkColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      "View FRS Result",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  // TodaysGoalBox(goalBoxKey: keyGoalBox),
                   const SizedBox(
                     height: 20,
                   ),
