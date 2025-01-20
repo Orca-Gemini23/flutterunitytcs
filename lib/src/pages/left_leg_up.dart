@@ -35,8 +35,8 @@ class _LeftLegUpState extends State<LeftLegUp>
       vsync: this,
       duration: const Duration(seconds: 3),
     )..addListener(() {
-      setState(() {});
-    });
+        setState(() {});
+      });
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
@@ -49,7 +49,7 @@ class _LeftLegUpState extends State<LeftLegUp>
     if (targetCharacteristic != null) {
       targetCharacteristic.setNotifyValue(true);
       stream = targetCharacteristic.onValueReceived.listen(
-            (value) {
+        (value) {
           String data = String.fromCharCodes(value);
           var dataArr = data.split(" ");
           if (dataArr[0] == "L") {
@@ -57,7 +57,8 @@ class _LeftLegUpState extends State<LeftLegUp>
             var ay = double.parse(dataArr[3]);
             var az = double.parse(dataArr[4]);
             setState(() {
-              angle = 1 - (atan(ax / sqrt(ay * ay + az * az)) * (180 / pi) / -90);
+              angle =
+                  1 - (atan(ax / sqrt(ay * ay + az * az)) * (180 / pi) / -90);
             });
             if (_controller.isAnimating) {
               angles.add(angle);
@@ -135,7 +136,7 @@ class _LeftLegUpState extends State<LeftLegUp>
                                   height: 50,
                                   child: CircularProgressIndicator(
                                     value: _controller.value,
-                                    backgroundColor: AppColor.greenDarkColor,
+                                    backgroundColor: AppColor.primary,
                                     valueColor: const AlwaysStoppedAnimation(
                                         AppColor.lightgreen),
                                   ),
@@ -156,7 +157,7 @@ class _LeftLegUpState extends State<LeftLegUp>
                           height: 75,
                           child: LinearProgressIndicator(
                             value: angle,
-                            backgroundColor: AppColor.greenDarkColor,
+                            backgroundColor: AppColor.primary,
                             valueColor: const AlwaysStoppedAnimation(
                                 AppColor.lightgreen),
                           ),
@@ -189,8 +190,7 @@ class _LeftLegUpState extends State<LeftLegUp>
                 height: 50, // Set the desired height
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    AppColor.greenDarkColor, // Dark green color
+                    backgroundColor: AppColor.primary, // Dark green color
                     foregroundColor: Colors.white, // White text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // Slight curve
@@ -198,17 +198,17 @@ class _LeftLegUpState extends State<LeftLegUp>
                   ),
                   onPressed: isButtonEnabled
                       ? () {
-                    FirebaseDB.currentDb
-                        .collection("frs")
-                        .doc(testId)
-                        .update({"left_angles": angles});
-                    stream.cancel();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ReactionTime()),
-                    );
-                  }
+                          FirebaseDB.currentDb
+                              .collection("frs")
+                              .doc(testId)
+                              .update({"left_angles": angles});
+                          stream.cancel();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ReactionTime()),
+                          );
+                        }
                       : null,
                   child: const Text(
                     "Next",

@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -170,8 +170,7 @@ class _ReportListState extends State<ReportList> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                colorScheme:
-                    ColorScheme.fromSeed(seedColor: AppColor.greenDarkColor),
+                colorScheme: ColorScheme.fromSeed(seedColor: AppColor.primary),
               ),
               child: child!,
             ),
@@ -232,12 +231,12 @@ class _ReportListState extends State<ReportList> {
           ),
         ),
         centerTitle: false,
-        backgroundColor: AppColor.greenDarkColor,
+        backgroundColor: AppColor.primary,
         elevation: 0,
       ),
       body: firstLoad
           ? const Center(
-              child: CircularProgressIndicator(color: AppColor.greenDarkColor))
+              child: CircularProgressIndicator(color: AppColor.primary))
           : _files.isEmpty
               ? const Center(child: Text("Not enough data to generate reports"))
               : Column(
@@ -254,9 +253,9 @@ class _ReportListState extends State<ReportList> {
                             });
                           },
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColor.greenDarkColor,
+                            foregroundColor: AppColor.primary,
                             side: const BorderSide(
-                              color: AppColor.greenDarkColor,
+                              color: AppColor.primary,
                             ),
                           ),
                           child: const Row(
@@ -296,11 +295,11 @@ class _ReportListState extends State<ReportList> {
                             });
                           },
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColor.greenDarkColor,
+                            foregroundColor: AppColor.primary,
                             backgroundColor:
                                 isSort ? const Color(0x40005748) : Colors.white,
                             side: const BorderSide(
-                              color: AppColor.greenDarkColor,
+                              color: AppColor.primary,
                             ),
                           ),
                           child: const Row(
@@ -308,12 +307,12 @@ class _ReportListState extends State<ReportList> {
                               Text(
                                 "Sort",
                                 style: TextStyle(
-                                    color: AppColor.greenDarkColor,
+                                    color: AppColor.primary,
                                     fontFamily: "Helvetica"),
                               ),
                               SizedBox(width: 10),
                               Icon(Icons.swap_vert_sharp,
-                                  color: AppColor.greenDarkColor),
+                                  color: AppColor.primary),
                             ],
                           ),
                         ),
@@ -477,11 +476,12 @@ class _ReportListState extends State<ReportList> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               12.0),
-                                                      child: LoadingAnimationWidget
-                                                          .inkDrop(
-                                                              color: AppColor
-                                                                  .greenDarkColor,
-                                                              size: 20),
+                                                      child:
+                                                          LoadingAnimationWidget
+                                                              .inkDrop(
+                                                                  color: AppColor
+                                                                      .primary,
+                                                                  size: 20),
                                                     )
                                                   : IconButton(
                                                       onPressed: () async {
@@ -514,11 +514,12 @@ class _ReportListState extends State<ReportList> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               12.0),
-                                                      child: LoadingAnimationWidget
-                                                          .inkDrop(
-                                                              color: AppColor
-                                                                  .greenDarkColor,
-                                                              size: 20),
+                                                      child:
+                                                          LoadingAnimationWidget
+                                                              .inkDrop(
+                                                                  color: AppColor
+                                                                      .primary,
+                                                                  size: 20),
                                                     ),
                                           IconButton(
                                             onPressed: () async {

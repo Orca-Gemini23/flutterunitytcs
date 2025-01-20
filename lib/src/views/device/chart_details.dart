@@ -33,14 +33,14 @@ class _DetailChartState extends State<DetailChart> {
             title: AxisTitle(
                 text: 'Date', textStyle: const TextStyle(fontSize: 12)),
             isVisible: true,
-            axisLine: const AxisLine(color: AppColor.greenDarkColor, width: 2),
+            axisLine: const AxisLine(color: AppColor.primary, width: 2),
             majorGridLines: const MajorGridLines(width: 0),
           ),
           primaryYAxis: NumericAxis(
             title: AxisTitle(
                 text: 'Score', textStyle: const TextStyle(fontSize: 12)),
             isVisible: true,
-            axisLine: const AxisLine(color: AppColor.greenDarkColor, width: 2),
+            axisLine: const AxisLine(color: AppColor.primary, width: 2),
             majorGridLines: const MajorGridLines(width: 0),
           ),
           tooltipBehavior: TooltipBehavior(
@@ -60,13 +60,14 @@ class _DetailChartState extends State<DetailChart> {
               xAxisName: "Date",
               yAxisName: "Score",
               name: 'Score',
+              color: AppColor.secondary,
               markerSettings: const MarkerSettings(
                   isVisible: true,
                   height: 1,
                   width: 1,
                   shape: DataMarkerType.circle,
                   borderWidth: 2,
-                  borderColor: AppColor.greenDarkColor),
+                  borderColor: AppColor.primary),
             ),
           ],
         ));

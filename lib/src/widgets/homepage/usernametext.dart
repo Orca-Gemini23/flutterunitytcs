@@ -31,7 +31,7 @@ class UsernameText extends StatelessWidget {
               const TextSpan(
                 text: 'Hello, ',
                 style: TextStyle(
-                  color: AppColor.greenDarkColor,
+                  color: AppColor.primary,
                 ),
               ),
               TextSpan(
@@ -47,7 +47,7 @@ class UsernameText extends StatelessWidget {
                             .get(0, defaultValue: LocalDB.defaultUser)!
                             .name,
                 style: const TextStyle(
-                  color: AppColor.gameEntryTileColor,
+                  color: AppColor.secondary,
                 ),
               ),
             ],
@@ -98,7 +98,7 @@ class _UserNameImageState extends State<UserNameImage> {
                   : FileImage(
                       File(ImagePath.path),
                     ) as ImageProvider<Object>,
-              backgroundColor: AppColor.greenDarkColor,
+              backgroundColor: AppColor.primary,
             ),
           );
         });

@@ -66,7 +66,7 @@ Widget tutorialCard(int index) {
             imageNames[index],
             overflow: TextOverflow.clip,
             style: TextStyle(
-                color: AppColor.greenDarkColor,
+                color: AppColor.primary,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500),
           ),
@@ -101,7 +101,7 @@ Widget lastTutorialCard() {
           Text(
             "Sensory Cueing",
             style: TextStyle(
-              color: AppColor.greenDarkColor,
+              color: AppColor.primary,
               fontSize: 16.sp,
             ),
           ),
@@ -141,7 +141,7 @@ Widget lastTutorialCard() {
           Text(
             "Focus on vibration \nwhile moving",
             style: TextStyle(
-              color: AppColor.greenDarkColor,
+              color: AppColor.primary,
               fontSize: 16.sp,
             ),
           ),
@@ -181,7 +181,7 @@ Widget lastTutorialCard() {
           Text(
             "2 hours a day",
             style: TextStyle(
-              color: AppColor.greenDarkColor,
+              color: AppColor.primary,
               fontSize: 16.sp,
             ),
           ),

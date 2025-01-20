@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   Text(
                     "How are you feeling today?",
                     style: TextStyle(
-                        color: AppColor.greenDarkColor,
+                        color: AppColor.primary,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w400),
                   ),
@@ -236,7 +236,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColor.greenDarkColor,
+                              backgroundColor: AppColor.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               Navigator.pushNamed(context, '/frs_result');
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColor.greenDarkColor,
+                              backgroundColor: AppColor.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),

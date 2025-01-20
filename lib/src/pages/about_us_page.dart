@@ -53,20 +53,20 @@ class AboutUsPage extends StatelessWidget {
                         // letterSpacing: 4,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Helvetica",
-                        color: AppColor.greenDarkColor,
+                        color: AppColor.primary,
                       ),
                     ),
                     const SizedBox(width: 10),
                     Container(
                       height: 40.h,
                       padding: const EdgeInsets.all(0.5),
-                      color: AppColor.greenDarkColor,
+                      color: AppColor.primary,
                     ),
                     const SizedBox(width: 10),
                     Text(
                       "Lifespark\nTechnologies",
                       style: TextStyle(
-                          color: AppColor.greenDarkColor,
+                          color: AppColor.primary,
                           fontSize: 18.h,
                           fontFamily: "Helvetica",
                           fontWeight: FontWeight.w500),

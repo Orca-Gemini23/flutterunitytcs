@@ -97,7 +97,7 @@ class _TutorialPageState extends State<TutorialPage> {
                               color: (Theme.of(context).brightness ==
                                           Brightness.dark
                                       ? Colors.white
-                                      : AppColor.greenDarkColor)
+                                      : AppColor.primary)
                                   .withOpacity(
                                 _current == index ? 0.9 : 0.4,
                               ),
@@ -131,7 +131,7 @@ class _TutorialPageState extends State<TutorialPage> {
                     },
                     child: const Text(
                       "Next",
-                      style: TextStyle(color: AppColor.greenDarkColor),
+                      style: TextStyle(color: AppColor.primary),
                     ),
                   ),
                 ),

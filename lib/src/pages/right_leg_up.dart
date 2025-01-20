@@ -36,8 +36,8 @@ class _RightLegUpState extends State<RightLegUp>
       vsync: this,
       duration: const Duration(seconds: 3),
     )..addListener(() {
-      setState(() {});
-    });
+        setState(() {});
+      });
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
@@ -50,7 +50,7 @@ class _RightLegUpState extends State<RightLegUp>
     if (targetCharacteristic != null) {
       targetCharacteristic.setNotifyValue(true);
       stream = targetCharacteristic.onValueReceived.listen(
-            (value) {
+        (value) {
           String data = String.fromCharCodes(value);
           var dataArr = data.split(" ");
           if (dataArr[0] == "R") {
@@ -58,7 +58,8 @@ class _RightLegUpState extends State<RightLegUp>
             var ay = double.parse(dataArr[3]);
             var az = double.parse(dataArr[4]);
             setState(() {
-              angle = 1 - (atan(ax / sqrt(ay * ay + az * az)) * (180 / pi) / -90);
+              angle =
+                  1 - (atan(ax / sqrt(ay * ay + az * az)) * (180 / pi) / -90);
             });
             if (_controller.isAnimating) {
               angles.add(angle);
@@ -85,7 +86,7 @@ class _RightLegUpState extends State<RightLegUp>
   @override
   void dispose() {
     stream.cancel();
-      _controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -133,7 +134,7 @@ class _RightLegUpState extends State<RightLegUp>
                                   height: 50,
                                   child: CircularProgressIndicator(
                                     value: _controller.value,
-                                    backgroundColor: AppColor.greenDarkColor,
+                                    backgroundColor: AppColor.primary,
                                     valueColor: const AlwaysStoppedAnimation(
                                         AppColor.lightgreen),
                                   ),
@@ -154,7 +155,7 @@ class _RightLegUpState extends State<RightLegUp>
                           height: 75,
                           child: LinearProgressIndicator(
                             value: angle,
-                            backgroundColor: AppColor.greenDarkColor,
+                            backgroundColor: AppColor.primary,
                             valueColor: const AlwaysStoppedAnimation(
                                 AppColor.lightgreen),
                           ),
@@ -187,8 +188,7 @@ class _RightLegUpState extends State<RightLegUp>
                 height: 50, // Set the desired height
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    AppColor.greenDarkColor, // Dark green color
+                    backgroundColor: AppColor.primary, // Dark green color
                     foregroundColor: Colors.white, // White text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // Slight curve
@@ -196,17 +196,17 @@ class _RightLegUpState extends State<RightLegUp>
                   ),
                   onPressed: isButtonEnabled
                       ? () {
-                    FirebaseDB.currentDb
-                        .collection("frs")
-                        .doc(testId)
-                        .update({"right_angles": angles});
-                    stream.cancel();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LeftLegUp()),
-                    );
-                  }
+                          FirebaseDB.currentDb
+                              .collection("frs")
+                              .doc(testId)
+                              .update({"right_angles": angles});
+                          stream.cancel();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LeftLegUp()),
+                          );
+                        }
                       : null,
                   child: const Text(
                     "Next",

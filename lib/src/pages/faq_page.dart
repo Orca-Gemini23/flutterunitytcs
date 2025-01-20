@@ -53,7 +53,7 @@ class _FaqpageState extends State<Faqpage> {
                 "Frequently Asked Questions",
                 style: TextStyle(
                   fontSize: DeviceSize.isTablet ? 28.h : 21.sp,
-                  color: AppColor.greenDarkColor,
+                  color: AppColor.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),

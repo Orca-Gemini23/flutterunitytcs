@@ -141,7 +141,7 @@ class _StreamingStringScreenState extends State<StreamingStringScreen> {
           ),
         ),
         centerTitle: false,
-        backgroundColor: AppColor.greenDarkColor,
+        backgroundColor: AppColor.primary,
         elevation: 0,
       ),
       body: StreamBuilder<String>(
@@ -179,7 +179,7 @@ class _StreamingStringScreenState extends State<StreamingStringScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColor.greenDarkColor,
+        backgroundColor: AppColor.primary,
         child: Text(DoStream.yes ? "Stop" : "Start"),
         onPressed: () async {
           if (DoStream.yes) {

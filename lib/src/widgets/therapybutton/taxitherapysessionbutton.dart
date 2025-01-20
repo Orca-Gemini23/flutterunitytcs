@@ -23,7 +23,7 @@ class _TaxiTherapySessionBtnState extends State<TaxiTherapySessionBtn> {
       builder: (context, deviceController, widget) {
         return InkWell(
           highlightColor: Colors.transparent,
-          splashColor: AppColor.greenDarkColor,
+          splashColor: AppColor.primary,
           onHighlightChanged: (value) {
             deviceController.connectedDevice == null
                 ? null
@@ -56,7 +56,7 @@ class _TaxiTherapySessionBtnState extends State<TaxiTherapySessionBtn> {
                 ],
                 color: deviceController.connectedDevice == null
                     ? AppColor.greyLight
-                    : AppColor.gameEntryTileColor,
+                    : AppColor.secondary,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(

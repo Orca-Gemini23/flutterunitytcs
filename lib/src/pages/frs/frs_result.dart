@@ -151,17 +151,17 @@ class _FrsResultState extends State<FrsResult> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          shadowColor: Colors.greenAccent,
-          surfaceTintColor: Colors.greenAccent,
-          foregroundColor: Colors.greenAccent,
-          titleTextStyle: const TextStyle(color: Colors.greenAccent),
+          shadowColor: AppColor.secondary,
+          surfaceTintColor: AppColor.secondary,
+          foregroundColor: AppColor.secondary,
+          titleTextStyle: const TextStyle(color: AppColor.secondary),
           title: const Text('FRS Results'),
-          backgroundColor: AppColor.greenDarkColor,
+          backgroundColor: AppColor.primary,
           bottom: const TabBar(
-            labelColor: Colors.greenAccent,
+            labelColor: AppColor.secondary,
             unselectedLabelColor: Colors.white30,
-            indicatorColor: Colors.greenAccent,
-            dividerColor: Colors.greenAccent,
+            indicatorColor: AppColor.secondary,
+            dividerColor: AppColor.secondary,
             tabs: [
               Tab(text: 'Standing range of motion'),
               Tab(text: 'Reaction Time'),
@@ -294,7 +294,7 @@ class _FrsResultState extends State<FrsResult> {
                                               e.value))
                                           .toList(),
                                       isCurved: true,
-                                      color: AppColor.greenColor,
+                                      color: AppColor.secondary,
                                       belowBarData: BarAreaData(),
                                     ),
                                     LineChartBarData(
@@ -307,7 +307,7 @@ class _FrsResultState extends State<FrsResult> {
                                               e.value))
                                           .toList(),
                                       isCurved: true,
-                                      color: AppColor.greenDarkColor,
+                                      color: AppColor.primary,
                                       belowBarData: BarAreaData(),
                                     ),
                                   ],
@@ -374,7 +374,7 @@ class _FrsResultState extends State<FrsResult> {
                                               e.value.toDouble()))
                                           .toList(),
                                       isCurved: true,
-                                      color: AppColor.greenColor,
+                                      color: AppColor.secondary,
                                       belowBarData: BarAreaData(),
                                     ),
                                     LineChartBarData(
@@ -388,7 +388,7 @@ class _FrsResultState extends State<FrsResult> {
                                               e.value.toDouble()))
                                           .toList(),
                                       isCurved: true,
-                                      color: AppColor.greenDarkColor,
+                                      color: AppColor.primary,
                                       belowBarData: BarAreaData(),
                                     ),
                                   ],

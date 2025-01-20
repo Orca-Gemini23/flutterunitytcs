@@ -56,7 +56,7 @@ class _AccountPageState extends State<AccountPage> {
 
   final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
     disabledBackgroundColor: Colors.grey,
-    backgroundColor: AppColor.greenDarkColor,
+    backgroundColor: AppColor.primary,
     minimumSize: Size(double.maxFinite, DeviceSize.isTablet ? 90 : 60),
     padding: const EdgeInsets.symmetric(horizontal: 16),
     shape: RoundedRectangleBorder(

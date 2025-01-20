@@ -54,8 +54,7 @@ class FrsTest extends StatelessWidget {
                   height: 50, // Set the desired height
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          AppColor.greenDarkColor, // Dark green color
+                      backgroundColor: AppColor.primary, // Dark green color
                       foregroundColor: Colors.white, // White text color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5), // Slight curve
@@ -112,7 +111,7 @@ class EnsureDevice extends StatelessWidget {
               height: 50, // Set the desired height
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColor.greenDarkColor, // Dark green color
+                  backgroundColor: AppColor.primary, // Dark green color
                   foregroundColor: Colors.white, // White text color
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5), // Slight curve
@@ -167,7 +166,7 @@ class StandingWithDevice extends StatelessWidget {
               height: 50, // Set the desired height
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColor.greenDarkColor, // Dark green color
+                  backgroundColor: AppColor.primary, // Dark green color
                   foregroundColor: Colors.white, // White text color
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5), // Slight curve

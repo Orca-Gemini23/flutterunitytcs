@@ -48,8 +48,7 @@ class _ReactionTimeState extends State<ReactionTime> {
                   height: 50, // Set the desired height
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          AppColor.greenDarkColor, // Dark green color
+                      backgroundColor: AppColor.primary, // Dark green color
                       foregroundColor: Colors.white, // White text color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5), // Slight curve
@@ -152,8 +151,7 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                   height: 50, // Set the desired height
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          AppColor.greenDarkColor, // Dark green color
+                      backgroundColor: AppColor.primary, // Dark green color
                       foregroundColor: Colors.white, // White text color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5), // Slight curve

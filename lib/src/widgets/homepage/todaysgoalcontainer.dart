@@ -83,7 +83,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                   Text(
                     "Today's Goal",
                     style: TextStyle(
-                      color: AppColor.greenDarkColor,
+                      color: AppColor.primary,
                       fontFamily: 'Helvetica',
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
@@ -101,7 +101,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                               TextSpan(
                                 text: 'Completed',
                                 style: TextStyle(
-                                  color: AppColor.greenDarkColor,
+                                  color: AppColor.primary,
                                   fontFamily: 'Helvetica',
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w500,
@@ -129,7 +129,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                               TextSpan(
                                 text: 'Not Completed',
                                 style: TextStyle(
-                                  color: AppColor.greenDarkColor,
+                                  color: AppColor.primary,
                                   fontFamily: 'Helvetica',
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w500,
