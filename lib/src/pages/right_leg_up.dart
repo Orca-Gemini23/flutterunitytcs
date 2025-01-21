@@ -32,6 +32,9 @@ class _RightLegUpState extends State<RightLegUp>
   @override
   void initState() {
     super.initState();
+    context
+        .read<DeviceController>()
+        .sendToDevice("beepc 5;", WRITECHARACTERISTICS);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
@@ -41,9 +44,6 @@ class _RightLegUpState extends State<RightLegUp>
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
-    context
-        .read<DeviceController>()
-        .sendToDevice("mode 9;", WRITECHARACTERISTICS);
     BluetoothCharacteristic? targetCharacteristic = context
         .read<DeviceController>()
         .characteristicMap[WRITECHARACTERISTICS];
@@ -93,6 +93,17 @@ class _RightLegUpState extends State<RightLegUp>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              //pop until /home
+              Navigator.popUntil(context, ModalRoute.withName('/home'));
+            },
+          )
+        ],
+      ),
       body: Center(
         child: FractionallySizedBox(
           child: Column(
@@ -126,25 +137,27 @@ class _RightLegUpState extends State<RightLegUp>
                                   'assets/images/right_leg_indicator.png'),
                             ),
                             const SizedBox(height: 10),
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator(
-                                    value: _controller.value,
-                                    backgroundColor: AppColor.primary,
-                                    valueColor: const AlwaysStoppedAnimation(
-                                        AppColor.lightgreen),
+                            if (_controller
+                                .isAnimating) // Show only if animating
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator(
+                                      value: _controller.value,
+                                      backgroundColor: AppColor.primary,
+                                      valueColor: const AlwaysStoppedAnimation(
+                                          AppColor.lightgreen),
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  _animation.value.toInt().toString(),
-                                  style: const TextStyle(fontSize: 22),
-                                ),
-                              ],
-                            ),
+                                  Text(
+                                    _animation.value.toInt().toString(),
+                                    style: const TextStyle(fontSize: 22),
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
                       ),

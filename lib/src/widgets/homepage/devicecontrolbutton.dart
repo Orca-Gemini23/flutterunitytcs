@@ -88,7 +88,9 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
                 // ),
               ),
               Text(
-                "Device Control",
+                deviceController?.connectedDevice == null
+                    ? "Connect Device"
+                    : "Device Control",
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 style: TextStyle(
@@ -98,7 +100,7 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
-              ),
+              )
             ],
           ),
         ),

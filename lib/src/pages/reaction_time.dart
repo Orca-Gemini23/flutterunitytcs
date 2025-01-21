@@ -99,9 +99,9 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<DeviceController>()
-        .sendToDevice("mode 9;", WRITECHARACTERISTICS);
+    // context
+    //     .read<DeviceController>()
+    //     .sendToDevice("mode 9;", WRITECHARACTERISTICS);
     BluetoothCharacteristic? targetCharacteristic = context
         .read<DeviceController>()
         .characteristicMap[WRITECHARACTERISTICS];
@@ -125,6 +125,28 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FrsResult(),
+                  ),
+                  ModalRoute.withName('/home'),
+                );
+              },
+              child: const Text(
+                "Skip",
+                style: TextStyle(
+                  // color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
         body: Center(
           child: FractionallySizedBox(
             widthFactor: 0.7, // Set the width to 80% of the total width
@@ -178,8 +200,13 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                                     "beeps 5;", WRITECHARACTERISTICS);
                                 await Future.delayed(
                                     const Duration(milliseconds: 20));
+                                var delay = 0;
                                 while (left_magnitude <=
                                     initialLeftMagnitude + 50) {
+                                  delay += 10;
+                                  if (delay > 3000) {
+                                    break;
+                                  }
                                   await Future.delayed(
                                       const Duration(milliseconds: 10));
                                 }
@@ -195,8 +222,13 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                                     "beepc 5;", WRITECHARACTERISTICS);
                                 await Future.delayed(
                                     const Duration(milliseconds: 20));
+                                var delay = 0;
                                 while (right_magnitude <=
                                     initialRightMagnitude + 50) {
+                                  delay += 10;
+                                  if (delay > 3000) {
+                                    break;
+                                  }
                                   await Future.delayed(
                                       const Duration(milliseconds: 10));
                                 }
