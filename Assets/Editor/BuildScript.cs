@@ -17,7 +17,7 @@ public static class BuildScript
     {
         ProcessStartInfo processStartInfo = new ProcessStartInfo
         {
-            FileName = "flutter", // Ensure Flutter is in PATH or provide full path
+            FileName = "flutter", 
             Arguments = arguments,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -35,6 +35,9 @@ public static class BuildScript
             string error = process.StandardError.ReadToEnd();
 
             process.WaitForExit();
+            
+            UnityEngine.Debug.Log("This is a Unity debug log.");
+            System.Diagnostics.Debug.WriteLine("This is a system diagnostics debug log.");
         }
     }
 }
