@@ -28,20 +28,18 @@ class _DetailChartState extends State<DetailChart> {
         ),
         padding: const EdgeInsets.all(10),
         child: SfCartesianChart(
-          title: ChartTitle(text: 'Game History'),
-          primaryXAxis: DateTimeAxis(
-            title: AxisTitle(
-                text: 'Date', textStyle: const TextStyle(fontSize: 12)),
+          title: const ChartTitle(text: 'Game History'),
+          primaryXAxis: const DateTimeAxis(
+            title: AxisTitle(text: 'Date', textStyle: TextStyle(fontSize: 12)),
             isVisible: true,
-            axisLine: const AxisLine(color: AppColor.primary, width: 2),
-            majorGridLines: const MajorGridLines(width: 0),
+            axisLine: AxisLine(color: AppColor.primary, width: 2),
+            majorGridLines: MajorGridLines(width: 0),
           ),
-          primaryYAxis: NumericAxis(
-            title: AxisTitle(
-                text: 'Score', textStyle: const TextStyle(fontSize: 12)),
+          primaryYAxis: const NumericAxis(
+            title: AxisTitle(text: 'Score', textStyle: TextStyle(fontSize: 12)),
             isVisible: true,
-            axisLine: const AxisLine(color: AppColor.primary, width: 2),
-            majorGridLines: const MajorGridLines(width: 0),
+            axisLine: AxisLine(color: AppColor.primary, width: 2),
+            majorGridLines: MajorGridLines(width: 0),
           ),
           tooltipBehavior: TooltipBehavior(
             enable: true,

@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
@@ -95,8 +94,10 @@ class _AnglesDisplayBtnState extends State<AnglesDisplayBtn> {
 
   void therapyButtonOnPressed(DeviceController deviceController) async {
     if (deviceController.connectedDevice == null) {
-      Fluttertoast.showToast(
-        msg: "Please Connect to the device first",
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please Connect to the device first"),
+        ),
       );
     } else {
       Navigator.push(

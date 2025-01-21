@@ -5,7 +5,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
@@ -298,7 +297,9 @@ class _OTPPageState extends State<OTPPage> {
                           }
                         }
                       } on FirebaseAuthException catch (e) {
-                        Fluttertoast.showToast(msg: e.code);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.code)),
+                        );
                         setState(() {
                           _otpController.clear();
                           flag = false;
