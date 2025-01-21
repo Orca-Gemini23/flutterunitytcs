@@ -12,7 +12,7 @@ public static class SweetShellHelper
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = fileName,
+                FileName = fileName,    
                 Arguments = $"\"{escapedArgs}\"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -47,6 +47,6 @@ public static class SweetShellHelper
             source.SetException(e);
         }
 
-        return source.Task;
+        return source.Task; 
     }
 }
