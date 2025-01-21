@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "205623995747",
+    "project_id": "walk-90dbf",
+    "storage_bucket": "walk-90dbf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205623995747:android:5360479e17b33abfbeb756",
+        "android_client_info": {
+          "package_name": "com.lifesparktech.walk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "205623995747-09n68mf2qm883ufacabk4f0b38unpoem.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lifesparktech.walk",
+            "certificate_hash": "9abda500db1bcd0fd4e4fac2579637e7550aaf22"
+          }
+        },
+        {
+          "client_id": "205623995747-es3o3ih3cuplq4sb6j69kh5pirftkku7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lifesparktech.walk",
+            "certificate_hash": "28189657d4d5db3d0227d07817823343b8626b1d"
+          }
+        },
+        {
+          "client_id": "205623995747-g7c54p9sholarddfg9gp415t58jidk9n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lifesparktech.walk",
+            "certificate_hash": "6a95ed8aef9183b1233accf71987f17374a0c1ab"
+          }
+        },
+        {
+          "client_id": "205623995747-qckuo6v04dqrn0fed848ii40vfvji3t7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lifesparktech.walk",
+            "certificate_hash": "8e7d813eed493346d2b49677f48ca34c23864499"
+          }
+        },
+        {
+          "client_id": "205623995747-uitk8mr65kkviljp1iuihhln8111c5fe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lifesparktech.walk",
+            "certificate_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+          }
+        },
+        {
+          "client_id": "205623995747-ib7vadhl2jpp3nrnechclq0vru6fpeqf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYqTEo8sY4eEUJdOzl-zl3hDZNN01FXaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "205623995747-1ogj5dvnqsuj0tm5kfem0hpbulq78r3m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "205623995747-hgcurg1hm7q7cthj36be156u4pi6510m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.lifesparktech.walk"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

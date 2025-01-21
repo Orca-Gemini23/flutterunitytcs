@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:walk/src/constants/app_color.dart';
+class CustomWeekDayCircularIndicator extends StatefulWidget {
+  const CustomWeekDayCircularIndicator({super.key});
+
+  @override
+  State<CustomWeekDayCircularIndicator> createState() =>
+      _CustomWeekDayCircularIndicatorState();
+}
+
+class _CustomWeekDayCircularIndicatorState
+    extends State<CustomWeekDayCircularIndicator> {
+  final Map<int, String> weekDayMap = {
+    0: "Mon",
+    1: "Tue",
+    2: "Wed",
+    3: "Thu",
+    4: "Fri",
+    5: "Sat",
+    6: "Sun"
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      scrollDirection: Axis.horizontal,
+      itemCount: 7,
+      itemBuilder: (context, index) {
+        return Container(
+          width: 40.h,
+          height: 40.w,
+          decoration: BoxDecoration(
+            color: AppColor.whiteColor,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: AppColor.black12,
+              width: 2,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              weekDayMap[index]!,
+              style: TextStyle(
+                color: AppColor.blackColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 12.sp,
+              ),
+            ),
+          ),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          width: 14.w,
+        );
+      },
+    );
+  }
+}
