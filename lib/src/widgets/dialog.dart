@@ -22,7 +22,7 @@ class CustomDialogs {
         );
       },
       btnOkText: "Take me to home",
-      btnOkColor: AppColor.greenDarkColor,
+      btnOkColor: AppColor.primary,
     ).show();
   }
 
@@ -32,10 +32,10 @@ class CustomDialogs {
       title: "Uploading you scores",
       desc: "Please wait while we upload your data to cloud .",
       customHeader: const CircularProgressIndicator(
-        color: AppColor.greenDarkColor,
+        color: AppColor.primary,
         backgroundColor: Colors.white,
       ),
-      borderSide: const BorderSide(color: AppColor.greenDarkColor, width: 4),
+      borderSide: const BorderSide(color: AppColor.primary, width: 4),
       dismissOnBackKeyPress: false,
       dismissOnTouchOutside: false,
     ).show();

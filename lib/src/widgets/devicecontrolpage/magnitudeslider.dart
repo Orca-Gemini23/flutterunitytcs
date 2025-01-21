@@ -13,12 +13,12 @@ Widget magSlider(bool isClient, DeviceController controller) {
       thumbShape: RoundSliderThumbShape(
           enabledThumbRadius: DeviceSize.isTablet ? 18 : 10),
       trackHeight: DeviceSize.isTablet ? 16 : 8,
-      activeTrackColor: AppColor.greenDarkColor,
+      activeTrackColor: AppColor.primary,
       thumbColor: isClient
           ? (controller.magCValue < 0 || !controller.bandC)
               ? Colors.grey
-              : AppColor.greenDarkColor
-          : AppColor.greenDarkColor,
+              : AppColor.primary
+          : AppColor.primary,
     ),
     child: Slider(
         //MAGNITUDE SLIDER

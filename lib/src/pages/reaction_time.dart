@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
 import 'package:walk/src/controllers/device_controller.dart';
+import 'package:walk/src/pages/frs/frs_result.dart';
+import 'package:walk/src/utils/firebase/firebase_db.dart';
+import 'package:walk/src/utils/global_variables.dart';
 
 class ReactionTime extends StatefulWidget {
   const ReactionTime({super.key});
@@ -45,8 +48,7 @@ class _ReactionTimeState extends State<ReactionTime> {
                   height: 50, // Set the desired height
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                      AppColor.greenDarkColor, // Dark green color
+                      backgroundColor: AppColor.primary, // Dark green color
                       foregroundColor: Colors.white, // White text color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5), // Slight curve
@@ -57,7 +59,7 @@ class _ReactionTimeState extends State<ReactionTime> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                            const ReactionTimeVibration()),
+                                const ReactionTimeVibration()),
                       );
                     },
                     child: const Text(
@@ -88,15 +90,18 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
   double left_magnitude = 0.0;
   bool isButtonDisabled = false;
 
+  List<int> left = [];
+  List<int> right = [];
+
   String beepsTime = '';
   String beepcTime = '';
 
   @override
   void initState() {
     super.initState();
-    context
-        .read<DeviceController>()
-        .sendToDevice("mode 9;", WRITECHARACTERISTICS);
+    // context
+    //     .read<DeviceController>()
+    //     .sendToDevice("mode 9;", WRITECHARACTERISTICS);
     BluetoothCharacteristic? targetCharacteristic = context
         .read<DeviceController>()
         .characteristicMap[WRITECHARACTERISTICS];
@@ -120,6 +125,28 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FrsResult(),
+                  ),
+                  ModalRoute.withName('/home'),
+                );
+              },
+              child: const Text(
+                "Skip",
+                style: TextStyle(
+                  // color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
         body: Center(
           child: FractionallySizedBox(
             widthFactor: 0.7, // Set the width to 80% of the total width
@@ -138,16 +165,15 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                Text('Beeps Time: $beepsTime ms'),
-                Text('Beepc Time: $beepcTime ms'),
+                Text('Left reaction time: $beepsTime ms'),
+                Text('Right reaction time: $beepcTime ms'),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: 300, // Set the desired width
                   height: 50, // Set the desired height
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                      AppColor.greenDarkColor, // Dark green color
+                      backgroundColor: AppColor.primary, // Dark green color
                       foregroundColor: Colors.white, // White text color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5), // Slight curve
@@ -156,54 +182,84 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                     onPressed: isButtonDisabled
                         ? null
                         : () async {
-                      setState(() {
-                        isButtonDisabled = true;
-                      });
-                      double initialRightMagnitude = right_magnitude;
-                      double initialLeftMagnitude = left_magnitude;
+                            setState(() {
+                              isButtonDisabled = true;
+                            });
+                            double initialRightMagnitude = 0;
+                            double initialLeftMagnitude = 0;
 
-                      while (true) {
-                        // Wait for a random 1 or 2 seconds
-                        int randomDelay = Random().nextInt(2) + 1;
-                        print("Waiting for $randomDelay seconds");
-                        await Future.delayed(
-                            Duration(seconds: randomDelay));
-                        DateTime startTime = DateTime.now();
-                        if (Random().nextBool()) {
-                          context.read<DeviceController>().sendToDevice(
-                              "beeps 5;", WRITECHARACTERISTICS);
-                          await Future.delayed(
-                              const Duration(milliseconds: 20));
-                          while (left_magnitude <=
-                              initialLeftMagnitude + 50) {
-                            await Future.delayed(
-                                const Duration(milliseconds: 10));
-                          }
-                          DateTime endTime = DateTime.now();
-                          setState(() {
-                            beepsTime = (endTime.difference(startTime))
-                                .inMilliseconds
-                                .toString();
-                          });
-                        } else {
-                          context.read<DeviceController>().sendToDevice(
-                              "beepc 5;", WRITECHARACTERISTICS);
-                          await Future.delayed(
-                              const Duration(milliseconds: 20));
-                          while (right_magnitude <=
-                              initialRightMagnitude + 50) {
-                            await Future.delayed(
-                                const Duration(milliseconds: 10));
-                          }
-                          DateTime endTime = DateTime.now();
-                          setState(() {
-                            beepcTime = (endTime.difference(startTime))
-                                .inMilliseconds
-                                .toString();
-                          });
-                        }
-                      }
-                    },
+                            while (left.length < 3 || right.length < 3) {
+                              // Wait for a random 1 or 2 seconds
+                              int randomDelay = Random().nextInt(2) + 3;
+                              print("Waiting for $randomDelay seconds");
+                              await Future.delayed(
+                                  Duration(seconds: randomDelay));
+                              DateTime startTime = DateTime.now();
+                              if (left.length < 3) {
+                                context.read<DeviceController>().sendToDevice(
+                                    "beeps 5;", WRITECHARACTERISTICS);
+                                await Future.delayed(
+                                    const Duration(milliseconds: 20));
+                                var delay = 0;
+                                while (left_magnitude <=
+                                    initialLeftMagnitude + 50) {
+                                  delay += 10;
+                                  if (delay > 3000) {
+                                    break;
+                                  }
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 10));
+                                }
+                                DateTime endTime = DateTime.now();
+                                setState(() {
+                                  beepsTime = (endTime.difference(startTime))
+                                      .inMilliseconds
+                                      .toString();
+                                  left.add(int.parse(beepsTime));
+                                });
+                              } else {
+                                context.read<DeviceController>().sendToDevice(
+                                    "beepc 5;", WRITECHARACTERISTICS);
+                                await Future.delayed(
+                                    const Duration(milliseconds: 20));
+                                var delay = 0;
+                                while (right_magnitude <=
+                                    initialRightMagnitude + 50) {
+                                  delay += 10;
+                                  if (delay > 3000) {
+                                    break;
+                                  }
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 10));
+                                }
+                                DateTime endTime = DateTime.now();
+                                setState(() {
+                                  beepcTime = (endTime.difference(startTime))
+                                      .inMilliseconds
+                                      .toString();
+                                  right.add(int.parse(beepcTime));
+                                });
+                              }
+                            }
+                            FirebaseDB.currentDb
+                                .collection("frs")
+                                .doc(testId)
+                                .update({"left_reaction_time": left});
+                            FirebaseDB.currentDb
+                                .collection("frs")
+                                .doc(testId)
+                                .update({"right_reaction_time": right});
+
+                            setState(() {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FrsResult(),
+                                ),
+                                ModalRoute.withName('/home'),
+                              );
+                            });
+                          },
                     child: const Text(
                       "Start",
                       style: TextStyle(fontSize: 40),

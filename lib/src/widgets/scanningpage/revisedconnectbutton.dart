@@ -26,7 +26,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
               : "Searching for device",
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: AppColor.greenDarkColor,
+            color: AppColor.primary,
             fontSize: 19,
           ),
         ),
@@ -35,7 +35,7 @@ class _RevisedConnectButtonState extends State<RevisedConnectButton> {
           height: DeviceSize.isTablet ? 75 : 50,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColor.greenDarkColor,
+              backgroundColor: AppColor.primary,
             ),
             onPressed: () {
               onPressed(deviceController);

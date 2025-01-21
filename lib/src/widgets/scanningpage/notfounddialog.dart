@@ -33,7 +33,7 @@ Widget deviceNotFoundDialog() {
           Text(
             "Oops! device not found",
             style: TextStyle(
-                color: AppColor.greenDarkColor,
+                color: AppColor.primary,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700),
           ),

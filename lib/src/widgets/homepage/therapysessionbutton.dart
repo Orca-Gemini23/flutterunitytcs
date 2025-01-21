@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/controllers/device_controller.dart';
@@ -25,7 +24,7 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
       builder: (context, deviceController, widget) {
         return InkWell(
           highlightColor: Colors.transparent,
-          splashColor: AppColor.greenDarkColor,
+          splashColor: AppColor.primary,
           onHighlightChanged: (value) {
             deviceController.connectedDevice == null
                 ? null
@@ -64,7 +63,7 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
                       blurRadius: 4,
                       spreadRadius: 2)
                 ],
-                color: AppColor.greenDarkColor,
+                color: AppColor.primary,
                 // deviceController.connectedDevice == null
                 //     ? AppColor.greyLight
                 //     : AppColor.lightgreen,
@@ -104,8 +103,10 @@ class _TherapySessionBtnState extends State<TherapySessionBtn> {
   void therapyButtonOnPressed(DeviceController deviceController) async {
     Analytics.addClicks("TherapySessionButton", DateTime.timestamp());
     if (deviceController.connectedDevice == null) {
-      Fluttertoast.showToast(
-        msg: "Please Connect to the device first",
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please Connect to the device first'),
+        ),
       );
     } else {
       Navigator.pushNamed(

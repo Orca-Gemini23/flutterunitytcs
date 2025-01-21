@@ -85,7 +85,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                     'Yes',
                     style: TextStyle(
                         fontSize: DeviceSize.isTablet ? 24 : null,
-                        color: AppColor.greenDarkColor),
+                        color: AppColor.primary),
                   ),
                 ),
               ],

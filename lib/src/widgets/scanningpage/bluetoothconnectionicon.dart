@@ -7,7 +7,7 @@ Widget bluetoothIcon() {
     width: DeviceSize.isTablet ? 160 : 80,
     height: DeviceSize.isTablet ? 160 : 80,
     decoration: const BoxDecoration(
-      color: AppColor.greenDarkColor,
+      color: AppColor.primary,
       shape: BoxShape.circle,
     ),
     child: Icon(

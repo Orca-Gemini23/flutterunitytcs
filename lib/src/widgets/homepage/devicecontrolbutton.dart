@@ -26,7 +26,7 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
     return InkWell(
       key: widget.deviceControlKey,
       highlightColor: Colors.transparent,
-      splashColor: AppColor.greenDarkColor,
+      splashColor: AppColor.primary,
       onHighlightChanged: (value) {
         setState(() {
           _isDeviceButtonTapped = value;
@@ -56,14 +56,12 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
             vertical: 5,
           ),
           decoration: BoxDecoration(
-            color: AppColor.greenDarkColor,
+            color: AppColor.primary,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               deviceController?.connectedDevice != null
                   ? const BoxShadow(
-                      color: AppColor.greenDarkColor,
-                      blurRadius: 4,
-                      spreadRadius: 1)
+                      color: AppColor.primary, blurRadius: 4, spreadRadius: 1)
                   : const BoxShadow(
                       color: AppColor.appShadowDark,
                       offset: Offset(0, 4),
@@ -90,7 +88,9 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
                 // ),
               ),
               Text(
-                "Device Control",
+                deviceController?.connectedDevice == null
+                    ? "Connect Device"
+                    : "Device Control",
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 style: TextStyle(
@@ -100,7 +100,7 @@ class _DeviceControlBtnState extends State<DeviceControlBtn>
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
-              ),
+              )
             ],
           ),
         ),

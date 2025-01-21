@@ -263,7 +263,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                           {
                             return const Center(
                               child: CircularProgressIndicator(
-                                color: AppColor.greenDarkColor,
+                                color: AppColor.primary,
                               ),
                             );
                           }
@@ -458,7 +458,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                       30
                                                                   ? Colors.red
                                                                   : AppColor
-                                                                      .greenDarkColor,
+                                                                      .primary,
                                                           circularStrokeCap:
                                                               CircularStrokeCap
                                                                   .round,
@@ -630,7 +630,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                     30
                                                                 ? Colors.red
                                                                 : AppColor
-                                                                    .greenDarkColor,
+                                                                    .primary,
                                                         circularStrokeCap:
                                                             CircularStrokeCap
                                                                 .round,
@@ -765,7 +765,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                           0)
                                                                   ? Colors.grey
                                                                   : AppColor
-                                                                      .greenDarkColor,
+                                                                      .primary,
                                                             ),
                                                             child: Slider(
                                                               value: deviceController
@@ -792,7 +792,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                           0)
                                                                   ? Colors.grey
                                                                   : AppColor
-                                                                      .greenDarkColor,
+                                                                      .primary,
                                                               onChanged:
                                                                   (value) {
                                                                 if (deviceController
@@ -1156,7 +1156,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                 'Left Band Range',
                                                                 style: TextStyle(
                                                                     color: AppColor
-                                                                        .greenDarkColor,
+                                                                        .primary,
                                                                     fontSize: DeviceSize
                                                                             .isTablet
                                                                         ? 18.h
@@ -1171,8 +1171,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                             Switch(
                                                               value:
                                                                   isInclusive,
-                                                              activeColor: AppColor
-                                                                  .greenDarkColor,
+                                                              activeColor:
+                                                                  AppColor
+                                                                      .primary,
                                                               onChanged: (bool
                                                                   value) async {
                                                                 // This is called when the user toggles the switch.
@@ -1262,7 +1263,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greenDarkColor,
+                                                                          .primary,
                                                                       // Border color when focused
                                                                       width:
                                                                           2.0, // Border width when focused
@@ -1327,7 +1328,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greenDarkColor,
+                                                                          .primary,
                                                                       // Border color when focused
                                                                       width:
                                                                           2.0, // Border width when focused
@@ -1355,15 +1356,18 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                           .isTablet
                                                                       ? 16
                                                                       : 8,
-                                                              thumbColor: AppColor
-                                                                  .greenDarkColor,
+                                                              thumbColor:
+                                                                  AppColor
+                                                                      .primary,
                                                               // Change thumb color
-                                                              activeTrackColor: isInclusive
-                                                                  ? AppColor
-                                                                      .greenDarkColor
-                                                                  : Colors.green
-                                                                      .withOpacity(
-                                                                          0.3),
+                                                              activeTrackColor:
+                                                                  isInclusive
+                                                                      ? AppColor
+                                                                          .primary
+                                                                      : Colors
+                                                                          .green
+                                                                          .withOpacity(
+                                                                              0.3),
                                                               inactiveTrackColor:
                                                                   isInclusive
                                                                       ? Colors
@@ -1371,7 +1375,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                           .withOpacity(
                                                                               0.3)
                                                                       : AppColor
-                                                                          .greenDarkColor,
+                                                                          .primary,
                                                             ),
                                                           ),
                                                           child: RangeSlider(
@@ -1450,7 +1454,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                 'Right Band Range',
                                                                 style: TextStyle(
                                                                     color: AppColor
-                                                                        .greenDarkColor,
+                                                                        .primary,
                                                                     fontSize:
                                                                         14.sp,
                                                                     letterSpacing:
@@ -1463,8 +1467,9 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                             Switch(
                                                               value:
                                                                   isInclusiveRight,
-                                                              activeColor: AppColor
-                                                                  .greenDarkColor,
+                                                              activeColor:
+                                                                  AppColor
+                                                                      .primary,
                                                               onChanged: (bool
                                                                   value) async {
                                                                 // This is called when the user toggles the switch.
@@ -1554,7 +1559,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greenDarkColor,
+                                                                          .primary,
                                                                       // Border color when focused
                                                                       width:
                                                                           2.0, // Border width when focused
@@ -1619,7 +1624,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                     borderSide:
                                                                         const BorderSide(
                                                                       color: AppColor
-                                                                          .greenDarkColor,
+                                                                          .primary,
                                                                       // Border color when focused
                                                                       width:
                                                                           2.0, // Border width when focused
@@ -1646,12 +1651,13 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                             .isTablet
                                                                         ? 16
                                                                         : 8,
-                                                                thumbColor: AppColor
-                                                                    .greenDarkColor,
+                                                                thumbColor:
+                                                                    AppColor
+                                                                        .primary,
                                                                 // Change thumb color
                                                                 activeTrackColor: isInclusiveRight
                                                                     ? AppColor
-                                                                        .greenDarkColor
+                                                                        .primary
                                                                     : Colors
                                                                         .green
                                                                         .withOpacity(
@@ -1662,7 +1668,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                                                         .withOpacity(
                                                                             0.3)
                                                                     : AppColor
-                                                                        .greenDarkColor,
+                                                                        .primary,
                                                               ),
                                                             ),
                                                             child: RangeSlider(
@@ -1760,7 +1766,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             Text(
                                               "Disconnect Device",
                                               style: TextStyle(
-                                                color: AppColor.greenDarkColor,
+                                                color: AppColor.primary,
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: DeviceSize.isTablet
                                                     ? 18.h
@@ -1820,7 +1826,7 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                                             Text(
                                               "Connect Device : ${Device.name}",
                                               style: TextStyle(
-                                                color: AppColor.greenDarkColor,
+                                                color: AppColor.primary,
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: DeviceSize.isTablet
                                                     ? 18.h

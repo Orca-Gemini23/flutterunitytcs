@@ -22,8 +22,7 @@ class ContactUsPage extends StatelessWidget {
         title: Text(
           AppString.contactUsPageTitle,
           style: TextStyle(
-              color: AppColor.greenDarkColor,
-              fontSize: DeviceSize.isTablet ? 36 : 20),
+              color: AppColor.primary, fontSize: DeviceSize.isTablet ? 36 : 20),
         ),
         leading: IconButton(
           icon: Icon(
@@ -53,20 +52,20 @@ class ContactUsPage extends StatelessWidget {
                       fontSize: DeviceSize.isTablet ? 84 : 42,
                       // letterSpacing: 4,
                       fontFamily: "Helvetica",
-                      color: AppColor.greenDarkColor,
+                      color: AppColor.primary,
                       fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(width: 10),
                 Container(
                   height: DeviceSize.isTablet ? 80 : 40,
                   padding: const EdgeInsets.all(0.5),
-                  color: AppColor.greenDarkColor,
+                  color: AppColor.primary,
                 ),
                 const SizedBox(width: 10),
                 Text(
                   "Lifespark\nTechnologies",
                   style: TextStyle(
-                      color: AppColor.greenDarkColor,
+                      color: AppColor.primary,
                       fontSize: DeviceSize.isTablet ? 36 : 18,
                       fontFamily: "Helvetica",
                       fontWeight: FontWeight.w500),
@@ -78,7 +77,7 @@ class ContactUsPage extends StatelessWidget {
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(20.0, 10, 10, 10),
               height: DeviceSize.isTablet ? 90 : 60,
-              color: AppColor.greenDarkColor,
+              color: AppColor.primary,
               child: DeviceSize.isTablet
                   ? Text(
                       AppString.knowMore,
@@ -115,7 +114,7 @@ class ContactUsPage extends StatelessWidget {
               children: <Widget>[
                 Icon(
                   Icons.email,
-                  color: AppColor.greenDarkColor,
+                  color: AppColor.primary,
                   size: DeviceSize.isTablet ? 48 : 24,
                 ),
                 SizedBox(width: DeviceSize.isTablet ? 20 : 10),
@@ -167,7 +166,7 @@ class ContactUsPage extends StatelessWidget {
                 ),
                 Icon(
                   Icons.phone,
-                  color: AppColor.greenDarkColor,
+                  color: AppColor.primary,
                   size: DeviceSize.isTablet ? 48 : 24,
                 ),
                 SizedBox(width: DeviceSize.isTablet ? 20 : 10),

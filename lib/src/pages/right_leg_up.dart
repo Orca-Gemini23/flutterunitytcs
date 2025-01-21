@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
@@ -33,54 +32,55 @@ class _RightLegUpState extends State<RightLegUp>
   @override
   void initState() {
     super.initState();
+    context
+        .read<DeviceController>()
+        .sendToDevice("beepc 5;", WRITECHARACTERISTICS);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
-    )
-      ..addListener(() {
+    )..addListener(() {
         setState(() {});
       });
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
-    context
-        .read<DeviceController>()
-        .sendToDevice("mode 9;", WRITECHARACTERISTICS);
     BluetoothCharacteristic? targetCharacteristic = context
         .read<DeviceController>()
         .characteristicMap[WRITECHARACTERISTICS];
-    targetCharacteristic?.setNotifyValue(true);
-    stream = targetCharacteristic!.onValueReceived.listen(
-          (value) {
-        String data = String.fromCharCodes(value);
-        var dataArr = data.split(" ");
-        if (dataArr[0] == "R") {
-          var ax = double.parse(dataArr[2]);
-          var ay = double.parse(dataArr[3]);
-          var az = double.parse(dataArr[4]);
-          setState(() {
-            angle = 1 -
-                (((((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az))) / -90)));
-          });
-          if (_controller.isAnimating) {
-            angles.add(angle);
-          }
-          if (angle.abs() <= 0.65) {
-            if (!_controller.isAnimating && !isButtonEnabled) {
-              _controller.forward(from: 0);
-              _controller.addStatusListener((status) {
-                if (status == AnimationStatus.completed) {
-                  setState(() {
-                    isButtonEnabled = true;
-                  });
-                  _controller.stop();
-                }
-              });
+    if (targetCharacteristic != null) {
+      targetCharacteristic.setNotifyValue(true);
+      stream = targetCharacteristic.onValueReceived.listen(
+        (value) {
+          String data = String.fromCharCodes(value);
+          var dataArr = data.split(" ");
+          if (dataArr[0] == "R") {
+            var ax = double.parse(dataArr[2]);
+            var ay = double.parse(dataArr[3]);
+            var az = double.parse(dataArr[4]);
+            setState(() {
+              angle =
+                  1 - (atan(ax / sqrt(ay * ay + az * az)) * (180 / pi) / -90);
+            });
+            if (_controller.isAnimating) {
+              angles.add(angle);
+            }
+            if (angle.abs() <= 0.65) {
+              if (!_controller.isAnimating && !isButtonEnabled) {
+                _controller.forward(from: 0);
+              }
             }
           }
-        }
-      },
-    );
+        },
+      );
+    }
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          isButtonEnabled = true;
+        });
+      }
+    });
   }
 
   @override
@@ -93,9 +93,19 @@ class _RightLegUpState extends State<RightLegUp>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              //pop until /home
+              Navigator.popUntil(context, ModalRoute.withName('/home'));
+            },
+          )
+        ],
+      ),
       body: Center(
         child: FractionallySizedBox(
-          widthFactor: 0.9, // Set the width to 80% of the total width
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -127,25 +137,27 @@ class _RightLegUpState extends State<RightLegUp>
                                   'assets/images/right_leg_indicator.png'),
                             ),
                             const SizedBox(height: 10),
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator(
-                                    value: _controller.value,
-                                    backgroundColor: AppColor.greenDarkColor,
-                                    valueColor: const AlwaysStoppedAnimation(
-                                        AppColor.lightgreen),
+                            if (_controller
+                                .isAnimating) // Show only if animating
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator(
+                                      value: _controller.value,
+                                      backgroundColor: AppColor.primary,
+                                      valueColor: const AlwaysStoppedAnimation(
+                                          AppColor.lightgreen),
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  _animation.value.toInt().toString(),
-                                  style: const TextStyle(fontSize: 22),
-                                ),
-                              ],
-                            ),
+                                  Text(
+                                    _animation.value.toInt().toString(),
+                                    style: const TextStyle(fontSize: 22),
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
                       ),
@@ -156,7 +168,7 @@ class _RightLegUpState extends State<RightLegUp>
                           height: 75,
                           child: LinearProgressIndicator(
                             value: angle,
-                            backgroundColor: AppColor.greenDarkColor,
+                            backgroundColor: AppColor.primary,
                             valueColor: const AlwaysStoppedAnimation(
                                 AppColor.lightgreen),
                           ),
@@ -189,8 +201,7 @@ class _RightLegUpState extends State<RightLegUp>
                 height: 50, // Set the desired height
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    AppColor.greenDarkColor, // Dark green color
+                    backgroundColor: AppColor.primary, // Dark green color
                     foregroundColor: Colors.white, // White text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5), // Slight curve
@@ -198,18 +209,17 @@ class _RightLegUpState extends State<RightLegUp>
                   ),
                   onPressed: isButtonEnabled
                       ? () {
-                    FirebaseDB.currentDb
-                        .collection("frs")
-                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                        .collection(testId)
-                        .add({"right_angles": angles});
-                    stream.cancel();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LeftLegUp()),
-                    );
-                  }
+                          FirebaseDB.currentDb
+                              .collection("frs")
+                              .doc(testId)
+                              .update({"right_angles": angles});
+                          stream.cancel();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LeftLegUp()),
+                          );
+                        }
                       : null,
                   child: const Text(
                     "Next",

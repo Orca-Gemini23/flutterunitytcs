@@ -93,8 +93,7 @@ class _StreamingStringScreenState extends State<StreamingStringScreen> {
     _streamController = StreamControllerClass._streamController;
     super.initState();
     DoStream.yes = false;
-    DeviceController deviceController =
-        Provider.of<DeviceController>(context, listen: false);
+    Provider.of<DeviceController>(context, listen: false);
     FileClass.initializeCommonName().then((_) {
       // deviceController.startStream();
       _scrollController = ScrollController();
@@ -142,7 +141,7 @@ class _StreamingStringScreenState extends State<StreamingStringScreen> {
           ),
         ),
         centerTitle: false,
-        backgroundColor: AppColor.greenDarkColor,
+        backgroundColor: AppColor.primary,
         elevation: 0,
       ),
       body: StreamBuilder<String>(
@@ -180,7 +179,7 @@ class _StreamingStringScreenState extends State<StreamingStringScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColor.greenDarkColor,
+        backgroundColor: AppColor.primary,
         child: Text(DoStream.yes ? "Stop" : "Start"),
         onPressed: () async {
           if (DoStream.yes) {

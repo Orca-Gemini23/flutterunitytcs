@@ -43,7 +43,7 @@ class _GuestUserLoginState extends State<GuestUserLogin> {
           children: [
             const Spacer(),
             Container(
-              color: AppColor.greenDarkColor,
+              color: AppColor.primary,
               height: 120,
               width: 120,
               child: const Center(

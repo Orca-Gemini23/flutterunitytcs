@@ -23,7 +23,7 @@ class _AnglesDisplayBtnState extends State<AnglesDisplayBtn> {
       builder: (context, deviceController, widget) {
         return InkWell(
           highlightColor: Colors.transparent,
-          splashColor: AppColor.greenDarkColor,
+          splashColor: AppColor.primary,
           onHighlightChanged: (value) {
             deviceController.connectedDevice == null
                 ? null
@@ -56,7 +56,7 @@ class _AnglesDisplayBtnState extends State<AnglesDisplayBtn> {
                 ],
                 color: deviceController.connectedDevice == null
                     ? AppColor.greyLight
-                    : AppColor.gameEntryTileColor,
+                    : AppColor.secondary,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -99,8 +99,10 @@ class _AnglesDisplayBtnState extends State<AnglesDisplayBtn> {
         msg: "Please Connect to the device first",
       );
     } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: ((context) => const StreamingStringScreen())));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: ((context) => const StreamingStringScreen())));
     }
   }
 }

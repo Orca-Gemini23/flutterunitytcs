@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
         title: const Text(
           AppString.profileTitle,
           style: TextStyle(
-            color: AppColor.greenDarkColor,
+            color: AppColor.primary,
           ),
         ),
         leading: IconButton(

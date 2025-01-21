@@ -35,7 +35,7 @@ class _TherapySessionButtonState extends State<TherapySessionButton> {
       builder: (context, deviceController, widget) {
         return InkWell(
           highlightColor: Colors.transparent,
-          splashColor: AppColor.greenDarkColor,
+          splashColor: AppColor.primary,
           onHighlightChanged: (value) {
             deviceController.connectedDevice == null
                 ? null
@@ -80,7 +80,7 @@ class _TherapySessionButtonState extends State<TherapySessionButton> {
                 ],
                 color: deviceController.connectedDevice == null
                     ? AppColor.greyLight
-                    : AppColor.gameEntryTileColor,
+                    : AppColor.secondary,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
