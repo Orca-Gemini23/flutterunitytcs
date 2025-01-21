@@ -9,6 +9,6 @@ public class BuildScript
     {
         // Start the Unity Android library build process
         Build.DoBuildAndroidLibraryRelease();
-        Process.Start("flutter", "build appbundle");g
+        Process.Start("flutter", "build appbundle");
     }
 }
