@@ -10,6 +10,7 @@ using BuildResult = UnityEditor.Build.Reporting.BuildResult;
 // uncomment for addressables
 //using UnityEditor.AddressableAssets;
 //using UnityEditor.AddressableAssets.Settings;
+//using UnityEditor.AddressableAssets.Settings;
 
 
 namespace FlutterUnityIntegration.Editor
@@ -331,6 +332,12 @@ body { padding: 0; margin: 0; overflow: hidden; }
             buildText = buildText.Replace("enableSplit = true", "enable true");
             buildText = buildText.Replace("implementation fileTree(dir: 'libs', include: ['*.jar'])", "implementation(name: 'unity-classes', ext:'jar')");
             buildText = buildText.Replace(" + unityStreamingAssets.tokenize(', ')", "");
+            
+            string lineToCommentOut = "ndkPath \"C:/Program Files/Unity/Hub/Editor/2022.3.47f1-x86_64/Editor/Data/PlaybackEngines/AndroidPlayer/NDK\"";
+            string commentedLine = "// " + lineToCommentOut;
+            buildText = buildText.Replace(lineToCommentOut, commentedLine);
+            File.WriteAllText(buildFile, buildText);
+            // Adding the buildText file to replace the line on text 11 with the comment feature !1
 
             if(isPlugin)
             {
