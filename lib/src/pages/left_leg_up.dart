@@ -89,10 +89,8 @@ class _LeftLegUpState extends State<LeftLegUp>
 
   @override
   void dispose() {
-    if (stream != null) {
-      stream.cancel();
-    }
-    _controller.dispose();
+    stream.cancel();
+      _controller.dispose();
     super.dispose();
   }
 

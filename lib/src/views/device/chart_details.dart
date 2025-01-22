@@ -28,7 +28,7 @@ class _DetailChartState extends State<DetailChart> {
         ),
         padding: const EdgeInsets.all(10),
         child: SfCartesianChart(
-          title: const ChartTitle(text: 'Game History'),
+          // title: const ChartTitle(text: 'Game History'),
           primaryXAxis: const DateTimeAxis(
             title: AxisTitle(text: 'Date', textStyle: TextStyle(fontSize: 12)),
             isVisible: true,
