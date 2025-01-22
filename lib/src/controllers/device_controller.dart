@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
@@ -255,9 +254,11 @@ class DeviceController extends ChangeNotifier {
       }
     } catch (e) {
       print("Error in checkingBluetoothAdapterState ${e.toString}");
-      Fluttertoast.showToast(
-        msg:
-            "Unable to turn on the bluetooth,please turn on bluetooth manually",
+      ScaffoldMessenger.of(context!).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "Unable to turn on the bluetooth, please turn on bluetooth manually"),
+        ),
       );
       return false;
     }

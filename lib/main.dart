@@ -21,7 +21,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   log("Running Main.dart");
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
       overlays: [SystemUiOverlay.top]);
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
