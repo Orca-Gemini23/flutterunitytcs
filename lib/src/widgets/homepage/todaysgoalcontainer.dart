@@ -93,7 +93,7 @@ class _TodaysGoalBoxState extends State<TodaysGoalBox> {
                     future: hasCompletedToday(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasData && snapshot.data == true) {
                         return Text.rich(
                           TextSpan(
