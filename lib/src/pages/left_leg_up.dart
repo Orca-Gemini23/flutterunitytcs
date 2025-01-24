@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
@@ -43,9 +44,6 @@ class _LeftLegUpState extends State<LeftLegUp>
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
-    // context
-    //     .read<DeviceController>()
-    //     .sendToDevice("mode 9;", WRITECHARACTERISTICS);
     BluetoothCharacteristic? targetCharacteristic = context
         .read<DeviceController>()
         .characteristicMap[WRITECHARACTERISTICS];
@@ -64,6 +62,7 @@ class _LeftLegUpState extends State<LeftLegUp>
                   (((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az)) / 90) -
                           1) *
                       -1;
+              _controller.value = angle; // Update animation progress
             });
             if (_controller.isAnimating) {
               angles.add(angle);
@@ -90,7 +89,7 @@ class _LeftLegUpState extends State<LeftLegUp>
   @override
   void dispose() {
     stream.cancel();
-      _controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -102,7 +101,6 @@ class _LeftLegUpState extends State<LeftLegUp>
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
-              //pop until /home
               Navigator.popUntil(context, ModalRoute.withName('/home'));
             },
           )
@@ -110,7 +108,6 @@ class _LeftLegUpState extends State<LeftLegUp>
       ),
       body: Center(
         child: FractionallySizedBox(
-          // widthFactor: 0.9, // Set the width to 80% of the total width
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -118,15 +115,17 @@ class _LeftLegUpState extends State<LeftLegUp>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 385 / 2, // Set the desired width
-                    height: 835 / 2, // Set the desired height
-                    child: Image.asset('assets/images/leg_up.png'),
+                    width: 385 / 2,
+                    height: 835 / 2,
+                    child: LottieBuilder.network(
+                      "https://cdn.lottielab.com/l/BJYMdRFKxav1Wr.json",
+                      controller: _controller,
+                    ),
                   ),
                   Column(
                     children: [
                       Transform.translate(
                         offset: const Offset(0, -150),
-                        // Move the text and image up by 20 pixels
                         child: Column(
                           children: [
                             const Text(
@@ -135,15 +134,12 @@ class _LeftLegUpState extends State<LeftLegUp>
                             ),
                             SizedBox(
                               width: 100,
-                              // Set the desired width for the indicator
                               height: 100,
-                              // Set the desired height for the indicator
                               child: Image.asset(
                                   'assets/images/left_leg_indicator.png'),
                             ),
                             const SizedBox(height: 10),
-                            if (_controller
-                                .isAnimating) // Show only if animating
+                            if (_controller.isAnimating)
                               Stack(
                                 alignment: Alignment.center,
                                 children: [
@@ -167,7 +163,7 @@ class _LeftLegUpState extends State<LeftLegUp>
                         ),
                       ),
                       Transform.rotate(
-                        angle: pi / 2, // Simplified angle calculation
+                        angle: pi / 2,
                         child: SizedBox(
                           width: 150,
                           height: 75,
@@ -202,14 +198,14 @@ class _LeftLegUpState extends State<LeftLegUp>
               ),
               const SizedBox(height: 20),
               SizedBox(
-                width: 300, // Set the desired width
-                height: 50, // Set the desired height
+                width: 300,
+                height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.primary, // Dark green color
-                    foregroundColor: Colors.white, // White text color
+                    backgroundColor: AppColor.primary,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5), // Slight curve
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   onPressed: isButtonEnabled
