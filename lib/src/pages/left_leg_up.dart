@@ -124,7 +124,6 @@ class _LeftLegUpState extends State<LeftLegUp> with TickerProviderStateMixin {
                     child: LottieBuilder.network(
                       "https://cdn.lottielab.com/l/3KB22tnbUXoN9f.json",
                       controller: _lottieController,
-                      // backgroundLoading: true,
                     ),
                   ),
                   Column(
@@ -230,6 +229,36 @@ class _LeftLegUpState extends State<LeftLegUp> with TickerProviderStateMixin {
                   child: const Text(
                     "Next",
                     style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 300,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                  onPressed: () {
+                    FirebaseDB.currentDb.collection("frs").doc(testId).update({
+                      "left_angles": [0.0]
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ReactionTime()),
+                    );
+                    stream.cancel();
+                  },
+                  child: const Text(
+                    "Cannot Perform",
+                    style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),

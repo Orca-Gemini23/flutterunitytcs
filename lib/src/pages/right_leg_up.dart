@@ -236,6 +236,37 @@ class _RightLegUpState extends State<RightLegUp> with TickerProviderStateMixin {
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 300, // Set the desired width
+                height: 50, // Set the desired height
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, // Red color
+                    foregroundColor: Colors.white, // White text color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5), // Slight curve
+                    ),
+                  ),
+                  onPressed: () {
+                    // Handle the "cannot perform" action
+                    FirebaseDB.currentDb.collection("frs").doc(testId).update({
+                      "right_angles": [0.0]
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LeftLegUp()),
+                    );
+                    stream.cancel();
+                  },
+                  child: const Text(
+                    "Cannot Perform",
+                    style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

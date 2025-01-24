@@ -24,6 +24,11 @@ class FrsTest extends StatelessWidget {
         .collection("frs")
         .doc(testId)
         .set({"user_id": FirebaseAuth.instance.currentUser?.uid});
+    FirebaseDB.currentDb
+        .collection("frs")
+        .doc(testId)
+        .update({"complete": false});
+
     return super.createElement();
   }
 

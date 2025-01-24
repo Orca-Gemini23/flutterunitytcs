@@ -130,6 +130,17 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
           actions: [
             TextButton(
               onPressed: () {
+                FirebaseDB.currentDb.collection("frs").doc(testId).update({
+                  "left_reaction_time": [9999]
+                });
+                FirebaseDB.currentDb.collection("frs").doc(testId).update({
+                  "right_reaction_time": [9999]
+                });
+                FirebaseDB.currentDb
+                    .collection("frs")
+                    .doc(testId)
+                    .update({"complete": true});
+
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -253,6 +264,10 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                                 .collection("frs")
                                 .doc(testId)
                                 .update({"right_reaction_time": right});
+                            FirebaseDB.currentDb
+                                .collection("frs")
+                                .doc(testId)
+                                .update({"complete": true});
 
                             setState(() {
                               Navigator.pushAndRemoveUntil(

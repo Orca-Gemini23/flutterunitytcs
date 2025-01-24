@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,107 +25,107 @@ class _FrsResultState extends State<FrsResult> {
     _frsData = _fetchFrsData();
     _frsData.then((docs) {
       for (var doc in docs) {
-        var date = DateTime.parse(doc.id);
-        var leftValue = doc.data()['left_angles'] ?? [0.0];
-        var rightValue = doc.data()['right_angles'] ?? [0.0];
-        var leftReactionTimeValue = doc.data()['left_reaction_time'] ?? [];
-        var rightReactionTimeValue = doc.data()['right_reaction_time'] ?? [];
-
-        var leftY = leftValue.cast<double>() as List<double>;
-
-        // log(leftY.toString());
-        var rightY = rightValue.cast<double>() as List<double>;
-        var leftReactionTimeY = leftReactionTimeValue.cast<int>() as List<int>;
-        var rightReactionTimeY =
-            rightReactionTimeValue.cast<int>() as List<int>;
-
-        var leftSum = 0.0;
-        var rightSum = 0.0;
-        for (var i in leftY) {
-          leftSum += i;
-        }
-        leftSum = (leftSum * 100 / leftY.length).roundToDouble();
-        for (var i in rightY) {
-          rightSum += i;
-        }
-        rightSum = (rightSum * 100 / rightY.length).roundToDouble();
-
-        var minLeft = double.maxFinite.toInt();
-        for (var i in leftReactionTimeY) {
-          if (i < minLeft) {
-            minLeft = i;
+        // log(doc.data()['complete']);
+        try {
+          bool complete = doc.data()['complete'];
+          if (complete == false) {
+            continue;
           }
-        }
-        if (!leftReactionTimeY.contains(minLeft)) {
-          minLeft = 0;
-        }
-        var minRight = double.maxFinite.toInt();
-        for (var i in rightReactionTimeY) {
-          if (i < minRight) {
-            minRight = i;
+          var date = DateTime.parse(doc.id);
+          var leftValue = doc.data()['left_angles'] ?? [0.0];
+          var rightValue = doc.data()['right_angles'] ?? [0.0];
+          var leftReactionTimeValue = doc.data()['left_reaction_time'] ?? [];
+          var rightReactionTimeValue = doc.data()['right_reaction_time'] ?? [];
+
+          var leftY = leftValue.cast<double>() as List<double>;
+
+          // log(leftY.toString());
+          var rightY = rightValue.cast<double>() as List<double>;
+          var leftReactionTimeY =
+              leftReactionTimeValue.cast<int>() as List<int>;
+          var rightReactionTimeY =
+              rightReactionTimeValue.cast<int>() as List<int>;
+
+          var leftSum = 0.0;
+          var rightSum = 0.0;
+          for (var i in leftY) {
+            leftSum += i;
           }
-        }
-        if (!rightReactionTimeY.contains(minRight)) {
-          minRight = 0;
-        }
-        // log('leftSum: $leftSum');
-        // log('rightSum: $rightSum');
-        log('minLeft: $minLeft');
-        log('minRight: $minRight');
-        int l_range, r_range, l_rt, r_rt;
-        if (leftSum > 7) {
-          l_range = 3;
-        } else if (leftSum > 5) {
-          l_range = 2;
-        } else if (leftSum > 3) {
-          l_range = 1;
-        } else {
-          l_range = 0;
-        }
-        if (rightSum > 7) {
-          r_range = 3;
-        } else if (rightSum > 5) {
-          r_range = 2;
-        } else if (rightSum > 3) {
-          r_range = 1;
-        } else {
-          r_range = 0;
-        }
+          leftSum = (leftSum * 100 / leftY.length).roundToDouble();
+          for (var i in rightY) {
+            rightSum += i;
+          }
+          rightSum = (rightSum * 100 / rightY.length).roundToDouble();
 
-        if (minLeft < 350) {
-          l_rt = 3;
-        } else if (minLeft < 600) {
-          l_rt = 2;
-        } else if (minLeft < 1000) {
-          l_rt = 1;
-        } else {
-          l_rt = 0;
-        }
+          var minLeft = double.maxFinite.toInt();
+          for (var i in leftReactionTimeY) {
+            if (i < minLeft) {
+              minLeft = i;
+            }
+          }
+          if (!leftReactionTimeY.contains(minLeft)) {
+            minLeft = 1000;
+          }
+          var minRight = double.maxFinite.toInt();
+          for (var i in rightReactionTimeY) {
+            if (i < minRight) {
+              minRight = i;
+            }
+          }
+          if (!rightReactionTimeY.contains(minRight)) {
+            minRight = 1000;
+          }
+          int lRange, rRange, lRt, rRt;
+          if (leftSum > 7) {
+            lRange = 3;
+          } else if (leftSum > 5) {
+            lRange = 2;
+          } else if (leftSum > 3) {
+            lRange = 1;
+          } else {
+            lRange = 0;
+          }
+          if (rightSum > 7) {
+            rRange = 3;
+          } else if (rightSum > 5) {
+            rRange = 2;
+          } else if (rightSum > 3) {
+            rRange = 1;
+          } else {
+            rRange = 0;
+          }
 
-        if (minRight < 350) {
-          r_rt = 3;
-        } else if (minRight < 600) {
-          r_rt = 2;
-        } else if (minRight < 1000) {
-          r_rt = 1;
-        } else {
-          r_rt = 0;
-        }
+          if (minLeft < 350) {
+            lRt = 3;
+          } else if (minLeft < 600) {
+            lRt = 2;
+          } else if (minLeft < 1000) {
+            lRt = 1;
+          } else {
+            lRt = 0;
+          }
 
-        setState(() {
-          leftLegUpData[date] = 10 - leftSum / 10;
-          rightLegUpData[date] = 10 - rightSum / 10;
-          leftReactionTime[date] = minLeft;
-          rightReactionTime[date] = minRight;
-          //Scoring:
-          // RT : 	300 < 350 < more (adjust as per actual values, accounting for delays)
-          // 	  4        2.5       0
-          // ROM:	 60 > 40 > 30 > less
-          // 	  3      2      1       0
-          // HT:	 3 > 2 > 1 > less
-          // 	 3    2    1      0
-          fallRiskScore[date] = 10 - l_rt + r_rt + l_range + r_range;
-        });
+          if (minRight < 350) {
+            rRt = 3;
+          } else if (minRight < 600) {
+            rRt = 2;
+          } else if (minRight < 1000) {
+            rRt = 1;
+          } else {
+            rRt = 0;
+          }
+          int frs = 12 - (lRt + rRt + lRange + rRange);
+          setState(() {
+            leftLegUpData[date] = 10 - leftSum / 10;
+            rightLegUpData[date] = 10 - rightSum / 10;
+            leftReactionTime[date] = minLeft;
+            rightReactionTime[date] = minRight;
+
+            fallRiskScore[date] = frs;
+          });
+        } catch (e) {
+          print(e);
+        }
       }
     });
   }
@@ -199,12 +197,11 @@ class _FrsResultState extends State<FrsResult> {
                                   400, // Set the desired height for the graph
                               child: SfCartesianChart(
                                 primaryXAxis: DateTimeAxis(
-                                  intervalType: DateTimeIntervalType.auto,
                                   title: AxisTitle(text: 'Time'),
                                 ),
                                 primaryYAxis: NumericAxis(
                                   minimum: 0,
-                                  maximum: 10,
+                                  maximum: 12,
                                   interval: 1,
                                   title: AxisTitle(text: 'Fall Risk Score'),
                                 ),
@@ -229,11 +226,8 @@ class _FrsResultState extends State<FrsResult> {
                             const Text(
                               'This graph shows the fall risk score over time. Higher values indicate a higher risk of falling.',
                               textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              getTrendText(fallRiskScore.cast()),
-                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 12),
                             ),
                             const SizedBox(height: 20),
                           ],
@@ -253,7 +247,6 @@ class _FrsResultState extends State<FrsResult> {
                                   400, // Set the desired height for the graph
                               child: SfCartesianChart(
                                 primaryXAxis: DateTimeAxis(
-                                  intervalType: DateTimeIntervalType.auto,
                                   title: AxisTitle(text: 'Time'),
                                 ),
                                 primaryYAxis: NumericAxis(
@@ -289,13 +282,10 @@ class _FrsResultState extends State<FrsResult> {
                             ),
                             const SizedBox(height: 20),
                             const Text(
-                              'This graph shows the range of motion for the left and right legs over time. The green areas indicate good range, yellow areas indicate moderate range, and red areas indicate poor range.',
+                              'This graph shows the range of motion for the left and right legs over time.',
                               textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              getTrendText(leftLegUpData),
-                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 14),
                             ),
                             const SizedBox(height: 20),
                           ],
@@ -315,7 +305,6 @@ class _FrsResultState extends State<FrsResult> {
                                   400, // Set the desired height for the graph
                               child: SfCartesianChart(
                                 primaryXAxis: DateTimeAxis(
-                                  intervalType: DateTimeIntervalType.auto,
                                   title: AxisTitle(text: 'Time'),
                                 ),
                                 primaryYAxis: NumericAxis(
@@ -356,10 +345,10 @@ class _FrsResultState extends State<FrsResult> {
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 20),
-                            Text(
-                              getTrendText(leftReactionTime.cast()),
-                              textAlign: TextAlign.center,
-                            ),
+                            // Text(
+                            //   getTrendText(leftReactionTime.cast()),
+                            //   textAlign: TextAlign.center,
+                            // ),
                             const SizedBox(height: 20),
                           ],
                         ),
