@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
@@ -156,7 +157,11 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                 SizedBox(
                   width: 500, // Set the desired width
                   height: 500, // Set the desired height
-                  child: Image.asset('assets/images/vibration_image.png'),
+                  child: LottieBuilder.network(
+                    "https://cdn.lottielab.com/l/C8suy6PNYWoKmW.json",
+                    repeat: true,
+                    backgroundLoading: true,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 const Text(

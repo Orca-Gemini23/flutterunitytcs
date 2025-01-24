@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:walk/src/constants/app_color.dart';
 import 'package:walk/src/constants/bt_constants.dart';
@@ -19,12 +20,13 @@ class RightLegUp extends StatefulWidget {
   _RightLegUpState createState() => _RightLegUpState();
 }
 
-class _RightLegUpState extends State<RightLegUp>
-    with SingleTickerProviderStateMixin {
+class _RightLegUpState extends State<RightLegUp> with TickerProviderStateMixin {
   late StreamSubscription<List<int>> stream;
   double angle = 0.0;
   bool isButtonEnabled = false;
   late AnimationController _controller;
+  late AnimationController _lottieController;
+
   late Animation<double> _animation;
 
   List<double> angles = [];
@@ -41,6 +43,9 @@ class _RightLegUpState extends State<RightLegUp>
     )..addListener(() {
         setState(() {});
       });
+    _lottieController = AnimationController(
+      vsync: this,
+    );
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
@@ -60,6 +65,7 @@ class _RightLegUpState extends State<RightLegUp>
             setState(() {
               angle =
                   1 - (atan(ax / sqrt(ay * ay + az * az)) * (180 / pi) / -90);
+              _lottieController.value = 1 - angle;
             });
             if (_controller.isAnimating) {
               angles.add(angle);
@@ -115,13 +121,16 @@ class _RightLegUpState extends State<RightLegUp>
                   SizedBox(
                     width: 385 / 2, // Set the desired width
                     height: 835 / 2, // Set the desired height
-                    child: Image.asset('assets/images/leg_up.png'),
+                    child: LottieBuilder.network(
+                      "https://cdn.lottielab.com/l/BJYMdRFKxav1Wr.json",
+                      controller: _lottieController,
+                      // backgroundLoading: true,
+                    ),
                   ),
                   Column(
                     children: [
                       Transform.translate(
                         offset: const Offset(0, -150),
-                        // Move the text and image up by 20 pixels
                         child: Column(
                           children: [
                             const Text(

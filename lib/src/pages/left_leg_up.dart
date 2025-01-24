@@ -19,12 +19,12 @@ class LeftLegUp extends StatefulWidget {
   _LeftLegUpState createState() => _LeftLegUpState();
 }
 
-class _LeftLegUpState extends State<LeftLegUp>
-    with SingleTickerProviderStateMixin {
+class _LeftLegUpState extends State<LeftLegUp> with TickerProviderStateMixin {
   late StreamSubscription<List<int>> stream;
   double angle = 0.0;
   bool isButtonEnabled = false;
   late AnimationController _controller;
+  late AnimationController _lottieController;
   late Animation<double> _animation;
 
   List<double> angles = [];
@@ -41,6 +41,9 @@ class _LeftLegUpState extends State<LeftLegUp>
     )..addListener(() {
         setState(() {});
       });
+    _lottieController = AnimationController(
+      vsync: this,
+    );
 
     _animation = Tween<double>(begin: 3, end: 0).animate(_controller);
 
@@ -62,7 +65,8 @@ class _LeftLegUpState extends State<LeftLegUp>
                   (((180 / 3.14) * atan(ax / sqrt(ay * ay + az * az)) / 90) -
                           1) *
                       -1;
-              _controller.value = angle; // Update animation progress
+              print(angle / 2);
+              _lottieController.value = 1 - angle;
             });
             if (_controller.isAnimating) {
               angles.add(angle);
@@ -118,8 +122,9 @@ class _LeftLegUpState extends State<LeftLegUp>
                     width: 385 / 2,
                     height: 835 / 2,
                     child: LottieBuilder.network(
-                      "https://cdn.lottielab.com/l/BJYMdRFKxav1Wr.json",
-                      controller: _controller,
+                      "https://cdn.lottielab.com/l/3KB22tnbUXoN9f.json",
+                      controller: _lottieController,
+                      backgroundLoading: true,
                     ),
                   ),
                   Column(
