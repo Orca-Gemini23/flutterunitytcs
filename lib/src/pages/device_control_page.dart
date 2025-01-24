@@ -219,6 +219,20 @@ class _DeviceControlPageState extends State<DeviceControlPage>
                 Navigator.pop(context);
               }),
             ),
+            actions: [
+              // IconButton(
+              //   icon: Icon(
+              //     Icons.system_update,
+              //     size: DeviceSize.isTablet ? 36 : 24,
+              //   ),
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => const Ota()),
+              //     );
+              //   },
+              // ),
+            ],
             title: Text(
               "Device Control",
               style: TextStyle(

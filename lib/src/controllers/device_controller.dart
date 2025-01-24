@@ -494,11 +494,12 @@ class DeviceController extends ChangeNotifier {
         // isScanning = false;
         notifyListeners();
 
-        await device.connect();
+        await device.connect(mtu: 512);
         if (Platform.isAndroid) {
           await device.requestConnectionPriority(
               connectionPriorityRequest: ConnectionPriority.high);
         }
+        device.requestMtu(517);
 
         await HapticFeedback.vibrate();
 
