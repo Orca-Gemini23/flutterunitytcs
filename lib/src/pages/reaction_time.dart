@@ -160,7 +160,6 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                   child: LottieBuilder.network(
                     "https://cdn.lottielab.com/l/C8suy6PNYWoKmW.json",
                     repeat: true,
-                    backgroundLoading: true,
                   ),
                 ),
                 const SizedBox(height: 20),

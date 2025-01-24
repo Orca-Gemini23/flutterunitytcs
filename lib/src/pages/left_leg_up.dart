@@ -124,7 +124,7 @@ class _LeftLegUpState extends State<LeftLegUp> with TickerProviderStateMixin {
                     child: LottieBuilder.network(
                       "https://cdn.lottielab.com/l/3KB22tnbUXoN9f.json",
                       controller: _lottieController,
-                      backgroundLoading: true,
+                      // backgroundLoading: true,
                     ),
                   ),
                   Column(
