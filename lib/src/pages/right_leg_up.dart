@@ -121,8 +121,8 @@ class _RightLegUpState extends State<RightLegUp> with TickerProviderStateMixin {
                   SizedBox(
                     width: 385 / 2, // Set the desired width
                     height: 835 / 2, // Set the desired height
-                    child: LottieBuilder.network(
-                      "https://cdn.lottielab.com/l/BJYMdRFKxav1Wr.json",
+                    child: LottieBuilder.asset(
+                      "assets/animations/right_leg_up.json",
                       controller: _lottieController,
                       // backgroundLoading: true,
                     ),

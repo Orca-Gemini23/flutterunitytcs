@@ -98,6 +98,7 @@ flutter:
     - assets/images/animations/
     - assets/images/tour/
     - assets/images/doctor.png
+    - assets/animations/
     - .env
   fonts:
     - family: Poppins
