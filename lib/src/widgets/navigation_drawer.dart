@@ -106,7 +106,7 @@ Widget drawerItem(BuildContext context) {
     'Home',
     'Account',
     'Device Control',
-    'Report',
+    'Reports',
     'About Us',
     'Contact Us',
     // 'QR-Scanner',
