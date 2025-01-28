@@ -168,8 +168,8 @@ class _ReactionTimeVibrationState extends State<ReactionTimeVibration> {
                 SizedBox(
                   width: 500, // Set the desired width
                   height: 500, // Set the desired height
-                  child: LottieBuilder.network(
-                    "https://cdn.lottielab.com/l/C8suy6PNYWoKmW.json",
+                  child: LottieBuilder.asset(
+                    "assets/animations/reaction_time.json",
                     repeat: true,
                   ),
                 ),
