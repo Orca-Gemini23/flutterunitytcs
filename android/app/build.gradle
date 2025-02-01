@@ -40,7 +40,7 @@ android {
                 keyAlias properties['keyAlias']
                 keyPassword properties['keyPassword']
            } else {
-                println 'Unable to read key.properties'
+                println 'Unable to read key.properties, failed'
            }
            }
        }
