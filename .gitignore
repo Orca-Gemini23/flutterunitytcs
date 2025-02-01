@@ -38,6 +38,9 @@ migrate_working_dir/
 # Symbolication related
 app.*.symbols
 
+#Environment variables 
+.env
+
 # Obfuscation related
 app.*.map.json
 
@@ -74,11 +77,10 @@ unityLibrary/
 
 todo.txt
 android/key.properties
+android/key.properties
+**/key.properties
 /linux/
 /windows/
 /macos/
 
 
-# env variables
-!/.env
-.env
