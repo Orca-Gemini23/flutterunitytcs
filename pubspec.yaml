@@ -50,7 +50,7 @@ dependencies:
   geolocator: ^13.0.1
   flutter_unity_widget:
     git:
-      url: https://github.com/Lifespark-Technologies/flutter-unity-view-widget.git
+      url: https://github.com/Orca-Gemini23/flutter-unity-view-widget.git
       ref: flutter_3.24_android_hotfix # branch name
       # UPDATE: this fix is now included in the master branch
   tutorial_coach_mark: ^1.2.11
